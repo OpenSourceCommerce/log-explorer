@@ -1,0 +1,36 @@
+{
+  "name": "clickhouse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github_nfq:OpenSourceCommerce/log-explorer.git"
+  },
+  "author": "ScaleCommerce",
+  "license": "ISC",
+  "dependencies": {
+    "admin-lte": "^3.0.5",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-inlinesvg": "^2.1.1"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.12.5",
+    "@symfony/webpack-encore": "^0.31.0",
+    "core-js": "^3.7.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^9.0.3",
+    "webpack-notifier": "^1.6.0"
+  }
+}

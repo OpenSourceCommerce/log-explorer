@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+    php:
+        working_dir: /var/www/dev-php
+        image: scalecommerce/dev-php:7.3.8-v2
+        volumes:
+            - .:/var/www/dev-php:cached
+        environment:
+            APP_DEBUG: "true"
+        ports:
+            - 127.0.0.1:80:80
+        links:
+            - db
+    db:
+        image: yandex/clickhouse-server
+        working_dir: /var/www
+        volumes:
+            - clickhouse:/var/lib/clickhouse
+            - .:/var/www
+        ports:
+            - 127.0.0.1:9000:9000
+            - 127.0.0.1:8123:8123
+            - 127.0.0.1:9009:9009
+            - 127.0.0.1:9004:9004
+
+volumes:
+    clickhouse:
