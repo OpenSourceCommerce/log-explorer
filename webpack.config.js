@@ -11,11 +11,12 @@ Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     .copyFiles({
-        from: './assets/img'
+        from: './assets/img',
+        to: 'img/[path][name].[ext]'
     })
     .copyFiles({
         from: './node_modules/admin-lte/dist/img',
-        to: '/theme/images/[path][name].[ext]'
+        to: '/theme/img/[path][name].[ext]'
     })
     .copyFiles({
         from: './node_modules/admin-lte',
@@ -37,6 +38,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .addEntry('page_index', './assets/js/pages/index/index.js')
     //.addEntry('page1', './assets/page1.js')
     //.addEntry('page2', './assets/page2.js')
 
