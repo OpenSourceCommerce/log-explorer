@@ -6,15 +6,15 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.scss';
+import "./styles/app.scss";
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
-import 'admin-lte/plugins/jquery/jquery';
-import 'admin-lte/plugins/jquery-ui/jquery-ui';
+import "admin-lte/plugins/jquery/jquery";
+import "admin-lte/plugins/jquery-ui/jquery-ui";
 
-$.widget.bridge('uibutton', $.ui.button);
+$.widget.bridge("uibutton", $.ui.button);
 
-import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js';
+import "admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js";
 // import "admin-lte/plugins/chart.js/Chart.min.js";
 // import Sparkline from "admin-lte/plugins/sparklines/sparkline";
 // window.Sparkline = Sparkline;
@@ -26,8 +26,8 @@ import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js';
 // import "admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js";
 // import "admin-lte/plugins/summernote/summernote-bs4.min.js";
 import "admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js";
-import 'admin-lte/dist/js/adminlte.js';
+import "admin-lte/dist/js/adminlte.js";
 // import "admin-lte/dist/js/pages/dashboard.js";
-import 'admin-lte/dist/js/demo.js';
+import "admin-lte/dist/js/demo.js";
 
 // console.log("Hello Webpack Encore! Edit me in assets/app.js");
