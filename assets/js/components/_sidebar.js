@@ -62,4 +62,4 @@ export class Sidebar extends Component {
     }
 }
 
-ReactDOM.render(<Sidebar/>, document.getElementById("navbar"));
+ReactDOM.render(<Sidebar/>, document.getElementById("sidebar"));
