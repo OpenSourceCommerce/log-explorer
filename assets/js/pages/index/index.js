@@ -74,9 +74,9 @@ class Index extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {data && data.length > 0 && data.map((item) => {
+                        {data && data.length > 0 && data.map((item, index) => {
                             return (
-                                <tr>
+                                <tr key={index}>
                                     <td>{item.id}</td>
                                     <td>{item.date}</td>
                                     <td>{item.hostname}</td>
