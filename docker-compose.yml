@@ -23,6 +23,8 @@ services:
             - 127.0.0.1:8123:8123
             - 127.0.0.1:9009:9009
             - 127.0.0.1:9004:9004
+        environment:
+            CLICKHOUSE_DB: "logs"
 
 volumes:
     clickhouse:
