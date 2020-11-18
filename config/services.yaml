@@ -4,11 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app.db.host: '%env(DATABASE_HOST)%'
-    app.db.port: '%env(DATABASE_PORT)%'
-    app.db.user: '%env(DATABASE_USER)%'
-    app.db.password: '%env(DATABASE_PASSWORD)%'
-    app.db.name: '%env(DATABASE_NAME)%'
 
 services:
     # default configuration for services in *this* file
@@ -34,3 +29,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Services\Clickhouse\Connection:
+        class: 'App\Services\Clickhouse\Connection'
+        arguments:
+            $connection: '@doctrine.dbal.clickhouse_connection'

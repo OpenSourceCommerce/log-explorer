@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41b341671a8dad7964764944ef7f5a0f",
+    "content-hash": "8192404a297a0516a16e9cc6db03f581",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1328,6 +1328,61 @@
                 "validator"
             ],
             "time": "2020-09-19T14:37:56+00:00"
+        },
+        {
+            "name": "friendsofdoctrine/dbal-clickhouse",
+            "version": "v1.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfDoctrine/dbal-clickhouse.git",
+                "reference": "24eb461b1ac9948d850e9d5d97d14382aa5f9862"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfDoctrine/dbal-clickhouse/zipball/24eb461b1ac9948d850e9d5d97d14382aa5f9862",
+                "reference": "24eb461b1ac9948d850e9d5d97d14382aa5f9862",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^2.7",
+                "ext-pcre": "*",
+                "ext-pdo": "*",
+                "php": "^7.1",
+                "smi2/phpclickhouse": "^1.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^4.0",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FOD\\DBALClickHouse\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mochalygin Aleksandr",
+                    "email": "a@mochalygin.ru"
+                },
+                {
+                    "name": "Mitrofanov Nikolay",
+                    "email": "mitrofanovnk@yandex.ru"
+                }
+            ],
+            "description": "Doctrine DBAL driver for ClickHouse",
+            "homepage": "http://github.com/friendsofdoctrine/dbal-clickhouse",
+            "keywords": [
+                "clickhouse",
+                "dbal",
+                "doctrine",
+                "driver"
+            ],
+            "time": "2019-07-17T16:41:38+00:00"
         },
         {
             "name": "monolog/monolog",
