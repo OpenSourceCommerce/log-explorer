@@ -1,0 +1,19 @@
+{
+  "space": 4,
+  "webpack": true,
+  "bracketSpacing": true,
+  "ignores": [
+    "./webpack.config.js"
+  ],
+  "extends": [
+    "plugin:react/recommended"
+  ],
+  "envs": [
+    "browser",
+    "jquery",
+    "node"
+  ],
+  "rules": {
+    "import/no-unassigned-import": 0
+  }
+}

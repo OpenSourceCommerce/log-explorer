@@ -1,16 +1,13 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export class Table extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        let { children, className = "", ...rest } = this.props;
-        className += " table table-hover text-nowrap";
+        let {children, className = '', ...rest} = this.props;
+        className += ' table table-hover text-nowrap';
 
         return (
-            <div className={"table-responsive"}>
+            <div className={'table-responsive'}>
                 <table {...rest} className={className}>
                     {children}
                 </table>
@@ -18,3 +15,8 @@ export class Table extends Component {
         );
     }
 }
+
+Table.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.any
+};

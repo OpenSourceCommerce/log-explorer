@@ -1,24 +1,22 @@
-import React, { Component } from "react";
-import { Text } from "./_text";
+import React, {Component} from 'react';
+import {Text} from '.';
+import PropTypes from 'prop-types';
 
 export class Link extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        let { className = "", href = "#", children, ...rest } = this.props;
+        let {className = '', href = '#', children, ...rest} = this.props;
 
         if (Array.isArray(children)) {
             children = children.map((child, index) => {
-                if (typeof child == "string") {
+                if (typeof child === 'string') {
                     child = <Text key={index}>{child}</Text>;
                 }
+
                 return child;
             });
         }
 
-        className += " ";
+        className += ' ';
 
         return (
             <a href={href} {...rest} className={className}>
@@ -27,3 +25,9 @@ export class Link extends Component {
         );
     }
 }
+
+Link.propTypes = {
+    href: PropTypes.string,
+    className: PropTypes.string,
+    children: PropTypes.any
+};

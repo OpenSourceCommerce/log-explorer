@@ -19,7 +19,6 @@ indent_size = 2
 [{*.cjs,*.js}]
 max_line_length = 100
 tab_width = 2
-ij_javascript_use_double_quotes = true
 
 [{*.har,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,composer.lock,jest.config}]
 indent_size = 2

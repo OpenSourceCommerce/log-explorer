@@ -1,26 +1,24 @@
-import React, { Component } from "react";
-import { Colors } from "./index";
+import React, {Component} from 'react';
+import {Colors} from '.';
+import PropTypes from 'prop-types';
 
 export class Button extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        let { className = "", type = "button", color = Colors.blue, children, ...rest } = this.props;
+        let {className = '', type = 'button', color = Colors.blue, children, ...rest} = this.props;
 
         if (Array.isArray(children)) {
             children = children.map((child, index) => {
-                if (typeof child == "string") {
+                if (typeof child === 'string') {
                     child = <span key={index}>{child}</span>;
                 }
+
                 return child;
             });
         }
 
         let classes = className;
-        classes += " btn";
-        classes += " btn-" + color;
+        classes += ' btn';
+        classes += ' btn-' + color;
 
         return (
             <button {...rest} className={classes} type={type}>
@@ -29,3 +27,10 @@ export class Button extends Component {
         );
     }
 }
+
+Button.propTypes = {
+    className: PropTypes.string,
+    type: PropTypes.string,
+    color: PropTypes.string,
+    children: PropTypes.any
+};

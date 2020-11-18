@@ -1,13 +1,10 @@
-import React, { Component } from "react";
-import { Link, Icon, Text, NavNotificationItem, NavDivider } from "./index";
+import React, {Component} from 'react';
+import {Link, Icon, Text, NavNotificationItem, NavDivider} from '.';
+import PropTypes from 'prop-types';
 
 export class NavNotification extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const { total = 0 } = this.props;
+        const {total = 0} = this.props;
 
         return (
             <li className="nav-item dropdown">
@@ -17,15 +14,15 @@ export class NavNotification extends Component {
                 </Link>
                 <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <Text className="dropdown-item dropdown-header">
-                        {total} Notification{total > 1 ? "s" : ""}
+                        {total} Notification{total > 1 ? 's' : ''}
                     </Text>
                     <NavDivider/>
                     <NavNotificationItem type="envelope" href="#" title="1 new messages"
-                                         time="1 mins"/>
+                        time="1 mins"/>
                     <NavDivider/>
 
                     <NavNotificationItem type="users" href="#" title="2 friend requests"
-                                         time="3 hours"/>
+                        time="3 hours"/>
                     <NavDivider/>
 
                     <NavNotificationItem type="file" href="#" title="3 new reports" time="5 days"/>
@@ -39,3 +36,7 @@ export class NavNotification extends Component {
         );
     }
 }
+
+NavNotification.propTypes = {
+    total: PropTypes.number
+};

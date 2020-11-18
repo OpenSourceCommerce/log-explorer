@@ -1,27 +1,22 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export class Input extends Component {
-
-    constructor(props) {
-
-        super(props);
-
-    }
-
     render() {
-
-        const { className, type = 'text', ...rest } = this.props;
-        let classes = className;
-        classes += ' form-control';
+        let {className = '', type = 'text', ...rest} = this.props;
+        className += ' form-control';
 
         return (
             <input
-                className={classes}
+                className={className}
                 type={type}
                 {...rest}
-          />
+            />
         );
-
     }
-
 }
+
+Input.propTypes = {
+    className: PropTypes.string,
+    type: PropTypes.string
+};
