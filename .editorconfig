@@ -1,0 +1,25 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+tab_width = 4
+trim_trailing_whitespace = true
+
+[*.sass]
+indent_size = 2
+
+[*.scss]
+indent_size = 2
+
+[{*.cjs,*.js}]
+max_line_length = 100
+tab_width = 2
+ij_javascript_use_double_quotes = true
+
+[{*.har,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,composer.lock,jest.config}]
+indent_size = 2

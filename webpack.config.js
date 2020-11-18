@@ -11,17 +11,18 @@ Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     .copyFiles({
-        from: './assets/img',
-        to: 'img/[path][name].[ext]'
+        from: './assets/images',
+        to: 'images/[path][name].[ext]',
+        pattern: /logo\.svg$/,
     })
-    .copyFiles({
+    /*.copyFiles({
         from: './node_modules/admin-lte/dist/img',
-        to: '/theme/img/[path][name].[ext]'
-    })
+        to: '/theme/images/[path][name].[ext]'
+    })*/
     .copyFiles({
         from: './node_modules/admin-lte',
         to: '/theme/js/[path][name].[ext]',
-        pattern: /\.(js)$/
+        pattern: /\.(js)$/,
     })
     // public path used by the web server to access the output path
     .setPublicPath('/build')
@@ -39,6 +40,8 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('page_index', './assets/js/pages/index/index.js')
+    .addEntry('navbar', './assets/js/components/_navbar.js')
+    .addEntry('sidebar', './assets/js/components/_sidebar.js')
     //.addEntry('page1', './assets/page1.js')
     //.addEntry('page2', './assets/page2.js')
 
