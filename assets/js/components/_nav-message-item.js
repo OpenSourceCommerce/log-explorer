@@ -1,19 +1,16 @@
-import React, { Component } from "react";
-import { Link, Text, Image, Icon, Size } from "./index";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Link, Text, Image, Icon, Size} from '.';
 
 export class NavMessageItem extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const { avatar, name, title, time, color } = this.props;
+        const {avatar, name, title, time, color} = this.props;
 
         return (
             <Link className="dropdown-item">
                 <div className="media">
                     <Image src={avatar} alt="User Avatar"
-                           className="img-size-50 mr-3 img-circle"/>
+                        className="img-size-50 mr-3 img-circle"/>
                     <div className="media-body">
                         <h3 className="dropdown-item-title">
                             {name}
@@ -32,3 +29,11 @@ export class NavMessageItem extends Component {
         );
     }
 }
+
+NavMessageItem.propTypes = {
+    avatar: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    time: PropTypes.string.isRequired,
+    color: PropTypes.string
+};

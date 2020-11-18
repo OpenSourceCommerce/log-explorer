@@ -1,16 +1,8 @@
-import React, { Component } from "react";
-import { Button, Icon, Input } from "./index";
+import React, {Component} from 'react';
+import {Button, Icon, Input} from '.';
 
 export class NavSearch extends Component {
-
-    constructor(props) {
-
-        super(props);
-
-    }
-
     render() {
-
         return (
             <form className="form-inline ml-3">
                 <div className="input-group input-group-sm">
@@ -28,7 +20,5 @@ export class NavSearch extends Component {
                 </div>
             </form>
         );
-
     }
-
 }

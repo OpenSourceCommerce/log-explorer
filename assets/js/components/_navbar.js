@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { NavSearch, NavNotification, NavMenu, NavMessage, NavThemeSetting } from "./index";
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import {NavSearch, NavNotification, NavMenu, NavMessage, NavThemeSetting} from '.';
 
 class Navbar extends Component {
     render() {
@@ -12,9 +12,9 @@ class Navbar extends Component {
 
                 <ul className="navbar-nav ml-auto">
 
-                    <NavMessage total="3"/>
+                    <NavMessage total={3}/>
 
-                    <NavNotification total="15"/>
+                    <NavNotification total={15}/>
 
                     <NavThemeSetting/>
                 </ul>
@@ -23,4 +23,4 @@ class Navbar extends Component {
     }
 }
 
-ReactDOM.render(<Navbar/>, document.getElementById("navbar"));
+ReactDOM.render(<Navbar/>, document.querySelector('#navbar'));

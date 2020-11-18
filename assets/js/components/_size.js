@@ -1,7 +1,7 @@
 const Size = {
-    small: "sm",
-    medium: "md",
-    large: "lg",
+    small: 'sm',
+    medium: 'md',
+    large: 'lg'
 };
 
-module.exports = { Size }
+module.exports = {Size};

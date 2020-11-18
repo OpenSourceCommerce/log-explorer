@@ -7,11 +7,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "xo",
     "dev-server": "encore dev-server",
-    "dev": "encore dev",
-    "watch": "encore dev --watch",
-    "build": "encore production --progress"
+    "dev": "npm run lint && encore dev",
+    "watch": "npm run lint && encore dev --watch",
+    "build": "encore production --progress",
+    "lint": "xo --plugin=react --fix"
   },
   "repository": {
     "type": "git",
@@ -29,8 +30,13 @@
     "@babel/preset-react": "^7.12.5",
     "@symfony/webpack-encore": "^0.31.0",
     "core-js": "^3.7.0",
+    "eslint-config-xo-react": "^0.23.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "node-sass": "^4.14.1",
+    "prop-types": "^15.7.2",
     "sass-loader": "^9.0.3",
-    "webpack-notifier": "^1.6.0"
+    "webpack-notifier": "^1.6.0",
+    "xo": "^0.34.2"
   }
 }

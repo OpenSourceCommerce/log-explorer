@@ -1,14 +1,11 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export class Text extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        let { className = "", children, color = "", size = "", ...rest } = this.props;
+        let {className = '', children, color = '', size = '', ...rest} = this.props;
 
-        className += " ";
+        className += ' ';
 
         if (color) {
             color = ` text-${color}`;
@@ -30,3 +27,9 @@ export class Text extends Component {
     }
 }
 
+Text.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.any,
+    size: PropTypes.string,
+    color: PropTypes.string
+};
