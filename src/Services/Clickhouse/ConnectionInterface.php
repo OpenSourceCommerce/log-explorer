@@ -5,6 +5,7 @@ namespace App\Services\Clickhouse;
 
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 interface ConnectionInterface
 {
@@ -45,4 +46,9 @@ interface ConnectionInterface
      * @throws Exception
      */
     public function fetchOne(string $query, array $params = [], $column = 0, array $types = []);
+
+    /**
+     * @return QueryBuilder
+     */
+    public function createQueryBuilder();
 }
