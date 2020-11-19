@@ -78,7 +78,10 @@ class StreamController extends AbstractController
             'to' => $to,
         ];
         $graph = [];
-        $graphOffset = $streamService->getGraphOffsetInSeconds($from, $to, 12);
+        $graphOffset = $dashboard->getGraphFixedOffset();
+        if (is_null($graphOffset)) {
+            $graphOffset = $streamService->getGraphOffsetInSeconds($from, $to, $dashboard->getGraphNumberOfPoint());
+        }
         $label = [];
         foreach ($dashboard->getGraphColumns() as $item) {
             $label[$item['column']] = [

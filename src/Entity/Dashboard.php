@@ -21,6 +21,9 @@ class Dashboard
         ]
     ];
 
+    private $graphNumberOfPoint = 12;
+    private $graphFixedOffset = null;
+
     /**
      * @return string
      */
@@ -61,5 +64,23 @@ class Dashboard
     public function getGraphColumns(): array
     {
         return $this->graphColumns;
+    }
+
+    /**
+     * Recommend to setup graph dynamic and optimize performance
+     * @return int|null
+     */
+    public function getGraphNumberOfPoint(): ?int
+    {
+        return $this->graphNumberOfPoint;
+    }
+
+    /**
+     * Get fixed offset in seconds, null if disabled then getGraphNumberOfPoint will be used
+     * @return int|null
+     */
+    public function getGraphFixedOffset(): ?int
+    {
+        return $this->graphFixedOffset;
     }
 }
