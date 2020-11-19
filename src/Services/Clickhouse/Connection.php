@@ -59,4 +59,12 @@ class Connection implements ConnectionInterface
         }
         return false;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function createQueryBuilder()
+    {
+        return $this->connection->createQueryBuilder();
+    }
 }

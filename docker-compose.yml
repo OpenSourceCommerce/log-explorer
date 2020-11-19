@@ -16,7 +16,7 @@ services:
         image: yandex/clickhouse-server
         working_dir: /var/www
         volumes:
-            - clickhouse:/var/lib/clickhouse
+            - ./var/clickhouse:/var/lib/clickhouse
             - .:/var/www
         ports:
             - 127.0.0.1:9000:9000
