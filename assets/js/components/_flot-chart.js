@@ -1,27 +1,37 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/flot/jquery.flot';
+import '../plugins/flot.legend';
+import '../../styles/legend.scss';
 
 export class FlotChart extends Component {
     componentDidMount() {
         $(() => {
             // We use an inline data source in the example, usually data would
             // be fetched from a server
+            const legendContainer = document.getElementById('legendContainer');
+            const legendSettings = {
+                position: 'nw',
+                show: true,
+                noColumns: 2,
+                container: legendContainer,
+            };
+
             const options = {
                 grid: {
                     borderColor: '#f3f3f3',
                     borderWidth: 1,
                     tickColor: '#f3f3f3',
                     hoverable: true,
-                    clickable: true
+                    clickable: true,
                 },
                 series: {
                     lines: {
                         lineWidth: 2,
                         show: true,
-                        fill: false
+                        fill: false,
                     },
-                    points: {show: true}
+                    points: { show: true },
                 },
                 xaxis: {
                     // Mode: 'categories',
@@ -29,8 +39,9 @@ export class FlotChart extends Component {
                     // gridLines: false,
                     mode: 'time',
                     timeBase: 'milliseconds',
-                    timeformat: '%H:%M'
-                }
+                    timeformat: '%H:%M',
+                },
+                legend: legendSettings,
             };
 
             $('<div id=\'tooltip\'></div>')
@@ -40,7 +51,7 @@ export class FlotChart extends Component {
                     border: '1px solid #fff',
                     padding: '2px',
                     'background-color': '#c7c7f5',
-                    opacity: 0.8
+                    opacity: 0.8,
                 })
                 .appendTo('body');
 
@@ -48,7 +59,7 @@ export class FlotChart extends Component {
                 url: '/stream/{uuid}/graph',
                 dataType: 'json',
                 success(response) {
-                    const {data, error} = response;
+                    const { data, error } = response;
 
                     if (error) {
                         return;
@@ -66,13 +77,15 @@ export class FlotChart extends Component {
                                 const x = item.dataIndex;
                                 const y = item.datapoint[1];
                                 let date = new Date(x);
-                                const string = '<br> Date: ' + `${date.toLocaleDateString()}` + '<br> Time: ' + `${date.toLocaleTimeString()}` + '<br>Value: ' + y;
+                                const string = '<br> Date: ' + `${date.toLocaleDateString()}` +
+                                    '<br> Time: ' + `${date.toLocaleTimeString()}` + '<br>Value: ' +
+                                    y;
 
                                 $('#tooltip')
                                     .html(item.series.label + string)
                                     .css({
                                         top: item.pageY + 5,
-                                        left: item.pageX + 5
+                                        left: item.pageX + 5,
                                     })
                                     .fadeIn(200);
                             } else {
@@ -80,7 +93,7 @@ export class FlotChart extends Component {
                                     .hide();
                             }
                         });
-                }
+                },
             });
         });
     }
@@ -98,16 +111,21 @@ export class FlotChart extends Component {
                         Real time
                         <div className="btn-group" id="realtime" data-toggle="btn-toggle">
                             <button type="button" className="btn btn-default btn-sm active"
-                                data-toggle="on">On
+                                    data-toggle="on">On
                             </button>
                             <button type="button" className="btn btn-default btn-sm"
-                                data-toggle="off">Off
+                                    data-toggle="off">Off
                             </button>
                         </div>
                     </div>
                 </div>
                 <div className="card-body">
-                    <div id="interactive" style={{height: '300px'}}>
+                    <div id="interactive" style={{ height: '300px' }}>
+                        &nbsp;
+                    </div>
+                </div>
+                <div className="card-footer">
+                    <div id="legendContainer">
                         &nbsp;
                     </div>
                 </div>
