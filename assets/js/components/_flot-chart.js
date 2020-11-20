@@ -1,49 +1,13 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import 'admin-lte/plugins/flot/jquery.flot'
+import 'admin-lte/plugins/flot/jquery.flot';
 
 export class FlotChart extends Component {
     componentDidMount() {
         $(() => {
             // We use an inline data source in the example, usually data would
             // be fetched from a server
-            let data = [];
-            const totalPoints = 100;
-
-            function getRandomData() {
-                if (data.length > 0) {
-                    data = data.slice(1);
-                }
-
-                // Do a random walk
-                while (data.length < totalPoints) {
-                    const previous = data.length > 0 ? data[data.length - 1] : 50;
-                    let y = previous + (Math.random() * 10) - 5;
-
-                    if (y < 0) {
-                        y = 0;
-                    } else if (y > 100) {
-                        y = 100;
-                    }
-
-                    data.push(y);
-                }
-
-                // Zip the generated y values with the x values
-                const response = [];
-                for (const [i, datum] of data.entries()) {
-                    response.push([i, datum]);
-                }
-
-                return response;
-            }
-
-            const interactivePlot = $.plot('#interactive', [
-                {
-                    data: getRandomData()
-                }
-            ],
-            {
+            const options = {
                 grid: {
                     borderColor: '#f3f3f3',
                     borderWidth: 1,
@@ -54,44 +18,40 @@ export class FlotChart extends Component {
                     lines: {
                         lineWidth: 2,
                         show: true,
-                        fill: true
+                        fill: false
                     }
                 },
-                yaxis: {
-                    min: 0,
-                    max: 100,
-                    show: true
-                },
                 xaxis: {
-                    show: true
+                    mode: 'categories',
+                    showTicks: false,
+                    gridLines: false
                 }
-            }
-            );
+            };
 
-            const updateInterval = 500; // Fetch data ever x milliseconds
-            let realtime = 'on'; // If == to on then fetch data every x seconds. else stop fetching
-            function update() {
-                interactivePlot.setData([getRandomData()]);
+            $.ajax({
+                url: '/stream/{uuid}/graph',
+                dataType: 'json',
+                success(response) {
+                    const {data, error} = response;
 
-                // Since the axes don't change, we don't need to call plot.setupGrid()
-                interactivePlot.draw();
-                if (realtime === 'on') {
-                    setTimeout(update, updateInterval);
+                    if (error) {
+                        return;
+                    }
+
+                    const graphData = [];
+
+                    $.each(data.status, (index, item) => {
+                        graphData.push([item.label, item.value]);
+                    });
+
+                    $.plot('#interactive', [
+                        {
+                            data: graphData
+                        }
+                    ], options
+                    );
                 }
-            }
-
-            // INITIALIZE REALTIME DATA FETCHING
-            if (realtime === 'on') {
-                update();
-            }
-
-            // REALTIME TOGGLE
-            $('#realtime .btn')
-                .click(function () {
-                    realtime = $(this)
-                        .data('toggle') === 'on' ? 'on' : 'off';
-                    update();
-                });
+            });
         });
     }
 

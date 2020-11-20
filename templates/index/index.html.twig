@@ -3,17 +3,14 @@
 {% block title %}Hello IndexController!{% endblock %}
 
 {% block stylesheets %}
-    {{ encore_entry_link_tags('js_grid') }}
-    {{ encore_entry_link_tags('flot_chart') }}
+    {{ encore_entry_link_tags('page_index') }}
 {% endblock %}
 
 {% block body %}
     <div id="flot-chart"></div>
     <div id="root"></div>
-    <div id="js-grid"></div>
 {% endblock %}
 {% block javascripts %}
     {{ encore_entry_script_tags('page_index') }}
-    {{ encore_entry_script_tags('js_grid') }}
     {{ encore_entry_script_tags('flot_chart') }}
 {% endblock %}

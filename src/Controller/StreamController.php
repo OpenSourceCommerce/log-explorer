@@ -33,6 +33,7 @@ class StreamController extends AbstractController
             'error' => 0,
             'label' => $dashboard->getColumns(),
             'data' => $data,
+            'itemsCount' => count($data),
         ]);
     }
 

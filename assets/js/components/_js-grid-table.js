@@ -1,52 +1,41 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/jsgrid/demos/db';
 import 'admin-lte/plugins/jsgrid/jsgrid.min';
 import 'admin-lte/plugins/jsgrid/jsgrid.min.css';
 import 'admin-lte/plugins/jsgrid/jsgrid-theme.min.css';
+import PropTypes from 'prop-types';
 
 export class JsGridTable extends Component {
     componentDidMount() {
+        const {
+            height = '500px', width = '100%', pageSize = 30, pageButtonCount = 5, pageIndex = 1,
+            pageLoading = true, dataSrc, dataType = 'json', autoload = true, paging = true, fields = []
+        } = this.props;
+
         $(() => {
             $('#jsGrid1')
                 .jsGrid({
-                    height: '100%',
-                    width: '100%',
+                    height,
+                    width,
 
-                    sorting: true,
-                    paging: true,
+                    autoload,
+                    paging,
+                    pageSize,
+                    pageButtonCount,
+                    pageIndex,
+                    pageLoading,
 
-                    data: window.db.clients,
-
-                    fields: [
-                        {
-                            name: 'Name',
-                            type: 'text',
-                            width: 150
-                        },
-                        {
-                            name: 'Age',
-                            type: 'number',
-                            width: 50
-                        },
-                        {
-                            name: 'Address',
-                            type: 'text',
-                            width: 200
-                        },
-                        {
-                            name: 'Country',
-                            type: 'select',
-                            items: window.db.countries,
-                            valueField: 'Id',
-                            textField: 'Name'
-                        },
-                        {
-                            name: 'Married',
-                            type: 'checkbox',
-                            title: 'Is Married'
+                    controller: {
+                        loadData(filter) {
+                            return $.ajax({
+                                url: dataSrc,
+                                data: filter,
+                                dataType
+                            });
                         }
-                    ]
+                    },
+
+                    fields
                 });
         });
     }
@@ -60,6 +49,16 @@ export class JsGridTable extends Component {
     }
 }
 
-JsGridTable.propTypes = {};
-
-ReactDOM.render(<JsGridTable/>, document.querySelector('#js-grid'));
+JsGridTable.propTypes = {
+    fields: PropTypes.array.isRequired,
+    dataSrc: PropTypes.string.isRequired,
+    dataType: PropTypes.string,
+    pageSize: PropTypes.number,
+    pageLoading: PropTypes.bool,
+    pageButtonCount: PropTypes.number,
+    pageIndex: PropTypes.number,
+    paging: PropTypes.bool,
+    height: PropTypes.string,
+    width: PropTypes.string,
+    autoload: PropTypes.bool
+};
