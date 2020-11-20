@@ -11,15 +11,17 @@ export class FlotChart extends Component {
                 grid: {
                     borderColor: '#f3f3f3',
                     borderWidth: 1,
-                    tickColor: '#f3f3f3'
+                    tickColor: '#f3f3f3',
+                    hoverable: true,
+                    clickable: true
                 },
                 series: {
-                    color: '#3c8dbc',
                     lines: {
                         lineWidth: 2,
                         show: true,
                         fill: false
-                    }
+                    },
+                    points: {show: true}
                 },
                 xaxis: {
                     mode: 'categories',
@@ -27,6 +29,17 @@ export class FlotChart extends Component {
                     gridLines: false
                 }
             };
+
+            $('<div id=\'tooltip\'></div>')
+                .css({
+                    position: 'absolute',
+                    display: 'none',
+                    border: '1px solid #fff',
+                    padding: '2px',
+                    'background-color': '#c7c7f5',
+                    opacity: 0.8
+                })
+                .appendTo('body');
 
             $.ajax({
                 url: '/stream/{uuid}/graph',
@@ -39,6 +52,30 @@ export class FlotChart extends Component {
                     }
 
                     $.plot('#interactive', data, options);
+
+                    $('#interactive')
+                        .bind('plothover', (event, pos, item) => {
+                            if (!pos.x || !pos.y) {
+                                return;
+                            }
+
+                            if (item) {
+                                const x = item.datapoint[0];
+                                const y = item.datapoint[1];
+                                const string = '<br> Time: ' + item.series.data[x][0] + '<br>Value: ' + y;
+
+                                $('#tooltip')
+                                    .html(item.series.label + string)
+                                    .css({
+                                        top: item.pageY + 5,
+                                        left: item.pageX + 5
+                                    })
+                                    .fadeIn(200);
+                            } else {
+                                $('#tooltip')
+                                    .hide();
+                            }
+                        });
                 }
             });
         });
