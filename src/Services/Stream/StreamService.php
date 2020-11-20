@@ -143,7 +143,8 @@ class StreamService implements StreamServiceInterface
                     ->setParameter('status', $column['value']);
             }
             $data[] = [
-                $label->format('H:i'),
+//                $label->format('H:i'),
+                $label->getTimestamp() * 1000,
                 intval($builder->execute()->fetchColumn()),
             ];
             $lastPoint = $nextPoint;

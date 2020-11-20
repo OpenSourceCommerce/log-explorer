@@ -22,9 +22,12 @@ export class FlotChart extends Component {
                     }
                 },
                 xaxis: {
-                    mode: 'categories',
-                    showTicks: false,
-                    gridLines: false
+                    // Mode: 'categories',
+                    // showTicks: false,
+                    // gridLines: false,
+                    mode: 'time',
+                    timeBase: 'milliseconds',
+                    timeformat: '%H:%M'
                 }
             };
 
