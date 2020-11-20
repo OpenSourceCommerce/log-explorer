@@ -8,16 +8,57 @@ class Dashboard
 {
     private $table = 'nginx_access';
 
-    private $columns = ['host' => 'Host', 'device_type' => 'Device type', 'ip' => 'IP', 'timestamp' => 'Time', 'status' => 'Status code'];
+    private $columns = [
+        [
+            'name' => 'host',
+            'title' => 'Host',
+            'type' => 'text',
+        ],
+        [
+            'name' => 'device_type',
+            'title' => 'Device type',
+            'type' => 'text',
+        ],
+        [
+            'name' => 'ip',
+            'title' => 'IP',
+            'type' => 'text',
+        ],
+        [
+            'name' => 'timestamp',
+            'title' => 'Time',
+            'type' => 'text',
+        ],
+        [
+            'name' => 'status',
+            'title' => 'Status',
+            'type' => 'text',
+        ],
+    ];
 
-    private $summaryColumns = ['status' => 'Status'];
+    private $summaryColumns = [
+        [
+            'name' => 'status',
+            'title' => 'Status',
+        ],
+        [
+            'name' => 'device_type',
+            'title' => 'Device',
+        ],
+    ];
 
     private $graphColumns = [
         [
-            'column' => 'status',
-            'label' => 'Status',
+            'name' => 'status',
+            'title' => 'OK',
             'value' => '200',
             'color' => '#7F2',
+        ],
+        [
+            'name' => 'status',
+            'title' => 'NG',
+            'value' => [304, 499],
+            'color' => '#444',
         ]
     ];
 
@@ -43,7 +84,7 @@ class Dashboard
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     public function getColumns(): array
     {
@@ -51,7 +92,7 @@ class Dashboard
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     public function getSummaryColumns(): array
     {
@@ -59,7 +100,7 @@ class Dashboard
     }
 
     /**
-     * @return string[]
+     * @return array
      */
     public function getGraphColumns(): array
     {

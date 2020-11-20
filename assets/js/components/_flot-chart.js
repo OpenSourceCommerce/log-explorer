@@ -38,18 +38,7 @@ export class FlotChart extends Component {
                         return;
                     }
 
-                    const graphData = [];
-
-                    $.each(data.status, (index, item) => {
-                        graphData.push([item.label, item.value]);
-                    });
-
-                    $.plot('#interactive', [
-                        {
-                            data: graphData
-                        }
-                    ], options
-                    );
+                    $.plot('#interactive', data, options);
                 }
             });
         });

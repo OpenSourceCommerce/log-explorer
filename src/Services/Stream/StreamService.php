@@ -6,6 +6,7 @@ namespace App\Services\Stream;
 
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class StreamService implements StreamServiceInterface
@@ -133,16 +134,17 @@ class StreamService implements StreamServiceInterface
             }
             $options['from'] = $lastPoint;
             $options['to'] = $nextPoint;
-            $builder = $this->makeQueryBuilder($table, $options);
+            $builder = $this->makeQueryBuilder($table, $options)
+                ->addSelect('COUNT() AS c');
             if (is_array($column['value'])) {
-                $select = "COUNT({$column['column']} IN (".implode(',', $column['value']).")) AS c";
+                $builder->andWhere((new Expr())->in('status', $column['value']));
             } else {
-                $select = "COUNT({$column['column']}={$column['value']}) AS c";
+                $builder->andWhere('status=:status')
+                    ->setParameter('status', $column['value']);
             }
-            $builder->addSelect($select);
             $data[] = [
-                'label' => $label->format('Y-m-d H:i:s'),
-                'value' => intval($builder->execute()->fetchColumn()),
+                $label->format('H:i'),
+                intval($builder->execute()->fetchColumn()),
             ];
             $lastPoint = $nextPoint;
         }

@@ -13,6 +13,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class StreamController extends AbstractController
 {
     /**
+     * @Route("/stream/{uuid}/table", name="stream_table")
+     * @param $uuid
+     * @param DashboardServiceInterface $dashboardService
+     * @param StreamServiceInterface $streamService
+     * @return JsonResponse
+     */
+    public function table($uuid, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    {
+        $dashboard = $dashboardService->fromUuid($uuid);
+        $columns = $dashboard->getColumns();
+        return $this->json([
+            'error' => 0,
+            'data' => $columns,
+        ]);
+    }
+
+    /**
      * @Route("/stream/{uuid}/list", name="stream_list")
      * @param $uuid
      * @param DashboardServiceInterface $dashboardService
@@ -24,14 +41,14 @@ class StreamController extends AbstractController
         $dashboard = $dashboardService->fromUuid($uuid);
         $from = new \DateTime('2020-06-01 00:02:47');
         $to = new \DateTime('2020-06-01 01:02:47');
+        $columns = $dashboard->getColumns();
         $options = [
-            'columns' => array_keys($dashboard->getColumns()),
+            'columns' => array_column($columns, 'name'),
             'to' => $to,
         ];
         $data = $streamService->getLogsInRange($dashboard->getTable(), $from, $options);
         return $this->json([
             'error' => 0,
-            'label' => $dashboard->getColumns(),
             'data' => $data,
             'itemsCount' => count($data),
         ]);
@@ -52,13 +69,14 @@ class StreamController extends AbstractController
         $options = [
             'to' => $to,
         ];
+        $widgets = $dashboard->getSummaryColumns();
         $summary = [];
-        foreach ($dashboard->getSummaryColumns() as $column => $name) {
-            $summary[$column] = $streamService->getLogSummaryInRange($dashboard->getTable(), $column, $from, $options);
+        foreach ($widgets as $widget) {
+            $summary[$widget['name']] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $from, $options);
         }
         return $this->json([
             'error' => 0,
-            'label' => $dashboard->getSummaryColumns(),
+            'label' => $widgets,
             'data' => $summary,
         ]);
     }
@@ -83,17 +101,16 @@ class StreamController extends AbstractController
         if (is_null($graphOffset)) {
             $graphOffset = $streamService->getGraphOffsetInSeconds($from, $to, $dashboard->getGraphNumberOfPoint());
         }
-        $label = [];
         foreach ($dashboard->getGraphColumns() as $item) {
-            $label[$item['column']] = [
-                'label' => $item['label'],
+            $line = [
+                'label' => $item['title'],
                 'color' => $item['color'],
+                'data' => $streamService->getLogGraphInRange($dashboard->getTable(), $item, $from, $graphOffset, $options),
             ];
-            $graph[$item['column']] = $streamService->getLogGraphInRange($dashboard->getTable(), $item, $from, $graphOffset, $options);
+            $graph[] = $line;
         }
         return $this->json([
             'error' => 0,
-            'label' => $label,
             'data' => $graph,
         ]);
     }
