@@ -63,9 +63,10 @@ export class FlotChart extends Component {
                             }
 
                             if (item) {
-                                const x = item.datapoint[0];
+                                const x = item.dataIndex;
                                 const y = item.datapoint[1];
-                                const string = '<br> Time: ' + item.series.data[x][0] + '<br>Value: ' + y;
+                                let date = new Date(x);
+                                const string = '<br> Date: ' + `${date.toLocaleDateString()}` + '<br> Time: ' + `${date.toLocaleTimeString()}` + '<br>Value: ' + y;
 
                                 $('#tooltip')
                                     .html(item.series.label + string)
