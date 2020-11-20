@@ -1,92 +1,39 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table} from '../../components';
+import {CardHeader} from '../../components';
+import {JsGridTable} from '../../components/_js-grid-table';
+import {LogTableActions} from '../../actions';
 
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            fields: []
         };
     }
 
-    componentDidMount() {
-        this.getData();
+    getFields() {
+        const $this = this;
+        LogTableActions.getColumns()
+            .then(response => {
+                $this.setState({fields: response.data});
+            });
     }
 
-    getData() {
-        const data = [
-            {
-                id: 1,
-                date: '2020-11-18',
-                hostname: 'megento-web',
-                statusCode: 200,
-                message: '167.245.104.48 - - [18/Nov/2020:07:17:17 +0000] "GET /molo-owl-bag-across-body-bag-grey-flannel-m8553i00f-c11.html HTTP/2.0" 200 13325 "-" "Mozilla/5.0 (iPad; CPU OS 8_2_2 like Mac OS X; en-US) AppleWebKit/533.4.3 (KHTML, like Gecko) Version/3.0.5 Mobile/8B111 Safari/6533.4.3"'
-            },
-            {
-                id: 1,
-                date: '2020-11-18',
-                hostname: 'megento-web',
-                statusCode: 200,
-                message: '167.245.104.48 - - [18/Nov/2020:07:17:17 +0000] "GET /molo-owl-bag-across-body-bag-grey-flannel-m8553i00f-c11.html HTTP/2.0" 200 13325 "-" "Mozilla/5.0 (iPad; CPU OS 8_2_2 like Mac OS X; en-US) AppleWebKit/533.4.3 (KHTML, like Gecko) Version/3.0.5 Mobile/8B111 Safari/6533.4.3"'
-            },
-            {
-                id: 1,
-                date: '2020-11-18',
-                hostname: 'megento-web',
-                statusCode: 200,
-                message: '167.245.104.48 - - [18/Nov/2020:07:17:17 +0000] "GET /molo-owl-bag-across-body-bag-grey-flannel-m8553i00f-c11.html HTTP/2.0" 200 13325 "-" "Mozilla/5.0 (iPad; CPU OS 8_2_2 like Mac OS X; en-US) AppleWebKit/533.4.3 (KHTML, like Gecko) Version/3.0.5 Mobile/8B111 Safari/6533.4.3"'
-            },
-            {
-                id: 1,
-                date: '2020-11-18',
-                hostname: 'megento-web',
-                statusCode: 200,
-                message: '167.245.104.48 - - [18/Nov/2020:07:17:17 +0000] "GET /molo-owl-bag-across-body-bag-grey-flannel-m8553i00f-c11.html HTTP/2.0" 200 13325 "-" "Mozilla/5.0 (iPad; CPU OS 8_2_2 like Mac OS X; en-US) AppleWebKit/533.4.3 (KHTML, like Gecko) Version/3.0.5 Mobile/8B111 Safari/6533.4.3"'
-            },
-            {
-                id: 1,
-                date: '2020-11-18',
-                hostname: 'megento-web',
-                statusCode: 200,
-                message: '167.245.104.48 - - [18/Nov/2020:07:17:17 +0000] "GET /molo-owl-bag-across-body-bag-grey-flannel-m8553i00f-c11.html HTTP/2.0" 200 13325 "-" "Mozilla/5.0 (iPad; CPU OS 8_2_2 like Mac OS X; en-US) AppleWebKit/533.4.3 (KHTML, like Gecko) Version/3.0.5 Mobile/8B111 Safari/6533.4.3"'
-            }
-        ];
-
-        this.setState({data});
+    componentDidMount() {
+        this.getFields();
     }
 
     render() {
-        const {data} = this.state;
+        const {fields} = this.state;
 
         return (
             <div className="card">
                 <CardHeader title={'Home Page'}/>
                 <div className="card-body">
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date</th>
-                                <th>Hostname</th>
-                                <th>Status Code</th>
-                                <th>Message</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data && data.length > 0 && data.map((item, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{item.id}</td>
-                                        <td>{item.date}</td>
-                                        <td>{item.hostname}</td>
-                                        <td>{item.statusCode}</td>
-                                        <td>{item.message}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </Table>
+                    {fields && fields.length > 0 && <JsGridTable dataSrc={'/stream/uuid/list'}
+                        fields={fields}
+                        pageSize={5}/>}
                 </div>
                 <div className="card-footer">
                     Footer

@@ -6,6 +6,7 @@ namespace App\Services\Stream;
 
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class StreamService implements StreamServiceInterface
@@ -133,16 +134,22 @@ class StreamService implements StreamServiceInterface
             }
             $options['from'] = $lastPoint;
             $options['to'] = $nextPoint;
-            $builder = $this->makeQueryBuilder($table, $options);
-            if (is_array($column['value'])) {
-                $select = "COUNT({$column['column']} IN (".implode(',', $column['value']).")) AS c";
+            $builder = $this->makeQueryBuilder($table, $options)
+                ->addSelect('COUNT() AS c');
+            if ($column['condition']) {
+                $builder->andWhere($column['condition']);
             } else {
-                $select = "COUNT({$column['column']}={$column['value']}) AS c";
+                if (is_array($column['value'])) {
+                    $builder->andWhere((new Expr())->in($column['name'], $column['value']));
+                } else {
+                    $builder->andWhere("{$column['name']}=:value")
+                        ->setParameter('value', $column['value']);
+                }
             }
-            $builder->addSelect($select);
             $data[] = [
-                'label' => $label->format('Y-m-d H:i:s'),
-                'value' => intval($builder->execute()->fetchColumn()),
+//                $label->format('H:i'),
+                $label->getTimestamp() * 1000,
+                intval($builder->execute()->fetchColumn()),
             ];
             $lastPoint = $nextPoint;
         }
