@@ -51,12 +51,14 @@ class Dashboard
         [
             'name' => 'status',
             'title' => 'OK',
-            'value' => '200',
+            'condition' => 'status < 300', // allow to set as query but need to check SQL injection!!!?
+            'value' => '200', // only = or IN
             'color' => '#7F2',
         ],
         [
             'name' => 'status',
             'title' => 'NG',
+            'condition' => 'status >= 300',
             'value' => [304, 499],
             'color' => '#444',
         ]
