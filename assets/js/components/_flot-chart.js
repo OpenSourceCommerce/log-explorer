@@ -75,7 +75,7 @@ export class FlotChart extends Component {
                             if (item) {
                                 const x = item.dataIndex;
                                 const y = item.datapoint[1];
-                                const date = new Date(x);
+                                const date = new Date(item.series.data[x][0]);
                                 const string = `<br> Date: ${date.toLocaleDateString()}<br> Time: ${date.toLocaleTimeString()}<br>Value: ${y}`;
 
                                 $('#tooltip')
