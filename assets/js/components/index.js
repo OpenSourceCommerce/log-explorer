@@ -17,3 +17,4 @@ export const {NavMessageItem} = require('./_nav-message-item');
 export const {NavThemeSetting} = require('./_nav-theme-setting');
 export const {CardHeader} = require('./_card-header');
 export const {Table} = require('./_table');
+export const {Summary} = require('./_summary');

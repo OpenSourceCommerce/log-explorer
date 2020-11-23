@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Text, Link, Image, Icon} from '.';
+import {Text, Link, Image, Icon, Summary} from '.';
 import Logo from '../../images/logo.svg';
 import userImage from '../../images/user1-128x128.jpg';
 
@@ -51,6 +51,7 @@ export class Sidebar extends Component {
                             </li>
                         </ul>
                     </nav>
+                    <Summary className="mt-3" />
                 </div>
             </aside>
 
