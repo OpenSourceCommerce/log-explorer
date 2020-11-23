@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/flot/jquery.flot';
 import '../../styles/legend.scss';
+import {LogTableActions} from "../actions";
 
 export class FlotChart extends Component {
     componentDidMount() {
@@ -54,10 +55,8 @@ export class FlotChart extends Component {
                 })
                 .appendTo('body');
 
-            $.ajax({
-                url: '/stream/{uuid}/graph',
-                dataType: 'json',
-                success(response) {
+            LogTableActions.getGraph()
+                .then(response => {
                     const {data, error} = response;
 
                     if (error) {
@@ -90,7 +89,6 @@ export class FlotChart extends Component {
                                     .hide();
                             }
                         });
-                }
             });
         });
     }

@@ -6,6 +6,9 @@ const logTableActions = {
     },
     getSummary() {
         return request('/stream/{uuid}/summary');
+    },
+    getGraph() {
+        return request('/stream/{uuid}/graph');
     }
 };
 
