@@ -90,7 +90,11 @@ class StreamService implements StreamServiceInterface
         $summary = [];
         if ($ret) {
             foreach ($ret as $item) {
-                $summary[$item[$column]] = intval($item['c']);
+                $summary[] = [
+                    'label' => $item[$column],
+                    'value' => intval($item['c']),
+                ];
+//                $summary[$item[$column]] = intval($item['c']);
             }
         }
         return $summary;

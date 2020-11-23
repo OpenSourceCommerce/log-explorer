@@ -70,14 +70,12 @@ class StreamController extends AbstractController
             'to' => $to,
         ];
         $widgets = $dashboard->getSummaryColumns();
-        $summary = [];
-        foreach ($widgets as $widget) {
-            $summary[$widget['name']] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $from, $options);
+        foreach ($widgets as &$widget) {
+            $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $from, $options);
         }
         return $this->json([
             'error' => 0,
-            'label' => $widgets,
-            'data' => $summary,
+            'data' => $widgets,
         ]);
     }
 
