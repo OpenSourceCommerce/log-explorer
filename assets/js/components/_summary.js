@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {LogTableActions} from '../actions';
-import {Table} from "./_table";
+import {Table} from './_table';
 
 export class Summary extends Component {
     constructor(props) {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/flot/jquery.flot';
 import '../../styles/legend.scss';
-import {LogTableActions} from "../actions";
+import {LogTableActions} from '../actions';
 
 export class FlotChart extends Component {
     componentDidMount() {
@@ -89,7 +89,7 @@ export class FlotChart extends Component {
                                     .hide();
                             }
                         });
-            });
+                });
         });
     }
 
