@@ -1,6 +1,6 @@
 import {request} from '..';
 
-const logTableActions = {
+const LogTableActions = {
     getColumns() {
         return request('/stream/{uuid}/table');
     },
@@ -12,4 +12,4 @@ const logTableActions = {
     }
 };
 
-export default logTableActions;
+export default LogTableActions;

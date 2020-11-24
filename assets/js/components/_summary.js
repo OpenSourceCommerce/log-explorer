@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {LogTableActions} from '../actions';
+import {LogTableActions, Live} from '../actions';
 import {Table} from './_table';
 
 export class Summary extends Component {
@@ -28,6 +28,10 @@ export class Summary extends Component {
 
     componentDidMount() {
         this.loadData();
+        const that = this;
+        Live.onRefresh(() => {
+            that.loadData();
+        });
     }
 
     render() {

@@ -21,6 +21,7 @@
   "author": "ScaleCommerce",
   "license": "ISC",
   "dependencies": {
+    "@nextcloud/event-bus": "^1.2.0",
     "admin-lte": "^3.0.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
