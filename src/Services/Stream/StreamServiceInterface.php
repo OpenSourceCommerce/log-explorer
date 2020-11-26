@@ -9,21 +9,19 @@ interface StreamServiceInterface
     /**
      * Get logs in range
      * @param string $table
-     * @param \DateTimeInterface $from
      * @param array $options
      * @return mixed
      */
-    public function getLogsInRange(string $table, \DateTimeInterface $from, array $options = []);
+    public function getLogsInRange(string $table, array $options = []);
 
     /**
      * Get log summary in range
      * @param string $table
      * @param string $column
-     * @param \DateTimeInterface $from
      * @param array $options
      * @return mixed
      */
-    public function getLogSummaryInRange(string $table, string $column, \DateTimeInterface $from, array $options = []);
+    public function getLogSummaryInRange(string $table, string $column, array $options = []);
 
     /**
      * @param \DateTimeInterface $from
@@ -36,10 +34,9 @@ interface StreamServiceInterface
     /**
      * @param string $table
      * @param array $column
-     * @param \DateTimeInterface $from
      * @param int $offsetInSeconds
      * @param array $options
      * @return array
      */
-    public function getLogGraphInRange(string $table, array $column, \DateTimeInterface $from, int $offsetInSeconds, array $options = []);
+    public function getLogGraphInRange(string $table, array $column, int $offsetInSeconds, array $options = []);
 }

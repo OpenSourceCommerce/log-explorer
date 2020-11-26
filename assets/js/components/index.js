@@ -18,4 +18,5 @@ export const {NavThemeSetting} = require('./_nav-theme-setting');
 export const {CardHeader} = require('./_card-header');
 export const {Table} = require('./_table');
 export const {Summary} = require('./_summary');
+export const {FilterDate} = require('./_filter-date');
 export const {LiveButton} = require('./_live-button');
