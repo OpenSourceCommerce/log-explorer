@@ -21,7 +21,7 @@ export class FlotChart extends Component {
         const filter = LogTableActions.getOptions();
         let format = '%H:%M';
         let {from} = filter;
-        if (Number.isNaN(from)) {
+        if (isNaN(from)) {
             from = new Date(from);
             const now = new Date();
             if (now - from < 172800000) { // 2 days in milliseconds

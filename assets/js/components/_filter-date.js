@@ -64,6 +64,9 @@ export class FilterDate extends Component {
                         case '7 days':
                             that.onFilterChanged(10080, null);
                             break;
+                        case 'Custom Range':
+                            that.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'));
+                            break;
                         default:
                             that.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'));
                             break;
