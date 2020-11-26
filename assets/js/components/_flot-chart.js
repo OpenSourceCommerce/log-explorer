@@ -2,48 +2,85 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/flot/jquery.flot';
 import '../../styles/legend.scss';
-import {LogTableActions} from '../actions';
+import {LogTableActions, Live} from '../actions';
+import {LiveButton} from '.';
 
 export class FlotChart extends Component {
+    loadData() {
+        // We use an inline data source in the example, usually data would
+        // be fetched from a server
+        const legendContainer = document.querySelector('#legendContainer');
+        const legendSettings = {
+            position: 'nw',
+            show: true,
+            noColumns: 2,
+            container: legendContainer
+        };
+
+        const options = {
+            grid: {
+                borderColor: '#f3f3f3',
+                borderWidth: 1,
+                tickColor: '#f3f3f3',
+                hoverable: true,
+                clickable: true
+            },
+            series: {
+                lines: {
+                    lineWidth: 2,
+                    show: true,
+                    fill: false
+                },
+                points: {show: true}
+            },
+            xaxis: {
+                mode: 'time',
+                timeBase: 'milliseconds',
+                timeformat: '%H:%M'
+            },
+            legend: legendSettings
+        };
+
+        LogTableActions.getGraph()
+            .then(response => {
+                const {data, error} = response;
+
+                if (error) {
+                    return;
+                }
+
+                $.plot('#interactive', data, options);
+
+                $('#interactive')
+                    .bind('plothover', (event, pos, item) => {
+                        if (!pos.x || !pos.y) {
+                            return;
+                        }
+
+                        if (item) {
+                            const x = item.dataIndex;
+                            const y = item.datapoint[1];
+                            const date = new Date(item.series.data[x][0]);
+                            const string = `<br> ${date.toUTCString()}<br>Value: ${y}`;
+
+                            $('#tooltip')
+                                .html(item.series.label + string)
+                                .css({
+                                    top: item.pageY + 5,
+                                    left: item.pageX + 5
+                                })
+                                .fadeIn(200);
+                        } else {
+                            $('#tooltip')
+                                .hide();
+                        }
+                    });
+            });
+    }
+
     componentDidMount() {
+        const that = this;
         $(() => {
-            // We use an inline data source in the example, usually data would
-            // be fetched from a server
-            const legendContainer = document.querySelector('#legendContainer');
-            const legendSettings = {
-                position: 'nw',
-                show: true,
-                noColumns: 2,
-                container: legendContainer
-            };
-
-            const options = {
-                grid: {
-                    borderColor: '#f3f3f3',
-                    borderWidth: 1,
-                    tickColor: '#f3f3f3',
-                    hoverable: true,
-                    clickable: true
-                },
-                series: {
-                    lines: {
-                        lineWidth: 2,
-                        show: true,
-                        fill: false
-                    },
-                    points: {show: true}
-                },
-                xaxis: {
-                    // Mode: 'categories',
-                    // showTicks: false,
-                    // gridLines: false,
-                    mode: 'time',
-                    timeBase: 'milliseconds',
-                    timeformat: '%H:%M'
-                },
-                legend: legendSettings
-            };
-
             $('<div id=\'tooltip\'></div>')
                 .css({
                     position: 'absolute',
@@ -55,41 +92,10 @@ export class FlotChart extends Component {
                 })
                 .appendTo('body');
 
-            LogTableActions.getGraph()
-                .then(response => {
-                    const {data, error} = response;
-
-                    if (error) {
-                        return;
-                    }
-
-                    $.plot('#interactive', data, options);
-
-                    $('#interactive')
-                        .bind('plothover', (event, pos, item) => {
-                            if (!pos.x || !pos.y) {
-                                return;
-                            }
-
-                            if (item) {
-                                const x = item.dataIndex;
-                                const y = item.datapoint[1];
-                                const date = new Date(item.series.data[x][0]);
-                                const string = `<br> ${date.toUTCString()}<br>Value: ${y}`;
-
-                                $('#tooltip')
-                                    .html(item.series.label + string)
-                                    .css({
-                                        top: item.pageY + 5,
-                                        left: item.pageX + 5
-                                    })
-                                    .fadeIn(200);
-                            } else {
-                                $('#tooltip')
-                                    .hide();
-                            }
-                        });
-                });
+            that.loadData();
+            Live.onRefresh(() => {
+                that.loadData();
+            });
         });
     }
 
@@ -102,17 +108,7 @@ export class FlotChart extends Component {
                         Interactive Area Chart
                     </h3>
 
-                    <div className="card-tools">
-                        Real time
-                        <div className="btn-group" id="realtime" data-toggle="btn-toggle">
-                            <button type="button" className="btn btn-default btn-sm active"
-                                data-toggle="on">On
-                            </button>
-                            <button type="button" className="btn btn-default btn-sm"
-                                data-toggle="off">Off
-                            </button>
-                        </div>
-                    </div>
+                    <LiveButton className="card-tools" />
                 </div>
                 <div className="card-body">
                     <div id="interactive" style={{height: '300px'}}>

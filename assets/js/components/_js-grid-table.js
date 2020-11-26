@@ -4,6 +4,7 @@ import 'admin-lte/plugins/jsgrid/jsgrid.min';
 import 'admin-lte/plugins/jsgrid/jsgrid.min.css';
 import 'admin-lte/plugins/jsgrid/jsgrid-theme.min.css';
 import PropTypes from 'prop-types';
+import {Live} from '../actions';
 
 export class JsGridTable extends Component {
     componentDidMount() {
@@ -37,6 +38,10 @@ export class JsGridTable extends Component {
 
                     fields
                 });
+
+            Live.onRefresh(() => {
+                $('#jsGrid1').jsGrid('loadData');
+            });
         });
     }
 
