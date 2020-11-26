@@ -41,7 +41,10 @@ export class Summary extends Component {
                 <div className="card-header">
                     {item.title}
                 </div>
-                <div className="card-body p-0">
+                <div className={item.data.length === 0 ? 'card-body' : 'card-body p-0'}>
+                    {item.data.length === 0 &&
+                    <span>No data</span>
+                    }
                     <Table className="table-bordered mb-0">
                         <tbody>
                             {item.data.map((summary, key) =>

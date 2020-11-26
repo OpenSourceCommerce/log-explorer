@@ -8,6 +8,7 @@ const Live = {
         if (this.timer > 0) {
             return;
         }
+
         this.timer = setInterval(() => {
             emit(REFRESH_EVENT);
         }, timeout);
@@ -18,6 +19,9 @@ const Live = {
     pause() {
         clearInterval(this.timer);
         this.timer = 0;
+    },
+    refresh() {
+        emit(REFRESH_EVENT);
     },
     onRefresh(cb) {
         subscribe(REFRESH_EVENT, cb);

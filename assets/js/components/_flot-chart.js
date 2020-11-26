@@ -17,6 +17,28 @@ export class FlotChart extends Component {
             container: legendContainer
         };
 
+        // Custom date format to easy to view
+        const filter = LogTableActions.getOptions();
+        let format = '%H:%M';
+        let {from} = filter;
+        if (isNaN(from)) {
+            from = new Date(from);
+            const now = new Date();
+            if (now - from < 172800000) { // 2 days in milliseconds
+                format = '%H:%M';
+            } else if (from.getFullYear() === now.getFullYear()) {
+                format = '%m-%d %H:%M';
+            } else {
+                format = '%Y-%m-%d %H:%M';
+            }
+        } else {
+            from = Number.parseInt(from, 2);
+            if (from > 1440) { // More than 1 days
+                format = '%m-%d %H:%M';
+            }
+        }
+        // End
+
         const options = {
             grid: {
                 borderColor: '#f3f3f3',
@@ -36,7 +58,7 @@ export class FlotChart extends Component {
             xaxis: {
                 mode: 'time',
                 timeBase: 'milliseconds',
-                timeformat: '%H:%M'
+                timeformat: format
             },
             legend: legendSettings
         };

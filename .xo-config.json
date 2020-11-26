@@ -14,6 +14,7 @@
     "node"
   ],
   "rules": {
-    "import/no-unassigned-import": 0
+    "import/no-unassigned-import": 0,
+    "unicorn/prefer-number-properties": 0
   }
 }

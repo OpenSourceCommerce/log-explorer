@@ -23,6 +23,7 @@
   "dependencies": {
     "@nextcloud/event-bus": "^1.2.0",
     "admin-lte": "^3.0.5",
+    "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-inlinesvg": "^2.1.1"
