@@ -34,6 +34,24 @@ class Dashboard
             'title' => 'Status',
             'type' => 'text',
         ],
+        [
+            'name' => 'referer',
+            'title' => 'Referer',
+            'type' => 'text',
+            'visible' => false,
+        ],
+        [
+            'name' => 'user_agent',
+            'title' => 'User Agent',
+            'type' => 'text',
+            'visible' => false,
+        ],
+        [
+            'name' => 'url',
+            'title' => 'Url',
+            'type' => 'text',
+            'visible' => false,
+        ],
     ];
 
     private $summaryColumns = [
