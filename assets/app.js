@@ -28,6 +28,6 @@ import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min';
 import 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min';
 import 'admin-lte/dist/js/adminlte';
 // Import 'admin-lte/dist/js/pages/dashboard';
-import 'admin-lte/dist/js/demo';
+// import 'admin-lte/dist/js/demo';
 
 // Console.log('Hello Webpack Encore! Edit me in assets/app.js');
