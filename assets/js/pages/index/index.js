@@ -94,7 +94,7 @@ class Index extends Component {
                         />
                     </div>
                     <div className="col-12 col-md-4">
-                        <div className="card-columns">
+                        <div className="row d-flex flex-wrap">
                             <Summary/>
                         </div>
                     </div>

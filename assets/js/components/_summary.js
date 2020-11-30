@@ -38,7 +38,7 @@ export class Summary extends Component {
 
             let layout = <span className="d-flex justify-content-center p-3">No data</span>;
 
-            if(data && data.length > 0) {
+            if (data && data.length > 0) {
                 switch (name) {
                     case 'status':
                         layout = <StatusWidget data={data}/>;
@@ -53,12 +53,14 @@ export class Summary extends Component {
             }
 
             return (
-                <div key={key} className="card">
-                    <div className="card-header">
-                        {title}
-                    </div>
-                    <div className="card-body p-0">
-                        {layout}
+                <div key={key} className="col-12 col-xl-6">
+                    <div className="card">
+                        <div className="card-header">
+                            {title}
+                        </div>
+                        <div className="card-body p-0">
+                            {layout}
+                        </div>
                     </div>
                 </div>
             );

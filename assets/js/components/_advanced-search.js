@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button} from './_button';
 import {FilterDate, Input} from './index';
+import '../../styles/component/_advanced-search.scss';
 
 export default class AdvancedSearch extends React.Component {
     render() {
@@ -11,15 +12,8 @@ export default class AdvancedSearch extends React.Component {
                 <div className="card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-12 col-md-6">
+                            <div className="col-12 col-md-5">
                                 <p>What are you looking for ? </p>
-                            </div>
-                            <div className="input-search col-12 col-md-3">
-                                <p>Date Range </p>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="input-search col-12 col-md-6">
                                 <Input
                                     className="input-search"
                                     type="search"
@@ -27,17 +21,16 @@ export default class AdvancedSearch extends React.Component {
                                     aria-label="Search"
                                 />
                             </div>
-                            <div className="input-search col-12 col-md-3">
+                            <div className="input-search col-12 col-md-4">
+                                <p>Date Range </p>
                                 <FilterDate
                                     className="d-inline"
                                     onDateRangeChanged={onDateRangeChanged}
                                 />
                             </div>
-                            <div className="col-12 col-md-3 row">
-                                <div className="col-2">
-                                    <button className="btn btn-outline-primary"><i className="fas fa-chevron-down"></i></button>
-                                </div>
-                                <Button className="col-10">SEARCH</Button>
+                            <div className="col-12 col-md-3 btn-action-group">
+                                <button className="btn btn-outline-primary"><i className="fas fa-chevron-down"></i></button>
+                                <Button className="btn-search ml-2">SEARCH</Button>
                             </div>
                         </div>
                     </div>
