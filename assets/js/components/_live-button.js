@@ -9,8 +9,6 @@ export class LiveButton extends Component {
     render() {
         const {isLive, handleRealTimeClicked, disableLive} = this.props;
 
-        console.log('disableLive', disableLive);
-
         return (
             <div className="card-tools action-panel">
                 <div className="d-inline-flex justify-content-between">

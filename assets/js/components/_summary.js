@@ -36,11 +36,9 @@ export class Summary extends Component {
         const items = widgets.map((item, key) => {
             const {title, data, name} = item;
 
-            console.log('data',data);
             let layout = <span className="d-flex justify-content-center p-3">No data</span>;
 
             if(data && data.length > 0) {
-                console.log(name)
                 switch (name) {
                     case 'status':
                         layout = <StatusWidget data={data}/>;
