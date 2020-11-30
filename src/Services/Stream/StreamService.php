@@ -7,7 +7,6 @@ namespace App\Services\Stream;
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class StreamService implements StreamServiceInterface
 {
@@ -58,9 +57,8 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getLogsInRange(string $table, \DateTimeInterface $from, array $options = [])
+    public function getLogsInRange(string $table, array $options = [])
     {
-        $options['from'] = $from;
         $builder = $this->makeQueryBuilder($table, $options);
         $limit = $options['limit'] ?? 30;
         $timer = $options['timer'] ?? 'timestamp';
@@ -79,9 +77,8 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getLogSummaryInRange(string $table, string $column, \DateTimeInterface $from, array $options = [])
+    public function getLogSummaryInRange(string $table, string $column, array $options = [])
     {
-        $options['from'] = $from;
         $builder = $this->makeQueryBuilder($table, $options);
         $builder->addSelect($column, "COUNT({$column}) AS c")
                 ->addGroupBy($column);
@@ -90,7 +87,11 @@ class StreamService implements StreamServiceInterface
         $summary = [];
         if ($ret) {
             foreach ($ret as $item) {
-                $summary[$item[$column]] = intval($item['c']);
+                $summary[] = [
+                    'label' => $item[$column],
+                    'value' => intval($item['c']),
+                ];
+//                $summary[$item[$column]] = intval($item['c']);
             }
         }
         return $summary;
@@ -109,10 +110,11 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getLogGraphInRange(string $table, array $column, \DateTimeInterface $from, int $offsetInSeconds, array $options = [])
+    public function getLogGraphInRange(string $table, array $column, int $offsetInSeconds, array $options = [])
     {
         $data = [];
-        $to = $options['to'] ?? new DateTime();
+        $from = $options['from'];
+        $to = $options['to'] ?? new \DateTime();
         /** @var \DateTime $lastPoint */
         $lastPoint = $from;
         $fromOperator = '>=';

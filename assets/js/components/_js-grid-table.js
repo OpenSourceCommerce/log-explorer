@@ -4,9 +4,19 @@ import 'admin-lte/plugins/jsgrid/jsgrid.min';
 import 'admin-lte/plugins/jsgrid/jsgrid.min.css';
 import 'admin-lte/plugins/jsgrid/jsgrid-theme.min.css';
 import PropTypes from 'prop-types';
+import {Live, LogTableActions} from '../actions';
+import {LogDetailSidebar} from '.';
 
 export class JsGridTable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedItem: null
+        };
+    }
+
     componentDidMount() {
+        const that = this;
         const {
             height = '500px', width = '100%', pageSize = 30, pageButtonCount = 5, pageIndex = 1,
             pageLoading = true, dataSrc, dataType = 'json', autoload = true, paging = true, fields = []
@@ -27,6 +37,7 @@ export class JsGridTable extends Component {
 
                     controller: {
                         loadData(filter) {
+                            filter = LogTableActions.getOptions(filter);
                             return $.ajax({
                                 url: dataSrc,
                                 data: filter,
@@ -35,16 +46,31 @@ export class JsGridTable extends Component {
                         }
                     },
 
+                    rowClick: data => {
+                        const {item} = data;
+                        that.setState({selectedItem: item});
+                    },
+
                     fields
                 });
+
+            Live.onRefresh(() => {
+                $('#jsGrid1')
+                    .jsGrid('loadData');
+            });
         });
     }
 
     render() {
+        const {selectedItem} = this.state;
+
         return (
-            <div id="jsGrid1">
-                &nbsp;
-            </div>
+            <>
+                <div id="jsGrid1">
+                    &nbsp;
+                </div>
+                {selectedItem && <LogDetailSidebar item={selectedItem}/>}
+            </>
         );
     }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {NavSearch, NavNotification, NavMenu, NavMessage, NavThemeSetting} from '.';
+import {NavSearch, NavNotification, NavMenu, NavMessage} from '.';
 
 class Navbar extends Component {
     render() {
@@ -11,12 +11,8 @@ class Navbar extends Component {
                 <NavSearch/>
 
                 <ul className="navbar-nav ml-auto">
-
                     <NavMessage total={3}/>
-
                     <NavNotification total={15}/>
-
-                    <NavThemeSetting/>
                 </ul>
             </nav>
         );
