@@ -1,6 +1,13 @@
 doctrine:
     dbal:
+        default_connection: default
         connections:
+            default:
+                # configure these for your database server
+                url: '%env(resolve:MYSQL_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
             clickhouse:
                 host: '%env(resolve:DATABASE_HOST)%'
                 port: '%env(resolve:DATABASE_PORT)%'
@@ -26,15 +33,15 @@ doctrine:
             array(string): FOD\DBALClickHouse\Types\ArrayStringType
             array(datetime): FOD\DBALClickHouse\Types\ArrayDateTimeType
             array(date): FOD\DBALClickHouse\Types\ArrayDateType
-            bigint:  FOD\DBALClickHouse\Types\BigIntType
     orm:
-        auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App

@@ -12,6 +12,7 @@ services:
             - 127.0.0.1:80:80
         links:
             - db
+            - mysql
     db:
         image: yandex/clickhouse-server
         working_dir: /var/www
@@ -25,6 +26,15 @@ services:
             - 127.0.0.1:9004:9004
         environment:
             CLICKHOUSE_DB: "logs"
+    mysql:
+        image: percona:5.7
+        volumes:
+            - ./var/mysql:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: dev
+            MYSQL_USER: dev
+            MYSQL_PASSWORD: dev
+        ports:
+            - 3306:3306
 
-volumes:
-    clickhouse:
