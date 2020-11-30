@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {LogTableActions, Live} from '../actions';
-import {Table} from './_table';
+import PropTypes from 'prop-types';
+import StatusWidget from './widget/_status';
+import DeviceWidget from "./widget/_device_type";
 
 export class Summary extends Component {
     constructor(props) {
@@ -10,58 +12,64 @@ export class Summary extends Component {
         };
     }
 
-    loadData() {
-        const $this = this;
-        LogTableActions.getSummary()
-            .then(response => {
-                const {data, error} = response;
+    async loadData() {
+        const {data = [], error = 0} = await LogTableActions.getSummary();
+        if (error) {
+            return;
+        }
 
-                if (error) {
-                    return;
-                }
-
-                $this.setState({
-                    widgets: data
-                });
-            });
+        this.setState({
+            widgets: data
+        });
     }
 
     componentDidMount() {
         this.loadData();
-        const that = this;
+        const _this = this;
         Live.onRefresh(() => {
-            that.loadData();
+            _this.loadData();
         });
     }
 
     render() {
         const {widgets} = this.state;
-        const items = widgets.map((item, key) =>
-            <div key={key} className="card">
-                <div className="card-header">
-                    {item.title}
+        const items = widgets.map((item, key) => {
+            const {title, data, name} = item;
+
+            console.log('data',data);
+            let layout = <span className="d-flex justify-content-center p-3">No data</span>;
+
+            if(data && data.length > 0) {
+                console.log(name)
+                switch (name) {
+                    case 'status':
+                        layout = <StatusWidget data={data}/>;
+                        break;
+                    case 'device_type':
+                        layout = <DeviceWidget data={data}/>;
+                        break;
+                    default:
+                        layout = null;
+                        break;
+                }
+            }
+
+            return (
+                <div key={key} className="card">
+                    <div className="card-header">
+                        {title}
+                    </div>
+                    <div className="card-body p-0">
+                        {layout}
+                    </div>
                 </div>
-                <div className={item.data.length === 0 ? 'card-body' : 'card-body p-0'}>
-                    {item.data.length === 0 &&
-                    <span>No data</span>
-                    }
-                    <Table className="table-bordered mb-0">
-                        <tbody>
-                            {item.data.map((summary, key) =>
-                                <tr key={key}>
-                                    <td width="50%">{summary.label}</td>
-                                    <td width="50%">{summary.value}</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </Table>
-                </div>
-            </div>
-        );
-        return (
-            <div {...this.props}>
-                {items}
-            </div>
-        );
+            );
+        });
+
+        return <>{items}</>;
     }
 }
+
+Summary.propTypes = {
+    className: PropTypes.string
+};
