@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {LogTableActions, Live} from '../actions';
 import PropTypes from 'prop-types';
 import StatusWidget from './widget/_status';
-import DeviceWidget from "./widget/_device_type";
+import DeviceWidget from "./widget/_device-type";
 
 export class Summary extends Component {
     constructor(props) {

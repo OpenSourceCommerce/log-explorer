@@ -41,9 +41,9 @@ class Index extends Component {
         this.loadData();
     }
 
-    handleRealTimeClicked(e) {
+    handleRealTimeClicked(event) {
         const {interval} = this.state;
-        const {checked} = e.target;
+        const {checked} = event.target;
         this.setState({
             isLive: checked
         });

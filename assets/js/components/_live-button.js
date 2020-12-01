@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {ToggleButton} from './_toggle-button';
 export class LiveButton extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const {isLive, handleRealTimeClicked, disableLive} = this.props;
 
