@@ -29,8 +29,7 @@ export default class AdvancedSearch extends React.Component {
                                 />
                             </div>
                             <div className="col-12 col-md-3 btn-action-group">
-                                <button className="btn btn-outline-primary"><i className="fas fa-chevron-down"></i></button>
-                                <Button className="btn-search ml-2">SEARCH</Button>
+                                <Button className="btn-search ml-2 w-100">SEARCH</Button>
                             </div>
                         </div>
                     </div>

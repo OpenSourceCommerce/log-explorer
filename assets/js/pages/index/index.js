@@ -89,8 +89,8 @@ class Index extends Component {
                 <div className="col-12 row justify-content-start">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
-                                   handleRealTimeClicked={this.handleRealTimeClicked}
-                                   disableLive={disableLive}
+                            handleRealTimeClicked={this.handleRealTimeClicked}
+                            disableLive={disableLive}
                         />
                     </div>
                     <div className="col-12 col-md-4">
