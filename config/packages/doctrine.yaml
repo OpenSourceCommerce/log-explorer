@@ -33,6 +33,7 @@ doctrine:
             array(string): FOD\DBALClickHouse\Types\ArrayStringType
             array(datetime): FOD\DBALClickHouse\Types\ArrayDateTimeType
             array(date): FOD\DBALClickHouse\Types\ArrayDateType
+            bigint:  FOD\DBALClickHouse\Types\BigIntType
     orm:
         default_entity_manager: default
         entity_managers:

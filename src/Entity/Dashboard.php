@@ -10,13 +10,13 @@ class Dashboard
 
     private $columns = [
         [
-            'name' => 'host',
-            'title' => 'Host',
+            'name' => 'url',
+            'title' => 'URL',
             'type' => 'text',
         ],
         [
-            'name' => 'device_type',
-            'title' => 'Device type',
+            'name' => 'referer',
+            'title' => 'Referer',
             'type' => 'text',
         ],
         [
@@ -35,20 +35,20 @@ class Dashboard
             'type' => 'text',
         ],
         [
-            'name' => 'referer',
-            'title' => 'Referer',
-            'type' => 'text',
-            'visible' => false,
-        ],
-        [
             'name' => 'user_agent',
             'title' => 'User Agent',
             'type' => 'text',
             'visible' => false,
         ],
         [
-            'name' => 'url',
-            'title' => 'Url',
+            'name' => 'customer',
+            'title' => 'Customer',
+            'type' => 'text',
+            'visible' => false,
+        ],
+        [
+            'name' => 'body_bytes_sent',
+            'title' => 'Size',
             'type' => 'text',
             'visible' => false,
         ],
@@ -59,27 +59,27 @@ class Dashboard
             'name' => 'status',
             'title' => 'Status',
         ],
-        [
-            'name' => 'device_type',
-            'title' => 'Device',
-        ],
     ];
 
     private $graphColumns = [
         [
             'name' => 'status',
-            'title' => 'OK',
-            'condition' => 'status < 300', // allow to set as query but need to check SQL injection!!!?
-            'value' => '200', // only = or IN
-            'color' => '#7F2',
+            'title' => 'Total',
+            'filter' => '',
+            'color' => '#e77',
         ],
-        [
-            'name' => 'status',
-            'title' => 'NG',
-            'condition' => 'status >= 300',
-            'value' => [304, 499],
-            'color' => '#444',
-        ]
+//        [
+//            'name' => 'status',
+//            'title' => 'OK',
+//            'filter' => 'status < 300',
+//            'color' => '#7F2',
+//        ],
+//        [
+//            'name' => 'status',
+//            'title' => 'NG',
+//            'filter' => 'status >= 300',
+//            'color' => '#444',
+//        ]
     ];
 
     private $graphNumberOfPoint = 12;

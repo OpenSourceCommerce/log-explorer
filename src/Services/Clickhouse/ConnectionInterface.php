@@ -6,6 +6,7 @@ namespace App\Services\Clickhouse;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 interface ConnectionInterface
 {
@@ -21,6 +22,11 @@ interface ConnectionInterface
      * @throws Exception
      */
     public function exec(string $sql, array $params = [], array $types = []);
+
+    /**
+     * @return AbstractSchemaManager
+     */
+    public function getSchemaManager();
 
     /**
      * @param string $query
@@ -51,4 +57,17 @@ interface ConnectionInterface
      * @return QueryBuilder
      */
     public function createQueryBuilder();
+
+    /**
+     * @return \Doctrine\DBAL\Platforms\AbstractPlatform|mixed
+     * @throws Exception
+     */
+    public function getDatabasePlatform();
+
+    /**
+     * @param string $table
+     * @param array $data
+     * @return boolean
+     */
+    public function insert(string $table, array $data);
 }
