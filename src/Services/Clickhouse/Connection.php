@@ -35,6 +35,14 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
+    public function getSchemaManager()
+    {
+        return $this->connection->getSchemaManager();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function fetchAll(string $query, array $params = [], array $types = [])
     {
         return $this->connection->fetchAllAssociative($query, $params, $types);
@@ -66,5 +74,21 @@ class Connection implements ConnectionInterface
     public function createQueryBuilder()
     {
         return $this->connection->createQueryBuilder();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDatabasePlatform()
+    {
+        return $this->connection->getDatabasePlatform();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function insert(string $table, array $data)
+    {
+        return $this->connection->insert($table, $data);
     }
 }

@@ -138,15 +138,8 @@ class StreamService implements StreamServiceInterface
             $options['to'] = $nextPoint;
             $builder = $this->makeQueryBuilder($table, $options)
                 ->addSelect('COUNT() AS c');
-            if ($column['condition']) {
-                $builder->andWhere($column['condition']);
-            } else {
-                if (is_array($column['value'])) {
-                    $builder->andWhere((new Expr())->in($column['name'], $column['value']));
-                } else {
-                    $builder->andWhere("{$column['name']}=:value")
-                        ->setParameter('value', $column['value']);
-                }
+            if ($column['filter']) {
+                $builder->andWhere($column['filter']);
             }
             $data[] = [
 //                $label->format('H:i'),
