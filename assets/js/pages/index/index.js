@@ -47,7 +47,7 @@ class Index extends Component {
         this.setState({
             isLive: checked
         });
-        if (checked) {
+        if (!checked) {
             Live.pause();
         } else {
             Live.start(interval, true);
