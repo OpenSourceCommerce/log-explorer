@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button} from './_button';
-import {FilterDate, Input} from './index';
+import {FilterDate, Input} from '.';
 import '../../styles/component/_advanced-search.scss';
 
 export default class AdvancedSearch extends React.Component {
     render() {
-        const { onDateRangeChanged } = this.props;
+        const {onDateRangeChanged} = this.props;
         return (
             <div className="advanced-search col-12">
                 <div className="card">

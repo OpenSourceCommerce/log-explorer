@@ -25,5 +25,5 @@ export class LiveButton extends Component {
 LiveButton.propTypes = {
     isLive: PropTypes.bool,
     disableLive: PropTypes.bool,
-    handleRealTimeClicked: PropTypes.func,
+    handleRealTimeClicked: PropTypes.func
 };

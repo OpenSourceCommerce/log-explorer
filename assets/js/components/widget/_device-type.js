@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Table} from "../_table";
+import {Table} from '../_table';
 
 export default class DeviceWidget extends React.Component {
     render() {
@@ -9,7 +9,7 @@ export default class DeviceWidget extends React.Component {
         return (
             <Table>
                 <tbody>
-                {data.map((item, key) => {
+                    {data.map((item, key) => {
                         const {label, value} = item;
                         return (
                             <tr key={key} className="border-top-0 border-bottom">
@@ -18,7 +18,7 @@ export default class DeviceWidget extends React.Component {
                             </tr>
                         );
                     }
-                )}
+                    )}
 
                 </tbody>
             </Table>
