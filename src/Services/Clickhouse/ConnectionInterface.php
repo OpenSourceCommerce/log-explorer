@@ -70,4 +70,20 @@ interface ConnectionInterface
      * @return boolean
      */
     public function insert(string $table, array $data);
+
+    /**
+     * Get all column name of the table
+     *
+     * @param string $table
+     * @return mixed
+     */
+    public function getColumns(string $table);
+
+    /**
+     * Check table existing
+     *
+     * @param string $table
+     * @return bool
+     */
+    public function tableExists(string $table): bool;
 }
