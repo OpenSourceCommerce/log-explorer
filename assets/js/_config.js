@@ -1,3 +1,5 @@
+import {Alert, Event} from './actions';
+
 export const DEFAULT_HEADERS = {
     Accept: 'application/json',
     'Content-Type': 'application/json'
@@ -22,6 +24,12 @@ export const request = (requestURL, parameters = {}) => {
                 return resp.json().then(responseData => {
                     if (responseData.errors) {
                         reject(new Error(responseData.errors[0]));
+                    }
+
+                    const {error, message} = responseData;
+                    if (error !== 0) {
+                        Alert.error(message);
+                        Event.bus.trigger(Event.RESPONSE_ERROR, responseData);
                     }
 
                     // Res(Response.underlineToCamelCase(responseData)); ???

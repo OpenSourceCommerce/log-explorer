@@ -4,8 +4,10 @@
 namespace App\Controller;
 
 
+use App\Constant\ErrorCodeConstant;
 use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
+use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,11 +51,10 @@ class StreamController extends AbstractController
             $to = new \DateTime($to);
             $options['to'] = $to;
         }
-//        else {
-//            $options['to'] = new \DateTime();
-//        }
-//        $from = new \DateTime('2020-06-01 00:02:47');
-//        $to = new \DateTime('2020-06-01 01:02:47');
+        if ($request->query->has('filter')) {
+            $filter = $request->query->get('filter');
+            $options['filter'] = $filter;
+        }
         return $options;
     }
 
@@ -72,7 +73,16 @@ class StreamController extends AbstractController
         $options = $this->getFilter($request);
         $columns = $dashboard->getColumns();
         $options['columns'] = array_column($columns, 'name');
-        $data = $streamService->getLogsInRange($dashboard->getTable(), $options);
+        try {
+            $data = $streamService->getLogsInRange($dashboard->getTable(), $options);
+        } catch (Exception $e) {
+            return $this->json([
+                'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
+                'data' => [],
+                'message' => 'Invalid SQL query',
+                'filter' => $options['filter'],
+            ]);
+        }
         return $this->json([
             'error' => 0,
             'data' => $data,
@@ -94,7 +104,16 @@ class StreamController extends AbstractController
         $options = $this->getFilter($request);
         $widgets = $dashboard->getSummaryColumns();
         foreach ($widgets as &$widget) {
-            $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $options);
+            try {
+                $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $options);
+            } catch (Exception $e) {
+                return $this->json([
+                    'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
+                    'data' => [],
+                    'message' => 'Invalid SQL query',
+                    'filter' => $options['filter'],
+                ]);
+            }
         }
         return $this->json([
             'error' => 0,
@@ -120,12 +139,21 @@ class StreamController extends AbstractController
             $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $dashboard->getGraphNumberOfPoint());
         }
         foreach ($dashboard->getGraphColumns() as $item) {
-            $line = [
-                'label' => $item['title'],
-                'color' => $item['color'],
-                'data' => $streamService->getLogGraphInRange($dashboard->getTable(), $item, $graphOffset, $options),
-            ];
-            $graph[] = $line;
+            try {
+                $line = [
+                    'label' => $item['title'],
+                    'color' => $item['color'],
+                    'data' => $streamService->getLogGraphInRange($dashboard->getTable(), $item, $graphOffset, $options),
+                ];
+                $graph[] = $line;
+            } catch (Exception $e) {
+                return $this->json([
+                    'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
+                    'data' => [],
+                    'message' => 'Invalid SQL query',
+                    'filter' => $options['filter'],
+                ]);
+            }
         }
         return $this->json([
             'error' => 0,

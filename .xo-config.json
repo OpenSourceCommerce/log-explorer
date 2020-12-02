@@ -15,6 +15,7 @@
   ],
   "rules": {
     "import/no-unassigned-import": 0,
-    "unicorn/prefer-number-properties": 0
+    "unicorn/prefer-number-properties": 0,
+    "unicorn/prevent-abbreviations": 0
   }
 }

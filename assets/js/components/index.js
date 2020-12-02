@@ -19,6 +19,7 @@ export const {CardHeader} = require('./_card-header');
 export const {Table} = require('./_table');
 export const {Summary} = require('./_summary');
 export const {FilterDate} = require('./_filter-date');
+export const {FilterText} = require('./_filter-text');
 export const {LiveButton} = require('./_live-button');
 export const {ControlSidebar} = require('./_control-sidebar');
 export const {LogDetailSidebar} = require('./_log-detail-sidebar');

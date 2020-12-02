@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader} from '../../components';
 import {JsGridTable} from '../../components/_js-grid-table';
-import {Live, LogTableActions} from '../../actions';
+import {Live, LogTableActions, Event} from '../../actions';
 import {FlotChart} from '../../components/_flot-chart';
 import {Summary} from '../../components/_summary';
 import AdvancedSearch from '../../components/_advanced-search';
@@ -37,6 +37,15 @@ class Index extends Component {
 
     componentDidMount() {
         Live.start(this.state.interval);
+        Event.bus.register(Event.RESPONSE_ERROR, res => {
+            const {error} = res;
+            if (error === Event.ERROR_INVALID_QUERY) {
+                this.setState({
+                    isLive: false
+                });
+                Live.pause();
+            }
+        });
 
         this.loadData();
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button} from './_button';
-import {FilterDate, Input} from '.';
+import {FilterDate, FilterText} from '.';
 import '../../styles/component/_advanced-search.scss';
 
 export default class AdvancedSearch extends React.Component {
@@ -14,11 +14,8 @@ export default class AdvancedSearch extends React.Component {
                         <div className="row">
                             <div className="col-12 col-md-5">
                                 <p>What are you looking for ? </p>
-                                <Input
-                                    className="input-search"
-                                    type="search"
-                                    placeholder="Seach for Host, IP, status, device, etc ..."
-                                    aria-label="Search"
+                                <FilterText
+                                    placeholder="status = 200 AND url LIKE '%product%'"
                                 />
                             </div>
                             <div className="input-search col-12 col-md-4">

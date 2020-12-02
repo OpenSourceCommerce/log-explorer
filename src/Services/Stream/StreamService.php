@@ -33,7 +33,7 @@ class StreamService implements StreamServiceInterface
         $from = $options['from'] ?? null;
         $fromOperator = $options['fromOperator'] ?? '>=';
         $to = $options['to'] ?? null;
-        $filters = $options['filters'] ?? [];
+        $filter = $options['filter'] ?? [];
         $builder = $this->connection->createQueryBuilder()
             ->from($table);
         if ($timer) {
@@ -46,10 +46,8 @@ class StreamService implements StreamServiceInterface
                     ->setParameter('to', $to->format('Y-m-d H:i:s'));
             }
         }
-        if ($filters) {
-            foreach ($filters as $filter) {
-                $builder->andWhere($filter);
-            }
+        if ($filter) {
+            $builder->andWhere($filter);
         }
         return $builder;
     }
