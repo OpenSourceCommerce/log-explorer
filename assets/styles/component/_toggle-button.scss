@@ -1,0 +1,45 @@
+.checkbox.switcher {
+  label {
+    padding: 0;
+
+    * {
+      vertical-align: middle;
+    }
+
+    input {
+      display: none;
+
+      & + span {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+        width: 44px;
+        height: 22px;
+        background: #f2f2f2;
+        border: 1px solid #eee;
+        border-radius: 50px;
+        transition: all 0.3s ease-in-out;
+
+        small {
+          position: absolute;
+          display: block;
+          width: 50%;
+          height: 100%;
+          background: #fff;
+          border-radius: 50%;
+          transition: all 0.3s ease-in-out;
+          left: 0;
+        }
+      }
+
+      &:checked + span {
+        background: #007bff;
+        border-color: #007bff;
+
+        small {
+          left: 50%;
+        }
+      }
+    }
+  }
+}

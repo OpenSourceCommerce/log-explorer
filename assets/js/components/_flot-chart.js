@@ -1,12 +1,18 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import 'admin-lte/plugins/flot/jquery.flot';
 import '../../styles/legend.scss';
 import {LogTableActions, Live} from '../actions';
 import {LiveButton} from '.';
 
 export class FlotChart extends Component {
-    loadData() {
+    async loadData() {
+        // Retrieve data
+        const {data = [], error = 0} = await LogTableActions.getGraph();
+
+        if (error) {
+            return;
+        }
+
         // We use an inline data source in the example, usually data would
         // be fetched from a server
         const legendContainer = document.querySelector('#legendContainer');
@@ -63,45 +69,36 @@ export class FlotChart extends Component {
             legend: legendSettings
         };
 
-        LogTableActions.getGraph()
-            .then(response => {
-                const {data, error} = response;
+        $.plot('#interactive', data, options);
 
-                if (error) {
+        $('#interactive')
+            .bind('plothover', (event, pos, item) => {
+                if (!pos.x || !pos.y) {
                     return;
                 }
 
-                $.plot('#interactive', data, options);
+                if (item) {
+                    const x = item.dataIndex;
+                    const y = item.datapoint[1];
+                    const date = new Date(item.series.data[x][0]);
+                    const string = `<br> ${date.toUTCString()}<br>Value: ${y}`;
 
-                $('#interactive')
-                    .bind('plothover', (event, pos, item) => {
-                        if (!pos.x || !pos.y) {
-                            return;
-                        }
-
-                        if (item) {
-                            const x = item.dataIndex;
-                            const y = item.datapoint[1];
-                            const date = new Date(item.series.data[x][0]);
-                            const string = `<br> ${date.toUTCString()}<br>Value: ${y}`;
-
-                            $('#tooltip')
-                                .html(item.series.label + string)
-                                .css({
-                                    top: item.pageY + 5,
-                                    left: item.pageX + 5
-                                })
-                                .fadeIn(200);
-                        } else {
-                            $('#tooltip')
-                                .hide();
-                        }
-                    });
+                    $('#tooltip')
+                        .html(item.series.label + string)
+                        .css({
+                            top: item.pageY + 5,
+                            left: item.pageX + 5
+                        })
+                        .fadeIn(200);
+                } else {
+                    $('#tooltip')
+                        .hide();
+                }
             });
     }
 
     componentDidMount() {
-        const that = this;
+        const _this = this;
         $(() => {
             $('<div id=\'tooltip\'></div>')
                 .css({
@@ -114,9 +111,9 @@ export class FlotChart extends Component {
                 })
                 .appendTo('body');
 
-            that.loadData();
+            _this.loadData();
             Live.onRefresh(() => {
-                that.loadData();
+                _this.loadData();
             });
         });
     }
@@ -126,11 +123,13 @@ export class FlotChart extends Component {
             <div className="card card-primary card-outline">
                 <div className="card-header">
                     <h3 className="card-title">
-                        <i className="far fa-chart-bar"/>
+                        <i className="far fa-chart-bar" />
                         Interactive Area Chart
                     </h3>
 
-                    <LiveButton className="card-tools" />
+                    <LiveButton
+                        {...this.props}
+                    />
                 </div>
                 <div className="card-body">
                     <div id="interactive" style={{height: '300px'}}>
@@ -148,4 +147,3 @@ export class FlotChart extends Component {
 }
 
 FlotChart.propTypes = {};
-ReactDOM.render(<FlotChart/>, document.querySelector('#flot-chart'));

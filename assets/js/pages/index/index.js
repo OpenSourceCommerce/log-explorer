@@ -2,41 +2,118 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader} from '../../components';
 import {JsGridTable} from '../../components/_js-grid-table';
-import {LogTableActions} from '../../actions';
+import {Live, LogTableActions} from '../../actions';
+import {FlotChart} from '../../components/_flot-chart';
+import {Summary} from '../../components/_summary';
+import AdvancedSearch from '../../components/_advanced-search';
 
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fields: []
+            fields: [],
+            isRetrieveAllData: false,
+            isLive: true,
+            disableLive: false,
+            interval: 2000
         };
+
+        this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
+        this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
     }
 
-    getFields() {
-        const $this = this;
-        LogTableActions.getColumns()
-            .then(response => {
-                $this.setState({fields: response.data});
-            });
+    async loadData() {
+        const {data = [], error = 0} = await LogTableActions.getColumns();
+
+        if (error) {
+            return;
+        }
+
+        this.setState({
+            fields: data,
+            isRetrieveAllData: true
+        });
     }
 
     componentDidMount() {
-        this.getFields();
+        Live.start(this.state.interval);
+
+        this.loadData();
+    }
+
+    handleRealTimeClicked(event) {
+        const {interval} = this.state;
+        const {checked} = event.target;
+        this.setState({
+            isLive: checked
+        });
+        if (checked) {
+            Live.start(interval, true);
+        } else {
+            Live.pause();
+        }
+    }
+
+    onDateRangeChanged(from, to) {
+        const {isLive, interval} = this.state;
+        if (isLive && to !== null) {
+            this.setState({
+                isLive: false,
+                disableLive: true
+            });
+            Live.pause();
+        } else if (!isLive && to === null) {
+            this.setState({
+                isLive: true,
+                disableLive: false
+            });
+            Live.start(interval);
+        }
+
+        Live.refresh();
     }
 
     render() {
-        const {fields} = this.state;
+        const {
+            fields,
+            isRetrieveAllData,
+            isLive,
+            disableLive
+        } = this.state;
 
         return (
-            <div className="card">
-                <CardHeader title={'Home Page'}/>
-                <div className="card-body">
-                    {fields && fields.length > 0 && <JsGridTable dataSrc={'/stream/uuid/list'}
-                        fields={fields}
-                        pageSize={5}/>}
-                </div>
-                <div className="card-footer">
-                    Footer
+            <div className="dashboard-page">
+                <AdvancedSearch
+                    onDateRangeChanged={this.onDateRangeChanged}
+                />
+                <div className="col-12 row justify-content-start">
+                    <div className="col-12 col-md-8">
+                        <FlotChart isLive={isLive}
+                            handleRealTimeClicked={this.handleRealTimeClicked}
+                            disableLive={disableLive}
+                        />
+                    </div>
+                    <div className="col-12 col-md-4">
+                        <div className="row d-flex flex-wrap">
+                            <Summary/>
+                        </div>
+                    </div>
+                    {isRetrieveAllData ? (<div className="col-12 col-md-auto">
+                        <div className="card">
+                            <CardHeader title="Home Page"/>
+                            <div className="card-body">
+                                {fields && fields.length > 0 &&
+                                <JsGridTable
+                                    dataSrc="/stream/uuid/list"
+                                    fields={fields}
+                                    pageSize={5}
+                                />}
+                            </div>
+                            <div className="card-footer">
+                                Footer
+                            </div>
+                        </div>
+                    </div>) : null}
                 </div>
             </div>
         );

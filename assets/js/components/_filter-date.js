@@ -88,7 +88,7 @@ export class FilterDate extends Component {
 
         return (
             <div {...rest}>
-                <button type="button" className="btn btn-default mr-3" id="date-range">
+                <button type="button" className="btn btn-default mr-3 w-100" id="date-range">
                     <i className="far fa-calendar-alt"></i> <span>1 hour</span>
                     <i className="fas fa-caret-down"></i>
                 </button>
