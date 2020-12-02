@@ -2,13 +2,11 @@
 
 namespace App\Services\Clickhouse;
 
-use Doctrine\DBAL\Exception;
-use Doctrine\ORM\QueryBuilder;
 use \FOD\DBALClickHouse\Connection as ClickHouseConnection;
 
 class Connection implements ConnectionInterface
 {
-    /** @var ClickHouseConnection  */
+    /** @var ClickHouseConnection */
     private $connection;
 
     public function __construct(ClickHouseConnection $connection)
@@ -90,5 +88,21 @@ class Connection implements ConnectionInterface
     public function insert(string $table, array $data)
     {
         return $this->connection->insert($table, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getColumns(string $table)
+    {
+        return $this->getSchemaManager()->listTableColumns($table);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tableExists(string $table): bool
+    {
+        return $this->connection->getSchemaManager()->tablesExist($table);
     }
 }
