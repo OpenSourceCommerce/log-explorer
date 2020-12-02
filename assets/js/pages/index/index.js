@@ -47,10 +47,10 @@ class Index extends Component {
         this.setState({
             isLive: checked
         });
-        if (!checked) {
-            Live.pause();
-        } else {
+        if (checked) {
             Live.start(interval, true);
+        } else {
+            Live.pause();
         }
     }
 
