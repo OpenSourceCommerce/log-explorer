@@ -18,5 +18,7 @@ export class Input extends Component {
 
 Input.propTypes = {
     className: PropTypes.string,
-    type: PropTypes.string
+    type: PropTypes.string,
+    placeholder: PropTypes.string,
+    onKeyUp: PropTypes.func
 };

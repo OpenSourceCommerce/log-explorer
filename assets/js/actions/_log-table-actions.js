@@ -4,12 +4,17 @@ const LogTableActions = {
     getOptions(query = {}) {
         const from = $('#date-range-from').val();
         const to = $('#date-range-to').val();
+        const filter = $('#filter-text').val();
         if (from) {
             query.from = from;
         }
 
         if (to) {
             query.to = to;
+        }
+
+        if (filter) {
+            query.filter = filter;
         }
 
         return query;

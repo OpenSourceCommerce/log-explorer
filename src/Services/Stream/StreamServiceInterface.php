@@ -11,6 +11,7 @@ interface StreamServiceInterface
      * @param string $table
      * @param array $options
      * @return mixed
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getLogsInRange(string $table, array $options = []);
 
@@ -20,6 +21,7 @@ interface StreamServiceInterface
      * @param string $column
      * @param array $options
      * @return mixed
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getLogSummaryInRange(string $table, string $column, array $options = []);
 
@@ -37,6 +39,7 @@ interface StreamServiceInterface
      * @param int $offsetInSeconds
      * @param array $options
      * @return array
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getLogGraphInRange(string $table, array $column, int $offsetInSeconds, array $options = []);
 }

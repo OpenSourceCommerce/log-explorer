@@ -1,6 +1,4 @@
-import {emit, subscribe} from '@nextcloud/event-bus';
-
-const REFRESH_EVENT = 'refresh';
+import {Event} from '.';
 
 const Live = {
     timer: 0,
@@ -10,10 +8,10 @@ const Live = {
         }
 
         this.timer = setInterval(() => {
-            emit(REFRESH_EVENT);
+            Event.bus.trigger(Event.REFRESH);
         }, timeout);
         if (immediately) {
-            emit(REFRESH_EVENT);
+            Event.bus.trigger(Event.REFRESH);
         }
     },
     pause() {
@@ -21,10 +19,10 @@ const Live = {
         this.timer = 0;
     },
     refresh() {
-        emit(REFRESH_EVENT);
+        Event.bus.trigger(Event.REFRESH);
     },
     onRefresh(cb) {
-        subscribe(REFRESH_EVENT, cb);
+        Event.bus.register(Event.REFRESH, cb);
     }
 };
 
