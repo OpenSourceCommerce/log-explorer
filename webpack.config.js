@@ -40,6 +40,7 @@ Encore
      */
 	.addEntry('app', './assets/app.js')
 	.addEntry('page_index', './assets/js/pages/index/index.js')
+	.addEntry('database_create', './assets/js/pages/database/create.js')
 	.addEntry('navbar', './assets/js/components/_navbar.js')
 	.addEntry('sidebar', './assets/js/components/_sidebar.js')
 	.addEntry('js_grid', './assets/js/components/_js-grid-table.js')
