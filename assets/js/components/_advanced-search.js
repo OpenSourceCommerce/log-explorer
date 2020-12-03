@@ -12,7 +12,7 @@ export default class AdvancedSearch extends React.Component {
                 <div className="card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-12 col-md-5">
+                            <div className="col-12 col-md-6">
                                 <p>What are you looking for ? </p>
                                 <Input
                                     className="input-search"
@@ -28,7 +28,7 @@ export default class AdvancedSearch extends React.Component {
                                     onDateRangeChanged={onDateRangeChanged}
                                 />
                             </div>
-                            <div className="col-12 col-md-3 btn-action-group">
+                            <div className="col-12 col-md-2 btn-action-group">
                                 <Button className="btn-search ml-2 w-100">SEARCH</Button>
                             </div>
                         </div>
