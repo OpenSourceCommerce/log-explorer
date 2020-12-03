@@ -26,4 +26,6 @@
 
 `php bin/console app:streamsampledata 60` create 60 rows in every minute
 
+## Documentation
 
+#### [Api Documentation](/docs/api/README.md)
