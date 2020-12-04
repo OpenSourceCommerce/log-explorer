@@ -40,13 +40,15 @@ export class ControlSidebar extends Component {
 
         return (
             <aside className={className} {...rest}>
-                <Link className={'float-right mr-2'} href="#" onClick={this.close}>
+
+                <div className="card-header d-flex justify-content-around">
+                    <h3 className="text-center ml-auto">{title}</h3>
+                    <Link className={'ml-auto mr-2'}
+                          href="#" onClick={this.close}>
                     <Icon name={'times'}/>
                 </Link>
-
-                <h3>{title}</h3>
-
-                <div className="p-3">
+                </div>
+                <div className="card-body">
                     {children}
                 </div>
             </aside>
