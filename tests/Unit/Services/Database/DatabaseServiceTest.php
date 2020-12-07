@@ -17,12 +17,12 @@ class DatabaseServiceTest extends WebTestCase
                 'CREATE TABLE nginx_access (
     `ip` String,
     `customer` String,
-    `timestamp` DateTime,  #Time
+    `timestamp` DateTime comment \'Time\',
     `url` String,
     `status` UInt16,
-    `body_bytes_sent` UInt64, # Size
+    `body_bytes_sent` UInt64 comment \'Size\',
     `referer` String,
-    `user_agent` String # Agent
+    `user_agent` String comment \'Agent\'
 )
 ENGINE = MergeTree
 PARTITION BY (toYYYYMM(timestamp))
@@ -72,19 +72,18 @@ SETTINGS index_granularity = 8192',
                             'title' => 'Agent'
                         ]
                     ],
-                    'CREATE TABLE nginx_access (`ip` String,`customer` String,`timestamp` DateTime,`url` String,`status` UInt16,`body_bytes_sent` UInt64,`referer` String,`user_agent` String) ENGINE = MergeTree PARTITION BY (toYYYYMM(timestamp)) ORDER BY timestamp SETTINGS index_granularity = 8192'
                 ]
             ],
             [
-                'CREATE TABLE nginx_access (
+                'CREATE TABLE nginx_access(
     `ip` String,
     `customer` String,
-    `timestamp` DateTime,  #Time
+    `timestamp` DateTime comment \'Time\',
     `url` String,
     `status` UInt16,
-    `body_bytes_sent` UInt64, # Size
+    `body_bytes_sent` UInt64 comment \'Size\',
     `referer` String,
-    `user_agent` String # Agent)
+    `user_agent` String comment \'Agent\')
 ENGINE = MergeTree
 PARTITION BY (toYYYYMM(timestamp))
 ORDER BY timestamp
@@ -133,17 +132,16 @@ SETTINGS index_granularity = 8192',
                             'title' => 'Agent'
                         ]
                     ],
-                    'CREATE TABLE nginx_access (`ip` String,`customer` String,`timestamp` DateTime,`url` String,`status` UInt16,`body_bytes_sent` UInt64,`referer` String,`user_agent` String) ENGINE = MergeTree PARTITION BY (toYYYYMM(timestamp)) ORDER BY timestamp SETTINGS index_granularity = 8192'
                 ]
             ],
             [
                 'CREATE TABLE nginx_access (
     `ip` String,
     `customer` String,
-    `timestamp` DateTime, # Time
+    `timestamp` DateTime comment \'Time\',
     `url` String,
     `status` UInt16,
-    `body_bytes_sent` UInt64, # Size
+    `body_bytes_sent` UInt64 comment \'Size\',
     `referer` String,
     `user_agent` String
 )
@@ -195,7 +193,67 @@ SETTINGS index_granularity = 8192',
                             'title' => 'User agent'
                         ]
                     ],
-                    'CREATE TABLE nginx_access (`ip` String,`customer` String,`timestamp` DateTime,`url` String,`status` UInt16,`body_bytes_sent` UInt64,`referer` String,`user_agent` String ) ENGINE = MergeTree PARTITION BY (toYYYYMM(timestamp)) ORDER BY timestamp SETTINGS index_granularity = 8192'
+                ]
+            ],
+            [
+                'CREATE TABLE IF NOT EXISTS logs.nginx_access ON CLUSTER cluster (
+    `ip` String,
+    `customer` String,
+    `timestamp` DateTime comment \'Time\',
+    `url` String,
+    `status` UInt16,
+    `body_bytes_sent` UInt64 comment \'Size\',
+    `referer` String,
+    `user_agent` String
+)
+ENGINE = MergeTree
+PARTITION BY (toYYYYMM(timestamp))
+ORDER BY timestamp
+SETTINGS index_granularity = 8192',
+                [
+                    'logs.nginx_access',
+                    [
+                        [
+                            'name' => 'ip',
+                            'type' => 'String',
+                            'title' => 'Ip'
+                        ],
+                        [
+                            'name' => 'customer',
+                            'type' => 'String',
+                            'title' => 'Customer'
+                        ],
+                        [
+                            'name' => 'timestamp',
+                            'type' => 'DateTime',
+                            'title' => 'Time'
+                        ],
+                        [
+                            'name' => 'url',
+                            'type' => 'String',
+                            'title' => 'Url'
+                        ],
+                        [
+                            'name' => 'status',
+                            'type' => 'UInt16',
+                            'title' => 'Status'
+                        ],
+                        [
+                            'name' => 'body_bytes_sent',
+                            'type' => 'UInt64',
+                            'title' => 'Size'
+                        ],
+                        [
+                            'name' => 'referer',
+                            'type' => 'String',
+                            'title' => 'Referer'
+                        ],
+                        [
+                            'name' => 'user_agent',
+                            'type' => 'String',
+                            'title' => 'User agent'
+                        ]
+                    ],
                 ]
             ]
         ];
@@ -212,11 +270,10 @@ SETTINGS index_granularity = 8192',
         /** @var DatabaseServiceInterface $service */
         $service = $this->getService(DatabaseServiceInterface::class);
         $method = self::getMethod(DatabaseService::class, 'analysis');
-        list($table, $columns, $sql) = $method->invokeArgs($service, [$query]);
-        list($eTable, $eColumns, $eSql) = $expected;
+        list($table, $columns) = $method->invokeArgs($service, [$query]);
+        list($eTable, $eColumns) = $expected;
 
         $this->assertEquals($eTable, $table);
-        $this->assertEquals($eSql, $sql);
         $this->assertEquals(json_encode($eColumns), json_encode($columns));
     }
 }

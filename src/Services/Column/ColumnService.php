@@ -6,6 +6,7 @@ namespace App\Services\Column;
 
 use App\Entity\Column;
 use App\Entity\Table;
+use App\Repository\ColumnRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ColumnService implements ColumnServiceInterface
@@ -18,29 +19,65 @@ class ColumnService implements ColumnServiceInterface
         $this->em = $em;
     }
 
+    private function getRepository(): ColumnRepository
+    {
+        return $this->em->getRepository(Column::class);
+    }
+
     /**
      * @inheritDoc
      */
-    public function create(Table $table, array $data, $flush = true)
+    public function create(Table $table, array $data, $flush = true): Column
     {
         $column = new Column();
         $column->setTable($table);
         $column->setName($data['name']);
-        $column->setType($data['type']);
         $column->setTitle($data['title']);
 
+        $this->save($column, $flush);
+
+        return $column;
+    }
+
+    private function save(Column $column, bool $flush = true)
+    {
         $this->em->persist($column);
         if ($flush) {
             $this->em->flush();
         }
+
         return $column;
     }
 
-    private function save(Column $column)
+    /**
+     * @inheritDoc
+     */
+    public function findByName(Table $table, string $name): ?Column
     {
-        $this->em->persist($column);
-        $this->em->flush();
+        return $this->getRepository()->findOneBy([
+            'table' => $table,
+            'name' => $name
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateColumn(Column $column, array $data, bool $flush = true): Column
+    {
+        if ($data['title']) {
+            $column->setTitle($data['title']);
+        }
+        $this->save($column, $flush);
 
         return $column;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeNotIn(Table $table, array $columnNames): bool
+    {
+        return $this->getRepository()->removeNotIn($table, $columnNames);
     }
 }

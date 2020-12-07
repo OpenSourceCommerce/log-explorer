@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Table;
 use App\Exceptions\InvalidSqlQueryException;
 use App\Exceptions\TableExistException;
+use App\Services\Clickhouse\Connection;
 use App\Services\Database\DatabaseServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class DatabaseController extends AbstractController
 {
@@ -25,22 +28,20 @@ class DatabaseController extends AbstractController
     }
 
     /**
-     * @Route("/database/create", name="database_create", methods = "GET")
+     * @Route("/database/query", name="database_query", methods = "GET")
      */
-    public function create(): Response
+    public function query(): Response
     {
-        return $this->render('database/create.html.twig', [
-            'controller_name' => 'DatabaseController',
-        ]);
+        return $this->render('database/query.html.twig');
     }
 
     /**
-     * @Route("/database/create", name="database_create_table", methods = "POST")
+     * @Route("/database/query", name="database_query_table", methods = "POST")
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @return Response
      */
-    public function createTable(Request $request, DatabaseServiceInterface $databaseService, UrlGeneratorInterface $urlGenerator): Response
+    public function queryTable(Request $request, DatabaseServiceInterface $databaseService): Response
     {
         $query = trim($request->get('query'));
         if (empty($query)) {
@@ -68,8 +69,7 @@ class DatabaseController extends AbstractController
             ]);
         }
         return $this->json([
-            'error' => 0,
-            'redirect' => $urlGenerator->generate('database')
+            'error' => 0
         ]);
     }
 }

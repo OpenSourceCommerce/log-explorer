@@ -46,6 +46,11 @@ export class Sidebar extends Component {
                                                 className="nav-icon"/>
                                             <p>Dashboard v1</p>
                                         </Link>
+                                        <Link href="/database/query" className="nav-link">
+                                            <Icon name={'database'}
+                                                className="nav-icon"/>
+                                            <p>Database</p>
+                                        </Link>
                                     </li>
                                 </ul>
                             </li>

@@ -5,7 +5,6 @@ namespace App\Services\Database;
 
 
 use App\Exceptions\InvalidSqlQueryException;
-use App\Exceptions\TableExistException;
 use App\Services\Clickhouse\Connection;
 use App\Services\Column\ColumnServiceInterface;
 use App\Services\Table\TableServiceInterface;
@@ -38,98 +37,66 @@ class DatabaseService implements DatabaseServiceInterface
     /**
      * @inheritDoc
      */
-    public function processQuery(string $query): bool
+    public function processQuery(string $query)
     {
-        list($table, $columns, $sql) = $this->analysis($query);
-        if ($this->connection->tableExists($table)) {
-            throw new TableExistException();
-        }
-        if ($this->tableService->isTableExist($table)) {
-            throw new TableExistException();
-        }
-
-        if (!$this->connection->exec($sql)) {
-            return false;
-        }
-
-        $mTable = $this->tableService->createTable($table, false);
-        foreach ($columns as $column) {
-            $this->columnService->create($mTable, $column, false);
-        }
-        $this->em->flush();
-
-        return true;
-    }
-
-    /**
-     * @param string $query
-     * @return array
-     * @throws InvalidSqlQueryException
-     */
-    private function analysis(string $query): array
-    {
-        $query = str_replace("\n", ' ', $query);
-        $query = trim(preg_replace('([\s]+)', ' ', $query));
-        $columns = [];
-
-        // table
-        if (preg_match('#^CREATE TABLE( IF NOT EXIST)? (\w+) \(#i', $query, $matches)) {
-            $table = $matches[2];
-            $sql = $matches[0];
-            $query = ltrim(preg_replace('#^CREATE TABLE( IF NOT EXIST)? (\w+) \(#i', '', $query));
-        } else {
+        $tableName = $this->getTableFromQuery($query);
+        if (empty($tableName)) {
             throw new InvalidSqlQueryException();
         }
+        if (!$this->connection->exec($query)) {
+            return false;
+        }
+        $clickhouseColumns = $this->connection->getColumns($tableName);
 
-        // columns
-        while ($query) {
-            $matches = [];
-            if (!preg_match('#^`(\w+)` (\w+)#', $query, $matches)) {
-                throw new InvalidSqlQueryException();
-            }
-            $name = $matches[1];
-            $type = $matches[2];
-            $title = '';
+        $table = $this->tableService->getTableByName($tableName);
+        $isExist = true;
+        if (is_null($table)) {
+            $table = $this->tableService->createTable($table, false);
+            $isExist = false;
+        }
 
-            $pos = strpos($query, ',');
-            if ($pos !== false) {
-                $sql .= substr($query, 0, $pos + 1);
-                $query = ltrim(substr($query, $pos + 1));
-
-                if (substr($query, 0, 1) === '#') {
-                    $pos = strpos($query, '`');
-                    if ($pos === false) {
-                        throw new InvalidSqlQueryException();
-                    }
-                    $title = trim(substr($query, 1, $pos - 1));
-                    $query = ltrim(substr($query, $pos));
-                }
-            } else {
-                // the last column
-                $pos = strpos($query, ')');
-                if ($pos === false) {
-                    throw new InvalidSqlQueryException();
-                }
-                $titlePos = strpos($query, '#');
-                if ($titlePos !== false && $titlePos < $pos) {
-                    $title = trim(substr($query, $titlePos + 1, $pos - $titlePos - 1));
-                    $sql .= substr($query, 0, $titlePos - 1);
-                    $sql .= substr($query, $pos);
-                } else {
-                    $sql .= $query;
-                }
-                $query = '';
-            }
+        $columnNames = [];
+        foreach ($clickhouseColumns as $clickhouseColumn) {
+            $column = null;
+            $name = $clickhouseColumn->getName();
+            $title = $clickhouseColumn->getComment();
             if (empty($title)) {
                 $title = ucfirst($name);
                 $title = str_replace('_', ' ', $title);
             }
-            $columns[] = [
-                'name' => $name,
-                'type' => $type,
-                'title' => $title,
-            ];
+            if ($isExist) {
+                $columnNames[] = $name;
+                $column = $this->columnService->findByName($table, $name);
+                if (!empty($column) && $column->getTitle() !== $title) {
+                    $this->columnService->updateColumn($column, ['title' => $title], false);
+                }
+            }
+            if (empty($column)) {
+                $this->columnService->create(
+                    $table, [
+                        'name' => $name,
+                        'title' => $title
+                    ],
+                    false
+                );
+            }
         }
-        return [$table, $columns, $sql];
+        if ($isExist) {
+            $this->columnService->removeNotIn($table, $columnNames);
+        }
+        $this->em->flush();
+
+        return $table;
+    }
+
+    private function getTableFromQuery(string $query): ?string
+    {
+        $matches = [];
+        if (preg_match('#^CREATE TABLE( IF NOT EXISTS)? ([\w\.]+)( ON CLUSTER [\w\.]+)?(\s)?\(#i', $query, $matches)) {
+            return $matches[2];
+        } elseif (preg_match('#^ALTER TABLE (\w+) #i', $query, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 }

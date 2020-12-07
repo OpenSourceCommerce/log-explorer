@@ -20,4 +20,10 @@ interface TableServiceInterface
      * @return Table
      */
     public function createTable(string $name, $flush = true);
+
+    /**
+     * @param string $tableName
+     * @return Table|null
+     */
+    public function getTableByName(string $tableName): ?Table;
 }

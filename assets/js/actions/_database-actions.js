@@ -1,8 +1,8 @@
 import {request} from '..';
 
 const DatabaseActions = {
-    createTable(data) {
-        return request('/database/create', {method: 'POST', body: JSON.stringify(data)});
+    runQuery(data) {
+        return request('/database/query', {method: 'POST', body: JSON.stringify(data)});
     }
 };
 

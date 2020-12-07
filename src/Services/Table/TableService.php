@@ -5,6 +5,7 @@ namespace App\Services\Table;
 
 
 use App\Entity\Table;
+use App\Repository\TableRepository;
 use App\Services\Clickhouse\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,7 +19,7 @@ class TableService implements TableServiceInterface
         $this->em = $em;
     }
 
-    private function getRepository()
+    private function getRepository(): TableRepository
     {
         return $this->em->getRepository(Table::class);
     }
@@ -51,5 +52,13 @@ class TableService implements TableServiceInterface
         $this->em->flush();
 
         return $table;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTableByName(string $tableName): ?Table
+    {
+        return $this->getRepository()->findOneBy(['name' => $tableName]);
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Column;
+use App\Entity\Table;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,14 @@ class ColumnRepository extends ServiceEntityRepository
         parent::__construct($registry, Column::class);
     }
 
-    // /**
-    //  * @return Columns[] Returns an array of Columns objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function removeNotIn(Table $table, array $columnNames)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('c.table = :table')
+            ->setParameter('table', $table)
+            ->andWhere((new Expr())->notIn('c.name', $columnNames))
+            ->delete()
             ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Columns
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

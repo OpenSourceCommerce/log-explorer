@@ -36,11 +36,6 @@ class Column
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $type;
-
-    /**
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
@@ -87,18 +82,6 @@ class Column
     public function setTitle(?string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }
