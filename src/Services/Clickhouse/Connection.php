@@ -105,4 +105,12 @@ class Connection implements ConnectionInterface
     {
         return $this->connection->getSchemaManager()->tablesExist($table);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTables(): array
+    {
+        return $this->connection->getSchemaManager()->listTableNames();
+    }
 }

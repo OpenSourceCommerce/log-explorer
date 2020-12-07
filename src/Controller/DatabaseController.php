@@ -72,4 +72,17 @@ class DatabaseController extends AbstractController
             'error' => 0
         ]);
     }
+
+    /**
+     * @Route("/database/sync", name="database_sync", methods = "POST")
+     * @param DatabaseServiceInterface $databaseService
+     * @return Response
+     */
+    public function syncAll(DatabaseServiceInterface $databaseService): Response
+    {
+        $databaseService->syncAllTableToSystem();
+        return $this->json([
+            'error' => 0
+        ]);
+    }
 }

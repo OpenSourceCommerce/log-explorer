@@ -4,8 +4,9 @@
 namespace App\Services\Database;
 
 
+use App\Entity\Table;
 use App\Exceptions\InvalidSqlQueryException;
-use App\Services\Clickhouse\Connection;
+use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Column\ColumnServiceInterface;
 use App\Services\Table\TableServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +15,7 @@ class DatabaseService implements DatabaseServiceInterface
 {
     /** @var EntityManagerInterface */
     private $em;
-    /** @var Connection */
+    /** @var ConnectionInterface */
     private $connection;
     /** @var TableServiceInterface */
     private $tableService;
@@ -23,7 +24,7 @@ class DatabaseService implements DatabaseServiceInterface
 
     public function __construct(
         EntityManagerInterface $em,
-        Connection $connection,
+        ConnectionInterface $connection,
         TableServiceInterface $tableService,
         ColumnServiceInterface $columnService
     )
@@ -46,12 +47,18 @@ class DatabaseService implements DatabaseServiceInterface
         if (!$this->connection->exec($query)) {
             return false;
         }
+
+        return $this->syncTable($tableName);
+    }
+
+    private function syncTable(string $tableName): Table
+    {
         $clickhouseColumns = $this->connection->getColumns($tableName);
 
         $table = $this->tableService->getTableByName($tableName);
         $isExist = true;
         if (is_null($table)) {
-            $table = $this->tableService->createTable($table, false);
+            $table = $this->tableService->createTable($tableName, false);
             $isExist = false;
         }
 
@@ -98,5 +105,13 @@ class DatabaseService implements DatabaseServiceInterface
             return $matches[1];
         }
         return null;
+    }
+
+    public function syncAllTableToSystem()
+    {
+        $tables = $this->connection->getTables();
+        foreach ($tables as $table) {
+            $this->syncTable($table);
+        }
     }
 }

@@ -18,4 +18,6 @@ interface DatabaseServiceInterface
      * @throws \Doctrine\DBAL\Exception
      */
     public function processQuery(string $query);
+
+    public function syncAllTableToSystem();
 }

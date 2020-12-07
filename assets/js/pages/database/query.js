@@ -18,6 +18,7 @@ class CreateDatabase extends Component {
         };
         this.onQueryChange = this.onQueryChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.syncAll = this.syncAll.bind(this);
         this.makeQuery = this.makeQuery.bind(this);
     }
 
@@ -36,6 +37,15 @@ class CreateDatabase extends Component {
             const {error} = response;
             if (error === 0) {
                 Alert.success('Run successful')
+            }
+        });
+    }
+
+    syncAll() {
+        DatabaseActions.syncAll().then(response => {
+            const {error} = response;
+            if (error === 0) {
+                Alert.success('Sync successful')
             }
         });
     }
@@ -108,6 +118,9 @@ class CreateDatabase extends Component {
                                 </div>
 
                                 <Button onClick={this.onSubmit} className={'btn-success'}>Run query</Button>
+                                <hr/>
+                                <p>Or if you already have tables, you can simple click bellow button to sync all tables to this system</p>
+                                <Button onClick={this.syncAll} className={'btn btn-success'}>Sync all existing tables</Button>
                             </div>
                         </div>
                     </div>

@@ -86,4 +86,10 @@ interface ConnectionInterface
      * @return bool
      */
     public function tableExists(string $table): bool;
+
+    /**
+     * Get all tables
+     * @return string[]|array
+     */
+    public function getTables(): array;
 }
