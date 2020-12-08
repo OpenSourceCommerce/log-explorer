@@ -12,21 +12,20 @@ export default class AdvancedSearch extends React.Component {
                 <div className="card">
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-12 col-md-5">
-                                <p>What are you looking for ? </p>
+                            <div className="col-12 col-md-6">
                                 <FilterText
+                                    label="What are you looking for ?"
                                     placeholder="status = 200 AND url LIKE '%product%'"
                                 />
                             </div>
-                            <div className="input-search col-12 col-md-4">
-                                <p>Date Range </p>
+                            <div className="input-search col-12 col-md-4 mt-2 mt-md-0">
                                 <FilterDate
-                                    className="d-inline"
+                                    label="Date Range"
                                     onDateRangeChanged={onDateRangeChanged}
                                 />
                             </div>
-                            <div className="col-12 col-md-3 btn-action-group">
-                                <Button className="btn-search ml-2 w-100">SEARCH</Button>
+                            <div className="col-12 col-md-2 btn-action-group mt-4">
+                                <Button className="btn-search w-100 mt-0 mt-md-2">SEARCH</Button>
                             </div>
                         </div>
                     </div>
