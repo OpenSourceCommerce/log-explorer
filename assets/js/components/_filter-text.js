@@ -31,7 +31,7 @@ export class FilterText extends Component {
 
     handleChange(e) {
         this.setState({
-            value: e.target.value,
+            value: e && e.target ? e.target.value : '',
             isInvalid: false
         });
     }
@@ -43,7 +43,7 @@ export class FilterText extends Component {
     }
 
     render() {
-        const {placeholder, ...rest} = this.props;
+        const {placeholder, label, ...rest} = this.props;
         const {isInvalid, value} = this.state;
         let className = 'input-search';
         if (isInvalid) {
@@ -52,9 +52,13 @@ export class FilterText extends Component {
 
         return (
             <div {...rest}>
+                <div>
+                    <p className="float-left mb-2">{label}</p>
+                </div>
                 <Input
                     className={className}
-                    type="search" id="filter-text"
+                    id="filter-text"
+                    type="search"
                     value={value}
                     placeholder={placeholder}
                     aria-label="Search"
@@ -68,5 +72,6 @@ export class FilterText extends Component {
 
 FilterText.propTypes = {
     className: PropTypes.string,
+    label: PropTypes.string,
     placeholder: PropTypes.string
 };
