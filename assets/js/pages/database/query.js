@@ -86,7 +86,7 @@ class CreateDatabase extends Component {
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Run query" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Database query" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-6">

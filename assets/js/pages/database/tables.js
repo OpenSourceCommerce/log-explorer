@@ -60,7 +60,7 @@ class DatabaseTables extends Component {
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Table columns" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-3 col-md-2">Table</div>
