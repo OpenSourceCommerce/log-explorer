@@ -14,7 +14,7 @@ export class ControlSidebar extends Component {
     }
 
     render() {
-        let {className = '', theme = 'dark', item, title = '', children, visible = false, ...rest} = this.props;
+        let {className = '', theme = 'dark', item, title = '', children, visible = false, onCloseLogDetailSideBar, ...rest} = this.props;
         className += ` control-sidebar control-sidebar-${theme}`;
 
         if (Array.isArray(children)) {
@@ -40,11 +40,13 @@ export class ControlSidebar extends Component {
 
         return (
             <aside className={className} {...rest}>
-
                 <div className="card-header d-flex justify-content-around">
                     <h3 className="text-center ml-auto">{title}</h3>
                     <Link className={'ml-auto mr-2'}
-                          href="#" onClick={this.close}>
+                          href="#" onClick={(event) => {
+                              this.close(event);
+                              if (onCloseLogDetailSideBar) onCloseLogDetailSideBar();
+                    }}>
                     <Icon name={'times'}/>
                 </Link>
                 </div>

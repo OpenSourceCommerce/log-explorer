@@ -21,8 +21,10 @@ export class LogDetailSidebar extends Component {
         return (
             <ControlSidebar
                 className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
-                title={'Detail'} item={item}
-                visible={true}>
+                title={'Detail'}
+                visible={true}
+                {...this.props}
+            >
                 <ul>
                     {dataDisplay.map((detail, index) => {
                         return <a role="button" className="collapsed" data-toggle="collapse"
