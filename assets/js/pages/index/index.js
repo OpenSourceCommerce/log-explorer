@@ -63,16 +63,19 @@ class Index extends Component {
         }
     }
 
-    onDateRangeChanged(label) {
-        const {interval} = this.state;
-        this.setState({
-            isLive: !label,
-            disableLive: Boolean(label)
-        });
-
-        if (label) {
+    onDateRangeChanged(from, to) {
+        const {isLive, interval} = this.state;
+        if (isLive && !!to) {
+            this.setState({
+                isLive: false,
+                disableLive: true
+            });
             Live.pause();
-        } else {
+        } else if (!isLive && !to) {
+            this.setState({
+                isLive: true,
+                disableLive: false
+            });
             Live.start(interval);
         }
 

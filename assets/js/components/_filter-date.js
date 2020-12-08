@@ -4,15 +4,14 @@ import 'admin-lte/plugins/daterangepicker/daterangepicker.css';
 import 'admin-lte/plugins/daterangepicker/daterangepicker';
 import moment from 'moment';
 
-const DATE_RANGE_PICKER_PLACEHOLDER = 'Please select date range';
-
 export class FilterDate extends Component {
     constructor(props) {
         super(props);
         this.state = {
             from: '',
             to: '',
-            dateRangeValue: ''
+            // default select option
+            dateRangeValue: '1 hour'
         };
     }
 
@@ -24,7 +23,7 @@ export class FilterDate extends Component {
             dateRangeValue
         });
         if (onDateRangeChanged) {
-            onDateRangeChanged(dateRangeValue);
+            onDateRangeChanged(from, to);
         }
     }
 
@@ -37,15 +36,18 @@ export class FilterDate extends Component {
                         '1 hour': [moment().subtract(1, 'hour'), moment()],
                         '12 hours': [moment().subtract(12, 'hours'), moment()],
                         '1 day': [moment().subtract(24, 'hours'), moment()],
+                        '7 days': [ moment().subtract(7, 'days'), moment()],
                         Today: [moment(), moment()],
                         Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                         'This Month': [moment().startOf('month'), moment().endOf('month')],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
                     timePicker: true,
                     timePicker24Hour: true,
-                    opens: 'center'
+                    opens: 'center',
+                    autoApply: true,
+                    startDate: moment().subtract(1, 'hour'),
+                    endDate: moment()
                 },
                 (start, end, label) => {
                     switch (label) {
@@ -82,18 +84,13 @@ export class FilterDate extends Component {
             <div {...rest}>
                 <div>
                     <p className="float-left mb-2">{label}</p>
-                    {dateRangeValue && <a className="float-right" href="#" onClick={() => {
-                        this.onFilterChanged('', '', '');
-                    }}>Clear</a>}
                 </div>
                 <button type="button" className="btn btn-default w-100" id="date-range">
-                    {dateRangeValue ? (
-                        <>
-                            <i className="far fa-calendar-alt mr-2"></i>
-                            <span>{dateRangeValue}</span>
-                            <i className="fas fa-caret-down ml-2"></i>
-                        </>
-                    ) : (<span className="placeholder">{DATE_RANGE_PICKER_PLACEHOLDER}</span>)}
+                    <>
+                        <i className="far fa-calendar-alt mr-2"></i>
+                        <span>{dateRangeValue}</span>
+                        <i className="fas fa-caret-down ml-2"></i>
+                    </>
                 </button>
                 <input type="hidden" id="date-range-from" value={from}/>
                 <input type="hidden" id="date-range-to" value={to}/>

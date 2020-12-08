@@ -54,13 +54,11 @@ export class FilterText extends Component {
             <div {...rest}>
                 <div>
                     <p className="float-left mb-2">{label}</p>
-                    {value && <a className="float-right" href="#" onClick={() => {
-                        this.handleChange();
-                    }}>Clear</a>}
                 </div>
                 <Input
                     className={className}
                     id="filter-text"
+                    type="search"
                     value={value}
                     placeholder={placeholder}
                     aria-label="Search"
