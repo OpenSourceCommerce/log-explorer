@@ -26,4 +26,9 @@ interface TableServiceInterface
      * @return Table|null
      */
     public function getTableByName(string $tableName): ?Table;
+
+    /**
+     * @return Table[]|array
+     */
+    public function getAllTable(): array;
 }

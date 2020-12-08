@@ -2,19 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\TableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=TableRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\TableRepository")
  * @ORM\Table(name="tables")
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity(fields={"name"}, message="Table name is already exist")
  */
-class Table
+class Table implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -39,7 +38,7 @@ class Table
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Column::class, mappedBy="table", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Column", mappedBy="table", orphanRemoval=true)
      */
     private $columns;
 
@@ -123,5 +122,15 @@ class Table
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'name' => $this->getName(),
+        ];
     }
 }

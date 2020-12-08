@@ -36,7 +36,7 @@ class CreateDatabase extends Component {
         }).then(response => {
             const {error} = response;
             if (error === 0) {
-                Alert.success('Run successful')
+                Alert.success('Run successful');
             }
         });
     }
@@ -45,7 +45,7 @@ class CreateDatabase extends Component {
         DatabaseActions.syncAll().then(response => {
             const {error} = response;
             if (error === 0) {
-                Alert.success('Sync successful')
+                Alert.success('Sync successful');
             }
         });
     }
@@ -68,17 +68,20 @@ class CreateDatabase extends Component {
             case 'template_modify_column':
                 query = TEMPLATE_MODIFY_COLUMN;
                 break;
+            default:
+                break;
         }
+
         if (query) {
             this.setState({
-                query: query
-            })
+                query
+            });
         }
     }
 
     render() {
         const {query} = this.state;
-        let txtClass = 'form-control h-100';
+        const txtClass = 'form-control h-100';
 
         return (
             <div className="database">
@@ -101,11 +104,11 @@ class CreateDatabase extends Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-12 mt-3">
-                                        <Button name='template_create' className="mr-3 mb-3" onClick={this.makeQuery}>Create table</Button>
-                                        <Button name='template_add_column' className="mr-3 mb-3" onClick={this.makeQuery}>Add column</Button>
-                                        <Button name='template_drop_column' className="mr-3 mb-3" onClick={this.makeQuery}>Drop column</Button>
-                                        <Button name='template_comment_column' className="mr-3 mb-3" onClick={this.makeQuery}>Comment column</Button>
-                                        <Button name='template_modify_column' className="mr-3 mb-3" onClick={this.makeQuery}>Modify column</Button>
+                                        <Button name="template_create" className="mr-3 mb-3" onClick={this.makeQuery}>Create table</Button>
+                                        <Button name="template_add_column" className="mr-3 mb-3" onClick={this.makeQuery}>Add column</Button>
+                                        <Button name="template_drop_column" className="mr-3 mb-3" onClick={this.makeQuery}>Drop column</Button>
+                                        <Button name="template_comment_column" className="mr-3 mb-3" onClick={this.makeQuery}>Comment column</Button>
+                                        <Button name="template_modify_column" className="mr-3 mb-3" onClick={this.makeQuery}>Modify column</Button>
                                     </div>
                                 </div>
                                 <div className="row">

@@ -6,6 +6,12 @@ const DatabaseActions = {
     },
     syncAll() {
         return request('/database/sync', {method: 'POST'});
+    },
+    getAllTable() {
+        return request('/database/tables', {method: 'GET'});
+    },
+    getTableColumns(table) {
+        return request('/database/' + table + '/columns', {method: 'GET'});
     }
 };
 

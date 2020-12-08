@@ -5,15 +5,13 @@ namespace App\Controller;
 use App\Entity\Table;
 use App\Exceptions\InvalidSqlQueryException;
 use App\Exceptions\TableExistException;
-use App\Services\Clickhouse\Connection;
 use App\Services\Database\DatabaseServiceInterface;
+use App\Services\Table\TableServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class DatabaseController extends AbstractController
 {
@@ -22,8 +20,34 @@ class DatabaseController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('database/index.html.twig', [
-            'controller_name' => 'DatabaseController',
+        return $this->render('database/tables.html.twig');
+    }
+
+    /**
+     * @Route("/database/tables", name="database_tables")
+     * @param TableServiceInterface $tableService
+     * @return Response
+     */
+    public function tables(TableServiceInterface $tableService): Response
+    {
+        $data = $tableService->getAllTable();
+        return $this->json([
+            'error' => 0,
+            'data' => $data
+        ]);
+    }
+
+    /**
+     * @Route("/database/{name}/columns", name="database_columns")
+     * @param Table $table
+     * @return Response
+     */
+    public function columns(Table $table): Response
+    {
+        return $this->json([
+            'error' => 0,
+            'table' => $table->getName(),
+            'data' => $table->getColumns()
         ]);
     }
 

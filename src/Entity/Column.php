@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ColumnRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
- * @ORM\Entity(repositoryClass=ColumnRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\ColumnRepository")
  * @ORM\Table(name="columns")
  * @ORM\HasLifecycleCallbacks
  */
-class Column
+class Column implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -20,7 +20,7 @@ class Column
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Table::class, inversedBy="columns")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Table", inversedBy="columns")
      * @ORM\JoinColumn(name="table_id", nullable=false)
      */
     private $table;
@@ -114,5 +114,16 @@ class Column
         $this->updatedAt = new \DateTime();
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'name' => $this->getName(),
+            'title' => $this->getTitle(),
+        ];
     }
 }
