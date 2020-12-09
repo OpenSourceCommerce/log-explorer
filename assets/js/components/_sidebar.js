@@ -31,33 +31,19 @@ export class Sidebar extends Component {
                     <nav className="mt-2">
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview"
                             role="menu" data-accordion="false">
-                            <li className="nav-item has-treeview menu-open">
-                                <Link href="#" className="nav-link active">
-                                    <Icon name={'tachometer-alt'} className="nav-icon"/>
-                                    <p>
-                                        Dashboard
-                                        <Icon name={'angle-left'} className="right"/>
-                                    </p>
+                            <li className="nav-item">
+                                <Link href="/" className="nav-link active">
+                                    <Icon name={'circle'} type={'regular'}
+                                          className="nav-icon"/>
+                                    <p>Dashboard v1</p>
                                 </Link>
-                                <ul className="nav nav-treeview">
-                                    <li className="nav-item">
-                                        <Link href="/" className="nav-link active">
-                                            <Icon name={'circle'} type={'regular'}
-                                                className="nav-icon"/>
-                                            <p>Dashboard v1</p>
-                                        </Link>
-                                        <Link href="/database" className="nav-link">
-                                            <Icon name={'database'}
-                                                className="nav-icon"/>
-                                            <p>Database view</p>
-                                        </Link>
-                                        <Link href="/database/query" className="nav-link">
-                                            <Icon name={'database'}
-                                                className="nav-icon"/>
-                                            <p>Database query</p>
-                                        </Link>
-                                    </li>
-                                </ul>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/database" className="nav-link">
+                                    <Icon name={'database'} type={'regular'}
+                                          className="nav-icon"/>
+                                    <p>Create table</p>
+                                </Link>
                             </li>
                         </ul>
                     </nav>
