@@ -7,12 +7,12 @@ import moment from 'moment';
 export class FilterDate extends Component {
     constructor(props) {
         super(props);
-        const { from = '60', to = ''} = this.props;
+        const {from = '60', to = ''} = this.props;
 
         this.state = {
             from,
             to,
-            // default select option
+            // Default select option
             dateRangeValue: '1 hour'
         };
     }
@@ -38,7 +38,7 @@ export class FilterDate extends Component {
                         '1 hour': [moment().subtract(1, 'hour'), moment()],
                         '12 hours': [moment().subtract(12, 'hours'), moment()],
                         '1 day': [moment().subtract(24, 'hours'), moment()],
-                        '7 days': [ moment().subtract(7, 'days'), moment()],
+                        '7 days': [moment().subtract(7, 'days'), moment()],
                         Today: [moment(), moment()],
                         Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                         'This Month': [moment().startOf('month'), moment().endOf('month')],
