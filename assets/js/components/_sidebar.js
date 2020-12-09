@@ -34,7 +34,7 @@ export class Sidebar extends Component {
                             <li className="nav-item">
                                 <Link href="/" className="nav-link active">
                                     <Icon name={'circle'} type={'regular'}
-                                          className="nav-icon"/>
+                                        className="nav-icon"/>
                                     <p>Dashboard v1</p>
                                 </Link>
                             </li>

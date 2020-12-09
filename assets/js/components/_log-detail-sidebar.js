@@ -21,14 +21,16 @@ export class LogDetailSidebar extends Component {
         return (
             <ControlSidebar
                 className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
-                title={'Detail'} item={item}
-                visible={true}>
+                title={'Detail'}
+                visible={true}
+                {...this.props}
+            >
                 <ul>
                     {dataDisplay.map((detail, index) => {
                         return <a role="button" className="collapsed" data-toggle="collapse"
-                                  href={`#collapse${index}`}
-                                  aria-expanded="false" aria-controls={`collapse${index}`}
-                                  key={index}>
+                            href={`#collapse${index}`}
+                            aria-expanded="false" aria-controls={`collapse${index}`}
+                            key={index}>
                             <h4>{detail.label}</h4>
                             <p className="collapse" id={`collapse${index}`} aria-expanded="false">
                                 {item[detail.key] || 'No data'}

@@ -69,7 +69,12 @@ export class JsGridTable extends Component {
                 <div id="jsGrid1">
                     &nbsp;
                 </div>
-                {selectedItem && <LogDetailSidebar item={selectedItem}/>}
+                {selectedItem && <LogDetailSidebar
+                    item={selectedItem}
+                    onCloseLogDetailSideBar={() => {
+                        this.setState({selectedItem: null});
+                    }}
+                />}
             </>
         );
     }

@@ -19,6 +19,8 @@ doctrine:
                 options:
                     enable_http_compression: 1
                     max_execution_time: 60
+        types:
+            uuid: Ramsey\Uuid\Doctrine\UuidType
     orm:
         default_entity_manager: default
         entity_managers:
