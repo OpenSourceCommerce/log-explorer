@@ -12,6 +12,9 @@
     <div id="root"></div>
 {% endblock %}
 {% block javascripts %}
+    <script>
+        window.uuid = "{{ uuid }}";
+    </script>
     {{ encore_entry_script_tags('page_index') }}
     {{ encore_entry_script_tags('flot_chart') }}
 {% endblock %}

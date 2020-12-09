@@ -4,13 +4,12 @@
 namespace App\Services\Dashboard;
 
 
-use App\Entity\Dashboard;
+use App\Entity\DemoDashboard;
 
 interface DashboardServiceInterface
 {
     /**
-     * @param string $uuid
-     * @return Dashboard
+     * @return DemoDashboard
      */
-    public function fromUuid(string $uuid);
+    public function getDefault(): DemoDashboard;
 }

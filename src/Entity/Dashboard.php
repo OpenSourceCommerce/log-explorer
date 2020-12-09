@@ -1,147 +1,119 @@
 <?php
 
-
 namespace App\Entity;
 
+use App\Repository\DashboardRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass=DashboardRepository::class)
+ * @ORM\Table(name="dashboards")
+ * @ORM\HasLifecycleCallbacks
+ */
 class Dashboard
 {
-    private $table = 'nginx_access';
-
-    private $columns = [
-        [
-            'name' => 'url',
-            'title' => 'URL',
-            'type' => 'text',
-        ],
-        [
-            'name' => 'referer',
-            'title' => 'Referer',
-            'type' => 'text',
-        ],
-        [
-            'name' => 'ip',
-            'title' => 'IP',
-            'type' => 'text',
-        ],
-        [
-            'name' => 'timestamp',
-            'title' => 'Time',
-            'type' => 'text',
-        ],
-        [
-            'name' => 'status',
-            'title' => 'Status',
-            'type' => 'text',
-        ],
-        [
-            'name' => 'user_agent',
-            'title' => 'User Agent',
-            'type' => 'text',
-            'visible' => false,
-        ],
-        [
-            'name' => 'customer',
-            'title' => 'Customer',
-            'type' => 'text',
-            'visible' => false,
-        ],
-        [
-            'name' => 'body_bytes_sent',
-            'title' => 'Size',
-            'type' => 'text',
-            'visible' => false,
-        ],
-    ];
-
-    private $summaryColumns = [
-        [
-            'name' => 'status',
-            'title' => 'Status',
-        ],
-    ];
-
-    private $graphColumns = [
-        [
-            'name' => 'status',
-            'title' => 'Total',
-            'filter' => '',
-            'color' => '#e77',
-        ],
-//        [
-//            'name' => 'status',
-//            'title' => 'OK',
-//            'filter' => 'status < 300',
-//            'color' => '#7F2',
-//        ],
-//        [
-//            'name' => 'status',
-//            'title' => 'NG',
-//            'filter' => 'status >= 300',
-//            'color' => '#444',
-//        ]
-    ];
-
-    private $graphNumberOfPoint = 12;
-    private $graphFixedOffset = null;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
     /**
-     * @return string
+     * @ORM\Column(type="uuid", unique=true)
      */
-    public function getTable(): string
+    private $uuid;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Table::class)
+     * @ORM\JoinColumn(name="table_id", nullable=false)
+     */
+    private $table;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Column::class)
+     * @ORM\JoinTable(name="dashboard_summary")
+     */
+    private $summary;
+
+    public function __construct()
+    {
+        $this->summary = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid($uuid): self
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTable(): ?Table
     {
         return $this->table;
     }
 
-    /**
-     * @param string $table
-     * @return self
-     */
-    public function setTable(string $table): self
+    public function setTable(?Table $table): self
     {
         $this->table = $table;
+
         return $this;
     }
 
     /**
-     * @return array
+     * @return Collection|Column[]
      */
-    public function getColumns(): array
+    public function getSummary(): Collection
     {
-        return $this->columns;
+        return $this->summary;
     }
 
-    /**
-     * @return array
-     */
-    public function getSummaryColumns(): array
+    public function addSummary(Column $column): self
     {
-        return $this->summaryColumns;
+        if ($column->getTable()->getId() !== $this->getTable()->getId()) {
+            // column must same table
+            throw new \LogicException();
+        }
+        if (!$this->summary->contains($column)) {
+            $this->summary[] = $column;
+        }
+
+        return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getGraphColumns(): array
+    public function removeSummary(Column $summary): self
     {
-        return $this->graphColumns;
-    }
+        $this->summary->removeElement($summary);
 
-    /**
-     * Recommend to setup graph dynamic and optimize performance
-     * @return int|null
-     */
-    public function getGraphNumberOfPoint(): ?int
-    {
-        return $this->graphNumberOfPoint;
-    }
-
-    /**
-     * Get fixed offset in seconds, null if disabled then getGraphNumberOfPoint will be used
-     * @return int|null
-     */
-    public function getGraphFixedOffset(): ?int
-    {
-        return $this->graphFixedOffset;
+        return $this;
     }
 }

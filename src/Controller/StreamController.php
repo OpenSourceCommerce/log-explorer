@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Constant\ErrorCodeConstant;
+use App\Entity\Dashboard;
 use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
@@ -17,22 +18,25 @@ class StreamController extends AbstractController
 {
     /**
      * @Route("/stream/{uuid}/table", name="stream_table")
-     * @param $uuid
+     * @param Dashboard|null $dashboard
      * @param DashboardServiceInterface $dashboardService
-     * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function table($uuid, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function table(?Dashboard $dashboard, DashboardServiceInterface $dashboardService): JsonResponse
     {
-        $dashboard = $dashboardService->fromUuid($uuid);
-        $columns = $dashboard->getColumns();
+        if (is_null($dashboard)) {
+            $dashboard = $dashboardService->getDefault();
+            $columns = $dashboard->getColumns();
+        } else {
+            $columns = $dashboard->getTable()->getColumns();
+        }
         return $this->json([
             'error' => 0,
             'data' => $columns,
         ]);
     }
 
-    private function getFilter(Request $request)
+    private function getFilter(Request $request): array
     {
         $options = [];
         if ($request->query->has('from')) {
@@ -60,21 +64,28 @@ class StreamController extends AbstractController
 
     /**
      * @Route("/stream/{uuid}/list", name="stream_list")
-     * @param $uuid
+     * @param Dashboard|null $dashboard
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
-     * @throws \Exception
      */
-    public function list($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function list(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
-        $dashboard = $dashboardService->fromUuid($uuid);
+        if (is_null($dashboard)) {
+            $dashboard = $dashboardService->getDefault();
+            $columns = $dashboard->getColumns();
+        } else {
+            $columns = $dashboard->getTable()->getColumns();
+        }
         $options = $this->getFilter($request);
-        $columns = $dashboard->getColumns();
-        $options['columns'] = array_column($columns, 'name');
+        $columnNames = [];
+        foreach ($columns as $column) {
+            $columnNames[] = $column->getName();
+        }
+        $options['columns'] = $columnNames;
         try {
-            $data = $streamService->getLogsInRange($dashboard->getTable(), $options);
+            $data = $streamService->getLogsInRange($dashboard->getTable()->getName(), $options);
         } catch (Exception $e) {
             return $this->json([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -92,20 +103,30 @@ class StreamController extends AbstractController
 
     /**
      * @Route("/stream/{uuid}/summary", name="stream_summary")
-     * @param $uuid
+     * @param Dashboard|null $dashboard
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function summary(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
-        $dashboard = $dashboardService->fromUuid($uuid);
+        if (is_null($dashboard)) {
+            $dashboard = $dashboardService->getDefault();
+            $columns = $dashboard->getSummaryColumns();
+        } else {
+            $columns = $dashboard->getSummary();
+        }
         $options = $this->getFilter($request);
-        $widgets = $dashboard->getSummaryColumns();
-        foreach ($widgets as &$widget) {
+        $widgets = [];
+        foreach ($columns as $column) {
             try {
-                $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $options);
+                $widget = [
+                    'name' => $column->getName(),
+                    'title' => $column->getTitle()
+                ];
+                $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable()->getName(), $widget['name'], $options);
+                $widgets[] = $widget;
             } catch (Exception $e) {
                 return $this->json([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -123,15 +144,15 @@ class StreamController extends AbstractController
 
     /**
      * @Route("/stream/{uuid}/graph", name="stream_graph")
-     * @param $uuid
+     * @param Dashboard|null $dashboard
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function graph(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
-        $dashboard = $dashboardService->fromUuid($uuid);
+        $dashboard = $dashboardService->getDefault();
         $options = $this->getFilter($request);
         $graph = [];
         $graphOffset = $dashboard->getGraphFixedOffset();
@@ -143,7 +164,7 @@ class StreamController extends AbstractController
                 $line = [
                     'label' => $item['title'],
                     'color' => $item['color'],
-                    'data' => $streamService->getLogGraphInRange($dashboard->getTable(), $item, $graphOffset, $options),
+                    'data' => $streamService->getLogGraphInRange($dashboard->getTable()->getName(), $item, $graphOffset, $options),
                 ];
                 $graph[] = $line;
             } catch (Exception $e) {

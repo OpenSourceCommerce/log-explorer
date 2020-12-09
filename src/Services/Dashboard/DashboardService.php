@@ -4,7 +4,7 @@
 namespace App\Services\Dashboard;
 
 
-use App\Entity\Dashboard;
+use App\Entity\DemoDashboard;
 
 class DashboardService implements DashboardServiceInterface
 {
@@ -12,8 +12,8 @@ class DashboardService implements DashboardServiceInterface
     /**
      * @inheritDoc
      */
-    public function fromUuid(string $uuid)
+    public function getDefault(): DemoDashboard
     {
-        return new Dashboard();
+        return new DemoDashboard();
     }
 }
