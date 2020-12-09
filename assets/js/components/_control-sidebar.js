@@ -64,5 +64,6 @@ ControlSidebar.propTypes = {
     title: PropTypes.string,
     children: PropTypes.any.isRequired,
     visible: PropTypes.bool,
-    item: PropTypes.object
+    item: PropTypes.object,
+    onCloseLogDetailSideBar: PropTypes.func
 };
