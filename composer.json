@@ -1,12 +1,6 @@
 {
     "type": "project",
     "license": "proprietary",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/OpenSourceCommerce/dbal-clickhouse"
-        }
-    ],
     "require": {
         "php": ">=7.2.5",
         "ext-ctype": "*",
