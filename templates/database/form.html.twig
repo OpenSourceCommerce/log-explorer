@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create table{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('database_form') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.clickhouseTypes = {{ types | raw }};
+        {% if table is defined %}
+        window.table_id = "{{ table.name }}";
+        {% endif %}
+    </script>
+    {{ encore_entry_script_tags('database_form') }}
+{% endblock %}
+

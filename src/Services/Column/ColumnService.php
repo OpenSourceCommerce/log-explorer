@@ -33,6 +33,7 @@ class ColumnService implements ColumnServiceInterface
         $column->setTable($table);
         $column->setName($data['name']);
         $column->setTitle($data['title']);
+        $column->setType($data['type']);
 
         $this->save($column, $flush);
 
@@ -68,6 +69,9 @@ class ColumnService implements ColumnServiceInterface
         if ($data['title']) {
             $column->setTitle($data['title']);
         }
+        if ($data['type']) {
+            $column->setType($data['type']);
+        }
         $this->save($column, $flush);
 
         return $column;
@@ -79,5 +83,13 @@ class ColumnService implements ColumnServiceInterface
     public function removeNotIn(Table $table, array $columnNames): bool
     {
         return $this->getRepository()->removeNotIn($table, $columnNames);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById($id): ?Column
+    {
+        return $this->getRepository()->find($id);
     }
 }

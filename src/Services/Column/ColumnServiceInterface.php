@@ -38,4 +38,10 @@ interface ColumnServiceInterface
      * @return bool
      */
     public function removeNotIn(Table $table, array $columnNames): bool;
+
+    /**
+     * @param $id
+     * @return Column|null
+     */
+    public function findById($id): ?Column;
 }
