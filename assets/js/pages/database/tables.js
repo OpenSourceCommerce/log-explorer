@@ -114,18 +114,16 @@ class DatabaseTables extends Component {
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Display name</th>
                                             <th>Type</th>
-                                            <th>Default</th>
+                                            <th>Display name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {columns.map((item, key) => {
                                             return <tr key={key}>
                                                 <td>{item.name}</td>
-                                                <td>{item.title}</td>
                                                 <td>{item.type}</td>
-                                                <td>{item.default_value}</td>
+                                                <td>{item.title}</td>
                                             </tr>;
                                         })}
                                     </tbody>
