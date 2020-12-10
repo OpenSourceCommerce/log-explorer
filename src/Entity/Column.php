@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ColumnRepository")
  * @ORM\Table(name="columns")
  * @ORM\HasLifecycleCallbacks
+ * @UniqueEntity(fields={"table_id", "name"}, message="Column name is already exist")
  */
 class Column implements JsonSerializable
 {
@@ -20,7 +22,7 @@ class Column implements JsonSerializable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Table", inversedBy="columns")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Table", inversedBy="columns", cascade={"persist"})
      * @ORM\JoinColumn(name="table_id", nullable=false)
      */
     private $table;
@@ -139,7 +141,9 @@ class Column implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->getId(),
             'name' => $this->getName(),
+            'type' => $this->getType(),
             'title' => $this->getTitle(),
         ];
     }

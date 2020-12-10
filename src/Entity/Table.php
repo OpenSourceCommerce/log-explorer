@@ -38,7 +38,7 @@ class Table implements \JsonSerializable
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Column", mappedBy="table", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Column", mappedBy="table", orphanRemoval=true, cascade={"persist"})
      */
     private $columns;
 

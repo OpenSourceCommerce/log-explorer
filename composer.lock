@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4132244b1f8d3a227f81186e76271c5",
+    "content-hash": "73e9efea03fd9ff10104478d7c9ba0da",
     "packages": [
         {
             "name": "brick/math",
@@ -729,16 +729,16 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "1.4.3",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "4650c8b30c753a76bf44fb2ed00117d6f367490c"
+                "reference": "9cf661f4eb38f7c881cac67c75ea9b00bf97b210"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/4650c8b30c753a76bf44fb2ed00117d6f367490c",
-                "reference": "4650c8b30c753a76bf44fb2ed00117d6f367490c",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/9cf661f4eb38f7c881cac67c75ea9b00bf97b210",
+                "reference": "9cf661f4eb38f7c881cac67c75ea9b00bf97b210",
                 "shasum": ""
             },
             "require": {
@@ -759,7 +759,6 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Doctrine\\Common\\Inflector\\": "lib/Doctrine/Common/Inflector",
                     "Doctrine\\Inflector\\": "lib/Doctrine/Inflector"
                 }
             },
@@ -803,7 +802,7 @@
                 "uppercase",
                 "words"
             ],
-            "time": "2020-05-29T07:19:59+00:00"
+            "time": "2020-05-29T15:13:26+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -1283,6 +1282,61 @@
             "time": "2020-11-14T15:56:27+00:00"
         },
         {
+            "name": "friendsofdoctrine/dbal-clickhouse",
+            "version": "v1.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfDoctrine/dbal-clickhouse.git",
+                "reference": "24eb461b1ac9948d850e9d5d97d14382aa5f9862"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfDoctrine/dbal-clickhouse/zipball/24eb461b1ac9948d850e9d5d97d14382aa5f9862",
+                "reference": "24eb461b1ac9948d850e9d5d97d14382aa5f9862",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^2.7",
+                "ext-pcre": "*",
+                "ext-pdo": "*",
+                "php": "^7.1",
+                "smi2/phpclickhouse": "^1.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^4.0",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FOD\\DBALClickHouse\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mochalygin Aleksandr",
+                    "email": "a@mochalygin.ru"
+                },
+                {
+                    "name": "Mitrofanov Nikolay",
+                    "email": "mitrofanovnk@yandex.ru"
+                }
+            ],
+            "description": "Doctrine DBAL driver for ClickHouse",
+            "homepage": "http://github.com/friendsofdoctrine/dbal-clickhouse",
+            "keywords": [
+                "clickhouse",
+                "dbal",
+                "doctrine",
+                "driver"
+            ],
+            "time": "2019-07-17T16:41:38+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "2.1.1",
             "source": {
@@ -1432,27 +1486,6 @@
                 "service proxies"
             ],
             "time": "2019-08-10T08:37:15+00:00"
-        },
-        {
-            "name": "opensourcecommerce/dbal-clickhouse",
-            "version": "1.5.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/OpenSourceCommerce/dbal-clickhouse.git",
-                "reference": "6a82bf24e5fabe05dc64708d6ab45748af99cb84"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/OpenSourceCommerce/dbal-clickhouse/zipball/6a82bf24e5fabe05dc64708d6ab45748af99cb84",
-                "reference": "6a82bf24e5fabe05dc64708d6ab45748af99cb84",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            }
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2102,6 +2135,61 @@
                 "controllers"
             ],
             "time": "2020-08-25T19:10:18+00:00"
+        },
+        {
+            "name": "smi2/phpclickhouse",
+            "version": "1.3.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smi2/phpClickHouse.git",
+                "reference": "4801b0c8badf44f256b91e9da11b2000c22b5870"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smi2/phpClickHouse/zipball/4801b0c8badf44f256b91e9da11b2000c22b5870",
+                "reference": "4801b0c8badf44f256b91e9da11b2000c22b5870",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^5.0",
+                "phpstan/phpstan": "^0.10.3",
+                "phpunit/phpunit": "^7",
+                "sebastian/comparator": "~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ClickHouseDB\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Strykhar",
+                    "email": "isublimity@gmail.com",
+                    "homepage": "https://github.com/isublimity"
+                }
+            ],
+            "description": "PHP ClickHouse Client",
+            "homepage": "https://github.com/smi2/phpClickHouse",
+            "keywords": [
+                "clickhouse",
+                "client",
+                "curl",
+                "driver",
+                "http",
+                "http client",
+                "php"
+            ],
+            "time": "2020-09-29T12:45:39+00:00"
         },
         {
             "name": "symfony/asset",
@@ -6410,61 +6498,6 @@
             "time": "2020-12-03T17:45:45+00:00"
         },
         {
-            "name": "smi2/phpclickhouse",
-            "version": "1.3.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/smi2/phpClickHouse.git",
-                "reference": "4801b0c8badf44f256b91e9da11b2000c22b5870"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/smi2/phpClickHouse/zipball/4801b0c8badf44f256b91e9da11b2000c22b5870",
-                "reference": "4801b0c8badf44f256b91e9da11b2000c22b5870",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "doctrine/coding-standard": "^5.0",
-                "phpstan/phpstan": "^0.10.3",
-                "phpunit/phpunit": "^7",
-                "sebastian/comparator": "~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "ClickHouseDB\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Igor Strykhar",
-                    "email": "isublimity@gmail.com",
-                    "homepage": "https://github.com/isublimity"
-                }
-            ],
-            "description": "PHP ClickHouse Client",
-            "homepage": "https://github.com/smi2/phpClickHouse",
-            "keywords": [
-                "clickhouse",
-                "client",
-                "curl",
-                "driver",
-                "http",
-                "http client",
-                "php"
-            ],
-            "time": "2020-09-29T12:45:39+00:00"
-        },
-        {
             "name": "symfony/browser-kit",
             "version": "v5.2.0",
             "source": {
@@ -6686,20 +6719,20 @@
         },
         {
             "name": "symfony/maker-bundle",
-            "version": "v1.24.2",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/maker-bundle.git",
-                "reference": "87620ef23319ebbdfc5b51dd6b6e7d12003f4564"
+                "reference": "6d2da12632f5c8b9aa7b159f0bb46f245289434a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/87620ef23319ebbdfc5b51dd6b6e7d12003f4564",
-                "reference": "87620ef23319ebbdfc5b51dd6b6e7d12003f4564",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/6d2da12632f5c8b9aa7b159f0bb46f245289434a",
+                "reference": "6d2da12632f5c8b9aa7b159f0bb46f245289434a",
                 "shasum": ""
             },
             "require": {
-                "doctrine/inflector": "^1.2",
+                "doctrine/inflector": "^1.2|^2.0",
                 "nikic/php-parser": "^4.0",
                 "php": ">=7.1.3",
                 "symfony/config": "^3.4|^4.0|^5.0",
@@ -6752,7 +6785,7 @@
                 "scaffold",
                 "scaffolding"
             ],
-            "time": "2020-11-27T17:49:17+00:00"
+            "time": "2020-12-07T14:47:57+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",

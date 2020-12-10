@@ -20,5 +20,7 @@ Input.propTypes = {
     className: PropTypes.string,
     type: PropTypes.string,
     placeholder: PropTypes.string,
-    onKeyUp: PropTypes.func
+    onKeyUp: PropTypes.func,
+    onChange: PropTypes.func,
+    value: PropTypes.string
 };

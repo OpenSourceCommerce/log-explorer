@@ -1,17 +1,29 @@
 import {request} from '..';
 
 const DatabaseActions = {
-    runQuery(data) {
-        return request('/database/query', {method: 'POST', body: JSON.stringify(data)});
-    },
     syncAll() {
-        return request('/database/sync', {method: 'POST'});
+        return request('/api/database/sync', {method: 'POST'});
     },
     getAllTable() {
-        return request('/database/tables', {method: 'GET'});
+        return request('/api/database/tables', {method: 'GET'});
     },
     getTableColumns(table) {
-        return request('/database/' + table + '/columns', {method: 'GET'});
+        return request('/api/database/' + table + '/columns', {method: 'GET'});
+    },
+    createOrUpdate(tableId, table, columns) {
+        if (tableId) {
+            return request('/api/database/' + tableId, {method: 'PUT', body: JSON.stringify({
+                name: table,
+                columns
+            })});
+        }
+
+        return request('/api/database/create', {
+            method: 'POST', body: JSON.stringify({
+                name: table,
+                columns
+            })
+        });
     }
 };
 

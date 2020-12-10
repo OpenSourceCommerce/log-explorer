@@ -2,6 +2,7 @@
 
 namespace App\Services\Clickhouse;
 
+use Doctrine\ORM\EntityManagerInterface;
 use \FOD\DBALClickHouse\Connection as ClickHouseConnection;
 
 class Connection implements ConnectionInterface
@@ -93,8 +94,22 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
+    public function getRawColumns(string $table): array
+    {
+        $database = $this->connection->getDatabase();
+
+        $sql = $this->connection->getSchemaManager()->getDatabasePlatform()->getListTableColumnsSQL($table, $database);
+
+        return $this->connection->fetchAllAssociative($sql);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getColumns(string $table)
     {
+        /** @var EntityManagerInterface $em */
+//        $em->getConnection()->get
         return $this->getSchemaManager()->listTableColumns($table);
     }
 

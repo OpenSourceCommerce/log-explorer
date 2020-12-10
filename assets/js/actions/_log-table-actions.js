@@ -23,13 +23,13 @@ const LogTableActions = {
         return window.uuid ? window.uuid : 'default';
     },
     getColumns() {
-        return request('/stream/' + this.getUuid() + '/table?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/' + this.getUuid() + '/table?' + new URLSearchParams(this.getOptions()));
     },
     getSummary() {
-        return request('/stream/' + this.getUuid() + '/summary?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/' + this.getUuid() + '/summary?' + new URLSearchParams(this.getOptions()));
     },
     getGraph() {
-        return request('/stream/' + this.getUuid() + '/graph?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/' + this.getUuid() + '/graph?' + new URLSearchParams(this.getOptions()));
     }
 };
 

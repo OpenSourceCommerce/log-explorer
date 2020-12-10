@@ -90,7 +90,7 @@ class Index extends Component {
             disableLive
         } = this.state;
 
-        const getDataTableUrl = '/stream/' + LogTableActions.getUuid() + '/list';
+        const getDataTableUrl = '/api/stream/' + LogTableActions.getUuid() + '/list';
 
         return (
             <div className="dashboard-page">
