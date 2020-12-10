@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader, Table, Link} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
-import {Button} from "../../components/_button";
+import {Button} from '../../components/_button';
 
 class DatabaseTables extends Component {
     constructor(props) {
