@@ -20,13 +20,13 @@ const LogTableActions = {
         return query;
     },
     getColumns() {
-        return request('/stream/{uuid}/table?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/{uuid}/table?' + new URLSearchParams(this.getOptions()));
     },
     getSummary() {
-        return request('/stream/{uuid}/summary?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/{uuid}/summary?' + new URLSearchParams(this.getOptions()));
     },
     getGraph() {
-        return request('/stream/{uuid}/graph?' + new URLSearchParams(this.getOptions()));
+        return request('/api/stream/{uuid}/graph?' + new URLSearchParams(this.getOptions()));
     }
 };
 

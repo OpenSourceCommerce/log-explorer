@@ -43,12 +43,14 @@ export class ControlSidebar extends Component {
                 <div className="card-header d-flex justify-content-around">
                     <h3 className="text-center ml-auto">{title}</h3>
                     <Link className={'ml-auto mr-2'}
-                          href="#" onClick={(event) => {
-                              this.close(event);
-                              if (onCloseLogDetailSideBar) onCloseLogDetailSideBar();
-                    }}>
-                    <Icon name={'times'}/>
-                </Link>
+                        href="#" onClick={event => {
+                            this.close(event);
+                            if (onCloseLogDetailSideBar) {
+                                onCloseLogDetailSideBar();
+                            }
+                        }}>
+                        <Icon name={'times'}/>
+                    </Link>
                 </div>
                 <div className="card-body">
                     {children}

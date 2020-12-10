@@ -72,7 +72,7 @@ export class JsGridTable extends Component {
                 {selectedItem && <LogDetailSidebar
                     item={selectedItem}
                     onCloseLogDetailSideBar={() => {
-                        this.setState({selectedItem: null})
+                        this.setState({selectedItem: null});
                     }}
                 />}
             </>

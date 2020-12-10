@@ -16,6 +16,10 @@
   "rules": {
     "import/no-unassigned-import": 0,
     "unicorn/prefer-number-properties": 0,
-    "unicorn/prevent-abbreviations": 0
+    "unicorn/prevent-abbreviations": 0,
+    "react/jsx-no-comment-textnodes": 0,
+    "guard-for-in": 0,
+    "react/no-unescaped-entities": 0,
+    "no-unused-vars": 0
   }
 }

@@ -1,38 +1,36 @@
 <?php
 
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 
 use App\Constant\ErrorCodeConstant;
 use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StreamController extends AbstractController
+class StreamController extends ApiController
 {
     /**
-     * @Route("/stream/{uuid}/table", name="stream_table")
+     * @Route("/api/stream/{uuid}/table", methods = "GET")
      * @param $uuid
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function table($uuid, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function table($uuid, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         $dashboard = $dashboardService->fromUuid($uuid);
         $columns = $dashboard->getColumns();
-        return $this->json([
-            'error' => 0,
-            'data' => $columns,
+        return $this->responseSuccess([
+            'data' => $columns
         ]);
     }
 
-    private function getFilter(Request $request)
+    private function getFilter(Request $request): array
     {
         $options = [];
         if ($request->query->has('from')) {
@@ -59,7 +57,7 @@ class StreamController extends AbstractController
     }
 
     /**
-     * @Route("/stream/{uuid}/list", name="stream_list")
+     * @Route("/api/stream/{uuid}/list", methods = "GET")
      * @param $uuid
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
@@ -67,7 +65,7 @@ class StreamController extends AbstractController
      * @return JsonResponse
      * @throws \Exception
      */
-    public function list($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function list($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         $dashboard = $dashboardService->fromUuid($uuid);
         $options = $this->getFilter($request);
@@ -76,29 +74,28 @@ class StreamController extends AbstractController
         try {
             $data = $streamService->getLogsInRange($dashboard->getTable(), $options);
         } catch (Exception $e) {
-            return $this->json([
+            return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
                 'data' => [],
                 'message' => 'Invalid SQL query',
                 'filter' => $options['filter'],
             ]);
         }
-        return $this->json([
-            'error' => 0,
+        return $this->responseSuccess([
             'data' => $data,
             'itemsCount' => count($data),
         ]);
     }
 
     /**
-     * @Route("/stream/{uuid}/summary", name="stream_summary")
+     * @Route("/api/stream/{uuid}/summary", methods = "GET")
      * @param $uuid
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function summary($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         $dashboard = $dashboardService->fromUuid($uuid);
         $options = $this->getFilter($request);
@@ -107,7 +104,7 @@ class StreamController extends AbstractController
             try {
                 $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $options);
             } catch (Exception $e) {
-                return $this->json([
+                return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
                     'data' => [],
                     'message' => 'Invalid SQL query',
@@ -115,21 +112,20 @@ class StreamController extends AbstractController
                 ]);
             }
         }
-        return $this->json([
-            'error' => 0,
+        return $this->responseSuccess([
             'data' => $widgets,
         ]);
     }
 
     /**
-     * @Route("/stream/{uuid}/graph", name="stream_graph")
+     * @Route("/api/stream/{uuid}/graph", methods = "GET")
      * @param $uuid
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService)
+    public function graph($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         $dashboard = $dashboardService->fromUuid($uuid);
         $options = $this->getFilter($request);
@@ -147,7 +143,7 @@ class StreamController extends AbstractController
                 ];
                 $graph[] = $line;
             } catch (Exception $e) {
-                return $this->json([
+                return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
                     'data' => [],
                     'message' => 'Invalid SQL query',
@@ -155,8 +151,7 @@ class StreamController extends AbstractController
                 ]);
             }
         }
-        return $this->json([
-            'error' => 0,
+        return $this->responseSuccess([
             'data' => $graph,
         ]);
     }

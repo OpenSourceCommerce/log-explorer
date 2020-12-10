@@ -65,7 +65,7 @@ class Index extends Component {
 
     onDateRangeChanged(from, to) {
         const {isLive, interval} = this.state;
-        if (isLive && !!to) {
+        if (isLive && Boolean(to)) {
             this.setState({
                 isLive: false,
                 disableLive: true
@@ -113,7 +113,7 @@ class Index extends Component {
                             <div className="card-body">
                                 {fields && fields.length > 0 &&
                                 <JsGridTable
-                                    dataSrc="/stream/uuid/list"
+                                    dataSrc="/api/stream/uuid/list"
                                     fields={fields}
                                     pageSize={5}
                                 />}

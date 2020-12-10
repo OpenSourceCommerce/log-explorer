@@ -75,6 +75,14 @@ interface ConnectionInterface
      * Get all column name of the table
      *
      * @param string $table
+     * @return array
+     */
+    public function getRawColumns(string $table): array;
+
+    /**
+     * Get all column name of the table
+     *
+     * @param string $table
      * @return mixed
      */
     public function getColumns(string $table);
@@ -86,4 +94,10 @@ interface ConnectionInterface
      * @return bool
      */
     public function tableExists(string $table): bool;
+
+    /**
+     * Get all tables
+     * @return string[]|array
+     */
+    public function getTables(): array;
 }
