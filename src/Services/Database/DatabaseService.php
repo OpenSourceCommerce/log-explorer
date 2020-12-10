@@ -213,7 +213,6 @@ SETTINGS index_granularity = 8192';
                 $obj = $this->columnService->findById($column['id']);
                 if (empty($obj) || $obj->getTable()->getId() != $table->getId() || $obj->getName() !== $column['name'] || $obj->getType() !== $column['type']) {
                     // not allow to change column name or type
-                    dd($obj->getTable()->getId(), $table->getId(), $obj->getName(), $column['name'], $obj->getType(), $column['type']);
                     throw new ActionDeniedException();
                 }
                 if ($column['title'] !== $obj->getTitle()) {
