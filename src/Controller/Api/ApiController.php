@@ -19,7 +19,7 @@ abstract class ApiController extends AbstractController
      * @param FormInterface $form
      * @return JsonResponse
      */
-    protected function responseFormError(FormInterface $form)
+    protected function responseFormError(FormInterface $form): JsonResponse
     {
         $errors = ['error' => 1, 'fields' => []];
         foreach ($form->getErrors(true) as $key => $error) {
@@ -33,7 +33,7 @@ abstract class ApiController extends AbstractController
      * @param array|string $data
      * @return JsonResponse
      */
-    protected function responseError($data = [])
+    protected function responseError($data = []): JsonResponse
     {
         if (empty($data)) {
             $data = "Unknown error";
@@ -44,7 +44,9 @@ abstract class ApiController extends AbstractController
                 'message' => $data
             ];
         }
-        $data['error'] = 1;
+        if (!isset($data['error'])) {
+            $data['error'] = 1;
+        }
         return new JsonResponse($data);
     }
 
@@ -52,7 +54,7 @@ abstract class ApiController extends AbstractController
      * @param array $data
      * @return JsonResponse
      */
-    protected function responseSuccess($data = [])
+    protected function responseSuccess($data = []): JsonResponse
     {
         $data['error'] = 0;
         return new JsonResponse($data);

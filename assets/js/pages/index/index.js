@@ -113,7 +113,7 @@ class Index extends Component {
                             <div className="card-body">
                                 {fields && fields.length > 0 &&
                                 <JsGridTable
-                                    dataSrc="/stream/uuid/list"
+                                    dataSrc="/api/stream/uuid/list"
                                     fields={fields}
                                     pageSize={5}
                                 />}
