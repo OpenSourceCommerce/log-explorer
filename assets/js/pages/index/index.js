@@ -90,8 +90,6 @@ class Index extends Component {
             disableLive
         } = this.state;
 
-        const getDataTableUrl = '/stream/' + LogTableActions.getUuid() + '/list';
-
         return (
             <div className="dashboard-page">
                 <AdvancedSearch
@@ -115,7 +113,7 @@ class Index extends Component {
                             <div className="card-body">
                                 {fields && fields.length > 0 &&
                                 <JsGridTable
-                                    dataSrc={getDataTableUrl}
+                                    dataSrc="/api/stream/uuid/list"
                                     fields={fields}
                                     pageSize={5}
                                 />}

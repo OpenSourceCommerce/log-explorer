@@ -81,6 +81,9 @@
     "egulias/email-validator": {
         "version": "2.1.21"
     },
+    "friendsofdoctrine/dbal-clickhouse": {
+        "version": "v1.5.3"
+    },
     "monolog/monolog": {
         "version": "2.1.1"
     },

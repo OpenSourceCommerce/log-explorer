@@ -33,5 +33,6 @@ Button.propTypes = {
     type: PropTypes.string,
     color: PropTypes.string,
     children: PropTypes.any,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    onClick: PropTypes.func
 };
