@@ -11,8 +11,8 @@ use App\Exceptions\TableExistException;
 use App\Services\Clickhouse\ClickhouseServiceInterface;
 use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Column\ColumnServiceInterface;
+use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Table\TableServiceInterface;
-use Doctrine\DBAL\Schema\Column;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DatabaseService implements DatabaseServiceInterface
@@ -27,20 +27,34 @@ class DatabaseService implements DatabaseServiceInterface
     private $columnService;
     /** @var ClickhouseServiceInterface */
     private $clickhouseService;
+    /**
+     * @var LogViewServiceInterface
+     */
+    private $dashboardService;
 
+    /**
+     * DatabaseService constructor.
+     * @param EntityManagerInterface $em
+     * @param ConnectionInterface $connection
+     * @param TableServiceInterface $tableService
+     * @param ColumnServiceInterface $columnService
+     * @param ClickhouseServiceInterface $clickhouseService
+     * @param LogViewServiceInterface $dashboardService
+     */
     public function __construct(
         EntityManagerInterface $em,
         ConnectionInterface $connection,
         TableServiceInterface $tableService,
         ColumnServiceInterface $columnService,
-        ClickhouseServiceInterface $clickhouseService
-    )
-    {
+        ClickhouseServiceInterface $clickhouseService,
+        LogViewServiceInterface $dashboardService
+    ) {
         $this->em = $em;
         $this->connection = $connection;
         $this->tableService = $tableService;
         $this->columnService = $columnService;
         $this->clickhouseService = $clickhouseService;
+        $this->dashboardService = $dashboardService;
     }
 
     /**
@@ -78,6 +92,7 @@ class DatabaseService implements DatabaseServiceInterface
         $isExist = true;
         if (is_null($table)) {
             $table = $this->tableService->createTable($tableName, false);
+            $this->dashboardService->createDashboard($table, null);
             $isExist = false;
         }
 
@@ -98,10 +113,10 @@ class DatabaseService implements DatabaseServiceInterface
             if (empty($column)) {
                 $this->columnService->create(
                     $table, [
-                        'name' => $name,
-                        'title' => $title,
-                        'type' => $type
-                    ],
+                    'name' => $name,
+                    'title' => $title,
+                    'type' => $type
+                ],
                     false
                 );
             }
@@ -162,12 +177,14 @@ class DatabaseService implements DatabaseServiceInterface
         }
         $this->em->flush();
 
+        $this->dashboardService->createDashboard($table, null);
+
         return $table;
     }
 
     private function makeCreateTableQuery(string $name, array $columns): string
     {
-        $query = 'CREATE TABLE '.$name.' (';
+        $query = 'CREATE TABLE ' . $name . ' (';
         foreach ($columns as $k => $column) {
             if (!empty($k)) {
                 $query .= ',';

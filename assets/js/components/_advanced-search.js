@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button} from './_button';
-import {FilterDate, FilterText} from '.';
+import {FilterDate, FilterText, Button} from '.';
 import '../../styles/component/_advanced-search.scss';
 
-export default class AdvancedSearch extends React.Component {
+export class AdvancedSearch extends React.Component {
     render() {
         const {onDateRangeChanged} = this.props;
         return (

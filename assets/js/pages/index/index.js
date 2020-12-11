@@ -1,11 +1,16 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader} from '../../components';
-import {JsGridTable} from '../../components/_js-grid-table';
+import {
+    CardHeader,
+    CardTool,
+    AdvancedSearch,
+    Summary,
+    FlotChart,
+    JsGridTable,
+    DropdownItem,
+    Modal
+} from '../../components';
 import {Live, LogTableActions, Event} from '../../actions';
-import {FlotChart} from '../../components/_flot-chart';
-import {Summary} from '../../components/_summary';
-import AdvancedSearch from '../../components/_advanced-search';
 
 class Index extends Component {
     constructor(props) {
@@ -15,11 +20,14 @@ class Index extends Component {
             isRetrieveAllData: false,
             isLive: true,
             disableLive: false,
-            interval: 2000
+            interval: 2000,
+            showTableSettingModal: false
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
+        this.showTableSettingModal = this.showTableSettingModal.bind(this);
+        this.hideTableSettingModal = this.hideTableSettingModal.bind(this);
     }
 
     async loadData() {
@@ -82,13 +90,26 @@ class Index extends Component {
         Live.refresh();
     }
 
+    showTableSettingModal(event) {
+        event.preventDefault();
+        this.setState({showTableSettingModal: true});
+    }
+
+    hideTableSettingModal(event) {
+        event.preventDefault();
+        this.setState({showTableSettingModal: false});
+    }
+
     render() {
         const {
             fields,
             isRetrieveAllData,
             isLive,
-            disableLive
+            disableLive,
+            showTableSettingModal
         } = this.state;
+
+        const getDataTableUrl = '/api/stream/' + LogTableActions.getUuid() + '/list';
 
         return (
             <div className="dashboard-page">
@@ -108,12 +129,26 @@ class Index extends Component {
                         </div>
                     </div>
                     {isRetrieveAllData ? (<div className="col-12 col-md-auto">
+                        <Modal title={'Table Setting'} id={'table-setting'} saveButtonTitle={'Save'}
+                            show={showTableSettingModal}
+                            saveButtonAction={() => {
+                                console.log('saved!!!');
+                            }}
+                            onHidden={this.hideTableSettingModal}>
+                            Text thử xem sao
+                        </Modal>
                         <div className="card">
-                            <CardHeader title="Home Page"/>
+                            <CardHeader title="Home Page">
+                                <CardTool>
+                                    <DropdownItem onClick={this.showTableSettingModal}>
+                                        Setting
+                                    </DropdownItem>
+                                </CardTool>
+                            </CardHeader>
                             <div className="card-body">
                                 {fields && fields.length > 0 &&
                                 <JsGridTable
-                                    dataSrc="/api/stream/uuid/list"
+                                    dataSrc={getDataTableUrl}
                                     fields={fields}
                                     pageSize={5}
                                 />}

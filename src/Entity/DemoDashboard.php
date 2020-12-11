@@ -4,7 +4,7 @@
 namespace App\Entity;
 
 
-class Dashboard
+class DemoDashboard
 {
     private $table = 'nginx_access';
 
@@ -12,45 +12,34 @@ class Dashboard
         [
             'name' => 'url',
             'title' => 'URL',
-            'type' => 'text',
         ],
         [
             'name' => 'referer',
             'title' => 'Referer',
-            'type' => 'text',
         ],
         [
             'name' => 'ip',
             'title' => 'IP',
-            'type' => 'text',
         ],
         [
             'name' => 'timestamp',
             'title' => 'Time',
-            'type' => 'text',
         ],
         [
             'name' => 'status',
             'title' => 'Status',
-            'type' => 'text',
         ],
         [
             'name' => 'user_agent',
             'title' => 'User Agent',
-            'type' => 'text',
-            'visible' => false,
         ],
         [
             'name' => 'customer',
             'title' => 'Customer',
-            'type' => 'text',
-            'visible' => false,
         ],
         [
             'name' => 'body_bytes_sent',
             'title' => 'Size',
-            'type' => 'text',
-            'visible' => false,
         ],
     ];
 
@@ -86,37 +75,43 @@ class Dashboard
     private $graphFixedOffset = null;
 
     /**
-     * @return string
+     * @return Table
      */
-    public function getTable(): string
+    public function getTable(): Table
     {
-        return $this->table;
+        $table = new Table();
+        $table->setName($this->table);
+        return $table;
     }
 
     /**
-     * @param string $table
-     * @return self
-     */
-    public function setTable(string $table): self
-    {
-        $this->table = $table;
-        return $this;
-    }
-
-    /**
-     * @return array
+     * @return Column[]|array
      */
     public function getColumns(): array
     {
-        return $this->columns;
+        $columns = [];
+        foreach ($this->columns as $column) {
+            $c = new Column();
+            $c->setName($column['name']);
+            $c->setTitle($column['title']);
+            $columns[] = $c;
+        }
+        return $columns;
     }
 
     /**
-     * @return array
+     * @return Column[]|array
      */
     public function getSummaryColumns(): array
     {
-        return $this->summaryColumns;
+        $columns = [];
+        foreach ($this->summaryColumns as $column) {
+            $c = new Column();
+            $c->setName($column['name']);
+            $c->setTitle($column['title']);
+            $columns[] = $c;
+        }
+        return $columns;
     }
 
     /**
