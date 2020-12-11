@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Input} from '../../components';
+import {Input} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
 import {Button} from '../../components/_button';
 
@@ -181,10 +181,15 @@ class DatabaseForm extends Component {
             </div>;
         });
 
+        const featureName = window.location.pathname.split('/');
+
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <div className="card-header">
+                        <h3 className="card-title align-items-center p-2">{featureName[2] === 'create' ? 'Create new database' : 'Update database'}</h3>
+                        <Button className="float-right" color={'success'} onClick={this.onSubmit} >Submit</Button>
+                    </div>
                     <div className="card-body">
                         <form role="form">
                             <div className="form-group">
@@ -211,8 +216,7 @@ class DatabaseForm extends Component {
                             {_columns}
 
                             <div className="box-footer">
-                                <Button color={'success'} onClick={this.onSubmit} >Submit</Button>
-                                <Button color={'primary'} className={'ml-3'} onClick={this.addMoreColumn} >Add more column</Button>
+                                <Button color={'primary'} onClick={this.addMoreColumn} >Add more column</Button>
                             </div>
                         </form>
                     </div>

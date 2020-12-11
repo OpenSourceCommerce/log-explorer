@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import {Button} from './_button';
 import {FilterDate, FilterText} from '.';
 import '../../styles/component/_advanced-search.scss';
+import {Live} from "../actions";
 
-export default class AdvancedSearch extends React.Component {
+export class AdvancedSearch extends React.Component {
     render() {
         const {onDateRangeChanged} = this.props;
         return (
@@ -25,7 +26,9 @@ export default class AdvancedSearch extends React.Component {
                                 />
                             </div>
                             <div className="col-12 col-md-2 btn-action-group mt-4">
-                                <Button className="btn-search w-100 mt-0 mt-md-2">SEARCH</Button>
+                                <Button className="btn-search w-100 mt-0 mt-md-2" onClick={() => Live.refresh()}>
+                                    SEARCH
+                                </Button>
                             </div>
                         </div>
                     </div>
