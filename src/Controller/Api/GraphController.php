@@ -17,6 +17,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class GraphController extends ApiController
 {
     /**
+     * @Route("/api/graph", methods = "GET")
+     * @param GraphServiceInterface $graphService
+     * @return Response
+     */
+    public function list(GraphServiceInterface $graphService): Response
+    {
+        $data = $graphService->getAllGraph();
+        return $this->responseSuccess([
+            'data' => $data,
+        ]);
+    }
+
+    /**
      * @Route("/api/graph/{id}", methods = "GET")
      * @param Graph $graph
      * @return Response
@@ -89,5 +102,17 @@ class GraphController extends ApiController
             return $this->responseSuccess();
         }
         return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/graph/{id}", methods = "DELETE")
+     * @param Graph $graph
+     * @param GraphServiceInterface $graphService
+     * @return Response
+     */
+    public function delete(Graph $graph, GraphServiceInterface $graphService): Response
+    {
+        $graphService->delete($graph);
+        return $this->responseSuccess();
     }
 }

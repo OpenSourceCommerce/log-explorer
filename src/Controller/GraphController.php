@@ -14,11 +14,9 @@ class GraphController extends AbstractController
     /**
      * @Route("/graph", name="graph")
      */
-    public function index()
+    public function index(): Response
     {
-        return $this->render('index/index.html.twig', [
-            'controller_name' => 'IndexController',
-        ]);
+        return $this->render('graph/index.html.twig');
     }
 
     /**

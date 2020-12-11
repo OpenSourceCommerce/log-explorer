@@ -8,7 +8,9 @@ use App\Entity\Graph;
 use App\Entity\GraphLine;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
+use App\Repository\GraphRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 
 class GraphService implements GraphServiceInterface
 {
@@ -20,8 +22,20 @@ class GraphService implements GraphServiceInterface
         $this->em = $em;
     }
 
-    private function checkIfFilterInvalid(?string $sql): bool
+    /**
+     * @return GraphRepository
+     */
+    private function getRepository(): ObjectRepository
     {
+        return $this->em->getRepository(Graph::class);
+    }
+
+    private function checkIfFilterInvalid(string $table, ?string $sql): bool
+    {
+        if (empty($sql)) {
+            return false;
+        }
+        // TODO: check sql is valid or not?
         return false;
     }
 
@@ -35,7 +49,7 @@ class GraphService implements GraphServiceInterface
             if ($line->getId()) {
                 throw new ActionDeniedException();
             }
-            if ($this->checkIfFilterInvalid($line->getFilter())) {
+            if ($this->checkIfFilterInvalid($graph->getTable()->getName(), $line->getFilter())) {
                 throw new BadSqlException('Bad sql: "'.$line->getFilter().'"');
             }
             $graph->addLine($line);
@@ -76,5 +90,22 @@ class GraphService implements GraphServiceInterface
         $this->em->persist($graph);
         $this->em->flush();
         return $graph;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllGraph(): array
+    {
+        return $this->getRepository()->findAll();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(Graph $graph)
+    {
+        $this->em->remove($graph);
+        $this->em->flush();
     }
 }

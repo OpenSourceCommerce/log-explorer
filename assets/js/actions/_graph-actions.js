@@ -10,6 +10,12 @@ const GraphActions = {
     },
     loadGraph(id) {
         return request('/api/graph/' + id);
+    },
+    deleteGraph(id) {
+        return request('/api/graph/' + id, {method: 'DELETE'});
+    },
+    listGraph() {
+        return request('/api/graph');
     }
 };
 

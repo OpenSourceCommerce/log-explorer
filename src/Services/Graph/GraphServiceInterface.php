@@ -27,4 +27,14 @@ interface GraphServiceInterface
      * @throws BadSqlException
      */
     public function updateGraph(Graph $graph, array $lines): Graph;
+
+    /**
+     * @return Graph[]|array
+     */
+    public function getAllGraph(): array;
+
+    /**
+     * @param Graph $graph
+     */
+    public function delete(Graph $graph);
 }

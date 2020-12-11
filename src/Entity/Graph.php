@@ -166,8 +166,10 @@ class Graph implements \JsonSerializable
         return [
             'id' => $this->getId(),
             'table_id' => $this->getTable()->getId(),
+            'table_name' => $this->getTable()->getName(),
             'title' => $this->getTitle(),
             'max_point' => $this->getMaxPoint(),
+            'last_updated' => ($this->getUpdatedAt() ?? $this->getCreatedAt())->format('Y-m-d H:i'),
         ];
     }
 }

@@ -1,0 +1,90 @@
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import {CardHeader, Table, Link, Button} from '../../components';
+import {Alert, GraphActions} from '../../actions';
+import {Icon} from "../../components/_icon";
+
+class GraphList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            graphs: []
+        };
+    }
+
+    componentDidMount() {
+        const that = this;
+        GraphActions.listGraph()
+            .then(res => {
+                const {error, data} = res;
+                if (error) {
+                    return;
+                }
+
+                that.setState({
+                    graphs: data
+                });
+            });
+    }
+
+    deleteGraph(key) {
+        const {graphs} = this.state;
+        const that = this;
+        GraphActions.deleteGraph(graphs[key].id)
+            .then(res => {
+                const {error} = res;
+                if (error) {
+                    return;
+                }
+                graphs.slice(key, 1);
+                that.setState({graphs});
+                Alert.success("Delete successful");
+            })
+    }
+
+    render() {
+        const {graphs} = this.state;
+
+        return (
+            <div className="database">
+                <div className="card">
+                    <CardHeader title="Graph list" showCollapseButton={false} showRemoveButton={false}/>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-12">
+                                <Table>
+                                    <thead>
+                                        <tr>
+                                            <th>Table</th>
+                                            <th>Title</th>
+                                            <th>Max point</th>
+                                            <th>Last update</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {graphs.map((item, key) => {
+                                            const url = '/graph/' + item.id;
+                                            return <tr key={key}>
+                                                <td>{item.table_name}</td>
+                                                <td>{item.title}</td>
+                                                <td>{item.max_point}</td>
+                                                <td>{item.last_updated}</td>
+                                                <td>
+                                                    <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
+                                                    <Button onClick={(e) => this.deleteGraph(key)} color={'danger'}><Icon name={'trash'}/></Button>
+                                                </td>
+                                            </tr>;
+                                        })}
+                                    </tbody>
+                                </Table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(<GraphList/>, document.querySelector('#root'));
