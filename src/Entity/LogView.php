@@ -2,17 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\DashboardRepository;
+use App\Repository\LogViewRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
- * @ORM\Entity(repositoryClass=DashboardRepository::class)
- * @ORM\Table(name="dashboards")
+ * @ORM\Entity(repositoryClass=LogViewRepository::class)
+ * @ORM\Table(name="logviews")
  * @ORM\HasLifecycleCallbacks
  */
-class Dashboard
+class LogView
 {
     /**
      * @ORM\Id
@@ -22,6 +23,8 @@ class Dashboard
     private $id;
 
     /**
+     * @var UuidInterface
+     *
      * @ORM\Column(type="uuid", unique=true)
      */
     private $uuid;
@@ -39,13 +42,14 @@ class Dashboard
 
     /**
      * @ORM\ManyToMany(targetEntity=Column::class)
-     * @ORM\JoinTable(name="dashboard_summary")
+     * @ORM\JoinTable(name="logview_summary")
      */
     private $summary;
 
     public function __construct()
     {
         $this->summary = new ArrayCollection();
+        $this->uuid = Uuid::uuid4();
     }
 
     public function getId(): ?int
@@ -53,16 +57,9 @@ class Dashboard
         return $this->id;
     }
 
-    public function getUuid()
+    public function getUuid(): UuidInterface
     {
         return $this->uuid;
-    }
-
-    public function setUuid($uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -90,9 +87,9 @@ class Dashboard
     }
 
     /**
-     * @return Collection|Column[]
+     * @return ArrayCollection
      */
-    public function getSummary(): Collection
+    public function getSummary(): ArrayCollection
     {
         return $this->summary;
     }

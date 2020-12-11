@@ -5,8 +5,8 @@ namespace App\Controller\Api;
 
 
 use App\Constant\ErrorCodeConstant;
-use App\Entity\Dashboard;
-use App\Services\Dashboard\DashboardServiceInterface;
+use App\Entity\LogView;
+use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,11 +17,11 @@ class StreamController extends ApiController
 {
     /**
      * @Route("/api/stream/{uuid}/table", methods = "GET")
-     * @param Dashboard|null $dashboard
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogView|null $dashboard
+     * @param LogViewServiceInterface $dashboardService
      * @return JsonResponse
      */
-    public function table(?Dashboard $dashboard, DashboardServiceInterface $dashboardService): JsonResponse
+    public function table(?LogView $dashboard, LogViewServiceInterface $dashboardService): JsonResponse
     {
         if (is_null($dashboard)) {
             $dashboard = $dashboardService->getDefault();
@@ -62,13 +62,13 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/list", methods = "GET")
-     * @param Dashboard|null $dashboard
+     * @param LogView|null $dashboard
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function list(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
+    public function list(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         if (is_null($dashboard)) {
             $dashboard = $dashboardService->getDefault();
@@ -100,13 +100,13 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/summary", methods = "GET")
-     * @param Dashboard|null $dashboard
+     * @param LogView|null $dashboard
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
+    public function summary(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         if (is_null($dashboard)) {
             $dashboard = $dashboardService->getDefault();
@@ -140,13 +140,13 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/graph", methods = "GET")
-     * @param Dashboard|null $dashboard
+     * @param LogView|null $dashboard
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph(?Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
+    public function graph(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
     {
         $dashboard = $dashboardService->getDefault();
         $options = $this->getFilter($request);

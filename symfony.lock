@@ -93,9 +93,6 @@
     "ocramius/proxy-manager": {
         "version": "2.2.3"
     },
-    "opensourcecommerce/dbal-clickhouse": {
-        "version": "1.5.5"
-    },
     "php": {
         "version": "7.3"
     },
