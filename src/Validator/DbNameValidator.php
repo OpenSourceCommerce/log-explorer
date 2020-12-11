@@ -17,7 +17,7 @@ class DbNameValidator extends ConstraintValidator
         }
 
         $this->context->buildViolation($constraint->message)
-            ->setParameter('{{ name }}', $value)
+            ->setParameter('{{ name }}', $value ?? '')
             ->addViolation();
     }
 }
