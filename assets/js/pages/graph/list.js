@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Button} from '../../components';
+import {CardHeader, Table, Link, Button, Icon} from '../../components';
 import {Alert, GraphActions} from '../../actions';
-import {Icon} from "../../components/_icon";
 
 class GraphList extends Component {
     constructor(props) {
@@ -36,10 +35,11 @@ class GraphList extends Component {
                 if (error) {
                     return;
                 }
-                graphs.slice(key, 1);
+
+                graphs.splice(key, 1);
                 that.setState({graphs});
-                Alert.success("Delete successful");
-            })
+                Alert.success('Delete successful');
+            });
     }
 
     render() {
@@ -72,7 +72,7 @@ class GraphList extends Component {
                                                 <td>{item.last_updated}</td>
                                                 <td>
                                                     <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
-                                                    <Button onClick={(e) => this.deleteGraph(key)} color={'danger'}><Icon name={'trash'}/></Button>
+                                                    <Button onClick={e => this.deleteGraph(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                                 </td>
                                             </tr>;
                                         })}
