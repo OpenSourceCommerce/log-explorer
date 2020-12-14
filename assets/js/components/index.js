@@ -23,3 +23,6 @@ export const {FilterText} = require('./_filter-text');
 export const {LiveButton} = require('./_live-button');
 export const {ControlSidebar} = require('./_control-sidebar');
 export const {LogDetailSidebar} = require('./_log-detail-sidebar');
+export const {AdvancedSearch} = require('./_advanced-search');
+export const {FlotChart} = require('./_flot-chart');
+export const {JsGridTable} = require('./_js-grid-table');

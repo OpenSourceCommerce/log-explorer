@@ -46,6 +46,7 @@ Encore
 	.addEntry('sidebar', './assets/js/components/_sidebar.js')
 	.addEntry('js_grid', './assets/js/components/_js-grid-table.js')
 	.addEntry('flot_chart', './assets/js/components/_flot-chart.js')
+	.addEntry('content-header', './assets/js/components/_content-header.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
 
