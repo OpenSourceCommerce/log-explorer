@@ -2,7 +2,9 @@
 
 namespace App\Command;
 
-use App\Services\Clickhouse\Connection;
+use App\Exceptions\TableExistException;
+use App\Services\Database\DatabaseServiceInterface;
+use Doctrine\DBAL\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,17 +13,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CreateSampleDatabaseCommand extends Command
 {
     protected static $defaultName = 'app:createsampledatabase';
-    /** @var Connection */
-    private $connection;
+
+    /** @var DatabaseServiceInterface */
+    private $databaseService;
 
     /**
      * @param string|null $name
-     * @param Connection $connection
+     * @param DatabaseServiceInterface $databaseService
      */
-    public function __construct(string $name = null, Connection $connection)
+    public function __construct(string $name = null, DatabaseServiceInterface $databaseService)
     {
         parent::__construct($name);
-        $this->connection = $connection;
+        $this->databaseService = $databaseService;
     }
 
     protected function configure()
@@ -35,34 +38,26 @@ class CreateSampleDatabaseCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $em = $this->connection->getSchemaManager();
-        if ($em->tablesExist('nginx_access')) {
+        try {
+            $this->databaseService->createTable('nginx_access', [
+                ['name' => 'ip', 'title' => 'IP', 'type' => 'String'],
+                ['name' => 'customer', 'title' => 'Customer', 'type' => 'String'],
+                ['name' => 'timestamp', 'title' => 'Time', 'type' => 'DateTime'],
+                ['name' => 'url', 'title' => 'URL', 'type' => 'String'],
+                ['name' => 'status', 'title' => 'Status', 'type' => 'UInt16'],
+                ['name' => 'body_bytes_sent', 'title' => 'Size', 'type' => 'UInt64'],
+                ['name' => 'referer', 'title' => 'Referer', 'type' => 'String'],
+                ['name' => 'user_agent', 'title' => 'Agent', 'type' => 'String'],
+            ]);
+        } catch (TableExistException $e) {
             $io->success("Table exist.");
             return Command::SUCCESS;
-        }
-
-        $sql = "CREATE TABLE IF NOT EXISTS logs.nginx_access
-(
-    `ip` String,
-    `customer` String,
-    `timestamp` DateTime,
-    `url` String,
-    `status` UInt16,
-    `body_bytes_sent` UInt64,
-    `referer` String,
-    `user_agent` String
-)
-ENGINE = MergeTree
-PARTITION BY (toYYYYMM(timestamp), customer)
-ORDER BY timestamp
-SETTINGS index_granularity = 8192";
-
-        if ($this->connection->exec($sql)) {
-            $io->success('Done');
-            return Command::SUCCESS;
-        } else {
+        } catch (Exception $e) {
+            dd($e);
             $io->error("Not success");
             return Command::FAILURE;
         }
+        $io->success('Done');
+        return Command::SUCCESS;
     }
 }

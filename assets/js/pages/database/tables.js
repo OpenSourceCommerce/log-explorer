@@ -92,19 +92,20 @@ class DatabaseTables extends Component {
                     <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-3 col-md-2">Table</div>
-                            <div className="col-6 col-md-6">
+                            <div className="col-12 col-md-4">
                                 <select className="form-control" value={currentTable} onChange={this.onTableChange}>
-                                    <option value="">Please select</option>
+                                    <option value="">Please select table</option>
                                     {tables.map((item, key) => {
                                         return <option key={key} value={item.name}>{item.name}</option>;
                                     })}
                                 </select>
                             </div>
-                            <div className="col-3 col-md-4">
-                                <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary">Update</Button>
-                                <Link href="/database/create" className="btn btn-success ml-3">Create table</Link>
-                                <Button onClick={this.syncAll} className="btn btn-success ml-3">Sync table</Button>
+                            <div className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
+                                <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary mr-md-2 mb-2">Update</Button>
+                                <div className="ml-auto ml-md-0">
+                                    <Link href="/database/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
+                                    <Button onClick={this.syncAll} className="btn btn-success text-nowrap">Sync table</Button>
+                                </div>
                             </div>
                         </div>
                         <div className="row">

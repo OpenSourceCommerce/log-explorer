@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader} from '../../components';
-import {GraphComponent} from "./graph";
+import {GraphComponent} from './graph';
 
 class GraphForm extends Component {
     render() {

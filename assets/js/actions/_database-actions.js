@@ -10,19 +10,13 @@ const DatabaseActions = {
     getTableColumns(table) {
         return request('/api/database/' + table + '/columns', {method: 'GET'});
     },
-    createOrUpdate(tableId, table, columns) {
+    createOrUpdate(tableId, data) {
         if (tableId) {
-            return request('/api/database/' + tableId, {method: 'PUT', body: JSON.stringify({
-                name: table,
-                columns
-            })});
+            return request('/api/database/' + tableId, {method: 'PUT', body: JSON.stringify(data)});
         }
 
         return request('/api/database/create', {
-            method: 'POST', body: JSON.stringify({
-                name: table,
-                columns
-            })
+            method: 'POST', body: JSON.stringify(data)
         });
     }
 };

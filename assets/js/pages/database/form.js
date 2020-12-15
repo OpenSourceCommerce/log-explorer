@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Input} from '../../components';
+import {Input} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
 import {Button} from '../../components/_button';
 
@@ -16,11 +16,13 @@ class DatabaseForm extends Component {
             tableId: window.table_id ? window.table_id : '',
             table: '',
             columns,
+            ttl: '',
             tableError: false,
             noColumnError: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.addMoreColumn = this.addMoreColumn.bind(this);
+        this.onTTLChange = this.onTTLChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -65,6 +67,12 @@ class DatabaseForm extends Component {
         });
     }
 
+    onTTLChange(e) {
+        this.setState({
+            ttl: e.target.value
+        });
+    }
+
     onColumnChange(key, name, e) {
         const {columns} = this.state;
         columns[key][name] = e.target.value;
@@ -86,8 +94,9 @@ class DatabaseForm extends Component {
     }
 
     onSubmit() {
-        let {tableId, table, columns} = this.state;
+        let {tableId, table, ttl, columns} = this.state;
         table = $.trim(table);
+        ttl = $.trim(ttl);
         const validColumns = [];
         let hasErrorBefore = false;
         let hasError = false;
@@ -140,7 +149,11 @@ class DatabaseForm extends Component {
 
         if (!hasError) {
             const that = this;
-            DatabaseActions.createOrUpdate(tableId, table, validColumns)
+            DatabaseActions.createOrUpdate(tableId, {
+                name: table,
+                ttl,
+                columns: validColumns
+            })
                 .then(res => {
                     const {error, redirect} = res;
                     if (error !== 0) {
@@ -158,7 +171,7 @@ class DatabaseForm extends Component {
     }
 
     render() {
-        const {tableId, table, columns, tableError, noColumnError} = this.state;
+        const {tableId, table, ttl, columns, tableError, noColumnError} = this.state;
         const readonly = tableId !== '';
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
@@ -184,13 +197,21 @@ class DatabaseForm extends Component {
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <div className="card-header">
+                        <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
+                        <Button className="float-right" color={'success'} onClick={this.onSubmit} >{tableId === '' ? 'Create table' : 'Update table'}</Button>
+                    </div>
                     <div className="card-body">
                         <form role="form">
                             <div className="form-group">
                                 <label>Table name</label>
                                 <Input disabled={readonly} className={tableError ? 'is-invalid' : ''} placeholder="Table name" value={table} onChange={this.onTableChange}/>
                             </div>
+                            {tableId === '' &&
+                            <div className="form-group">
+                                <label>Table TTL</label>
+                                <Input disabled={readonly} placeholder="timestamp + toIntervalMonth(100)" value={ttl} onChange={this.onTTLChange}/>
+                            </div>}
                             <div className="form-group">
                                 <label htmlFor="exampleInputPassword1">Column</label>
                                 {noColumnError && <div className={'row has-error'}>
@@ -211,8 +232,7 @@ class DatabaseForm extends Component {
                             {_columns}
 
                             <div className="box-footer">
-                                <Button color={'success'} onClick={this.onSubmit} >Submit</Button>
-                                <Button color={'primary'} className={'ml-3'} onClick={this.addMoreColumn} >Add more column</Button>
+                                <Button color={'primary'} onClick={this.addMoreColumn} >Add more column</Button>
                             </div>
                         </form>
                     </div>

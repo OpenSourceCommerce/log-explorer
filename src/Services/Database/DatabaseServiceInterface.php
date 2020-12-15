@@ -15,11 +15,12 @@ interface DatabaseServiceInterface
     /**
      * @param string $name
      * @param array $columns
+     * @param array $options
      * @return Table|null
      * @throws TableExistException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function createTable(string $name, array $columns): ?Table;
+    public function createTable(string $name, array $columns, array $options = []): ?Table;
 
     /**
      * @param Table $table

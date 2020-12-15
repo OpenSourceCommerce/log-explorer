@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Input, Button, Icon} from '../../components';
 import {Alert, DatabaseActions, GraphActions} from '../../actions';
-import PropTypes from "prop-types";
-import {Link} from "../../components/_link";
+import PropTypes from 'prop-types';
+import {Link} from '../../components/_link';
 
 export class GraphComponent extends Component {
     constructor(props) {
@@ -69,12 +69,15 @@ export class GraphComponent extends Component {
         if (table === null) {
             this.loadTable();
         }
+
         if (id && $.isEmptyObject(graph)) {
             this.loadData(id);
         }
+
         if (!$.isEmptyObject(graph)) {
             this.setState(graph);
         }
+
         this.setState({id, table});
     }
 
@@ -154,6 +157,7 @@ export class GraphComponent extends Component {
             });
             hasError = true;
         }
+
         title = $.trim(title);
         maxPoint = parseInt(maxPoint);
 
@@ -241,7 +245,7 @@ export class GraphComponent extends Component {
             <div className={className}>
                 <div className="form-group">
                     <label>Table</label>
-                    {table && <Link className={'ml-3'} href={'/database/' + table} children={table} />}
+                    {table && <Link className={'ml-3'} href={'/database/' + table} >{table}</Link>}
                     {tables.length > 0 && <select value={tableId} className={tableError ? 'form-control is-invalid' : 'form-control'} onChange={this.onTableChange}>
                         <option value="">Select table</option>
                         {tables.map((item, key) => {
@@ -285,4 +289,5 @@ GraphComponent.propTypes = {
     id: PropTypes.string,
     table: PropTypes.string,
     graph: PropTypes.object,
+    className: PropTypes.string
 };

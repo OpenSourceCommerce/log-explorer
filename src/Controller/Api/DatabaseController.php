@@ -69,7 +69,10 @@ class DatabaseController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $table = $databaseService->createTable($form->get('name')->getData(), $form->get('columns')->getData());
+                $options = [
+                    'ttl' => $form->get('ttl')->getData()
+                ];
+                $table = $databaseService->createTable($form->get('name')->getData(), $form->get('columns')->getData(), $options);
             } catch (TableExistException $e) {
                 return $this->responseError([
                     'message' => 'Table already exist'
@@ -84,9 +87,7 @@ class DatabaseController extends ApiController
                 'redirect' => $urlGenerator->generate('database_update', ['name' => $table->getName()])
             ]);
         }
-        return $this->responseError([
-            'message' => 'Can not create table'
-        ]);
+        return $this->responseFormError($form);
     }
 
     /**

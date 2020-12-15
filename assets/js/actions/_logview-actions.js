@@ -6,7 +6,7 @@ const LogViewActions = {
     },
     loadLogView(uuid) {
         return request('/api/logview/' + uuid);
-    },
+    }
 };
 
 export default LogViewActions;

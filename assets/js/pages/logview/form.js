@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader} from '../../components';
 import {LogViewActions} from '../../actions';
-import {GraphComponent} from "../graph/graph";
+import {GraphComponent} from '../graph/graph';
 
 class LogViewForm extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ class LogViewForm extends Component {
         this.state = {
             uuid: window.logview,
             table: '',
-            graph: null,
+            graph: null
         };
     }
 
@@ -26,13 +26,13 @@ class LogViewForm extends Component {
 
                 const {id, table_id, title, max_point, lines} = graph;
                 that.setState({
-                    table: table,
+                    table,
                     graph: {
-                        id: id + '',
-                        tableId: table_id + '',
-                        title: title,
-                        maxPoint: max_point + '',
-                        lines: lines,
+                        id: String(id),
+                        tableId: String(table_id),
+                        title,
+                        maxPoint: String(max_point),
+                        lines
                     }
                 });
             });
@@ -46,14 +46,13 @@ class LogViewForm extends Component {
     render() {
         const {table, graph} = this.state;
 
-
         return (
             <div className="database">
                 <div className="card">
                     <CardHeader title="Graph setting" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <form role="form">
-                            <GraphComponent id={graph ? graph.id : ''} table={table} graph={graph ? graph: {}} />
+                            <GraphComponent id={graph ? graph.id : ''} table={table} graph={graph ? graph : {}} />
                         </form>
                     </div>
                 </div>
