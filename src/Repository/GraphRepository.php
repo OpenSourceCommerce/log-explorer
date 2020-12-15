@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Graph;
+use App\Entity\LogView;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,15 @@ class GraphRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Graph::class);
+    }
+
+    public function findAllNotLogView()
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.logView', 'v')
+            ->where('v.id IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

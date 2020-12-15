@@ -112,6 +112,9 @@ class GraphController extends ApiController
      */
     public function delete(Graph $graph, GraphServiceInterface $graphService): Response
     {
+        if ($graph->getLogView()) {
+            $this->responseError('Can not delete graph of log view');
+        }
         $graphService->delete($graph);
         return $this->responseSuccess();
     }

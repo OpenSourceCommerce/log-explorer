@@ -4,6 +4,7 @@
 namespace App\Services\LogView;
 
 
+use App\Entity\Graph;
 use App\Entity\LogView;
 use App\Entity\DemoDashboard;
 use App\Entity\Table;
@@ -17,8 +18,10 @@ interface LogViewServiceInterface
 
     /**
      * @param Table $table
+     * @param Graph $graph
      * @param string|null $name
+     * @param bool $flush
      * @return mixed
      */
-    public function createDashboard(Table $table, ?string $name): LogView;
+    public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView;
 }

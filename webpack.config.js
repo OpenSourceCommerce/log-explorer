@@ -44,6 +44,7 @@ Encore
 	.addEntry('database_form', './assets/js/pages/database/form.js')
 	.addEntry('graph_form', './assets/js/pages/graph/form.js')
 	.addEntry('graph_list', './assets/js/pages/graph/list.js')
+	.addEntry('logview_form', './assets/js/pages/logview/form.js')
 	.addEntry('navbar', './assets/js/components/_navbar.js')
 	.addEntry('sidebar', './assets/js/components/_sidebar.js')
 	.addEntry('js_grid', './assets/js/components/_js-grid-table.js')

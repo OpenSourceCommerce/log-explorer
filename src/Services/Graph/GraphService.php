@@ -6,6 +6,7 @@ namespace App\Services\Graph;
 
 use App\Entity\Graph;
 use App\Entity\GraphLine;
+use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 use App\Repository\GraphRepository;
@@ -30,7 +31,7 @@ class GraphService implements GraphServiceInterface
         return $this->em->getRepository(Graph::class);
     }
 
-    private function checkIfFilterInvalid(string $table, ?string $sql): bool
+    private function checkIfFilterInvalid(string $table, ?string $sql = null): bool
     {
         if (empty($sql)) {
             return false;
@@ -78,7 +79,7 @@ class GraphService implements GraphServiceInterface
                     throw new ActionDeniedException();
                 }
             }
-            if ($this->checkIfFilterInvalid($line->getFilter())) {
+            if ($this->checkIfFilterInvalid($graph->getTable()->getName(), $line->getFilter())) {
                 throw new BadSqlException('Bad sql: "'.$line->getFilter().'"');
             }
             $graph->addLine($line);
@@ -97,7 +98,7 @@ class GraphService implements GraphServiceInterface
      */
     public function getAllGraph(): array
     {
-        return $this->getRepository()->findAll();
+        return $this->getRepository()->findAllNotLogView();
     }
 
     /**
@@ -107,5 +108,21 @@ class GraphService implements GraphServiceInterface
     {
         $this->em->remove($graph);
         $this->em->flush();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createLogViewGraph(Table $table, int $maxPoint = 12, bool $flush = true): Graph
+    {
+        $graph = new Graph();
+        $graph->setTitle('Log view');
+        $graph->setTable($table);
+        $graph->setMaxPoint($maxPoint);
+        $this->em->persist($graph);
+        if ($flush) {
+            $this->em->flush();
+        }
+        return $graph;
     }
 }

@@ -52,6 +52,11 @@ class Graph implements \JsonSerializable
      */
     private $updatedAt;
 
+    /**
+     * @ORM\OneToOne(targetEntity=LogView::class, mappedBy="graph", cascade={"persist", "remove"})
+     */
+    private $logView;
+
     public function __construct()
     {
         $this->lines = new ArrayCollection();
@@ -171,5 +176,22 @@ class Graph implements \JsonSerializable
             'max_point' => $this->getMaxPoint(),
             'last_updated' => ($this->getUpdatedAt() ?? $this->getCreatedAt())->format('Y-m-d H:i'),
         ];
+    }
+
+    public function getLogView(): ?LogView
+    {
+        return $this->logView;
+    }
+
+    public function setLogView(LogView $logView): self
+    {
+        // set the owning side of the relation if necessary
+        if ($logView->getGraph3() !== $this) {
+            $logView->setGraph3($this);
+        }
+
+        $this->logView = $logView;
+
+        return $this;
     }
 }

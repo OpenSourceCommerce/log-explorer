@@ -4,6 +4,7 @@
 namespace App\Services\LogView;
 
 
+use App\Entity\Graph;
 use App\Entity\LogView;
 use App\Entity\DemoDashboard;
 use App\Entity\Table;
@@ -36,7 +37,7 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function createDashboard(Table $table, ?string $name): LogView
+    public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView
     {
         if (empty($name)) {
             $name = $table->getName();
@@ -45,18 +46,22 @@ class LogViewService implements LogViewServiceInterface
         $dashboard = new LogView();
         $dashboard->setTable($table);
         $dashboard->setName($name);
+        $dashboard->setGraph($graph);
 
-        return $this->save($dashboard);
+        return $this->save($dashboard, $flush);
     }
 
     /**
      * @param LogView $dashboard
+     * @param bool $flush
      * @return LogView
      */
-    private function save(LogView $dashboard): LogView
+    private function save(LogView $dashboard, bool $flush = true): LogView
     {
         $this->em->persist($dashboard);
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
 
         return $dashboard;
     }

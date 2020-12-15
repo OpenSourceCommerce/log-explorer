@@ -34,6 +34,10 @@ class GraphController extends AbstractController
      */
     public function update(Graph $graph): Response
     {
+        if ($graph->getLogView()) {
+            // graph relate to Log View will be modify at Log View setting
+            return $this->redirectToRoute('logview', ['uuid' => $graph->getLogView()->getUuid()]);
+        }
         return $this->render('graph/form.html.twig', ['graph' => $graph]);
     }
 }
