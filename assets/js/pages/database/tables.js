@@ -14,6 +14,7 @@ class DatabaseTables extends Component {
         this.onTableChange = this.onTableChange.bind(this);
         this.syncAll = this.syncAll.bind(this);
         this.gotoUpdate = this.gotoUpdate.bind(this);
+        this.gotoLogView = this.gotoLogView.bind(this);
     }
 
     loadData() {
@@ -74,7 +75,15 @@ class DatabaseTables extends Component {
         const {currentTable} = this.state;
 
         if (currentTable !== '') {
-            window.location.href = '/database/' + currentTable;
+            window.location.href = '/table/' + currentTable;
+        }
+    }
+
+    gotoLogView() {
+        const {currentTable} = this.state;
+
+        if (currentTable !== '') {
+            window.location.href = '/table/' + currentTable + '/logview';
         }
     }
 
@@ -83,13 +92,13 @@ class DatabaseTables extends Component {
 
         let url = '';
         if (currentTable !== '') {
-            url = '/database/' + currentTable;
+            url = '/table/' + currentTable;
         }
 
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Table view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-12 col-md-4">
@@ -102,8 +111,9 @@ class DatabaseTables extends Component {
                             </div>
                             <div className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
                                 <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary mr-md-2 mb-2">Update</Button>
+                                <Button disabled={url === ''} onClick={this.gotoLogView} className="btn btn-primary mr-md-2 mb-2">Log view setting</Button>
                                 <div className="ml-auto ml-md-0">
-                                    <Link href="/database/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
+                                    <Link href="/table/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
                                     <Button onClick={this.syncAll} className="btn btn-success text-nowrap">Sync table</Button>
                                 </div>
                             </div>

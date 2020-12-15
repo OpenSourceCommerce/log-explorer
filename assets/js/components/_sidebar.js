@@ -8,7 +8,7 @@ export class Sidebar extends Component {
     render() {
         const navList = [
             {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
-            {href: 'database', type: 'solid', iconName: 'database', label: 'Database'}
+            {href: 'table', type: 'solid', iconName: 'database', label: 'Database'}
         ];
 
         const featureName = window.location.pathname.split('/');

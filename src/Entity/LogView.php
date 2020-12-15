@@ -35,7 +35,7 @@ class LogView
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Table::class)
+     * @ORM\OneToOne(targetEntity=Table::class, inversedBy="logView", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="table_id", nullable=false)
      */
     private $table;
@@ -128,30 +128,6 @@ class LogView
     public function setGraph(?Graph $graph): self
     {
         $this->graph = $graph;
-
-        return $this;
-    }
-
-    public function getGraph2(): ?Graph
-    {
-        return $this->graph2;
-    }
-
-    public function setGraph2(?Graph $graph2): self
-    {
-        $this->graph2 = $graph2;
-
-        return $this;
-    }
-
-    public function getGraph3(): ?Graph
-    {
-        return $this->graph3;
-    }
-
-    public function setGraph3(Graph $graph3): self
-    {
-        $this->graph3 = $graph3;
 
         return $this;
     }

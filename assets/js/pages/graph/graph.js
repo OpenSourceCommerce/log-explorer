@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {Input, Button, Icon} from '../../components';
+import {Input, Button, Icon, Link} from '../../components';
 import {Alert, DatabaseActions, GraphActions} from '../../actions';
 import PropTypes from 'prop-types';
-import {Link} from '../../components/_link';
 
 export class GraphComponent extends Component {
     constructor(props) {
@@ -245,7 +244,7 @@ export class GraphComponent extends Component {
             <div className={className}>
                 <div className="form-group">
                     <label>Table</label>
-                    {table && <Link className={'ml-3'} href={'/database/' + table} >{table}</Link>}
+                    {table && <Link className={'ml-3'} href={'/table/' + table} >{table}</Link>}
                     {tables.length > 0 && <select value={tableId} className={tableError ? 'form-control is-invalid' : 'form-control'} onChange={this.onTableChange}>
                         <option value="">Select table</option>
                         {tables.map((item, key) => {

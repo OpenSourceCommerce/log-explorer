@@ -186,8 +186,8 @@ class Graph implements \JsonSerializable
     public function setLogView(LogView $logView): self
     {
         // set the owning side of the relation if necessary
-        if ($logView->getGraph3() !== $this) {
-            $logView->setGraph3($this);
+        if ($logView->getGraph() !== $this) {
+            $logView->setGraph($this);
         }
 
         $this->logView = $logView;

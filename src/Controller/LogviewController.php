@@ -3,8 +3,7 @@
 
 namespace App\Controller;
 
-
-use App\Entity\LogView;
+use App\Entity\Table;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,14 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class LogviewController extends AbstractController
 {
     /**
-     * @Route("/logview/{uuid}", name="logview")
-     * @param LogView $logView
+     * @Route("/table/{name}/logview", name="logview")
+     * @param Table $table
      * @return Response
      */
-    public function setting(LogView $logView): Response
+    public function setting(Table $table): Response
     {
         return $this->render('logview/form.html.twig', [
-            'logview' => $logView
+            'logview' => $table->getLogView()
         ]);
     }
 }
