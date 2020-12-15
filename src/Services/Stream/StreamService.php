@@ -33,7 +33,7 @@ class StreamService implements StreamServiceInterface
         $from = $options['from'] ?? null;
         $fromOperator = $options['fromOperator'] ?? '>=';
         $to = $options['to'] ?? null;
-        $filter = $options['filter'] ?? [];
+        $filter = $options['filter'] ?? false;
         $builder = $this->connection->createQueryBuilder()
             ->from($table);
         if ($timer) {
