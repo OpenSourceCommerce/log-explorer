@@ -12,9 +12,9 @@ use App\Entity\Table;
 interface LogViewServiceInterface
 {
     /**
-     * @return DemoDashboard
+     * @return LogView
      */
-    public function getDefault(): DemoDashboard;
+    public function getDefault(): LogView;
 
     /**
      * @param Table $table

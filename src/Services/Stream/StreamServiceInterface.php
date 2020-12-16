@@ -4,6 +4,8 @@
 namespace App\Services\Stream;
 
 
+use App\Entity\GraphLine;
+
 interface StreamServiceInterface
 {
     /**
@@ -31,15 +33,15 @@ interface StreamServiceInterface
      * @param int $numOfPoint
      * @return int
      */
-    public function getGraphOffsetInSeconds(\DateTimeInterface $from, \DateTimeInterface $to, int $numOfPoint);
+    public function getGraphOffsetInSeconds(\DateTimeInterface $from, \DateTimeInterface $to, int $numOfPoint): int;
 
     /**
      * @param string $table
-     * @param array $column
+     * @param GraphLine $line
      * @param int $offsetInSeconds
      * @param array $options
      * @return array
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getLogGraphInRange(string $table, array $column, int $offsetInSeconds, array $options = []);
+    public function getLogGraphInRange(string $table, GraphLine $line, int $offsetInSeconds, array $options = []): array;
 }

@@ -25,10 +25,8 @@ class StreamController extends ApiController
     {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
-            $columns = $logView->getColumns();
-        } else {
-            $columns = $logView->getTable()->getColumns()->toArray();
         }
+        $columns = $logView->getTable()->getColumns()->toArray();
         return $this->responseSuccess([
             'data' => $columns
         ]);
@@ -74,10 +72,8 @@ class StreamController extends ApiController
     {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
-            $columns = $logView->getColumns();
-        } else {
-            $columns = $logView->getTable()->getColumns()->toArray();
         }
+        $columns = $logView->getTable()->getColumns()->toArray();
         $options = $this->getFilter($request);
         $columnNames = [];
         foreach ($columns as $column) {
@@ -112,10 +108,8 @@ class StreamController extends ApiController
     {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
-            $columns = $logView->getSummaryColumns();
-        } else {
-            $columns = $logView->getSummary()->toArray();
         }
+        $columns = $logView->getSummary()->toArray();
         $options = $this->getFilter($request);
         $widgets = [];
         foreach ($columns as $column) {
@@ -152,19 +146,17 @@ class StreamController extends ApiController
     {
         $logView = $logViewService->getDefault();
         $options = $this->getFilter($request);
-        $graph = [];
-        $graphOffset = $logView->getGraphFixedOffset();
-        if (is_null($graphOffset)) {
-            $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $logView->getGraphNumberOfPoint());
-        }
-        foreach ($logView->getGraphColumns() as $item) {
+        $graph = $logView->getGraph();
+        $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $graph->getMaxPoint());
+        $data = [];
+        foreach ($graph->getLines() as $item) {
             try {
                 $line = [
-                    'label' => $item['title'],
-                    'color' => $item['color'],
+                    'label' => $item->getTitle(),
+                    'color' => $item->getColor(),
                     'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset, $options),
                 ];
-                $graph[] = $line;
+                $data[] = $line;
             } catch (Exception $e) {
                 return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -175,7 +167,7 @@ class StreamController extends ApiController
             }
         }
         return $this->responseSuccess([
-            'data' => $graph,
+            'data' => $data,
         ]);
     }
 }

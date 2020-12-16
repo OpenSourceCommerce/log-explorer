@@ -6,9 +6,8 @@ namespace App\Services\LogView;
 
 use App\Entity\Graph;
 use App\Entity\LogView;
-use App\Entity\DemoDashboard;
 use App\Entity\Table;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Repository\LogViewRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LogViewService implements LogViewServiceInterface
@@ -27,12 +26,17 @@ class LogViewService implements LogViewServiceInterface
         $this->em = $em;
     }
 
+    private function getRepository(): LogViewRepository
+    {
+        return $this->em->getRepository(LogView::class);
+    }
+
     /**
      * @inheritDoc
      */
-    public function getDefault(): DemoDashboard
+    public function getDefault(): LogView
     {
-        return new DemoDashboard();
+        return $this->getRepository()->findOneBy([]);
     }
 
     /**
