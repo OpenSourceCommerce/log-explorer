@@ -24,4 +24,10 @@ interface LogViewServiceInterface
      * @return mixed
      */
     public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView;
+
+    /**
+     * @param LogView $logView
+     * @param array $columns
+     */
+    public function setSummary(LogView $logView, array $columns);
 }

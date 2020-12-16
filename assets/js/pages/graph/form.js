@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader} from '../../components';
-import {GraphComponent} from './graph';
+import {CardHeader, GraphForm} from '../../components';
 
-class GraphForm extends Component {
+class GraphPage extends Component {
     render() {
         const id = window.graph_id ? window.graph_id : '';
 
@@ -13,7 +12,7 @@ class GraphForm extends Component {
                     <CardHeader title="Graph setting" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <form role="form">
-                            <GraphComponent id={id} />
+                            <GraphForm id={id} />
                         </form>
                     </div>
                 </div>
@@ -22,4 +21,4 @@ class GraphForm extends Component {
     }
 }
 
-ReactDOM.render(<GraphForm/>, document.querySelector('#root'));
+ReactDOM.render(<GraphPage/>, document.querySelector('#root'));

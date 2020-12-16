@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader} from '../../components';
+import {CardHeader, GraphForm, SummaryForm} from '../../components';
 import {LogViewActions} from '../../actions';
-import {GraphComponent} from '../graph/graph';
 
 class LogViewForm extends Component {
     constructor(props) {
@@ -11,7 +10,9 @@ class LogViewForm extends Component {
         this.state = {
             uuid: window.logview,
             table: '',
-            graph: null
+            graph: null,
+            columns: [],
+            summary: []
         };
     }
 
@@ -19,7 +20,7 @@ class LogViewForm extends Component {
         const that = this;
         LogViewActions.loadLogView(uuid)
             .then(res => {
-                const {error, table, graph} = res;
+                const {error, table, graph, summary, columns} = res;
                 if (error) {
                     return;
                 }
@@ -33,7 +34,9 @@ class LogViewForm extends Component {
                         title,
                         maxPoint: String(max_point),
                         lines
-                    }
+                    },
+                    summary,
+                    columns
                 });
             });
     }
@@ -44,15 +47,22 @@ class LogViewForm extends Component {
     }
 
     render() {
-        const {table, graph} = this.state;
-
+        const {uuid, table, graph, summary, columns} = this.state;
         return (
             <div className="database">
                 <div className="card">
                     <CardHeader title="Graph setting" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <form role="form">
-                            <GraphComponent id={graph ? graph.id : ''} table={table} graph={graph ? graph : {}} />
+                            <GraphForm id={graph ? graph.id : ''} table={table} graph={graph ? graph : {}} />
+                        </form>
+                    </div>
+                </div>
+                <div className="card">
+                    <CardHeader title="Summary setting" showCollapseButton={false} showRemoveButton={false}/>
+                    <div className="card-body">
+                        <form role="form">
+                            <SummaryForm logViewUuid={uuid} summary={summary} columns={columns} />
                         </form>
                     </div>
                 </div>

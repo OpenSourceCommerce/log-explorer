@@ -44,4 +44,10 @@ interface ColumnServiceInterface
      * @return Column|null
      */
     public function findById($id): ?Column;
+
+    /**
+     * @param array $ids
+     * @return Column|array
+     */
+    public function findIn(array $ids): array;
 }

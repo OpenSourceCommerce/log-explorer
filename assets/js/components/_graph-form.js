@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Input, Button, Icon, Link} from '../../components';
-import {Alert, DatabaseActions, GraphActions} from '../../actions';
+import {Input, Button, Icon, Link} from '.';
+import {Alert, DatabaseActions, GraphActions} from '../actions';
 import PropTypes from 'prop-types';
 
 export class GraphForm extends Component {

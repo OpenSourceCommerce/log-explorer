@@ -8,6 +8,7 @@ use App\Entity\Graph;
 use App\Entity\LogView;
 use App\Entity\DemoDashboard;
 use App\Entity\Table;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LogViewService implements LogViewServiceInterface
@@ -43,26 +44,38 @@ class LogViewService implements LogViewServiceInterface
             $name = $table->getName();
         }
 
-        $dashboard = new LogView();
-        $dashboard->setTable($table);
-        $dashboard->setName($name);
-        $dashboard->setGraph($graph);
+        $logView = new LogView();
+        $logView->setTable($table);
+        $logView->setName($name);
+        $logView->setGraph($graph);
 
-        return $this->save($dashboard, $flush);
+        return $this->save($logView, $flush);
     }
 
     /**
-     * @param LogView $dashboard
+     * @param LogView $logView
      * @param bool $flush
      * @return LogView
      */
-    private function save(LogView $dashboard, bool $flush = true): LogView
+    private function save(LogView $logView, bool $flush = true): LogView
     {
-        $this->em->persist($dashboard);
+        $this->em->persist($logView);
         if ($flush) {
             $this->em->flush();
         }
 
-        return $dashboard;
+        return $logView;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setSummary(LogView $logView, array $columns)
+    {
+        $logView->clearSummary();
+        foreach ($columns as $column) {
+            $logView->addSummary($column);
+        }
+        $this->save($logView);
     }
 }

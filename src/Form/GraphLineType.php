@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\GraphLine;
-use App\Exceptions\EntityNotFoundException;
 use App\Services\GraphLine\GraphLineServiceInterface;
 use App\Validator\GraphLineExist;
 use Symfony\Component\Form\AbstractType;

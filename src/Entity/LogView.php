@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LogViewRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -93,9 +94,9 @@ class LogView
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
-    public function getSummary(): ArrayCollection
+    public function getSummary(): Collection
     {
         return $this->summary;
     }
@@ -113,10 +114,16 @@ class LogView
         return $this;
     }
 
-    public function removeSummary(Column $summary): self
+    public function removeSummary(Column $column): self
     {
-        $this->summary->removeElement($summary);
+        $this->summary->removeElement($column);
 
+        return $this;
+    }
+
+    public function clearSummary(): self
+    {
+        $this->summary->clear();
         return $this;
     }
 

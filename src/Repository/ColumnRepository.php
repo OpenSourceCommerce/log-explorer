@@ -31,4 +31,12 @@ class ColumnRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findIn(array $ids)
+    {
+        return $this->createQueryBuilder('c')
+            ->where((new Expr())->in('c.id', $ids))
+            ->getQuery()
+            ->getResult();
+    }
 }

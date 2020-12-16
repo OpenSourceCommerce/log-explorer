@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Table;
 use App\Validator\DbName;
-use App\Validator\TableTTL;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
