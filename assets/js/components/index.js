@@ -26,3 +26,4 @@ export const {LogDetailSidebar} = require('./_log-detail-sidebar');
 export const {AdvancedSearch} = require('./_advanced-search');
 export const {FlotChart} = require('./_flot-chart');
 export const {JsGridTable} = require('./_js-grid-table');
+export const {Spinner} = require('./_spinner');

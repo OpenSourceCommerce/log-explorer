@@ -31,7 +31,7 @@ export class Sidebar extends Component {
                                 alt="User Image"/>
                         </div>
                         <div className="info">
-                            <Link className={'d-block'}>Alexander Pierce</Link>s
+                            <Link className={'d-block'}>Alexander Pierce</Link>
                         </div>
                     </div>
 

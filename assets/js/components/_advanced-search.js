@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Button} from './_button';
 import {FilterDate, FilterText} from '.';
 import '../../styles/component/_advanced-search.scss';
-import {Live} from "../actions";
+import {Live} from '../actions';
 
 export class AdvancedSearch extends React.Component {
     render() {
