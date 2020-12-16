@@ -60,14 +60,14 @@ class Index extends Component {
     }
 
     onDateRangeChanged(from, to) {
-        const {isLive, interval} = this.state;
-        if (isLive && Boolean(to)) {
+        const {interval} = this.state;
+        if (to) {
             this.setState({
                 isLive: false,
                 disableLive: true
             });
             Live.pause();
-        } else if (!isLive && !to) {
+        } else if (!to) {
             this.setState({
                 isLive: true,
                 disableLive: false

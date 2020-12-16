@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {ControlSidebar} from '.';
-import '../../styles/component/_log-detail-sidebar.scss';
 
 export class LogDetailSidebar extends Component {
     render() {
@@ -20,22 +19,20 @@ export class LogDetailSidebar extends Component {
 
         return (
             <ControlSidebar
-                className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
+                className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'} w-25`}
                 title={'Detail'}
                 visible={true}
                 {...this.props}
             >
-                <ul>
+                <ul className="p-0">
                     {dataDisplay.map((detail, index) => {
-                        return <a role="button" className="collapsed" data-toggle="collapse"
-                            href={`#collapse${index}`}
-                            aria-expanded="false" aria-controls={`collapse${index}`}
+                        return <div
                             key={index}>
-                            <h4>{detail.label}</h4>
-                            <p className="collapse" id={`collapse${index}`} aria-expanded="false">
+                            <h5>{detail.label}</h5>
+                            <p>
                                 {item[detail.key] || 'No data'}
                             </p>
-                        </a>;
+                        </div>;
                     })}
                 </ul>
             </ControlSidebar>
