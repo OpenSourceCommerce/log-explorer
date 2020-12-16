@@ -48,7 +48,9 @@ class GraphList extends Component {
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Graph list" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Graph list" showCollapseButton={false} showRemoveButton={false}>
+                        <Link href={'/graph/create'} className={'btn btn-success'}>Create graph</Link>
+                    </CardHeader>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-12">
