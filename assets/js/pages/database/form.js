@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Input} from '../../components';
+import {Input, Button, Spinner} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
-import {Button} from '../../components/_button';
-import {Spinner} from '../../components/_spinner';
 
 class DatabaseForm extends Component {
     constructor(props) {
