@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {CardHeader, Table, Link} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
 import {Button} from '../../components/_button';
+import {Spinner} from '../../components/_spinner';
 
 class DatabaseTables extends Component {
     constructor(props) {
@@ -10,7 +11,8 @@ class DatabaseTables extends Component {
         this.state = {
             tables: [],
             currentTable: '',
-            columns: []
+            columns: [],
+            isLoading: false,
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.syncAll = this.syncAll.bind(this);
@@ -18,6 +20,9 @@ class DatabaseTables extends Component {
     }
 
     loadData() {
+        this.setState({
+            isLoading: true,
+        })
         const that = this;
         DatabaseActions.getAllTable()
             .then(res => {
@@ -27,7 +32,8 @@ class DatabaseTables extends Component {
                 }
 
                 that.setState({
-                    tables: data
+                    tables: data,
+                    isLoading: false
                 });
             });
     }
@@ -46,6 +52,9 @@ class DatabaseTables extends Component {
                 columns: []
             });
         } else {
+            this.setState({
+                isLoading: true,
+            });
             DatabaseActions.getTableColumns(e.target.value)
                 .then(res => {
                     const {error, table, data} = res;
@@ -55,7 +64,8 @@ class DatabaseTables extends Component {
 
                     that.setState({
                         currentTable: table,
-                        columns: data
+                        columns: data,
+                        isLoading: false,
                     });
                 });
         }
@@ -80,7 +90,7 @@ class DatabaseTables extends Component {
     }
 
     render() {
-        const {tables, currentTable, columns} = this.state;
+        const {tables, currentTable, columns, isLoading} = this.state;
 
         let url = '';
         if (currentTable !== '') {
@@ -111,15 +121,16 @@ class DatabaseTables extends Component {
                         </div>
                         <div className="row">
                             <div className="col-12 mt-3">
-                                <Table>
-                                    <thead>
+                                {isLoading ? (<Spinner />) : (
+                                    <Table>
+                                        <thead>
                                         <tr>
                                             <th>Name</th>
                                             <th>Type</th>
                                             <th>Display name</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         {columns.map((item, key) => {
                                             return <tr key={key}>
                                                 <td>{item.name}</td>
@@ -127,8 +138,8 @@ class DatabaseTables extends Component {
                                                 <td>{item.title}</td>
                                             </tr>;
                                         })}
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>)}
                             </div>
                         </div>
                     </div>
