@@ -33,4 +33,4 @@ export const {JsGridTable} = require('./_js-grid-table');
 export const {Modal} = require('./_modal');
 export const {GraphForm} = require('./_graph-form');
 export const {SummaryForm} = require('./_summary-form');
-
+export const {Spinner} = require('./_spinner');
