@@ -154,7 +154,7 @@ class Table implements \JsonSerializable
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
-            'logview' => $this->getLogView()->getUuid(),
+            'logview' => $this->getLogView() ? $this->getLogView()->getUuid() : null,
         ];
     }
 }

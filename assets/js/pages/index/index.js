@@ -81,7 +81,7 @@ class Index extends Component {
                         break;
                     }
                 }
-            } else {
+            } else if (data.length > 0) {
                 selectedTable = data[0];
             }
 
@@ -90,12 +90,21 @@ class Index extends Component {
                 selectedTable
             });
         }).then(() => {
-            this.loadData();
+            const {logViews} = this.state;
+            if (logViews.length > 0) {
+                this.loadData();
+                this.startStreaming();
+            } else {
+                window.location.href = "/welcome";
+            }
         });
     }
 
-    componentDidMount() {
+    startStreaming() {
         Live.start(this.state.interval);
+    }
+
+    componentDidMount() {
         Event.bus.register(Event.RESPONSE_ERROR, res => {
             const {error} = res;
             if (error === Event.ERROR_INVALID_QUERY) {

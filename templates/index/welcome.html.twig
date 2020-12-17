@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                <p>Hi, It look you does not setup your system</p>
+                <p>To start you can follow by</p>
+                <h4>Command console</h4>
+                <p>To quickly create sample table and sample data just run there commands:</p>
+                <p><code>php bin/console app:createsampledatabase</code></p>
+                <p><code>php bin/console app:createsampledata</code></p>
+                <h4>Application</h4>
+                <p>Or if you want to create table by yourself just click <a href="{{ path('database_create') }}">Create table</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

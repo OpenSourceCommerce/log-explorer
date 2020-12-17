@@ -185,7 +185,7 @@ class DatabaseService implements DatabaseServiceInterface
     {
         $graph = $this->graphService->createLogViewGraph($table, 12, false);
         $this->graphLineService->createDefaultGraphLine($graph, false);
-        $logView = $this->logViewService->createLogView($table, $graph, null);
+        $logView = $this->logViewService->createLogView($table, $graph, null, false);
         $this->logViewService->setupColumnSetting($logView, false);
     }
 

@@ -37,7 +37,7 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function getDefault(): LogView
+    public function getDefault(): ?LogView
     {
         return $this->getRepository()->findOneBy([]);
     }
