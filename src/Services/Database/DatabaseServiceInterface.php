@@ -6,30 +6,21 @@ namespace App\Services\Database;
 
 use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
-use App\Exceptions\InvalidSqlQueryException;
 use App\Exceptions\TableExistException;
 
 interface DatabaseServiceInterface
 {
-    /**
-     * @param string $query
-     * @return Table|false
-     * @throws InvalidSqlQueryException
-     * @throws TableExistException
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function processQuery(string $query);
-
     public function syncAllTableToSystem();
 
     /**
      * @param string $name
      * @param array $columns
-     * @return Table
+     * @param array $options
+     * @return Table|null
      * @throws TableExistException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function createTable(string $name, array $columns): Table;
+    public function createTable(string $name, array $columns, array $options = []): ?Table;
 
     /**
      * @param Table $table

@@ -25,6 +25,7 @@
     "admin-lte": "^3.0.5",
     "bootstrap": "^4.5.3",
     "moment": "^2.29.1",
+    "popover": "^2.4.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-inlinesvg": "^2.1.1"

@@ -9,6 +9,8 @@ use App\Form\LogViewColumnType;
 use App\Services\LogView\LogViewServiceInterface;
 use App\ServicesLogViewColumn\LogViewColumnServiceInterface;
 use Doctrine\DBAL\Exception;
+use App\Form\ColumnsType;
+use App\Services\Column\ColumnServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,7 +40,7 @@ class LogViewController extends ApiController
      * @param LogView $logView
      * @param LogViewServiceInterface $logviewService
      * @param Request $request
-     * @return array
+     * @return JsonResponse
      */
     public function getColumnSetting(LogView $logView, LogViewServiceInterface $logviewService, Request $request)
     {
@@ -55,6 +57,23 @@ class LogViewController extends ApiController
     }
 
     /**
+     * @Route("/api/logview/{uuid}", name="logview_detail", methods={"GET"})
+     * @param LogView $logView
+     * @return JsonResponse
+     */
+    public function detail(LogView $logView): JsonResponse
+    {
+        $graph = $logView->getGraph()->jsonSerialize();
+        $graph['lines'] = $logView->getGraph()->getLines()->toArray();
+        return $this->responseSuccess([
+            'table' => $logView->getTable()->getName(),
+            'graph' => $graph,
+            'summary' => $logView->getSummary()->toArray(),
+            'columns' => $logView->getTable()->getColumns()->toArray(),
+        ]);
+    }
+
+    /**
      * @Route("/api/v1/logview/{uuid}/setting/columns", name="update_logview_column_setting", methods={"PUT"})
      * @param LogView $logView
      * @param LogViewColumnServiceInterface $logViewColumnService
@@ -65,7 +84,8 @@ class LogViewController extends ApiController
         LogView $logView,
         LogViewColumnServiceInterface $logViewColumnService,
         Request $request
-    ) {
+    )
+    {
         $data = $request->request->all();
         $form = $this->createForm(LogViewColumnType::class);
         $form->submit($data);
@@ -88,5 +108,32 @@ class LogViewController extends ApiController
         }
 
         return $this->responseError();
+    }
+
+    /**
+     * @Route("/api/logview/{uuid}/summary", methods={"PUT"})
+     * @param LogView $logView
+     * @param Request $request
+     * @param ColumnServiceInterface $columnService
+     * @param LogViewServiceInterface $logViewService
+     * @return JsonResponse
+     */
+    public function updateSummary(LogView $logView, Request $request, ColumnServiceInterface $columnService, LogViewServiceInterface $logViewService): JsonResponse
+    {
+        $data = $request->request->all();
+        $columns = $logView->getTable()->getColumns()->toArray();
+        $list = [];
+        foreach ($columns as $column) {
+            $list[$column->getId()] = $column->getId();
+        }
+        $form = $this->createForm(ColumnsType::class, null, ['column_list' => $list]);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $columns = $columnService->findIn($form->get('columns')->getData());
+            $logViewService->setSummary($logView, $columns);
+            return $this->responseSuccess();
+        }
+        return $this->responseFormError($form);
     }
 }

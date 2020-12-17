@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link} from '../../components';
+import {CardHeader, Table, Link, Button, Spinner} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
-import {Button} from '../../components/_button';
 
 class DatabaseTables extends Component {
     constructor(props) {
@@ -10,14 +9,19 @@ class DatabaseTables extends Component {
         this.state = {
             tables: [],
             currentTable: '',
-            columns: []
+            columns: [],
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.syncAll = this.syncAll.bind(this);
         this.gotoUpdate = this.gotoUpdate.bind(this);
+        this.gotoLogView = this.gotoLogView.bind(this);
     }
 
     loadData() {
+        this.setState({
+            isLoading: true
+        });
         const that = this;
         DatabaseActions.getAllTable()
             .then(res => {
@@ -27,7 +31,8 @@ class DatabaseTables extends Component {
                 }
 
                 that.setState({
-                    tables: data
+                    tables: data,
+                    isLoading: false
                 });
             });
     }
@@ -46,6 +51,9 @@ class DatabaseTables extends Component {
                 columns: []
             });
         } else {
+            this.setState({
+                isLoading: true
+            });
             DatabaseActions.getTableColumns(e.target.value)
                 .then(res => {
                     const {error, table, data} = res;
@@ -55,7 +63,8 @@ class DatabaseTables extends Component {
 
                     that.setState({
                         currentTable: table,
-                        columns: data
+                        columns: data,
+                        isLoading: false
                     });
                 });
         }
@@ -75,59 +84,70 @@ class DatabaseTables extends Component {
         const {currentTable} = this.state;
 
         if (currentTable !== '') {
-            window.location.href = '/database/' + currentTable;
+            window.location.href = '/table/' + currentTable;
+        }
+    }
+
+    gotoLogView() {
+        const {currentTable} = this.state;
+
+        if (currentTable !== '') {
+            window.location.href = '/table/' + currentTable + '/logview';
         }
     }
 
     render() {
-        const {tables, currentTable, columns} = this.state;
+        const {tables, currentTable, columns, isLoading} = this.state;
 
         let url = '';
         if (currentTable !== '') {
-            url = '/database/' + currentTable;
+            url = '/table/' + currentTable;
         }
 
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Table view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
-                            <div className="col-3 col-md-2">Table</div>
-                            <div className="col-6 col-md-6">
+                            <div className="col-12 col-md-4">
                                 <select className="form-control" value={currentTable} onChange={this.onTableChange}>
-                                    <option value="">Please select</option>
+                                    <option value="">Please select table</option>
                                     {tables.map((item, key) => {
                                         return <option key={key} value={item.name}>{item.name}</option>;
                                     })}
                                 </select>
                             </div>
-                            <div className="col-3 col-md-4">
-                                <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary">Update</Button>
-                                <Link href="/database/create" className="btn btn-success ml-3">Create table</Link>
-                                <Button onClick={this.syncAll} className="btn btn-success ml-3">Sync table</Button>
+                            <div className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
+                                <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary mr-md-2 mb-2">Update</Button>
+                                <Button disabled={url === ''} onClick={this.gotoLogView} className="btn btn-primary mr-md-2 mb-2">Log view setting</Button>
+                                <div className="ml-auto ml-md-0">
+                                    <Link href="/table/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
+                                    <Button onClick={this.syncAll} className="btn btn-success text-nowrap">Sync table</Button>
+                                </div>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-12 mt-3">
-                                <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Display name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {columns.map((item, key) => {
-                                            return <tr key={key}>
-                                                <td>{item.name}</td>
-                                                <td>{item.type}</td>
-                                                <td>{item.title}</td>
-                                            </tr>;
-                                        })}
-                                    </tbody>
-                                </Table>
+                                {isLoading ? (<Spinner />) : (
+                                    <Table>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Display name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {columns.map((item, key) => {
+                                                return <tr key={key}>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.type}</td>
+                                                    <td>{item.title}</td>
+                                                </tr>;
+                                            })}
+                                        </tbody>
+                                    </Table>)}
                             </div>
                         </div>
                     </div>

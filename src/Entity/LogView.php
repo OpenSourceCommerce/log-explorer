@@ -36,7 +36,7 @@ class LogView implements \JsonSerializable
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Table::class)
+     * @ORM\OneToOne(targetEntity=Table::class, inversedBy="logView", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="table_id", nullable=false)
      */
     private $table;
@@ -52,9 +52,15 @@ class LogView implements \JsonSerializable
      */
     private $logViewColumns;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Graph::class, inversedBy="logView", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $graph;
+
     public function __construct()
     {
-        $this->summary = new Collection();
+        $this->summary = new ArrayCollection();
         $this->uuid = Uuid::uuid4();
         $this->logViewColumns = new ArrayCollection();
     }
@@ -114,9 +120,27 @@ class LogView implements \JsonSerializable
         return $this;
     }
 
-    public function removeSummary(Column $summary): self
+    public function removeSummary(Column $column): self
     {
-        $this->summary->removeElement($summary);
+        $this->summary->removeElement($column);
+
+        return $this;
+    }
+
+    public function clearSummary(): self
+    {
+        $this->summary->clear();
+        return $this;
+    }
+
+    public function getGraph(): ?Graph
+    {
+        return $this->graph;
+    }
+
+    public function setGraph(?Graph $graph): self
+    {
+        $this->graph = $graph;
 
         return $this;
     }

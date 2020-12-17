@@ -26,10 +26,8 @@ class StreamController extends ApiController
     {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
-            $columns = $logView->getColumns();
-        } else {
-            $columns = $logViewService->getVisibleColumns($logView);
         }
+        $columns = $logViewService->getVisibleColumns($logView);
         return $this->responseSuccess([
             'data' => $columns
         ]);
@@ -57,6 +55,8 @@ class StreamController extends ApiController
         if ($request->query->has('filter')) {
             $filter = $request->query->get('filter');
             $options['filter'] = $filter;
+        } else {
+            $options['filter'] = false;
         }
         return $options;
     }
@@ -65,22 +65,21 @@ class StreamController extends ApiController
      * @Route("/api/stream/{uuid}/list", methods = "GET")
      * @param LogView|null $logView
      * @param Request $request
-     * @param LogViewServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
     public function list(
         ?LogView $logView,
         Request $request,
-        LogViewServiceInterface $dashboardService,
+        LogViewServiceInterface $logViewService,
         StreamServiceInterface $streamService
     ): JsonResponse {
         if (is_null($logView)) {
-            $logView = $dashboardService->getDefault();
-            $columns = $logView->getColumns();
-        } else {
-            $columns = $logView->getLogViewColumns();
+            $logView = $logViewService->getDefault();
+
         }
+        $columns = $logView->getLogViewColumns();
         $options = $this->getFilter($request);
         $columnNames = [];
         foreach ($columns as $column) {
@@ -113,22 +112,21 @@ class StreamController extends ApiController
      * @Route("/api/stream/{uuid}/summary", methods = "GET")
      * @param LogView|null $logView
      * @param Request $request
-     * @param LogViewServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
+
     public function summary(
         ?LogView $logView,
         Request $request,
-        LogViewServiceInterface $dashboardService,
+        LogViewServiceInterface $logViewService,
         StreamServiceInterface $streamService
     ): JsonResponse {
         if (is_null($logView)) {
-            $logView = $dashboardService->getDefault();
-            $columns = $logView->getSummaryColumns();
-        } else {
-            $columns = $logView->getSummary();
+            $logView = $logViewService->getDefault();
         }
+        $columns = $logView->getSummary()->toArray();
         $options = $this->getFilter($request);
         $widgets = [];
         foreach ($columns as $column) {
@@ -137,8 +135,7 @@ class StreamController extends ApiController
                     'name' => $column->getName(),
                     'title' => $column->getTitle()
                 ];
-                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable()->getName(), $widget['name'],
-                    $options);
+                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable()->getName(), $widget['name'], $options);
                 $widgets[] = $widget;
             } catch (Exception $e) {
                 return $this->responseError([
@@ -170,21 +167,17 @@ class StreamController extends ApiController
     ): JsonResponse {
         $logView = $logViewService->getDefault();
         $options = $this->getFilter($request);
-        $graph = [];
-        $graphOffset = $logView->getGraphFixedOffset();
-        if (is_null($graphOffset)) {
-            $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(),
-                $logView->getGraphNumberOfPoint());
-        }
-        foreach ($logView->getGraphColumns() as $item) {
+        $graph = $logView->getGraph();
+        $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $graph->getMaxPoint());
+        $data = [];
+        foreach ($graph->getLines() as $item) {
             try {
                 $line = [
-                    'label' => $item['title'],
-                    'color' => $item['color'],
-                    'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset,
-                        $options),
+                    'label' => $item->getTitle(),
+                    'color' => $item->getColor(),
+                    'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset, $options),
                 ];
-                $graph[] = $line;
+                $data[] = $line;
             } catch (Exception $e) {
                 return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -195,7 +188,7 @@ class StreamController extends ApiController
             }
         }
         return $this->responseSuccess([
-            'data' => $graph,
+            'data' => $data,
         ]);
     }
 }

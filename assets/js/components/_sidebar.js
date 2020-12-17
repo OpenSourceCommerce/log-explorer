@@ -6,6 +6,13 @@ import userImage from '../../images/user1-128x128.jpg';
 
 export class Sidebar extends Component {
     render() {
+        const navList = [
+            {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
+            {href: 'table', type: 'solid', iconName: 'database', label: 'Database'}
+        ];
+
+        const featureName = window.location.pathname.split('/');
+
         return (
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
                 <Link className="brand-link" href={'/'}>
@@ -31,20 +38,17 @@ export class Sidebar extends Component {
                     <nav className="mt-2">
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview"
                             role="menu" data-accordion="false">
-                            <li className="nav-item">
-                                <Link href="/" className="nav-link active">
-                                    <Icon name={'circle'} type={'regular'}
-                                        className="nav-icon"/>
-                                    <p>Dashboard v1</p>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link href="/database" className="nav-link">
-                                    <Icon name={'database'} type={'regular'}
-                                        className="nav-icon"/>
-                                    <p>Database</p>
-                                </Link>
-                            </li>
+                            {navList.map((item, index) => {
+                                const {href, type, iconName, label} = item;
+                                return (<li className="nav-item" key={index}>
+                                    <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
+                                        <Icon name={iconName} type={type}
+                                            className="nav-icon"/>
+                                        <p>{label}</p>
+                                    </Link>
+                                </li>
+                                );
+                            })}
                         </ul>
                     </nav>
                 </div>

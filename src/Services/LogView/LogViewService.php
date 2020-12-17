@@ -6,9 +6,10 @@ namespace App\Services\LogView;
 
 use App\Entity\Column;
 use App\Entity\LogView;
-use App\Entity\DemoLogView;
 use App\Entity\LogViewColumn;
+use App\Entity\Graph;
 use App\Entity\Table;
+use App\Repository\LogViewRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 
@@ -28,45 +29,61 @@ class LogViewService implements LogViewServiceInterface
         $this->em = $em;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDefault(): DemoLogView
+    private function getRepository(): LogViewRepository
     {
-        return new DemoLogView();
+        return $this->em->getRepository(LogView::class);
     }
 
     /**
      * @inheritDoc
      */
-    public function createLogView(Table $table, ?string $name): LogView
+    public function getDefault(): LogView
+    {
+        return $this->getRepository()->findOneBy([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView
     {
         if (empty($name)) {
             $name = $table->getName();
         }
 
-        $dashboard = new LogView();
-        $dashboard->setTable($table);
-        $dashboard->setName($name);
+        $logView = new LogView();
+        $logView->setTable($table);
+        $logView->setName($name);
+        $logView->setGraph($graph);
 
-        return $this->save($dashboard);
+        return $this->save($logView, $flush);
     }
 
     /**
-     * @param LogView $dashboard
+     * @param LogView $logView
+     * @param bool $flush
      * @return LogView
      */
-    private function save(LogView $dashboard): LogView
+    private function save(LogView $logView, bool $flush = true): LogView
     {
-        $this->em->persist($dashboard);
-        $this->em->flush();
+        $this->em->persist($logView);
+        if ($flush) {
+            $this->em->flush();
+        }
 
-        return $dashboard;
+        return $logView;
     }
 
-    private function getRepository(): ObjectRepository
+    /**
+     * @inheritDoc
+     */
+    public function setSummary(LogView $logView, array $columns)
     {
-        return $this->em->getRepository(LogView::class);
+        $logView->clearSummary();
+        foreach ($columns as $column) {
+            $logView->addSummary($column);
+        }
+        $this->save($logView);
     }
 
     public function list(): array

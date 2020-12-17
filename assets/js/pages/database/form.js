@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Input} from '../../components';
+import {Input, Button, Spinner} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
-import {Button} from '../../components/_button';
 
 class DatabaseForm extends Component {
     constructor(props) {
@@ -16,16 +15,22 @@ class DatabaseForm extends Component {
             tableId: window.table_id ? window.table_id : '',
             table: '',
             columns,
+            ttl: '',
             tableError: false,
-            noColumnError: false
+            noColumnError: false,
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.addMoreColumn = this.addMoreColumn.bind(this);
+        this.onTTLChange = this.onTTLChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     loadColumns(tableId) {
         const that = this;
+        this.setState({
+            isLoading: true
+        });
         DatabaseActions.getTableColumns(tableId)
             .then(res => {
                 const {error, table, data} = res;
@@ -42,7 +47,8 @@ class DatabaseForm extends Component {
 
                 that.setState({
                     table,
-                    columns
+                    columns,
+                    isLoading: false
                 });
             });
     }
@@ -62,6 +68,12 @@ class DatabaseForm extends Component {
         this.setState({
             table: e.target.value,
             tableError: false
+        });
+    }
+
+    onTTLChange(e) {
+        this.setState({
+            ttl: e.target.value
         });
     }
 
@@ -86,14 +98,20 @@ class DatabaseForm extends Component {
     }
 
     onSubmit() {
-        let {tableId, table, columns} = this.state;
+        this.setState({
+            isLoading: true
+        });
+
+        let {tableId, table, ttl, columns} = this.state;
         table = $.trim(table);
+        ttl = $.trim(ttl);
         const validColumns = [];
         let hasErrorBefore = false;
         let hasError = false;
         if (table === '') {
             this.setState({
-                tableError: true
+                tableError: true,
+                isLoading: false
             });
             hasError = true;
         }
@@ -127,20 +145,26 @@ class DatabaseForm extends Component {
 
         if (hasError !== hasErrorBefore || hasError) {
             this.setState({
-                columns
+                columns,
+                isLoading: false
             });
         }
 
         if (validColumns.length === 0) {
             hasError = true;
             this.setState({
-                noColumnError: true
+                noColumnError: true,
+                isLoading: false
             });
         }
 
         if (!hasError) {
             const that = this;
-            DatabaseActions.createOrUpdate(tableId, table, validColumns)
+            DatabaseActions.createOrUpdate(tableId, {
+                name: table,
+                ttl,
+                columns: validColumns
+            })
                 .then(res => {
                     const {error, redirect} = res;
                     if (error !== 0) {
@@ -153,29 +177,41 @@ class DatabaseForm extends Component {
                         Alert.success('Update successful');
                         that.loadColumns(tableId);
                     }
+                }).then(() => {
+                    this.setState({
+                        isLoading: false
+                    });
                 });
         }
     }
 
     render() {
-        const {tableId, table, columns, tableError, noColumnError} = this.state;
+        const {tableId, table, ttl, columns, tableError, noColumnError, isLoading} = this.state;
         const readonly = tableId !== '';
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
             return <div key={key} className="form-group">
                 <div className="row">
                     <div className="col-4">
-                        <Input disabled={readonly && item.id !== ''} value={item.name} className={item.error ? 'is-invalid' : ''} onChange={e => this.onColumnChange(key, 'name', e)} placeholder="Name" />
+                        <Input disabled={readonly && item.id !== ''} value={item.name}
+                            className={item.error ? 'is-invalid' : ''}
+                            onChange={e => this.onColumnChange(key, 'name', e)}
+                            placeholder="Name"/>
                     </div>
                     <div className="col-4">
-                        <select disabled={readonly && item.id !== ''} className="form-control" value={item.type} onChange={e => this.onColumnChange(key, 'type', e)}>
+                        <select disabled={readonly && item.id !== ''} className="form-control"
+                            value={item.type}
+                            onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
                                 return <option key={k} value={type}>{type}</option>;
                             })}
                         </select>
                     </div>
                     <div className="col-4">
-                        <Input value={item.title} onChange={e => this.onColumnChange(key, 'title', e)} placeholder="Display name" />
+                        <Input value={item.title}
+                            onChange={e => this.onColumnChange(key, 'title', e)}
+                            placeholder="Display name"
+                        />
                     </div>
                 </div>
             </div>;
@@ -184,13 +220,31 @@ class DatabaseForm extends Component {
         return (
             <div className="database">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <div className="card-header">
+                        <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
+                        <Button className="float-right" color={'success'}
+                            onClick={this.onSubmit} disabled={isLoading}>
+                            {isLoading ? (<>  <span
+                                className="spinner-border spinner-border-sm mr-2"
+                                role="status" aria-hidden="true"></span>
+                                Loading... </>) : (tableId === '' ? 'Create table' : 'Update table')}
+                        </Button>
+
+                    </div>
                     <div className="card-body">
                         <form role="form">
                             <div className="form-group">
                                 <label>Table name</label>
-                                <Input disabled={readonly} className={tableError ? 'is-invalid' : ''} placeholder="Table name" value={table} onChange={this.onTableChange}/>
+                                <Input disabled={readonly}
+                                    className={tableError ? 'is-invalid' : ''}
+                                    placeholder="Table name" value={table}
+                                    onChange={this.onTableChange}/>
                             </div>
+                            {tableId === '' &&
+                            <div className="form-group">
+                                <label>Table TTL</label>
+                                <Input disabled={readonly} placeholder="timestamp + toIntervalMonth(100)" value={ttl} onChange={this.onTTLChange}/>
+                            </div>}
                             <div className="form-group">
                                 <label htmlFor="exampleInputPassword1">Column</label>
                                 {noColumnError && <div className={'row has-error'}>
@@ -208,12 +262,14 @@ class DatabaseForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {_columns}
+                            {isLoading ? <Spinner/> : <>
+                                {_columns}
 
-                            <div className="box-footer">
-                                <Button color={'success'} onClick={this.onSubmit} >Submit</Button>
-                                <Button color={'primary'} className={'ml-3'} onClick={this.addMoreColumn} >Add more column</Button>
-                            </div>
+                                <div className="box-footer">
+                                    <Button color={'primary'} onClick={this.addMoreColumn}>Add
+                                        more column</Button>
+                                </div>
+                            </>}
                         </form>
                     </div>
                 </div>

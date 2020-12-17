@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DatabaseController extends ApiController
 {
     /**
-     * @Route("/api/database/tables", methods = "GET")
+     * @Route("/api/table", methods = "GET")
      * @param TableServiceInterface $tableService
      * @return Response
      */
@@ -30,7 +30,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/{name}/columns", methods = "GET")
+     * @Route("/api/table/{name}/columns", methods = "GET")
      * @param Table $table
      * @param Request $request
      * @return Response
@@ -51,7 +51,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/sync", methods = "POST")
+     * @Route("/api/table/sync", methods = "POST")
      * @param DatabaseServiceInterface $databaseService
      * @return Response
      */
@@ -63,7 +63,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/create", methods = "POST")
+     * @Route("/api/table/create", methods = "POST")
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @param UrlGeneratorInterface $urlGenerator
@@ -80,7 +80,10 @@ class DatabaseController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $table = $databaseService->createTable($form->get('name')->getData(), $form->get('columns')->getData());
+                $options = [
+                    'ttl' => $form->get('ttl')->getData()
+                ];
+                $table = $databaseService->createTable($form->get('name')->getData(), $form->get('columns')->getData(), $options);
             } catch (TableExistException $e) {
                 return $this->responseError([
                     'message' => 'Table already exist'
@@ -95,13 +98,11 @@ class DatabaseController extends ApiController
                 'redirect' => $urlGenerator->generate('database_update', ['name' => $table->getName()])
             ]);
         }
-        return $this->responseError([
-            'message' => 'Can not create table'
-        ]);
+        return $this->responseFormError($form);
     }
 
     /**
-     * @Route("/api/database/{name}", methods = "PUT")
+     * @Route("/api/table/{name}", methods = "PUT")
      * @param Table $table
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
