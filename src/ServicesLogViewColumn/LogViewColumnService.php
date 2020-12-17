@@ -76,4 +76,18 @@ class LogViewColumnService implements LogViewColumnServiceInterface
     {
         // TODO: Implement getColumns() method.
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function remove(LogView $logView, Column $column, bool $flush = true)
+    {
+        $logViewColumn = $this->getRepository()->findOneBy(['logView' => $logView, 'column' => $column]);
+        if ($logViewColumn) {
+            $this->em->remove($logViewColumn);
+            if ($flush) {
+                $this->em->flush();
+            }
+        }
+    }
 }

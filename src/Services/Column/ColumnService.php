@@ -102,4 +102,15 @@ class ColumnService implements ColumnServiceInterface
     {
         return $this->getRepository()->findIn($ids);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function remove(Column $column, bool $flush = true)
+    {
+        $this->em->remove($column);
+        if ($flush) {
+            $this->em->flush();
+        }
+    }
 }

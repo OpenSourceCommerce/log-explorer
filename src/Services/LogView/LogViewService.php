@@ -56,6 +56,8 @@ class LogViewService implements LogViewServiceInterface
         $logView->setName($name);
         $logView->setGraph($graph);
 
+        $table->setLogView($logView);
+
         return $this->save($logView, $flush);
     }
 
@@ -114,13 +116,7 @@ class LogViewService implements LogViewServiceInterface
 
         /** @var Column $column */
         foreach ($columns as $column) {
-            $logviewColumn = new LogViewColumn();
-            $logviewColumn->setColumn($column);
-            $logviewColumn->setLabel($column->getName());
-            $logviewColumn->setLogView($logView);
-            $logviewColumn->setVisible(true);
-
-            $this->em->persist($logviewColumn);
+            $this->addColumnSetting($logView, $column, false);
         }
 
         if ($flush) {
@@ -153,5 +149,23 @@ class LogViewService implements LogViewServiceInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addColumnSetting(LogView $logView, Column $column, $flush = true): LogViewColumn
+    {
+        $logViewColumn = new LogViewColumn();
+        $logViewColumn->setColumn($column);
+        $logViewColumn->setLabel($column->getTitle());
+        $logViewColumn->setLogView($logView);
+        $logViewColumn->setVisible(true);
+
+        $this->em->persist($logViewColumn);
+        if ($flush) {
+            $this->em->flush();
+        }
+        return $logViewColumn;
     }
 }

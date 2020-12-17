@@ -7,6 +7,7 @@ namespace App\Services\LogView;
 use App\Entity\Column;
 use App\Entity\Graph;
 use App\Entity\LogView;
+use App\Entity\LogViewColumn;
 use App\Entity\Table;
 
 interface LogViewServiceInterface
@@ -71,4 +72,12 @@ interface LogViewServiceInterface
      * @param array $columns
      */
     public function setSummary(LogView $logView, array $columns);
+
+    /**
+     * @param LogView $logView
+     * @param Column $column
+     * @param bool $flush
+     * @return LogViewColumn
+     */
+    public function addColumnSetting(LogView $logView, Column $column, $flush = true): LogViewColumn;
 }

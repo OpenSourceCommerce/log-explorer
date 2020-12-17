@@ -29,4 +29,11 @@ interface LogViewColumnServiceInterface
      * @return mixed
      */
     public function getColumns(LogView $logView);
+
+    /**
+     * @param LogView $logView
+     * @param Column $column
+     * @param bool $flush
+     */
+    public function remove(LogView $logView, Column $column, bool $flush = true);
 }
