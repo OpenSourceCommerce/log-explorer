@@ -1,6 +1,7 @@
 export const {Button} = require('./_button');
 export const {Text} = require('./_text');
 export const {Select} = require('./_select');
+export const {Select2} = require('./_select2');
 export const {Link} = require('./_link');
 export const {Image} = require('./_image');
 export const {Input} = require('./_input');

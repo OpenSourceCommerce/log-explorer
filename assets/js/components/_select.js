@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export class Select extends Component {
     render() {
-        let {className = '', hasEmpty = true, children, ...rest} = this.props;
+        let {className = '', hasEmpty = false, children, ...rest} = this.props;
         className += ' form-control';
 
         return (

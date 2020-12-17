@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input, Button, Icon, Link} from '.';
+import {Input, Button, Icon, Link, Select} from '.';
 import {Alert, DatabaseActions, GraphActions} from '../actions';
 import PropTypes from 'prop-types';
 
@@ -245,12 +245,12 @@ export class GraphForm extends Component {
                 <div className="form-group">
                     <label>Table</label>
                     {table && <Link className={'ml-3'} href={'/table/' + table} >{table}</Link>}
-                    {tables.length > 0 && <select value={tableId} className={tableError ? 'form-control is-invalid' : 'form-control'} onChange={this.onTableChange}>
+                    {tables.length > 0 && <Select value={tableId} className={tableError ? 'is-invalid' : ''} onChange={this.onTableChange}>
                         <option value="">Select table</option>
                         {tables.map((item, key) => {
                             return <option key={key} value={item.id}>{item.name}</option>;
                         })}
-                    </select>}
+                    </Select>}
                 </div>
                 <div className="form-group">
                     <label>Graph title</label>

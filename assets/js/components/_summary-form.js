@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
-import {Button, Select} from '.';
+import {Button, Select2} from '.';
 import PropTypes from 'prop-types';
-import 'admin-lte/plugins/select2/js/select2.full';
-import 'admin-lte/plugins/select2/css/select2.css';
 import {Alert, LogViewActions} from '../actions';
 
 export class SummaryForm extends Component {
@@ -15,11 +13,6 @@ export class SummaryForm extends Component {
             summary: []
         };
         this.onSubmit = this.onSubmit.bind(this);
-        this.onChange = this.onChange.bind(this);
-    }
-
-    componentDidMount() {
-        $('.select2').select2();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -42,9 +35,6 @@ export class SummaryForm extends Component {
                 summary: arrSummary
             });
         }
-    }
-
-    onChange(e) {
     }
 
     onSubmit() {
@@ -74,9 +64,9 @@ export class SummaryForm extends Component {
         return (
             <div className={className}>
                 <div className="form-group">
-                    <Select id={'summary'} className={'select2'} multiple="multiple" data-placeholder="Select summary column" value={summary} onChange={this.onChange}>
+                    <Select2 id={'summary'} multiple="multiple" data-placeholder="Select summary column" value={summary}>
                         {_columns}
-                    </Select>
+                    </Select2>
                 </div>
 
                 <div className="box-footer">
