@@ -58,6 +58,12 @@ class StreamController extends ApiController
         } else {
             $options['filter'] = false;
         }
+        if ($request->query->has('pageIndex')) {
+            $options['page'] = intval($request->query->get('pageIndex'));
+        }
+        if ($request->query->has('pageSize')) {
+            $options['limit'] = intval($request->query->get('pageSize'));
+        }
         return $options;
     }
 
@@ -94,6 +100,7 @@ class StreamController extends ApiController
         $options['columns'] = $columnNames;
         try {
             $data = $streamService->getLogsInRange($logView->getTable()->getName(), $options);
+            $total = $streamService->getTotalLogsInRange($logView->getTable()->getName(), $options);
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -104,7 +111,7 @@ class StreamController extends ApiController
         }
         return $this->responseSuccess([
             'data' => $data,
-            'itemsCount' => count($data),
+            'itemsCount' => $total,
         ]);
     }
 
