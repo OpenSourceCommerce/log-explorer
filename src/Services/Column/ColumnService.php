@@ -35,6 +35,8 @@ class ColumnService implements ColumnServiceInterface
         $column->setTitle($data['title']);
         $column->setType($data['type']);
 
+        $table->addColumn($column);
+
         $this->save($column, $flush);
 
         return $column;

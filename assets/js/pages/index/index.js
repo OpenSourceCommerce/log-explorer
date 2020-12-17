@@ -60,6 +60,7 @@ class Index extends Component {
             });
         }).then(() => {
             Live.refresh();
+            window.history.pushState('logview', selectedTable.name, '/' + selectedTable.uuid);
         });
     }
 
@@ -70,9 +71,17 @@ class Index extends Component {
                 return;
             }
 
-            let selectedTable = this.selectedTable;
+            let selectedTable = null;
 
-            if (!selectedTable) {
+            if (window.uuid) {
+                for (let i in data) {
+                    let table = data[i];
+                    if (table.uuid === window.uuid) {
+                        selectedTable = data[i];
+                        break;
+                    }
+                }
+            } else {
                 selectedTable = data[0];
             }
 

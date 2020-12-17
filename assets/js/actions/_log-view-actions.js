@@ -2,7 +2,7 @@ import {request} from '..';
 
 const LogViewActions = {
     getAll() {
-        return request('/api/v1/logview/list');
+        return request('/api/logview/list');
     },
 
     getColumnSetting(uuid, chunk = 0) {
@@ -10,7 +10,7 @@ const LogViewActions = {
             return;
         }
 
-        let url = `/api/v1/logview/${uuid}/setting/columns`;
+        let url = `/api/logview/${uuid}/setting/columns`;
 
         if (!isNaN(chunk) && chunk > 0) {
             url += '?chunk=' + chunk;
@@ -24,7 +24,7 @@ const LogViewActions = {
             return;
         }
 
-        const url = `/api/v1/logview/${uuid}/setting/columns`;
+        const url = `/api/logview/${uuid}/setting/columns`;
 
         const body = JSON.stringify({
             column: columnId,

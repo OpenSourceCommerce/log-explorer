@@ -10,6 +10,16 @@ export class LogViewList extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {selected} = this.props;
+        const preSelected = prevProps.selected;
+        if (selected !== preSelected) {
+            this.setState({
+                selectedItem: selected
+            })
+        }
+    }
+
     handleChange(event) {
         const {onSelected, data} = this.props;
         const selectedUuid = event.target.value;
@@ -24,19 +34,18 @@ export class LogViewList extends Component {
     }
 
     render() {
-        let {className, onSelected, selected, data, ...rest} = this.props;
+        let {className, onSelected, data, ...rest} = this.props;
         const {selectedItem} = this.state;
-
+        const value = (selectedItem && selectedItem.uuid) ? selectedItem.uuid : '';
         className += ' form-control';
 
         return (
             <select onChange={this.handleChange}
+                    value={value}
                 className={className} {...rest}>
                 {data && data.map((item, index) => {
-                    const isSelected = (selectedItem && selectedItem.uuid) ? selectedItem.uuid : '';
                     return (
-                        <option defaultValue={isSelected} key={index}
-                            value={item.uuid}>{item.name}</option>
+                        <option key={index} value={item.uuid}>{item.name}</option>
                     );
                 })}
             </select>

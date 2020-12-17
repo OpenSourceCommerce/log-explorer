@@ -45,9 +45,10 @@ interface LogViewServiceInterface
      * setup log view column setting
      *
      * @param LogView $logView
+     * @param bool $flush
      * @return array
      */
-    public function setupColumnSetting(LogView $logView);
+    public function setupColumnSetting(LogView $logView, bool $flush = true);
 
     /**
      * Find Log View by uuid

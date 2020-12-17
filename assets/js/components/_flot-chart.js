@@ -10,7 +10,8 @@ export class FlotChart extends Component {
         const {uuid} = this.props;
 
         // Retrieve data
-        LogTableActions.getGraph(uuid).then((data, error) => {
+        LogTableActions.getGraph(uuid).then(res => {
+            const {data, error} = res;
             if (error) {
                 return;
             }

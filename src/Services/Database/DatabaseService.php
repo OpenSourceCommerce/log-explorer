@@ -68,9 +68,23 @@ class DatabaseService implements DatabaseServiceInterface
         $this->graphLineService = $graphLineService;
     }
 
-    private function syncTable(string $tableName): Table
+    private function checkIfHasTimestamp(array $columns): bool
+    {
+        foreach ($columns as $column) {
+            if ($column['name'] === 'timestamp' && $column['type'] === 'DateTime') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function syncTable(string $tableName): ?Table
     {
         $clickhouseColumns = $this->connection->getRawColumns($tableName);
+
+        if (!$this->checkIfHasTimestamp($clickhouseColumns)) {
+            return null;
+        }
 
         $table = $this->tableService->getTableByName($tableName);
         $isExist = true;
@@ -171,7 +185,8 @@ class DatabaseService implements DatabaseServiceInterface
     {
         $graph = $this->graphService->createLogViewGraph($table, 12, false);
         $this->graphLineService->createDefaultGraphLine($graph, false);
-        $this->logViewService->createLogView($table, $graph, null);
+        $logView = $this->logViewService->createLogView($table, $graph, null);
+        $this->logViewService->setupColumnSetting($logView, false);
     }
 
     private function makeCreateTableQuery(string $name, array $columns, array $options = []): string

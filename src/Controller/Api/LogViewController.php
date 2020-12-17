@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LogViewController extends ApiController
 {
     /**
-     * @Route("/api/v1/logview/list", name="log_receiver", methods={"GET"})
+     * @Route("/api/logview/list", name="log_receiver", methods={"GET"})
      * @param LogViewServiceInterface $logviewService
      * @return JsonResponse
      */
@@ -36,7 +36,7 @@ class LogViewController extends ApiController
     }
 
     /**
-     * @Route("/api/v1/logview/{uuid}/setting/columns", name="logview_column_setting", methods={"GET"})
+     * @Route("/api/logview/{uuid}/setting/columns", name="logview_column_setting", methods={"GET"})
      * @param LogView $logView
      * @param LogViewServiceInterface $logviewService
      * @param Request $request
@@ -74,7 +74,7 @@ class LogViewController extends ApiController
     }
 
     /**
-     * @Route("/api/v1/logview/{uuid}/setting/columns", name="update_logview_column_setting", methods={"PUT"})
+     * @Route("/api/logview/{uuid}/setting/columns", name="update_logview_column_setting", methods={"PUT"})
      * @param LogView $logView
      * @param LogViewColumnServiceInterface $logViewColumnService
      * @param Request $request

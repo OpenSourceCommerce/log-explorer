@@ -13,12 +13,12 @@ class IndexController extends AbstractController
     /**
      * @Route("/{uuid}", defaults={"uuid"=null}, name="index")
      * @param string|null $uuid
-     * @param LogView|null $dashboard
+     * @param LogView|null $logView
      * @return Response
      */
-    public function index(?string $uuid, LogView $dashboard = null): Response
+    public function index(?string $uuid, LogView $logView = null): Response
     {
-        if (is_null($dashboard) && $uuid) {
+        if (is_null($logView) && $uuid) {
             throw new NotFoundHttpException();
         }
         return $this->render('index/index.html.twig', [

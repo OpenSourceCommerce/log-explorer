@@ -165,7 +165,9 @@ class StreamController extends ApiController
         LogViewServiceInterface $logViewService,
         StreamServiceInterface $streamService
     ): JsonResponse {
-        $logView = $logViewService->getDefault();
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+        }
         $options = $this->getFilter($request);
         $graph = $logView->getGraph();
         $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $graph->getMaxPoint());

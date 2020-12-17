@@ -108,7 +108,7 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function setupColumnSetting(LogView $logView)
+    public function setupColumnSetting(LogView $logView, bool $flush = true)
     {
         $columns = $logView->getTable()->getColumns();
 
@@ -123,7 +123,9 @@ class LogViewService implements LogViewServiceInterface
             $this->em->persist($logviewColumn);
         }
 
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
 
         return $logView->getLogViewColumns();
     }
