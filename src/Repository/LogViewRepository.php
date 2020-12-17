@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Column;
 use App\Entity\LogView;
+use App\Entity\LogViewColumn;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,13 @@ class LogViewRepository extends ServiceEntityRepository
         parent::__construct($registry, LogView::class);
     }
 
-    // /**
-    //  * @return Dashboard1[] Returns an array of Dashboard1 objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /*public function getColumns(LogView $logView): array
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('l')
+            ->innerJoin(LogViewColumn::class, 'lc')
+            ->innerJoin(Column::class)
             ->getQuery()
             ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Dashboard1
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+            ;
+    }*/
 }

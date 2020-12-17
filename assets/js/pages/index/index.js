@@ -8,38 +8,80 @@ import {
     FlotChart,
     JsGridTable,
     DropdownItem,
-    Modal
+    Modal,
+    LogViewList,
+    Checkbox,
+    LogViewTableSettingModal
 } from '../../components';
-import {Live, LogTableActions, Event} from '../../actions';
+import {Live, LogTableActions, Event, LogViewActions, DatabaseActions} from '../../actions';
 
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
             fields: [],
+            logViews: [],
             isRetrieveAllData: false,
             isLive: true,
             disableLive: false,
             interval: 2000,
-            showTableSettingModal: false
+            showTableSettingModal: false,
+            selectedTable: null,
+            tableColumnList: []
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
         this.showTableSettingModal = this.showTableSettingModal.bind(this);
         this.hideTableSettingModal = this.hideTableSettingModal.bind(this);
+        this.setSelectedTable = this.setSelectedTable.bind(this);
+        this.onTableSettingModalChanged = this.onTableSettingModalChanged.bind(this);
+
+        this.logTable = React.createRef();
+        this.tableSettingModalRef = React.createRef();
     }
 
-    async loadData() {
-        const {data = [], error = 0} = await LogTableActions.getColumns();
+    loadData() {
+        const {selectedTable} = this.state;
 
-        if (error) {
+        if (!selectedTable) {
             return;
         }
 
-        this.setState({
-            fields: data,
-            isRetrieveAllData: true
+        LogTableActions.getColumns(selectedTable.uuid).then(response => {
+            const {data, error} = response;
+            if (error) {
+                return;
+            }
+
+            this.setState({
+                fields: data,
+                isRetrieveAllData: true
+            });
+        }).then(() => {
+            Live.refresh();
+        });
+    }
+
+    loadLogView() {
+        LogViewActions.getAll().then(response => {
+            const {data, error} = response;
+            if (error) {
+                return;
+            }
+
+            let selectedTable = this.selectedTable;
+
+            if (!selectedTable) {
+                selectedTable = data[0];
+            }
+
+            this.setState({
+                logViews: data,
+                selectedTable
+            });
+        }).then(() => {
+            this.loadData();
         });
     }
 
@@ -55,7 +97,14 @@ class Index extends Component {
             }
         });
 
-        this.loadData();
+        // This.loadData();
+        this.loadLogView();
+    }
+
+    setSelectedTable(selectedTable) {
+        this.setState({selectedTable}, () => {
+            this.loadData();
+        });
     }
 
     handleRealTimeClicked(event) {
@@ -100,43 +149,58 @@ class Index extends Component {
         this.setState({showTableSettingModal: false});
     }
 
+    onTableSettingModalChanged(column) {
+        this.loadData();
+    }
+
     render() {
         const {
             fields,
             isRetrieveAllData,
             isLive,
             disableLive,
-            showTableSettingModal
+            showTableSettingModal,
+            logViews,
+            selectedTable
         } = this.state;
 
-        const getDataTableUrl = '/api/stream/' + LogTableActions.getUuid() + '/list';
+        const uuid = selectedTable ? selectedTable.uuid : null;
 
         return (
             <div className="dashboard-page">
+                <div className="advanced-search col-12">
+                    <div className="card">
+                        <div className="card-body">
+                            <div className="row">
+                                <LogViewList data={logViews}
+                                    selected={selectedTable}
+                                    onSelected={this.setSelectedTable}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <AdvancedSearch
                     onDateRangeChanged={this.onDateRangeChanged}
                 />
                 <div className="col-12 row justify-content-start">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
+                            uuid={uuid}
                             handleRealTimeClicked={this.handleRealTimeClicked}
                             disableLive={disableLive}
                         />
                     </div>
                     <div className="col-12 col-md-4">
                         <div className="row d-flex flex-wrap">
-                            <Summary/>
+                            <Summary uuid={uuid}/>
                         </div>
                     </div>
                     {isRetrieveAllData ? (<div className="col-12 col-md-auto">
-                        <Modal title={'Table Setting'} id={'table-setting'} saveButtonTitle={'Save'}
-                            show={showTableSettingModal}
-                            saveButtonAction={() => {
-                                console.log('saved!!!');
-                            }}
-                            onHidden={this.hideTableSettingModal}>
-                            Text thử xem sao
-                        </Modal>
+                        <LogViewTableSettingModal show={showTableSettingModal}
+                            selectedTable={selectedTable}
+                            onHidden={this.hideTableSettingModal}
+                            onSave={this.onTableSettingModalChanged}
+                            ref={this.tableSettingModalRef}/>
                         <div className="card">
                             <CardHeader title="Home Page">
                                 <CardTool>
@@ -148,7 +212,7 @@ class Index extends Component {
                             <div className="card-body">
                                 {fields && fields.length > 0 &&
                                 <JsGridTable
-                                    dataSrc={getDataTableUrl}
+                                    logview={selectedTable}
                                     fields={fields}
                                     pageSize={5}
                                 />}

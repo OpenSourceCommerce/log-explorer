@@ -92,7 +92,7 @@ class DatabaseService implements DatabaseServiceInterface
         $isExist = true;
         if (is_null($table)) {
             $table = $this->tableService->createTable($tableName, false);
-            $this->dashboardService->createDashboard($table, null);
+            $this->dashboardService->createLogView($table, null);
             $isExist = false;
         }
 
@@ -177,7 +177,7 @@ class DatabaseService implements DatabaseServiceInterface
         }
         $this->em->flush();
 
-        $this->dashboardService->createDashboard($table, null);
+        $this->dashboardService->createLogView($table, null);
 
         return $table;
     }

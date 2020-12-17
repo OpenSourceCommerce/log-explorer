@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
@@ -10,7 +12,7 @@ use JsonSerializable;
  * @ORM\Entity(repositoryClass="App\Repository\ColumnRepository")
  * @ORM\Table(name="columns")
  * @ORM\HasLifecycleCallbacks
- * @UniqueEntity(fields={"table_id", "name"}, message="Column name is already exist")
+ * @UniqueEntity(fields={"table", "name"}, message="Column name is already exist")
  */
 class Column implements JsonSerializable
 {
@@ -51,6 +53,16 @@ class Column implements JsonSerializable
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LogViewColumn::class, mappedBy="columns")
+     */
+    private $logViewColumns;
+
+    public function __construct()
+    {
+        $this->logViewColumns = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -146,5 +158,35 @@ class Column implements JsonSerializable
             'type' => $this->getType(),
             'title' => $this->getTitle(),
         ];
+    }
+
+    /**
+     * @return Collection|LogViewColumn[]
+     */
+    public function getLogViewColumns(): Collection
+    {
+        return $this->logViewColumns;
+    }
+
+    public function addLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if (!$this->logViewColumns->contains($logViewColumn)) {
+            $this->logViewColumns[] = $logViewColumn;
+            $logViewColumn->setColumn($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if ($this->logViewColumns->removeElement($logViewColumn)) {
+            // set the owning side to null (unless already changed)
+            if ($logViewColumn->getColumn() === $this) {
+                $logViewColumn->setColumn(null);
+            }
+        }
+
+        return $this;
     }
 }

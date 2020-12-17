@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LogViewRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -13,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Table(name="logviews")
  * @ORM\HasLifecycleCallbacks
  */
-class LogView
+class LogView implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -46,10 +47,16 @@ class LogView
      */
     private $summary;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LogViewColumn::class, mappedBy="logView")
+     */
+    private $logViewColumns;
+
     public function __construct()
     {
-        $this->summary = new ArrayCollection();
+        $this->summary = new Collection();
         $this->uuid = Uuid::uuid4();
+        $this->logViewColumns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,9 +94,9 @@ class LogView
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
-    public function getSummary(): ArrayCollection
+    public function getSummary(): Collection
     {
         return $this->summary;
     }
@@ -110,6 +117,48 @@ class LogView
     public function removeSummary(Column $summary): self
     {
         $this->summary->removeElement($summary);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'uuid' => $this->getUuid(),
+            'name' => $this->getName(),
+            'table' => $this->getTable()->getName()
+        ];
+    }
+
+    /**
+     * @return Collection|LogViewColumn[]
+     */
+    public function getLogViewColumns(): Collection
+    {
+        return $this->logViewColumns;
+    }
+
+    public function addLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if (!$this->logViewColumns->contains($logViewColumn)) {
+            $this->logViewColumns[] = $logViewColumn;
+            $logViewColumn->setLogView($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if ($this->logViewColumns->removeElement($logViewColumn)) {
+            // set the owning side to null (unless already changed)
+            if ($logViewColumn->getLogView() === $this) {
+                $logViewColumn->setLogView(null);
+            }
+        }
 
         return $this;
     }

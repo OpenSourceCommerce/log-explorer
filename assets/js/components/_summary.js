@@ -12,14 +12,18 @@ export class Summary extends Component {
         };
     }
 
-    async loadData() {
-        const {data = [], error = 0} = await LogTableActions.getSummary();
-        if (error) {
-            return;
-        }
+    loadData() {
+        const {uuid} = this.props;
 
-        this.setState({
-            widgets: data
+        LogTableActions.getSummary(uuid).then(response => {
+            const {data, error} = response;
+            if (error) {
+                return;
+            }
+
+            this.setState({
+                widgets: data
+            });
         });
     }
 
@@ -71,5 +75,6 @@ export class Summary extends Component {
 }
 
 Summary.propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    uuid: PropTypes.string
 };

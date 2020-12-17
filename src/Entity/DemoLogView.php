@@ -4,7 +4,7 @@
 namespace App\Entity;
 
 
-class DemoDashboard
+class DemoLogView
 {
     private $table = 'nginx_access';
 

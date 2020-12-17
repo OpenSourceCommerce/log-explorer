@@ -30,3 +30,6 @@ export const {AdvancedSearch} = require('./_advanced-search');
 export const {FlotChart} = require('./_flot-chart');
 export const {JsGridTable} = require('./_js-grid-table');
 export const {Modal} = require('./_modal');
+export const {LogViewList} = require('./_log-views-list');
+export const {Checkbox} = require('./_checkbox');
+export const {LogViewTableSettingModal} = require('./_log-view-table-setting-modal');

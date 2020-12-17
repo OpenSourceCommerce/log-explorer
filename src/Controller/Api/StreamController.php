@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Constant\ErrorCodeConstant;
 use App\Entity\LogView;
+use App\Entity\LogViewColumn;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
@@ -17,17 +18,17 @@ class StreamController extends ApiController
 {
     /**
      * @Route("/api/stream/{uuid}/table", methods = "GET")
-     * @param LogView|null $dashboard
-     * @param LogViewServiceInterface $dashboardService
+     * @param LogView|null $logView
+     * @param LogViewServiceInterface $logViewService
      * @return JsonResponse
      */
-    public function table(?LogView $dashboard, LogViewServiceInterface $dashboardService): JsonResponse
+    public function table(?LogView $logView, LogViewServiceInterface $logViewService): JsonResponse
     {
-        if (is_null($dashboard)) {
-            $dashboard = $dashboardService->getDefault();
-            $columns = $dashboard->getColumns();
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+            $columns = $logView->getColumns();
         } else {
-            $columns = $dashboard->getTable()->getColumns();
+            $columns = $logViewService->getVisibleColumns($logView);
         }
         return $this->responseSuccess([
             'data' => $columns
@@ -62,28 +63,38 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/list", methods = "GET")
-     * @param LogView|null $dashboard
+     * @param LogView|null $logView
      * @param Request $request
      * @param LogViewServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function list(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        if (is_null($dashboard)) {
-            $dashboard = $dashboardService->getDefault();
-            $columns = $dashboard->getColumns();
+    public function list(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $dashboardService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $dashboardService->getDefault();
+            $columns = $logView->getColumns();
         } else {
-            $columns = $dashboard->getTable()->getColumns();
+            $columns = $logView->getLogViewColumns();
         }
         $options = $this->getFilter($request);
         $columnNames = [];
         foreach ($columns as $column) {
-            $columnNames[] = $column->getName();
+            if ($column instanceof LogViewColumn) {
+                if ($column->getVisible()) {
+                    $columnNames[] = $column->getColumn()->getName();
+                }
+            } else {
+                $columnNames[] = $column->getName();
+            }
         }
         $options['columns'] = $columnNames;
         try {
-            $data = $streamService->getLogsInRange($dashboard->getTable()->getName(), $options);
+            $data = $streamService->getLogsInRange($logView->getTable()->getName(), $options);
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -100,19 +111,23 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/summary", methods = "GET")
-     * @param LogView|null $dashboard
+     * @param LogView|null $logView
      * @param Request $request
      * @param LogViewServiceInterface $dashboardService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        if (is_null($dashboard)) {
-            $dashboard = $dashboardService->getDefault();
-            $columns = $dashboard->getSummaryColumns();
+    public function summary(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $dashboardService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $dashboardService->getDefault();
+            $columns = $logView->getSummaryColumns();
         } else {
-            $columns = $dashboard->getSummary();
+            $columns = $logView->getSummary();
         }
         $options = $this->getFilter($request);
         $widgets = [];
@@ -122,7 +137,8 @@ class StreamController extends ApiController
                     'name' => $column->getName(),
                     'title' => $column->getTitle()
                 ];
-                $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable()->getName(), $widget['name'], $options);
+                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable()->getName(), $widget['name'],
+                    $options);
                 $widgets[] = $widget;
             } catch (Exception $e) {
                 return $this->responseError([
@@ -140,27 +156,33 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/graph", methods = "GET")
-     * @param LogView|null $dashboard
+     * @param LogView|null $logView
      * @param Request $request
-     * @param LogViewServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph(?LogView $dashboard, Request $request, LogViewServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        $dashboard = $dashboardService->getDefault();
+    public function graph(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        $logView = $logViewService->getDefault();
         $options = $this->getFilter($request);
         $graph = [];
-        $graphOffset = $dashboard->getGraphFixedOffset();
+        $graphOffset = $logView->getGraphFixedOffset();
         if (is_null($graphOffset)) {
-            $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $dashboard->getGraphNumberOfPoint());
+            $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(),
+                $logView->getGraphNumberOfPoint());
         }
-        foreach ($dashboard->getGraphColumns() as $item) {
+        foreach ($logView->getGraphColumns() as $item) {
             try {
                 $line = [
                     'label' => $item['title'],
                     'color' => $item['color'],
-                    'data' => $streamService->getLogGraphInRange($dashboard->getTable()->getName(), $item, $graphOffset, $options),
+                    'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset,
+                        $options),
                 ];
                 $graph[] = $line;
             } catch (Exception $e) {

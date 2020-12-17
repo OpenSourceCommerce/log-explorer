@@ -13,51 +13,77 @@ export class JsGridTable extends Component {
         this.state = {
             selectedItem: null
         };
+        this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount() {
-        const that = this;
+        this.loadData(true);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {logview, fields} = this.props;
+        const prevLogview = prevProps.logview;
+        const prevFields = prevProps.fields;
+
+        if (logview !== prevLogview || fields !== prevFields) {
+            this.loadData();
+        }
+    }
+
+    loadData(liveRefresh = false) {
         const {
-            height = '500px', width = '100%', pageSize = 30, pageButtonCount = 5, pageIndex = 1,
-            pageLoading = true, dataSrc, dataType = 'json', autoload = true, paging = true, fields = []
+            height = '500px',
+            width = '100%',
+            pageSize = 30,
+            pageButtonCount = 5,
+            pageIndex = 1,
+            pageLoading = true,
+            logview,
+            dataType = 'json',
+            autoload = true,
+            paging = true,
+            fields = []
         } = this.props;
+        const that = this;
+        const uuid = logview ? logview.uuid : null;
+        const dataSrc = '/api/stream/' + LogTableActions.getUuid(uuid) + '/list';
 
         $(() => {
-            $('#jsGrid1')
-                .jsGrid({
-                    height,
-                    width,
+            $('#jsGrid1').jsGrid({
+                height,
+                width,
 
-                    autoload,
-                    paging,
-                    pageSize,
-                    pageButtonCount,
-                    pageIndex,
-                    pageLoading,
+                autoload,
+                paging,
+                pageSize,
+                pageButtonCount,
+                pageIndex,
+                pageLoading,
 
-                    controller: {
-                        loadData(filter) {
-                            filter = LogTableActions.getOptions(filter);
-                            return $.ajax({
-                                url: dataSrc,
-                                data: filter,
-                                dataType
-                            });
-                        }
-                    },
+                controller: {
+                    loadData(filter) {
+                        filter = LogTableActions.getOptions(filter);
+                        return $.ajax({
+                            url: dataSrc,
+                            data: filter,
+                            dataType
+                        });
+                    }
+                },
 
-                    rowClick: data => {
-                        const {item} = data;
-                        that.setState({selectedItem: item});
-                    },
+                rowClick: data => {
+                    const {item} = data;
+                    that.setState({selectedItem: item});
+                },
 
-                    fields
-                });
-
-            Live.onRefresh(() => {
-                $('#jsGrid1')
-                    .jsGrid('loadData');
+                fields
             });
+
+            if (liveRefresh) {
+                Live.onRefresh(() => {
+                    $('#jsGrid1').jsGrid('loadData');
+                });
+            }
         });
     }
 
@@ -82,7 +108,7 @@ export class JsGridTable extends Component {
 
 JsGridTable.propTypes = {
     fields: PropTypes.array.isRequired,
-    dataSrc: PropTypes.string.isRequired,
+    logview: PropTypes.object,
     dataType: PropTypes.string,
     pageSize: PropTypes.number,
     pageLoading: PropTypes.bool,
