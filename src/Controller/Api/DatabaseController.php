@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DatabaseController extends ApiController
 {
     /**
-     * @Route("/api/database/tables", methods = "GET")
+     * @Route("/api/table", methods = "GET")
      * @param TableServiceInterface $tableService
      * @return Response
      */
@@ -30,7 +30,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/{name}/columns", methods = "GET")
+     * @Route("/api/table/{name}/columns", methods = "GET")
      * @param Table $table
      * @return Response
      */
@@ -43,7 +43,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/sync", methods = "POST")
+     * @Route("/api/table/sync", methods = "POST")
      * @param DatabaseServiceInterface $databaseService
      * @return Response
      */
@@ -55,7 +55,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/create", methods = "POST")
+     * @Route("/api/table/create", methods = "POST")
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @param UrlGeneratorInterface $urlGenerator
@@ -91,7 +91,7 @@ class DatabaseController extends ApiController
     }
 
     /**
-     * @Route("/api/database/{name}", methods = "PUT")
+     * @Route("/api/table/{name}", methods = "PUT")
      * @param Table $table
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button} from './_button';
-import {FilterDate, FilterText} from '.';
+import {FilterDate, FilterText, Button} from '.';
 import '../../styles/component/_advanced-search.scss';
 import {Live} from '../actions';
 

@@ -6,13 +6,14 @@ namespace App\Services\Database;
 
 use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
-use App\Exceptions\InvalidSqlQueryException;
 use App\Exceptions\TableExistException;
 use App\Services\Clickhouse\ClickhouseServiceInterface;
 use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Column\ColumnServiceInterface;
+use App\Services\Graph\GraphServiceInterface;
+use App\Services\GraphLine\GraphLineServiceInterface;
+use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Table\TableServiceInterface;
-use Doctrine\DBAL\Schema\Column;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DatabaseService implements DatabaseServiceInterface
@@ -27,47 +28,44 @@ class DatabaseService implements DatabaseServiceInterface
     private $columnService;
     /** @var ClickhouseServiceInterface */
     private $clickhouseService;
+    /**
+     * @var LogViewServiceInterface
+     */
+    private $logViewService;
+    /** @var GraphServiceInterface */
+    private $graphService;
+    /** @var GraphLineServiceInterface */
+    private $graphLineService;
 
+    /**
+     * DatabaseService constructor.
+     * @param EntityManagerInterface $em
+     * @param ConnectionInterface $connection
+     * @param TableServiceInterface $tableService
+     * @param ColumnServiceInterface $columnService
+     * @param ClickhouseServiceInterface $clickhouseService
+     * @param LogViewServiceInterface $logViewService
+     * @param GraphServiceInterface $graphService
+     * @param GraphLineServiceInterface $graphLineService
+     */
     public function __construct(
         EntityManagerInterface $em,
         ConnectionInterface $connection,
         TableServiceInterface $tableService,
         ColumnServiceInterface $columnService,
-        ClickhouseServiceInterface $clickhouseService
-    )
-    {
+        ClickhouseServiceInterface $clickhouseService,
+        LogViewServiceInterface $logViewService,
+        GraphServiceInterface $graphService,
+        GraphLineServiceInterface $graphLineService
+    ) {
         $this->em = $em;
         $this->connection = $connection;
         $this->tableService = $tableService;
         $this->columnService = $columnService;
         $this->clickhouseService = $clickhouseService;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function processQuery(string $query)
-    {
-        $tableName = $this->getTableFromQuery($query);
-        if (empty($tableName)) {
-            throw new InvalidSqlQueryException();
-        }
-        if (!$this->connection->exec($query)) {
-            return false;
-        }
-
-        return $this->syncTable($tableName);
-    }
-
-    private function getTableFromQuery(string $query): ?string
-    {
-        $matches = [];
-        if (preg_match('#^CREATE TABLE( IF NOT EXISTS)? ([\w\.]+)( ON CLUSTER [\w\.]+)?(\s)?\(#i', $query, $matches)) {
-            return $matches[2];
-        } elseif (preg_match('#^ALTER TABLE (\w+) #i', $query, $matches)) {
-            return $matches[1];
-        }
-        return null;
+        $this->logViewService = $logViewService;
+        $this->graphService = $graphService;
+        $this->graphLineService = $graphLineService;
     }
 
     private function syncTable(string $tableName): Table
@@ -78,6 +76,7 @@ class DatabaseService implements DatabaseServiceInterface
         $isExist = true;
         if (is_null($table)) {
             $table = $this->tableService->createTable($tableName, false);
+            $this->setupNewTable($table);
             $isExist = false;
         }
 
@@ -98,10 +97,10 @@ class DatabaseService implements DatabaseServiceInterface
             if (empty($column)) {
                 $this->columnService->create(
                     $table, [
-                        'name' => $name,
-                        'title' => $title,
-                        'type' => $type
-                    ],
+                    'name' => $name,
+                    'title' => $title,
+                    'type' => $type
+                ],
                     false
                 );
             }
@@ -125,7 +124,7 @@ class DatabaseService implements DatabaseServiceInterface
     /**
      * @inheritDoc
      */
-    public function createTable(string $name, array $columns, array $options = []): Table
+    public function createTable(string $name, array $columns, array $options = []): ?Table
     {
         if ($this->connection->tableExists($name)) {
             throw new TableExistException();
@@ -153,7 +152,7 @@ class DatabaseService implements DatabaseServiceInterface
         $query = $this->makeCreateTableQuery($name, $columns, $options);
 
         if (!$this->connection->exec($query)) {
-            return false;
+            return null;
         }
 
         $columns = $this->makeColumnTitle($columns);
@@ -162,14 +161,22 @@ class DatabaseService implements DatabaseServiceInterface
         foreach ($columns as $column) {
             $this->columnService->create($table, $column, false);
         }
+        $this->setupNewTable($table);
         $this->em->flush();
 
         return $table;
     }
 
+    private function setupNewTable(Table $table)
+    {
+        $graph = $this->graphService->createLogViewGraph($table, 12, false);
+        $this->graphLineService->createDefaultGraphLine($graph, false);
+        $this->logViewService->createLogView($table, $graph, null);
+    }
+
     private function makeCreateTableQuery(string $name, array $columns, array $options = []): string
     {
-        $query = 'CREATE TABLE '.$name.' (';
+        $query = 'CREATE TABLE ' . $name . ' (';
         foreach ($columns as $k => $column) {
             if (!empty($k)) {
                 $query .= ',';

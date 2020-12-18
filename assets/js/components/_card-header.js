@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 
 export class CardHeader extends Component {
     render() {
-        const {showCollapseButton = true, showRemoveButton = true, title = ''} = this.props;
+        const {showCollapseButton = true, showRemoveButton = true, title = '', children} = this.props;
 
         return (
             <div className="card-header">
                 <h3 className="card-title">{title}</h3>
 
-                {(showCollapseButton || showRemoveButton) && <div className="card-tools">
+                <div className="card-tools">
+                    {children}
+
                     {showCollapseButton && <Button color="tool"
                         data-card-widget="collapse"
                         data-toggle="tooltip" title="Collapse">
@@ -21,7 +23,7 @@ export class CardHeader extends Component {
                         data-toggle="tooltip" title="Remove">
                         <Icon name={'times'}/>
                     </Button>}
-                </div>}
+                </div>
             </div>
         );
     }
@@ -30,5 +32,6 @@ export class CardHeader extends Component {
 CardHeader.propTypes = {
     showCollapseButton: PropTypes.bool,
     showRemoveButton: PropTypes.bool,
-    title: PropTypes.string
+    title: PropTypes.string,
+    children: PropTypes.any
 };

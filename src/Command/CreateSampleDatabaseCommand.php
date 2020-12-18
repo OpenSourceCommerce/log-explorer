@@ -53,7 +53,6 @@ class CreateSampleDatabaseCommand extends Command
             $io->success("Table exist.");
             return Command::SUCCESS;
         } catch (Exception $e) {
-            dd($e);
             $io->error("Not success");
             return Command::FAILURE;
         }

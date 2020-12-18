@@ -4,6 +4,7 @@
 namespace App\Services\Stream;
 
 
+use App\Entity\GraphLine;
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
@@ -89,7 +90,6 @@ class StreamService implements StreamServiceInterface
                     'label' => $item[$column],
                     'value' => intval($item['c']),
                 ];
-//                $summary[$item[$column]] = intval($item['c']);
             }
         }
         return $summary;
@@ -98,7 +98,7 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getGraphOffsetInSeconds(\DateTimeInterface $from, \DateTimeInterface $to, int $numOfPoint)
+    public function getGraphOffsetInSeconds(\DateTimeInterface $from, \DateTimeInterface $to, int $numOfPoint): int
     {
         $timeOffset = $from->diff($to);
         $seconds = $timeOffset->days * 86400 + $timeOffset->h * 3600 + $timeOffset->i * 60 + $timeOffset->s;
@@ -108,7 +108,7 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getLogGraphInRange(string $table, array $column, int $offsetInSeconds, array $options = [])
+    public function getLogGraphInRange(string $table, GraphLine $line, int $offsetInSeconds, array $options = []): array
     {
         $data = [];
         $from = $options['from'];
@@ -136,11 +136,10 @@ class StreamService implements StreamServiceInterface
             $options['to'] = $nextPoint;
             $builder = $this->makeQueryBuilder($table, $options)
                 ->addSelect('COUNT() AS c');
-            if ($column['filter']) {
-                $builder->andWhere($column['filter']);
+            if ($line->getFilter()) {
+                $builder->andWhere($line->getFilter());
             }
             $data[] = [
-//                $label->format('H:i'),
                 $label->getTimestamp() * 1000,
                 intval($builder->execute()->fetchColumn()),
             ];

@@ -92,4 +92,12 @@ class ColumnService implements ColumnServiceInterface
     {
         return $this->getRepository()->find($id);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findIn(array $ids): array
+    {
+        return $this->getRepository()->findIn($ids);
+    }
 }
