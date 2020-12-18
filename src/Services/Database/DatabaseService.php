@@ -14,6 +14,7 @@ use App\Services\Graph\GraphServiceInterface;
 use App\Services\GraphLine\GraphLineServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Table\TableServiceInterface;
+use App\ServicesLogViewColumn\LogViewColumnServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DatabaseService implements DatabaseServiceInterface
@@ -36,6 +37,8 @@ class DatabaseService implements DatabaseServiceInterface
     private $graphService;
     /** @var GraphLineServiceInterface */
     private $graphLineService;
+    /** @var LogViewColumnServiceInterface */
+    private $logViewColumnService;
 
     /**
      * DatabaseService constructor.
@@ -47,6 +50,7 @@ class DatabaseService implements DatabaseServiceInterface
      * @param LogViewServiceInterface $logViewService
      * @param GraphServiceInterface $graphService
      * @param GraphLineServiceInterface $graphLineService
+     * @param LogViewColumnServiceInterface $logViewColumnService
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -56,7 +60,8 @@ class DatabaseService implements DatabaseServiceInterface
         ClickhouseServiceInterface $clickhouseService,
         LogViewServiceInterface $logViewService,
         GraphServiceInterface $graphService,
-        GraphLineServiceInterface $graphLineService
+        GraphLineServiceInterface $graphLineService,
+        LogViewColumnServiceInterface $logViewColumnService
     ) {
         $this->em = $em;
         $this->connection = $connection;
@@ -66,11 +71,26 @@ class DatabaseService implements DatabaseServiceInterface
         $this->logViewService = $logViewService;
         $this->graphService = $graphService;
         $this->graphLineService = $graphLineService;
+        $this->logViewColumnService = $logViewColumnService;
     }
 
-    private function syncTable(string $tableName): Table
+    private function checkIfHasTimestamp(array $columns): bool
+    {
+        foreach ($columns as $column) {
+            if ($column['name'] === 'timestamp' && $column['type'] === 'DateTime') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function syncTable(string $tableName): ?Table
     {
         $clickhouseColumns = $this->connection->getRawColumns($tableName);
+
+        if (!$this->checkIfHasTimestamp($clickhouseColumns)) {
+            return null;
+        }
 
         $table = $this->tableService->getTableByName($tableName);
         $isExist = true;
@@ -80,14 +100,19 @@ class DatabaseService implements DatabaseServiceInterface
             $isExist = false;
         }
 
-        $columnNames = [];
+        $oldColumns = $table->getColumns()->toArray();
+        $oldColumnIndexed = [];
+        foreach ($oldColumns as $column) {
+            $oldColumnIndexed[$column->getName()] = $column;
+        }
+        unset($oldColumns);
         foreach ($clickhouseColumns as $clickhouseColumn) {
             $column = null;
             $name = $clickhouseColumn['name'];
             $type = $clickhouseColumn['type'];
             $title = ucfirst($name);
             $title = str_replace('_', ' ', $title);
-            $columnNames[] = $name;
+            unset($oldColumnIndexed[$name]);
             if ($isExist) {
                 $column = $this->columnService->findByName($table, $name);
                 if (!empty($column) && ($column->getType() !== $type || $column->getTitle() !== $title)) {
@@ -95,7 +120,7 @@ class DatabaseService implements DatabaseServiceInterface
                 }
             }
             if (empty($column)) {
-                $this->columnService->create(
+                $column = $this->columnService->create(
                     $table, [
                     'name' => $name,
                     'title' => $title,
@@ -103,16 +128,23 @@ class DatabaseService implements DatabaseServiceInterface
                 ],
                     false
                 );
+                $this->logViewService->addColumnSetting($table->getLogView(), $column, false);
             }
         }
-        if ($isExist) {
-            $this->columnService->removeNotIn($table, $columnNames);
+        if ($oldColumnIndexed) {
+            foreach ($oldColumnIndexed as $column) {
+                $this->logViewColumnService->remove($table->getLogView(), $column);
+                $this->columnService->remove($column);
+            }
         }
         $this->em->flush();
 
         return $table;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function syncAllTableToSystem()
     {
         $tables = $this->connection->getTables();
@@ -171,7 +203,8 @@ class DatabaseService implements DatabaseServiceInterface
     {
         $graph = $this->graphService->createLogViewGraph($table, 12, false);
         $this->graphLineService->createDefaultGraphLine($graph, false);
-        $this->logViewService->createLogView($table, $graph, null);
+        $logView = $this->logViewService->createLogView($table, $graph, null, false);
+        $this->logViewService->setupColumnSetting($logView, false);
     }
 
     private function makeCreateTableQuery(string $name, array $columns, array $options = []): string

@@ -44,4 +44,10 @@ interface StreamServiceInterface
      * @throws \Doctrine\DBAL\Exception
      */
     public function getLogGraphInRange(string $table, GraphLine $line, int $offsetInSeconds, array $options = []): array;
+
+    /**
+     * @param string $name
+     * @param array $options
+     */
+    public function getTotalLogsInRange(string $name, array $options = []);
 }

@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Constant\ErrorCodeConstant;
 use App\Entity\LogView;
+use App\Entity\LogViewColumn;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
@@ -26,7 +27,7 @@ class StreamController extends ApiController
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
         }
-        $columns = $logView->getTable()->getColumns()->toArray();
+        $columns = $logViewService->getVisibleColumns($logView);
         return $this->responseSuccess([
             'data' => $columns
         ]);
@@ -57,6 +58,12 @@ class StreamController extends ApiController
         } else {
             $options['filter'] = false;
         }
+        if ($request->query->has('pageIndex')) {
+            $options['page'] = intval($request->query->get('pageIndex'));
+        }
+        if ($request->query->has('pageSize')) {
+            $options['limit'] = intval($request->query->get('pageSize'));
+        }
         return $options;
     }
 
@@ -68,20 +75,32 @@ class StreamController extends ApiController
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function list(?LogView $logView, Request $request, LogViewServiceInterface $logViewService, StreamServiceInterface $streamService): JsonResponse
-    {
+    public function list(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
+
         }
-        $columns = $logView->getTable()->getColumns()->toArray();
+        $columns = $logView->getLogViewColumns();
         $options = $this->getFilter($request);
         $columnNames = [];
         foreach ($columns as $column) {
-            $columnNames[] = $column->getName();
+            if ($column instanceof LogViewColumn) {
+                if ($column->getVisible()) {
+                    $columnNames[] = $column->getColumn()->getName();
+                }
+            } else {
+                $columnNames[] = $column->getName();
+            }
         }
         $options['columns'] = $columnNames;
         try {
             $data = $streamService->getLogsInRange($logView->getTable()->getName(), $options);
+            $total = $streamService->getTotalLogsInRange($logView->getTable()->getName(), $options);
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -92,7 +111,7 @@ class StreamController extends ApiController
         }
         return $this->responseSuccess([
             'data' => $data,
-            'itemsCount' => count($data),
+            'itemsCount' => $total,
         ]);
     }
 
@@ -104,8 +123,13 @@ class StreamController extends ApiController
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary(?LogView $logView, Request $request, LogViewServiceInterface $logViewService, StreamServiceInterface $streamService): JsonResponse
-    {
+
+    public function summary(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
         }
@@ -142,9 +166,15 @@ class StreamController extends ApiController
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph(?LogView $logView, Request $request, LogViewServiceInterface $logViewService, StreamServiceInterface $streamService): JsonResponse
-    {
-        $logView = $logViewService->getDefault();
+    public function graph(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+        }
         $options = $this->getFilter($request);
         $graph = $logView->getGraph();
         $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $graph->getMaxPoint());

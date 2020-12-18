@@ -7,8 +7,14 @@ const DatabaseActions = {
     getAllTable() {
         return request('/api/table', {method: 'GET'});
     },
-    getTableColumns(table) {
-        return request('/api/table/' + table + '/columns', {method: 'GET'});
+    getTableColumns(table, chunk = 0) {
+        let url = '/api/table/' + table + '/columns';
+
+        if (!isNaN(chunk) && chunk > 0) {
+            url += '?chunk=' + chunk;
+        }
+
+        return request(url, {method: 'GET'});
     },
     createOrUpdate(tableId, data) {
         if (tableId) {

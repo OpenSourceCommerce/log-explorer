@@ -63,11 +63,15 @@ class StreamService implements StreamServiceInterface
         $timer = $options['timer'] ?? 'timestamp';
         $sort = $options['sort'] ?? $timer;
         $order = $options['order'] ?? 'DESC';
+        $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
         $builder->select($columns)
             ->setMaxResults($limit);
         if ($sort) {
             $builder->orderBy($sort, $order);
+        }
+        if ($page) {
+            $builder->setFirstResult(($page - 1) * $limit);
         }
         return $builder->execute()
             ->fetchAll();
@@ -146,5 +150,16 @@ class StreamService implements StreamServiceInterface
             $lastPoint = $nextPoint;
         }
         return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTotalLogsInRange(string $name, array $options = [])
+    {
+        $builder = $this->makeQueryBuilder($name, $options);
+        return $builder->select('COUNT()')
+            ->execute()
+            ->fetchColumn();
     }
 }

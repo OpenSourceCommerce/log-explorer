@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Table(name="logviews")
  * @ORM\HasLifecycleCallbacks
  */
-class LogView
+class LogView implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -48,6 +48,11 @@ class LogView
     private $summary;
 
     /**
+     * @ORM\OneToMany(targetEntity=LogViewColumn::class, mappedBy="logView")
+     */
+    private $logViewColumns;
+
+    /**
      * @ORM\OneToOne(targetEntity=Graph::class, inversedBy="logView", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
@@ -57,6 +62,7 @@ class LogView
     {
         $this->summary = new ArrayCollection();
         $this->uuid = Uuid::uuid4();
+        $this->logViewColumns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +141,48 @@ class LogView
     public function setGraph(?Graph $graph): self
     {
         $this->graph = $graph;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'uuid' => $this->getUuid(),
+            'name' => $this->getName(),
+            'table' => $this->getTable()->getName()
+        ];
+    }
+
+    /**
+     * @return Collection|LogViewColumn[]
+     */
+    public function getLogViewColumns(): Collection
+    {
+        return $this->logViewColumns;
+    }
+
+    public function addLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if (!$this->logViewColumns->contains($logViewColumn)) {
+            $this->logViewColumns[] = $logViewColumn;
+            $logViewColumn->setLogView($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogViewColumn(LogViewColumn $logViewColumn): self
+    {
+        if ($this->logViewColumns->removeElement($logViewColumn)) {
+            // set the owning side to null (unless already changed)
+            if ($logViewColumn->getLogView() === $this) {
+                $logViewColumn->setLogView(null);
+            }
+        }
 
         return $this;
     }

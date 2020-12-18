@@ -10,6 +10,9 @@ use App\Exceptions\TableExistException;
 
 interface DatabaseServiceInterface
 {
+    /**
+     * Sync all existing table to system
+     */
     public function syncAllTableToSystem();
 
     /**

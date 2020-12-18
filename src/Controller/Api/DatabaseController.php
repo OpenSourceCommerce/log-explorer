@@ -32,13 +32,21 @@ class DatabaseController extends ApiController
     /**
      * @Route("/api/table/{name}/columns", methods = "GET")
      * @param Table $table
+     * @param Request $request
      * @return Response
      */
-    public function columns(Table $table): Response
+    public function columns(Table $table, Request $request): Response
     {
+        $chunk = $request->get('chunk', 0);
+        $columns = $table->getColumns()->toArray();
+
+        if (!empty($chunk) && is_numeric($chunk)) {
+            $columns = array_chunk($columns, $chunk);
+        }
+
         return $this->responseSuccess([
             'table' => $table->getName(),
-            'data' => $table->getColumns()->toArray()
+            'data' => $columns
         ]);
     }
 
@@ -61,8 +69,11 @@ class DatabaseController extends ApiController
      * @param UrlGeneratorInterface $urlGenerator
      * @return Response
      */
-    public function createTable(Request $request, DatabaseServiceInterface $databaseService, UrlGeneratorInterface $urlGenerator): Response
-    {
+    public function createTable(
+        Request $request,
+        DatabaseServiceInterface $databaseService,
+        UrlGeneratorInterface $urlGenerator
+    ): Response {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);
@@ -98,8 +109,12 @@ class DatabaseController extends ApiController
      * @param UrlGeneratorInterface $urlGenerator
      * @return Response
      */
-    public function updateTable(Table $table, Request $request, DatabaseServiceInterface $databaseService, UrlGeneratorInterface $urlGenerator): Response
-    {
+    public function updateTable(
+        Table $table,
+        Request $request,
+        DatabaseServiceInterface $databaseService,
+        UrlGeneratorInterface $urlGenerator
+    ): Response {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);

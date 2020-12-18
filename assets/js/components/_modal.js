@@ -13,6 +13,7 @@ export class Modal extends Component {
             size = Size.large,
             showCloseButton = true,
             closeButtonTitle = 'Close',
+            showSaveButton,
             saveButtonAction,
             saveButtonTitle = 'Save Changes',
             saveButtonColor = Colors.blue,
@@ -66,7 +67,7 @@ export class Modal extends Component {
                             {showCloseButton && <Button type="button" className="btn btn-default"
                                 data-dismiss="modal">{closeButtonTitle}
                             </Button>}
-                            {saveButtonAction && <Button type="button" onClick={saveButtonAction}
+                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
                                 color={saveButtonColor}>{saveButtonTitle}</Button>}
                         </div>
                     </div>
@@ -82,6 +83,7 @@ Modal.propTypes = {
     size: PropTypes.string,
     show: PropTypes.bool,
     showCloseButton: PropTypes.bool,
+    showSaveButton: PropTypes.bool,
     closeButtonTitle: PropTypes.string,
     saveButtonAction: PropTypes.func,
     saveButtonTitle: PropTypes.string,

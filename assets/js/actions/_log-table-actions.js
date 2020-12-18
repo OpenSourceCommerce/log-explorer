@@ -19,17 +19,17 @@ const LogTableActions = {
 
         return query;
     },
-    getUuid() {
-        return window.uuid ? window.uuid : 'default';
+    getUuid(uuid) {
+        return uuid ? uuid : 'default';
     },
-    getColumns() {
-        return request('/api/stream/' + this.getUuid() + '/table?' + new URLSearchParams(this.getOptions()));
+    getColumns(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/table?' + new URLSearchParams(this.getOptions()));
     },
-    getSummary() {
-        return request('/api/stream/' + this.getUuid() + '/summary?' + new URLSearchParams(this.getOptions()));
+    getSummary(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/summary?' + new URLSearchParams(this.getOptions()));
     },
-    getGraph() {
-        return request('/api/stream/' + this.getUuid() + '/graph?' + new URLSearchParams(this.getOptions()));
+    getGraph(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/graph?' + new URLSearchParams(this.getOptions()));
     }
 };
 

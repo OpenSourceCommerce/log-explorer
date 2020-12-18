@@ -4,17 +4,19 @@
 namespace App\Services\LogView;
 
 
+use App\Entity\Column;
 use App\Entity\Graph;
 use App\Entity\LogView;
-use App\Entity\DemoDashboard;
+use App\Entity\LogViewColumn;
 use App\Entity\Table;
 
 interface LogViewServiceInterface
 {
     /**
-     * @return LogView
+     * Get default log view
+     * @return LogView|null
      */
-    public function getDefault(): LogView;
+    public function getDefault(): ?LogView;
 
     /**
      * @param Table $table
@@ -26,8 +28,56 @@ interface LogViewServiceInterface
     public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView;
 
     /**
+     * List all LogView
+     *
+     * @return array
+     */
+    public function list(): array;
+
+    /**
+     * Get log view column setting
+     *
+     * @param LogView $logView
+     * @return array
+     */
+    public function getColumnSetting(LogView $logView);
+
+    /**
+     * setup log view column setting
+     *
+     * @param LogView $logView
+     * @param bool $flush
+     * @return array
+     */
+    public function setupColumnSetting(LogView $logView, bool $flush = true);
+
+    /**
+     * Find Log View by uuid
+     *
+     * @param string $uuid
+     * @return LogView|null
+     */
+    public function findByUuid(string $uuid): ?LogView;
+
+    /**
+     * Get Log View Column
+     *
+     * @param LogView $logView
+     * @return mixed
+     */
+    public function getVisibleColumns(LogView $logView);
+
+    /**
      * @param LogView $logView
      * @param array $columns
      */
     public function setSummary(LogView $logView, array $columns);
+
+    /**
+     * @param LogView $logView
+     * @param Column $column
+     * @param bool $flush
+     * @return LogViewColumn
+     */
+    public function addColumnSetting(LogView $logView, Column $column, $flush = true): LogViewColumn;
 }

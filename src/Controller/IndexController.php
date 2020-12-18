@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\LogView;
+use App\Services\LogView\LogViewServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -11,14 +12,28 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/{uuid}", defaults={"uuid"=null}, name="index")
-     * @param string|null $uuid
-     * @param LogView|null $dashboard
+     * @Route("/welcome", name="welcome")
+     * @param LogViewServiceInterface $logViewService
      * @return Response
      */
-    public function index(?string $uuid, LogView $dashboard = null): Response
+    public function welcome(LogViewServiceInterface $logViewService): Response
     {
-        if (is_null($dashboard) && $uuid) {
+        $logView = $logViewService->getDefault();
+        if ($logView) {
+            return $this->redirectToRoute('index', ['uuid' => $logView->getUuid()]);
+        }
+        return $this->render('index/welcome.html.twig');
+    }
+
+    /**
+     * @Route("/{uuid}", defaults={"uuid"=null}, name="index")
+     * @param string|null $uuid
+     * @param LogView|null $logView
+     * @return Response
+     */
+    public function index(?string $uuid, LogView $logView = null): Response
+    {
+        if (is_null($logView) && $uuid) {
             throw new NotFoundHttpException();
         }
         return $this->render('index/index.html.twig', [
