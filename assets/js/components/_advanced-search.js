@@ -8,7 +8,7 @@ export class AdvancedSearch extends React.Component {
     render() {
         const {onDateRangeChanged} = this.props;
         return (
-            <div className="advanced-search col-12">
+            <div className="advanced-search">
                 <div className="card">
                     <div className="card-body">
                         <div className="row">

@@ -1,0 +1,21 @@
+.dashboard-page {
+  .card {
+    .card-header {
+      border-bottom: none;
+    }
+    .card-body {
+      .widget-table {
+        max-height: 250px;
+        overflow: auto;
+
+        .card-header {
+          border-bottom: none;
+        }
+
+        .widget-table-row {
+          border-top: 1px solid rgba(0,0,0,.125);
+        }
+      }
+    }
+  }
+}

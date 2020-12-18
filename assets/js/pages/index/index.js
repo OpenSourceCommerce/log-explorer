@@ -8,6 +8,7 @@ import {
     LogViewTable,
 } from '../../components';
 import { Live, LogTableActions, Event, LogViewActions } from '../../actions';
+import '../../../styles/pages/index.scss';
 
 class Index extends Component {
     constructor(props) {
@@ -158,7 +159,7 @@ class Index extends Component {
         const uuid = selectedTable ? selectedTable.uuid : null;
 
         return (
-            <div className="dashboard-page">
+            <div className="dashboard-page container-fluid">
                 <div className="advanced-search col-12">
                     <div className="card">
                         <div className="card-body">
@@ -173,7 +174,7 @@ class Index extends Component {
                 <AdvancedSearch
                     onDateRangeChanged={this.onDateRangeChanged}
                 />
-                <div className="col-12 row justify-content-start">
+                <div className="row justify-content-start flex-md-wrap">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
                                    uuid={uuid}
@@ -181,11 +182,8 @@ class Index extends Component {
                                    disableLive={disableLive}
                         />
                     </div>
-                    <div className="col-12 col-md-4">
-                        <div className="row d-flex flex-wrap">
-                            <Summary uuid={uuid}/>
-                        </div>
-                    </div>
+                    <Summary uuid={uuid}/>
+
                     <LogViewTable selectedTable={selectedTable}/>
                 </div>
             </div>

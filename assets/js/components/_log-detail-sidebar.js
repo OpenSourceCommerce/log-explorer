@@ -6,16 +6,17 @@ export class LogDetailSidebar extends Component {
     render() {
         const {item} = this.props;
 
-        // If you wanna remove or add any field that you wanna display in Log detail sidebar, just remove or add object in array below
-        const dataDisplay = [
-            {label: 'Host', key: 'host'},
-            {label: 'Ip', key: 'ip'},
-            {label: 'Status', key: 'status'},
-            {label: 'Timestamp', key: 'timestamp'},
-            {label: 'Url', key: 'url'},
-            {label: 'User Agent', key: 'user_agent'},
-            {label: 'Referer', key: 'referer'}
-        ];
+        // Create label for detail log
+        const dataDisplay = Object.entries(item).map(([key,value]) => {
+            const words = key.split("_").map((item, index) => {
+                if (index === 0) return item.charAt(0).toUpperCase() + item.slice(1);
+                return item;
+            });
+            return {
+                label: words.join(' '),
+                value,
+            }
+        })
 
         return (
             <ControlSidebar
@@ -25,15 +26,15 @@ export class LogDetailSidebar extends Component {
                 {...this.props}
             >
                 <ul className="p-0">
-                    {dataDisplay.map((detail, index) => {
-                        return <div
+                    {dataDisplay.map((item, index) => (
+                        <div
                             key={index}>
-                            <h5>{detail.label}</h5>
+                            <h5>{item.label}</h5>
                             <p>
-                                {item[detail.key] || 'No data'}
+                                {item.value || 'No data'}
                             </p>
-                        </div>;
-                    })}
+                        </div>
+                    ))}
                 </ul>
             </ControlSidebar>
         );

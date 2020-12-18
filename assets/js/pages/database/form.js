@@ -218,7 +218,7 @@ class DatabaseForm extends Component {
         });
 
         return (
-            <div className="database">
+            <div className="database container-fluid">
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
