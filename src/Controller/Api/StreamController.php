@@ -52,6 +52,8 @@ class StreamController extends ApiController
         if ($request->query->has('filter')) {
             $filter = $request->query->get('filter');
             $options['filter'] = $filter;
+        } else {
+            $options['filter'] = false;
         }
         return $options;
     }

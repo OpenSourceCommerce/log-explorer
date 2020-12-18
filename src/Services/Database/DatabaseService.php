@@ -125,7 +125,7 @@ class DatabaseService implements DatabaseServiceInterface
     /**
      * @inheritDoc
      */
-    public function createTable(string $name, array $columns): Table
+    public function createTable(string $name, array $columns, array $options = []): Table
     {
         if ($this->connection->tableExists($name)) {
             throw new TableExistException();
@@ -135,8 +135,10 @@ class DatabaseService implements DatabaseServiceInterface
         }
         $hasTimestamp = false;
         foreach ($columns as $k => $column) {
-            if ($column['name'] === 'timestamp' && $column['type'] !== 'DateTime') {
-                $columns[$k]['type'] = 'DateTime';
+            if ($column['name'] === 'timestamp') {
+                if ($column['type'] !== 'DateTime') {
+                    $columns[$k]['type'] = 'DateTime';
+                }
                 $hasTimestamp = true;
                 break;
             }
@@ -148,7 +150,7 @@ class DatabaseService implements DatabaseServiceInterface
                 'title' => 'Created at',
             ];
         }
-        $query = $this->makeCreateTableQuery($name, $columns);
+        $query = $this->makeCreateTableQuery($name, $columns, $options);
 
         if (!$this->connection->exec($query)) {
             return false;
@@ -165,7 +167,7 @@ class DatabaseService implements DatabaseServiceInterface
         return $table;
     }
 
-    private function makeCreateTableQuery(string $name, array $columns): string
+    private function makeCreateTableQuery(string $name, array $columns, array $options = []): string
     {
         $query = 'CREATE TABLE '.$name.' (';
         foreach ($columns as $k => $column) {
@@ -174,10 +176,14 @@ class DatabaseService implements DatabaseServiceInterface
             }
             $query .= "`{$column['name']}` {$column['type']}";
         }
-        $query .= ') ENGINE = MergeTree
+        $query .= ") ENGINE = MergeTree
 PARTITION BY (toYYYYMM(timestamp))
-ORDER BY timestamp
-SETTINGS index_granularity = 8192';
+ORDER BY timestamp\n";
+        if (!empty($options['ttl'])) {
+            $query .= 'TTL '.$options['ttl']."\n";
+        }
+        $query .= 'SETTINGS index_granularity = 8192';
+
         return $query;
     }
 

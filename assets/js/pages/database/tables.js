@@ -10,7 +10,7 @@ class DatabaseTables extends Component {
             tables: [],
             currentTable: '',
             columns: [],
-            isLoading: false,
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.syncAll = this.syncAll.bind(this);
@@ -19,8 +19,8 @@ class DatabaseTables extends Component {
 
     loadData() {
         this.setState({
-            isLoading: true,
-        })
+            isLoading: true
+        });
         const that = this;
         DatabaseActions.getAllTable()
             .then(res => {
@@ -51,7 +51,7 @@ class DatabaseTables extends Component {
             });
         } else {
             this.setState({
-                isLoading: true,
+                isLoading: true
             });
             DatabaseActions.getTableColumns(e.target.value)
                 .then(res => {
@@ -63,7 +63,7 @@ class DatabaseTables extends Component {
                     that.setState({
                         currentTable: table,
                         columns: data,
-                        isLoading: false,
+                        isLoading: false
                     });
                 });
         }
@@ -122,20 +122,20 @@ class DatabaseTables extends Component {
                                 {isLoading ? (<Spinner />) : (
                                     <Table>
                                         <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Display name</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Display name</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {columns.map((item, key) => {
-                                            return <tr key={key}>
-                                                <td>{item.name}</td>
-                                                <td>{item.type}</td>
-                                                <td>{item.title}</td>
-                                            </tr>;
-                                        })}
+                                            {columns.map((item, key) => {
+                                                return <tr key={key}>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.type}</td>
+                                                    <td>{item.title}</td>
+                                                </tr>;
+                                            })}
                                         </tbody>
                                     </Table>)}
                             </div>
