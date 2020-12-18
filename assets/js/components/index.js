@@ -38,3 +38,4 @@ export const {LogViewTableSettingModal} = require('./_log-view-table-setting-mod
 export const {GraphForm} = require('./_graph-form');
 export const {SummaryForm} = require('./_summary-form');
 export const {Spinner} = require('./_spinner');
+export const {LogViewTable} = require('./_log-view-table');

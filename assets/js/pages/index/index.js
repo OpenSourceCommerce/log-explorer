@@ -1,19 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import {
-    CardHeader,
-    CardTool,
     AdvancedSearch,
     Summary,
     FlotChart,
-    JsGridTable,
-    DropdownItem,
-    Modal,
     LogViewList,
-    Checkbox,
-    LogViewTableSettingModal
+    LogViewTable,
 } from '../../components';
-import {Live, LogTableActions, Event, LogViewActions, DatabaseActions} from '../../actions';
+import { Live, LogTableActions, Event, LogViewActions } from '../../actions';
 
 class Index extends Component {
     constructor(props) {
@@ -27,18 +21,12 @@ class Index extends Component {
             interval: 2000,
             showTableSettingModal: false,
             selectedTable: null,
-            tableColumnList: []
+            tableColumnList: [],
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
-        this.showTableSettingModal = this.showTableSettingModal.bind(this);
-        this.hideTableSettingModal = this.hideTableSettingModal.bind(this);
         this.setSelectedTable = this.setSelectedTable.bind(this);
-        this.onTableSettingModalChanged = this.onTableSettingModalChanged.bind(this);
-
-        this.logTable = React.createRef();
-        this.tableSettingModalRef = React.createRef();
     }
 
     loadData() {
@@ -56,7 +44,7 @@ class Index extends Component {
 
             this.setState({
                 fields: data,
-                isRetrieveAllData: true
+                isRetrieveAllData: true,
             });
         }).then(() => {
             Live.refresh();
@@ -92,7 +80,7 @@ class Index extends Component {
 
             this.setState({
                 logViews: data,
-                selectedTable
+                selectedTable,
             });
         }).then(() => {
             const {logViews} = this.state;
@@ -112,13 +100,12 @@ class Index extends Component {
             const {error} = res;
             if (error === Event.ERROR_INVALID_QUERY) {
                 this.setState({
-                    isLive: false
+                    isLive: false,
                 });
                 Live.pause();
             }
         });
 
-        // This.loadData();
         this.loadLogView();
     }
 
@@ -132,7 +119,7 @@ class Index extends Component {
         const {interval} = this.state;
         const {checked} = event.target;
         this.setState({
-            isLive: checked
+            isLive: checked,
         });
         if (checked) {
             Live.start(interval, true);
@@ -146,13 +133,13 @@ class Index extends Component {
         if (to) {
             this.setState({
                 isLive: false,
-                disableLive: true
+                disableLive: true,
             });
             Live.pause();
         } else if (!to) {
             this.setState({
                 isLive: true,
-                disableLive: false
+                disableLive: false,
             });
             Live.start(interval);
         }
@@ -160,29 +147,12 @@ class Index extends Component {
         Live.refresh();
     }
 
-    showTableSettingModal(event) {
-        event.preventDefault();
-        this.setState({showTableSettingModal: true});
-    }
-
-    hideTableSettingModal(event) {
-        event.preventDefault();
-        this.setState({showTableSettingModal: false});
-    }
-
-    onTableSettingModalChanged(column) {
-        this.loadData();
-    }
-
     render() {
         const {
-            fields,
-            isRetrieveAllData,
             isLive,
             disableLive,
-            showTableSettingModal,
             logViews,
-            selectedTable
+            selectedTable,
         } = this.state;
 
         const uuid = selectedTable ? selectedTable.uuid : null;
@@ -194,8 +164,8 @@ class Index extends Component {
                         <div className="card-body">
                             <div className="row">
                                 <LogViewList data={logViews}
-                                    selected={selectedTable}
-                                    onSelected={this.setSelectedTable}/>
+                                             selected={selectedTable}
+                                             onSelected={this.setSelectedTable}/>
                             </div>
                         </div>
                     </div>
@@ -206,9 +176,9 @@ class Index extends Component {
                 <div className="col-12 row justify-content-start">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
-                            uuid={uuid}
-                            handleRealTimeClicked={this.handleRealTimeClicked}
-                            disableLive={disableLive}
+                                   uuid={uuid}
+                                   handleRealTimeClicked={this.handleRealTimeClicked}
+                                   disableLive={disableLive}
                         />
                     </div>
                     <div className="col-12 col-md-4">
@@ -216,33 +186,7 @@ class Index extends Component {
                             <Summary uuid={uuid}/>
                         </div>
                     </div>
-                    {isRetrieveAllData ? (<div className="col-12 col-md-auto">
-                        <LogViewTableSettingModal show={showTableSettingModal}
-                            selectedTable={selectedTable}
-                            onHidden={this.hideTableSettingModal}
-                            onSave={this.onTableSettingModalChanged}
-                            ref={this.tableSettingModalRef}/>
-                        <div className="card">
-                            <CardHeader title="Home Page">
-                                <CardTool>
-                                    <DropdownItem onClick={this.showTableSettingModal}>
-                                        Setting
-                                    </DropdownItem>
-                                </CardTool>
-                            </CardHeader>
-                            <div className="card-body">
-                                {fields && fields.length > 0 &&
-                                <JsGridTable
-                                    logview={selectedTable}
-                                    fields={fields}
-                                    pageSize={5}
-                                />}
-                            </div>
-                            <div className="card-footer">
-                                Footer
-                            </div>
-                        </div>
-                    </div>) : null}
+                    <LogViewTable selectedTable={selectedTable}/>
                 </div>
             </div>
         );

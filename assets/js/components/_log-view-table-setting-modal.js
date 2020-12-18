@@ -59,19 +59,22 @@ export class LogViewTableSettingModal extends Component {
             }
 
             that.onShow().then(() => {
-                onSave(data);
+                if (typeof onSave === 'function') {
+                    onSave(data);
+                }
             });
         });
     }
 
     render() {
-        const {show, onHidden, onSave} = this.props;
+        const {show, onHidden, onSave, showSaveButton = true} = this.props;
         const {tableColumnList} = this.state;
 
         return (
             <Modal title={'Table Setting'} id={'table-setting'} saveButtonTitle={'Save'}
                 show={show}
                 saveButtonAction={onSave}
+                showSaveButton={showSaveButton}
                 onHidden={onHidden}>
                 {tableColumnList && tableColumnList.length > 0 &&
                 tableColumnList.map((columns, row) => {
@@ -104,5 +107,6 @@ LogViewTableSettingModal.propTypes = {
     show: PropTypes.bool,
     selectedTable: PropTypes.object,
     onHidden: PropTypes.func,
-    onSave: PropTypes.func
+    onSave: PropTypes.func,
+    showSaveButton: PropTypes.bool
 };
