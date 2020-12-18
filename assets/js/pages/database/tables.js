@@ -96,7 +96,7 @@ class DatabaseTables extends Component {
         }
 
         return (
-            <div className="database">
+            <div className="database container-fluid">
                 <div className="card">
                     <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">

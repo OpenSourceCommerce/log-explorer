@@ -3,6 +3,7 @@ import {LogTableActions, Live} from '../actions';
 import PropTypes from 'prop-types';
 import StatusWidget from './widget/_status';
 import DeviceWidget from './widget/_device-type';
+import {WidgetTable} from './widget/_widget-table';
 
 export class Summary extends Component {
     constructor(props) {
@@ -39,21 +40,23 @@ export class Summary extends Component {
             let layout = <span className="d-flex justify-content-center p-3">No data</span>;
 
             if (data && data.length > 0) {
+                const sortData = data.sort((a, b) => (a.value > b.value) ? -1 : 1);
+
                 switch (name) {
                     case 'status':
-                        layout = <StatusWidget data={data}/>;
+                        layout = <StatusWidget data={sortData}/>;
                         break;
                     case 'device_type':
-                        layout = <DeviceWidget data={data}/>;
+                        layout = <DeviceWidget data={sortData}/>;
                         break;
                     default:
-                        layout = null;
+                        layout = <WidgetTable data={sortData}/>;
                         break;
                 }
             }
 
             return (
-                <div key={key} className="col-12 col-xl-6">
+                <div key={key} className="col-12 col-md-4">
                     <div className="card">
                         <div className="card-header">
                             {title}

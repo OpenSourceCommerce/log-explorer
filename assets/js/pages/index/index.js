@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader, FlotChart, Summary, AdvancedSearch, JsGridTable} from '../../components';
 import {Live, LogTableActions, Event} from '../../actions';
+import '../../../styles/pages/index.scss';
 
 class Index extends Component {
     constructor(props) {
@@ -61,7 +62,7 @@ class Index extends Component {
 
     onDateRangeChanged(from, to) {
         const {interval} = this.state;
-        if (Boolean(to)) {
+        if (to) {
             this.setState({
                 isLive: false,
                 disableLive: true
@@ -87,22 +88,18 @@ class Index extends Component {
         } = this.state;
 
         return (
-            <div className="dashboard-page">
+            <div className="dashboard-page container-fluid">
                 <AdvancedSearch
                     onDateRangeChanged={this.onDateRangeChanged}
                 />
-                <div className="col-12 row justify-content-start">
+                <div className="row justify-content-start flex-md-wrap">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
                             handleRealTimeClicked={this.handleRealTimeClicked}
                             disableLive={disableLive}
                         />
                     </div>
-                    <div className="col-12 col-md-4">
-                        <div className="row d-flex flex-wrap">
-                            <Summary/>
-                        </div>
-                    </div>
+                    <Summary/>
                     {isRetrieveAllData ? (<div className="col-12 col-md-auto">
                         <div className="card">
                             <CardHeader title="Home Page"/>

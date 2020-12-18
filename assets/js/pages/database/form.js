@@ -207,7 +207,7 @@ class DatabaseForm extends Component {
         const featureName = window.location.pathname.split('/');
 
         return (
-            <div className="database">
+            <div className="database container-fluid">
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{featureName[2] === 'create' ? 'Create new database' : 'Update database'}</h3>
