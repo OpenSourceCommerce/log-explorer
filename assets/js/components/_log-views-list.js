@@ -16,7 +16,7 @@ export class LogViewList extends Component {
         if (selected !== preSelected) {
             this.setState({
                 selectedItem: selected
-            })
+            });
         }
     }
 
@@ -41,7 +41,7 @@ export class LogViewList extends Component {
 
         return (
             <select onChange={this.handleChange}
-                    value={value}
+                value={value}
                 className={className} {...rest}>
                 {data && data.map((item, index) => {
                     return (

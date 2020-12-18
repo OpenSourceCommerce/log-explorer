@@ -71,11 +71,16 @@ class Index extends Component {
                 return;
             }
 
+            if (data.length === 0) {
+                window.location.href = '/welcome';
+                return;
+            }
+
             let selectedTable = null;
 
             if (window.uuid) {
-                for (let i in data) {
-                    let table = data[i];
+                for (const i in data) {
+                    const table = data[i];
                     if (table.uuid === window.uuid) {
                         selectedTable = data[i];
                         break;
@@ -94,8 +99,6 @@ class Index extends Component {
             if (logViews.length > 0) {
                 this.loadData();
                 this.startStreaming();
-            } else {
-                window.location.href = "/welcome";
             }
         });
     }
