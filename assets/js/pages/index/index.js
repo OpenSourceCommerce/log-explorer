@@ -185,27 +185,6 @@ class Index extends Component {
                     <Summary uuid={uuid}/>
 
                     <LogViewTable selectedTable={selectedTable}/>
-                    <div className="col-12 col-md-4">
-                        <div className="row d-flex flex-wrap">
-                            <Summary/>
-                        </div>
-                    </div>
-                    {isRetrieveAllData ? (<div className="col-12 col-md-auto">
-                        <div className="card">
-                            <CardHeader title="Home Page"/>
-                            <div className="card-body">
-                                {fields && fields.length > 0 &&
-                                <JsGridTable
-                                    dataSrc="/api/stream/uuid/list"
-                                    fields={fields}
-                                    pageSize={5}
-                                />}
-                            </div>
-                            <div className="card-footer">
-                                Footer
-                            </div>
-                        </div>
-                    </div>) : null}
                 </div>
             </div>
         );
