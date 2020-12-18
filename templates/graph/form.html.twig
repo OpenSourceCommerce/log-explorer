@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create graph{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('graph_form') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+{% block javascripts %}
+    {% if graph is defined %}
+    <script>
+        window.graph_id = '{{ graph.id }}';
+    </script>
+    {% endif %}
+    {{ encore_entry_script_tags('graph_form') }}
+{% endblock %}

@@ -35,6 +35,8 @@ class ColumnService implements ColumnServiceInterface
         $column->setTitle($data['title']);
         $column->setType($data['type']);
 
+        $table->addColumn($column);
+
         $this->save($column, $flush);
 
         return $column;
@@ -91,5 +93,24 @@ class ColumnService implements ColumnServiceInterface
     public function findById($id): ?Column
     {
         return $this->getRepository()->find($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findIn(array $ids): array
+    {
+        return $this->getRepository()->findIn($ids);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function remove(Column $column, bool $flush = true)
+    {
+        $this->em->remove($column);
+        if ($flush) {
+            $this->em->flush();
+        }
     }
 }

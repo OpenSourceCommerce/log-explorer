@@ -5,7 +5,9 @@ namespace App\Controller\Api;
 
 
 use App\Constant\ErrorCodeConstant;
-use App\Services\Dashboard\DashboardServiceInterface;
+use App\Entity\LogView;
+use App\Entity\LogViewColumn;
+use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,15 +18,16 @@ class StreamController extends ApiController
 {
     /**
      * @Route("/api/stream/{uuid}/table", methods = "GET")
-     * @param $uuid
-     * @param DashboardServiceInterface $dashboardService
-     * @param StreamServiceInterface $streamService
+     * @param LogView|null $logView
+     * @param LogViewServiceInterface $logViewService
      * @return JsonResponse
      */
-    public function table($uuid, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
+    public function table(?LogView $logView, LogViewServiceInterface $logViewService): JsonResponse
     {
-        $dashboard = $dashboardService->fromUuid($uuid);
-        $columns = $dashboard->getColumns();
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+        }
+        $columns = $logViewService->getVisibleColumns($logView);
         return $this->responseSuccess([
             'data' => $columns
         ]);
@@ -52,27 +55,52 @@ class StreamController extends ApiController
         if ($request->query->has('filter')) {
             $filter = $request->query->get('filter');
             $options['filter'] = $filter;
+        } else {
+            $options['filter'] = false;
+        }
+        if ($request->query->has('pageIndex')) {
+            $options['page'] = intval($request->query->get('pageIndex'));
+        }
+        if ($request->query->has('pageSize')) {
+            $options['limit'] = intval($request->query->get('pageSize'));
         }
         return $options;
     }
 
     /**
      * @Route("/api/stream/{uuid}/list", methods = "GET")
-     * @param $uuid
+     * @param LogView|null $logView
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
-     * @throws \Exception
      */
-    public function list($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        $dashboard = $dashboardService->fromUuid($uuid);
+    public function list(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+
+        }
+        $columns = $logView->getLogViewColumns();
         $options = $this->getFilter($request);
-        $columns = $dashboard->getColumns();
-        $options['columns'] = array_column($columns, 'name');
+        $columnNames = [];
+        foreach ($columns as $column) {
+            if ($column instanceof LogViewColumn) {
+                if ($column->getVisible()) {
+                    $columnNames[] = $column->getColumn()->getName();
+                }
+            } else {
+                $columnNames[] = $column->getName();
+            }
+        }
+        $options['columns'] = $columnNames;
         try {
-            $data = $streamService->getLogsInRange($dashboard->getTable(), $options);
+            $data = $streamService->getLogsInRange($logView->getTable()->getName(), $options);
+            $total = $streamService->getTotalLogsInRange($logView->getTable()->getName(), $options);
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -83,26 +111,39 @@ class StreamController extends ApiController
         }
         return $this->responseSuccess([
             'data' => $data,
-            'itemsCount' => count($data),
+            'itemsCount' => $total,
         ]);
     }
 
     /**
      * @Route("/api/stream/{uuid}/summary", methods = "GET")
-     * @param $uuid
+     * @param LogView|null $logView
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function summary($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        $dashboard = $dashboardService->fromUuid($uuid);
+
+    public function summary(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
+        }
+        $columns = $logView->getSummary()->toArray();
         $options = $this->getFilter($request);
-        $widgets = $dashboard->getSummaryColumns();
-        foreach ($widgets as &$widget) {
+        $widgets = [];
+        foreach ($columns as $column) {
             try {
-                $widget['data'] = $streamService->getLogSummaryInRange($dashboard->getTable(), $widget['name'], $options);
+                $widget = [
+                    'name' => $column->getName(),
+                    'title' => $column->getTitle()
+                ];
+                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable()->getName(), $widget['name'], $options);
+                $widgets[] = $widget;
             } catch (Exception $e) {
                 return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -119,29 +160,33 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/{uuid}/graph", methods = "GET")
-     * @param $uuid
+     * @param LogView|null $logView
      * @param Request $request
-     * @param DashboardServiceInterface $dashboardService
+     * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
-    public function graph($uuid, Request $request, DashboardServiceInterface $dashboardService, StreamServiceInterface $streamService): JsonResponse
-    {
-        $dashboard = $dashboardService->fromUuid($uuid);
-        $options = $this->getFilter($request);
-        $graph = [];
-        $graphOffset = $dashboard->getGraphFixedOffset();
-        if (is_null($graphOffset)) {
-            $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $dashboard->getGraphNumberOfPoint());
+    public function graph(
+        ?LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
+        if (is_null($logView)) {
+            $logView = $logViewService->getDefault();
         }
-        foreach ($dashboard->getGraphColumns() as $item) {
+        $options = $this->getFilter($request);
+        $graph = $logView->getGraph();
+        $graphOffset = $streamService->getGraphOffsetInSeconds($options['from'], $options['to'] ?? new \DateTime(), $graph->getMaxPoint());
+        $data = [];
+        foreach ($graph->getLines() as $item) {
             try {
                 $line = [
-                    'label' => $item['title'],
-                    'color' => $item['color'],
-                    'data' => $streamService->getLogGraphInRange($dashboard->getTable(), $item, $graphOffset, $options),
+                    'label' => $item->getTitle(),
+                    'color' => $item->getColor(),
+                    'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset, $options),
                 ];
-                $graph[] = $line;
+                $data[] = $line;
             } catch (Exception $e) {
                 return $this->responseError([
                     'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -152,7 +197,7 @@ class StreamController extends ApiController
             }
         }
         return $this->responseSuccess([
-            'data' => $graph,
+            'data' => $data,
         ]);
     }
 }

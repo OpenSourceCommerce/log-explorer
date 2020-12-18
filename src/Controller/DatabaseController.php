@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DatabaseController extends AbstractController
 {
     /**
-     * @Route("/database", name="database")
+     * @Route("/table", name="database")
      */
     public function index(): Response
     {
@@ -19,7 +19,7 @@ class DatabaseController extends AbstractController
     }
 
     /**
-     * @Route("/database/create", name="database_create", methods = "GET")
+     * @Route("/table/create", name="database_create", methods = "GET")
      * @param ClickhouseServiceInterface $clickhouseService
      * @return Response
      */
@@ -30,7 +30,7 @@ class DatabaseController extends AbstractController
     }
 
     /**
-     * @Route("/database/{name}", name="database_update", methods = "GET")
+     * @Route("/table/{name}", name="database_update", methods = "GET")
      * @param Table $table
      * @param ClickhouseServiceInterface $clickhouseService
      * @return Response

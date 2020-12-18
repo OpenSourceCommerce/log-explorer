@@ -15,20 +15,22 @@ class DatabaseForm extends Component {
             tableId: window.table_id ? window.table_id : '',
             table: '',
             columns,
+            ttl: '',
             tableError: false,
             noColumnError: false,
             isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.addMoreColumn = this.addMoreColumn.bind(this);
+        this.onTTLChange = this.onTTLChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
     loadColumns(tableId) {
         const that = this;
         this.setState({
-            isLoading: true,
-        })
+            isLoading: true
+        });
         DatabaseActions.getTableColumns(tableId)
             .then(res => {
                 const {error, table, data} = res;
@@ -69,6 +71,12 @@ class DatabaseForm extends Component {
         });
     }
 
+    onTTLChange(e) {
+        this.setState({
+            ttl: e.target.value
+        });
+    }
+
     onColumnChange(key, name, e) {
         const {columns} = this.state;
         columns[key][name] = e.target.value;
@@ -94,8 +102,9 @@ class DatabaseForm extends Component {
             isLoading: true
         });
 
-        let {tableId, table, columns} = this.state;
+        let {tableId, table, ttl, columns} = this.state;
         table = $.trim(table);
+        ttl = $.trim(ttl);
         const validColumns = [];
         let hasErrorBefore = false;
         let hasError = false;
@@ -151,7 +160,11 @@ class DatabaseForm extends Component {
 
         if (!hasError) {
             const that = this;
-            DatabaseActions.createOrUpdate(tableId, table, validColumns)
+            DatabaseActions.createOrUpdate(tableId, {
+                name: table,
+                ttl,
+                columns: validColumns
+            })
                 .then(res => {
                     const {error, redirect} = res;
                     if (error !== 0) {
@@ -165,15 +178,15 @@ class DatabaseForm extends Component {
                         that.loadColumns(tableId);
                     }
                 }).then(() => {
-                this.setState({
-                    isLoading: false
+                    this.setState({
+                        isLoading: false
+                    });
                 });
-            });
         }
     }
 
     render() {
-        const {tableId, table, columns, tableError, noColumnError, isLoading} = this.state;
+        const {tableId, table, ttl, columns, tableError, noColumnError, isLoading} = this.state;
         const readonly = tableId !== '';
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
@@ -181,14 +194,14 @@ class DatabaseForm extends Component {
                 <div className="row">
                     <div className="col-4">
                         <Input disabled={readonly && item.id !== ''} value={item.name}
-                               className={item.error ? 'is-invalid' : ''}
-                               onChange={e => this.onColumnChange(key, 'name', e)}
-                               placeholder="Name"/>
+                            className={item.error ? 'is-invalid' : ''}
+                            onChange={e => this.onColumnChange(key, 'name', e)}
+                            placeholder="Name"/>
                     </div>
                     <div className="col-4">
                         <select disabled={readonly && item.id !== ''} className="form-control"
-                                value={item.type}
-                                onChange={e => this.onColumnChange(key, 'type', e)}>
+                            value={item.type}
+                            onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
                                 return <option key={k} value={type}>{type}</option>;
                             })}
@@ -196,38 +209,42 @@ class DatabaseForm extends Component {
                     </div>
                     <div className="col-4">
                         <Input value={item.title}
-                               onChange={e => this.onColumnChange(key, 'title', e)}
-                               placeholder="Display name"
+                            onChange={e => this.onColumnChange(key, 'title', e)}
+                            placeholder="Display name"
                         />
                     </div>
                 </div>
             </div>;
         });
 
-        const featureName = window.location.pathname.split('/');
-
         return (
             <div className="database container-fluid">
                 <div className="card">
                     <div className="card-header">
-                        <h3 className="card-title align-items-center p-2">{featureName[2] === 'create' ? 'Create new database' : 'Update database'}</h3>
+                        <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
                         <Button className="float-right" color={'success'}
-                                onClick={this.onSubmit} disabled={isLoading}>
+                            onClick={this.onSubmit} disabled={isLoading}>
                             {isLoading ? (<>  <span
                                 className="spinner-border spinner-border-sm mr-2"
                                 role="status" aria-hidden="true"></span>
-                                Loading... </>) : 'Submit'}
+                                Loading... </>) : (tableId === '' ? 'Create table' : 'Update table')}
                         </Button>
+
                     </div>
                     <div className="card-body">
                         <form role="form">
                             <div className="form-group">
                                 <label>Table name</label>
                                 <Input disabled={readonly}
-                                       className={tableError ? 'is-invalid' : ''}
-                                       placeholder="Table name" value={table}
-                                       onChange={this.onTableChange}/>
+                                    className={tableError ? 'is-invalid' : ''}
+                                    placeholder="Table name" value={table}
+                                    onChange={this.onTableChange}/>
                             </div>
+                            {tableId === '' &&
+                            <div className="form-group">
+                                <label>Table TTL</label>
+                                <Input disabled={readonly} placeholder="timestamp + toIntervalMonth(100)" value={ttl} onChange={this.onTTLChange}/>
+                            </div>}
                             <div className="form-group">
                                 <label htmlFor="exampleInputPassword1">Column</label>
                                 {noColumnError && <div className={'row has-error'}>

@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Table;
 use App\Validator\DbName;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -31,7 +30,12 @@ class TableType extends AbstractType
                 'constraints' => [
                     new NotBlank()
                 ]
-            ]);
+            ])
+            ->add('ttl', TextType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
+        ;
 
     }
 

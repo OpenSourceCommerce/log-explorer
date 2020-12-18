@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log view setting{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('logview_form') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.logview = '{{ logview.uuid }}';
+    </script>
+    {{ encore_entry_script_tags('logview_form') }}
+{% endblock %}

@@ -42,6 +42,11 @@ class Table implements \JsonSerializable
      */
     private $columns;
 
+    /**
+     * @ORM\OneToOne(targetEntity=LogView::class, mappedBy="table", cascade={"persist", "remove"})
+     */
+    private $logView;
+
     public function __construct()
     {
         $this->columns = new ArrayCollection();
@@ -124,13 +129,32 @@ class Table implements \JsonSerializable
         return $this;
     }
 
+    public function getLogView(): ?LogView
+    {
+        return $this->logView;
+    }
+
+    public function setLogView(LogView $logView): self
+    {
+        // set the owning side of the relation if necessary
+        if ($logView->getTable() !== $this) {
+            $logView->setTable($this);
+        }
+
+        $this->logView = $logView;
+
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
     public function jsonSerialize()
     {
         return [
+            'id' => $this->getId(),
             'name' => $this->getName(),
+            'logview' => $this->getLogView() ? $this->getLogView()->getUuid() : null,
         ];
     }
 }

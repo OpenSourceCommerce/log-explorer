@@ -19,14 +19,17 @@ const LogTableActions = {
 
         return query;
     },
-    getColumns() {
-        return request('/api/stream/{uuid}/table?' + new URLSearchParams(this.getOptions()));
+    getUuid(uuid) {
+        return uuid ? uuid : 'default';
     },
-    getSummary() {
-        return request('/api/stream/{uuid}/summary?' + new URLSearchParams(this.getOptions()));
+    getColumns(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/table?' + new URLSearchParams(this.getOptions()));
     },
-    getGraph() {
-        return request('/api/stream/{uuid}/graph?' + new URLSearchParams(this.getOptions()));
+    getSummary(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/summary?' + new URLSearchParams(this.getOptions()));
+    },
+    getGraph(uuid) {
+        return request('/api/stream/' + this.getUuid(uuid) + '/graph?' + new URLSearchParams(this.getOptions()));
     }
 };
 

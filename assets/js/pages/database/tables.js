@@ -10,17 +10,18 @@ class DatabaseTables extends Component {
             tables: [],
             currentTable: '',
             columns: [],
-            isLoading: false,
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.syncAll = this.syncAll.bind(this);
         this.gotoUpdate = this.gotoUpdate.bind(this);
+        this.gotoLogView = this.gotoLogView.bind(this);
     }
 
     loadData() {
         this.setState({
-            isLoading: true,
-        })
+            isLoading: true
+        });
         const that = this;
         DatabaseActions.getAllTable()
             .then(res => {
@@ -51,7 +52,7 @@ class DatabaseTables extends Component {
             });
         } else {
             this.setState({
-                isLoading: true,
+                isLoading: true
             });
             DatabaseActions.getTableColumns(e.target.value)
                 .then(res => {
@@ -63,7 +64,7 @@ class DatabaseTables extends Component {
                     that.setState({
                         currentTable: table,
                         columns: data,
-                        isLoading: false,
+                        isLoading: false
                     });
                 });
         }
@@ -83,7 +84,15 @@ class DatabaseTables extends Component {
         const {currentTable} = this.state;
 
         if (currentTable !== '') {
-            window.location.href = '/database/' + currentTable;
+            window.location.href = '/table/' + currentTable;
+        }
+    }
+
+    gotoLogView() {
+        const {currentTable} = this.state;
+
+        if (currentTable !== '') {
+            window.location.href = '/table/' + currentTable + '/logview';
         }
     }
 
@@ -92,13 +101,13 @@ class DatabaseTables extends Component {
 
         let url = '';
         if (currentTable !== '') {
-            url = '/database/' + currentTable;
+            url = '/table/' + currentTable;
         }
 
         return (
             <div className="database container-fluid">
                 <div className="card">
-                    <CardHeader title="Database view" showCollapseButton={false} showRemoveButton={false}/>
+                    <CardHeader title="Table view" showCollapseButton={false} showRemoveButton={false}/>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-12 col-md-4">
@@ -111,8 +120,9 @@ class DatabaseTables extends Component {
                             </div>
                             <div className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
                                 <Button disabled={url === ''} onClick={this.gotoUpdate} className="btn btn-primary mr-md-2 mb-2">Update</Button>
+                                <Button disabled={url === ''} onClick={this.gotoLogView} className="btn btn-primary mr-md-2 mb-2">Log view setting</Button>
                                 <div className="ml-auto ml-md-0">
-                                    <Link href="/database/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
+                                    <Link href="/table/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
                                     <Button onClick={this.syncAll} className="btn btn-success text-nowrap">Sync table</Button>
                                 </div>
                             </div>
@@ -122,20 +132,20 @@ class DatabaseTables extends Component {
                                 {isLoading ? (<Spinner />) : (
                                     <Table>
                                         <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Display name</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Display name</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {columns.map((item, key) => {
-                                            return <tr key={key}>
-                                                <td>{item.name}</td>
-                                                <td>{item.type}</td>
-                                                <td>{item.title}</td>
-                                            </tr>;
-                                        })}
+                                            {columns.map((item, key) => {
+                                                return <tr key={key}>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.type}</td>
+                                                    <td>{item.title}</td>
+                                                </tr>;
+                                            })}
                                         </tbody>
                                     </Table>)}
                             </div>
