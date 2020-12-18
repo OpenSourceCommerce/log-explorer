@@ -34,9 +34,9 @@ class User implements JsonSerializable
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", name="sur_name", length=255)
+     * @ORM\Column(type="string", name="last_name", length=255)
      */
-    private $surName;
+    private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
@@ -97,14 +97,14 @@ class User implements JsonSerializable
         return $this;
     }
 
-    public function getSurName(): ?string
+    public function getLastName(): ?string
     {
-        return $this->surName;
+        return $this->lastName;
     }
 
-    public function setSurName(string $surName): self
+    public function setLastName(string $lastName): self
     {
-        $this->surName = $surName;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -204,7 +204,7 @@ class User implements JsonSerializable
     {
         return [
             'first_name' => $this->getFirstName(),
-            'sur_name' => $this->getSurName(),
+            'last_name' => $this->getLastName(),
             'email' => $this->getEmail(),
             'is_active' => $this->getIsActive(),
             'is_confirmed' => $this->getIsConfirmed(),
