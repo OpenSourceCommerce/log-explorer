@@ -7,16 +7,19 @@ export class LogDetailSidebar extends Component {
         const {item} = this.props;
 
         // Create label for detail log
-        const dataDisplay = Object.entries(item).map(([key,value]) => {
-            const words = key.split("_").map((item, index) => {
-                if (index === 0) return item.charAt(0).toUpperCase() + item.slice(1);
+        const dataDisplay = Object.entries(item).map(([key, value]) => {
+            const words = key.split('_').map((item, index) => {
+                if (index === 0) {
+                    return item.charAt(0).toUpperCase() + item.slice(1);
+                }
+
                 return item;
             });
             return {
                 label: words.join(' '),
-                value,
-            }
-        })
+                value
+            };
+        });
 
         return (
             <ControlSidebar

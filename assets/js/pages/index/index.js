@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {
     AdvancedSearch,
     Summary,
     FlotChart,
     LogViewList,
-    LogViewTable,
+    LogViewTable
 } from '../../components';
-import { Live, LogTableActions, Event, LogViewActions } from '../../actions';
+import {Live, LogTableActions, Event, LogViewActions} from '../../actions';
 import '../../../styles/pages/index.scss';
 
 class Index extends Component {
@@ -22,7 +22,7 @@ class Index extends Component {
             interval: 2000,
             showTableSettingModal: false,
             selectedTable: null,
-            tableColumnList: [],
+            tableColumnList: []
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
@@ -45,7 +45,7 @@ class Index extends Component {
 
             this.setState({
                 fields: data,
-                isRetrieveAllData: true,
+                isRetrieveAllData: true
             });
         }).then(() => {
             Live.refresh();
@@ -81,7 +81,7 @@ class Index extends Component {
 
             this.setState({
                 logViews: data,
-                selectedTable,
+                selectedTable
             });
         }).then(() => {
             const {logViews} = this.state;
@@ -101,7 +101,7 @@ class Index extends Component {
             const {error} = res;
             if (error === Event.ERROR_INVALID_QUERY) {
                 this.setState({
-                    isLive: false,
+                    isLive: false
                 });
                 Live.pause();
             }
@@ -120,7 +120,7 @@ class Index extends Component {
         const {interval} = this.state;
         const {checked} = event.target;
         this.setState({
-            isLive: checked,
+            isLive: checked
         });
         if (checked) {
             Live.start(interval, true);
@@ -134,13 +134,13 @@ class Index extends Component {
         if (to) {
             this.setState({
                 isLive: false,
-                disableLive: true,
+                disableLive: true
             });
             Live.pause();
         } else if (!to) {
             this.setState({
                 isLive: true,
-                disableLive: false,
+                disableLive: false
             });
             Live.start(interval);
         }
@@ -153,7 +153,7 @@ class Index extends Component {
             isLive,
             disableLive,
             logViews,
-            selectedTable,
+            selectedTable
         } = this.state;
 
         const uuid = selectedTable ? selectedTable.uuid : null;
@@ -165,8 +165,8 @@ class Index extends Component {
                         <div className="card-body">
                             <div className="row">
                                 <LogViewList data={logViews}
-                                             selected={selectedTable}
-                                             onSelected={this.setSelectedTable}/>
+                                    selected={selectedTable}
+                                    onSelected={this.setSelectedTable}/>
                             </div>
                         </div>
                     </div>
@@ -177,9 +177,9 @@ class Index extends Component {
                 <div className="row justify-content-start flex-md-wrap">
                     <div className="col-12 col-md-8">
                         <FlotChart isLive={isLive}
-                                   uuid={uuid}
-                                   handleRealTimeClicked={this.handleRealTimeClicked}
-                                   disableLive={disableLive}
+                            uuid={uuid}
+                            handleRealTimeClicked={this.handleRealTimeClicked}
+                            disableLive={disableLive}
                         />
                     </div>
                     <Summary uuid={uuid}/>
