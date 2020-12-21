@@ -130,4 +130,13 @@ class UserService implements UserServiceInterface
             )
         );
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setStatus(User $user, $isActive)
+    {
+        $user->setIsActive(!empty($isActive));
+        $this->save($user);
+    }
 }

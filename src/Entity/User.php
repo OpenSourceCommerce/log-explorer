@@ -217,6 +217,7 @@ class User implements UserInterface, JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->getId(),
             'first_name' => $this->getFirstName(),
             'last_name' => $this->getLastName(),
             'email' => $this->getEmail(),
@@ -224,7 +225,8 @@ class User implements UserInterface, JsonSerializable
             'is_confirmed' => $this->getIsConfirmed(),
             'roles' => $this->getRoles(),
             'is_admin' => $this->isAdmin() ? 1 : 0,
-            'status' => $this->getIsConfirmed() && $this->getIsActive() ? 'Active' : $this->getIsConfirmed() ? 'Inactive' : 'Pending',
+            'status' => ($this->getIsConfirmed() && $this->getIsActive()) ? 'Active' : ($this->getIsConfirmed() ? 'Inactive' : 'Pending'),
+            'last_updated' => ($this->getUpdatedAt() ?? $this->getCreatedAt())->format('Y-m-d H:i'),
         ];
     }
 

@@ -7,6 +7,7 @@ use App\Entity\UserToken;
 use App\Form\PasswordType;
 use App\Form\UserType;
 use App\Services\User\UserServiceInterface;
+use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,19 +89,44 @@ class UserController extends ApiController
      * @param UserToken $userToken
      * @param Request $request
      * @param UserServiceInterface $userService
+     * @param UserTokenServiceInterface $userTokenService
      * @return Response
      */
     public function confirmation(
         UserToken $userToken,
         Request $request,
-        UserServiceInterface $userService
+        UserServiceInterface $userService,
+        UserTokenServiceInterface $userTokenService
     ): Response {
+        if ($userToken->getDeletedAt()) {
+            return $this->responseError('Invalid token');
+        }
         $form = $this->createForm(PasswordType::class);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
+            $userTokenService->delete($userToken, false);
             $userService->setConfirmation($userToken->getUser(), $form->get('password')->getData());
             return $this->responseSuccess(['redirect' => '/']);
         }
         return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/user/status/{id}", methods = "PUT")
+     * @param User $user
+     * @param Request $request
+     * @param UserServiceInterface $userService
+     * @return Response
+     */
+    public function setStatus(
+        User $user,
+        Request $request,
+        UserServiceInterface $userService
+    ): Response {
+        if ($request->request->has('is_active')) {
+            $userService->setStatus($user, $request->request->get('is_active'));
+            return $this->responseSuccess();
+        }
+        return $this->responseError('Invalid request');
     }
 }

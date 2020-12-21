@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -46,6 +47,9 @@ class UserController extends AbstractController
      */
     public function confirmation(UserToken $userToken): Response
     {
+        if ($userToken->getDeletedAt()) {
+            throw new NotFoundHttpException();
+        }
         return $this->render('user/confirmation.html.twig', [
             'token' => $userToken,
         ]);

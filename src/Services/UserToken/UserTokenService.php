@@ -43,4 +43,16 @@ class UserTokenService implements UserTokenServiceInterface
     {
         return hash_hmac('sha1', $user->getEmail() . '|' . $user->getFirstName() . '|' . $user->getLastName(), $this->parameterBag->get('app.secret'));
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(UserToken $token, bool $flush = true)
+    {
+        $token->setDeletedAt();
+        $this->em->persist($token);
+        if ($flush) {
+            $this->em->flush();
+        }
+    }
 }

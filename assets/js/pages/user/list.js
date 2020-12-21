@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader, Table, Link} from '../../components';
 import {UserActions} from '../../actions';
+import {Icon} from "../../components/_icon";
+import {Button} from "../../components/_button";
 
 class UserList extends Component {
     constructor(props) {
@@ -10,6 +12,7 @@ class UserList extends Component {
             users: [],
             isLoading: false
         };
+        this.onChangeStatus = this.onChangeStatus.bind(this);
     }
 
     loadData() {
@@ -35,6 +38,31 @@ class UserList extends Component {
         this.loadData();
     }
 
+    onChangeStatus(key) {
+        let {users} = this.state;
+        const user = users[key];
+        const newStatus = user.is_active ? 0 : 1;
+        const that = this;
+        that.setState({
+            isLoading: true
+        })
+        UserActions.setStatus(user.id, {is_active: newStatus})
+            .then(res => {
+                const {error} = res;
+                if (error) {
+                    return;
+                }
+                users[key].is_active = newStatus;
+                that.setState({
+                    users: users
+                })
+            }).finally(() => {
+                that.setState({
+                    isLoading: false
+                })
+        })
+    }
+
     render() {
         const {users} = this.state;
 
@@ -45,6 +73,13 @@ class UserList extends Component {
                 <td>{user.is_admin ? 'Admin' : 'user'}</td>
                 <td>{user.status}</td>
                 <td>{user.last_updated}</td>
+                <td>
+                    <Link href={'/user/' + user.id} className={'btn btn-sm mr-3 btn-success'} title={'Edit'}><Icon name={'edit'}/></Link>
+                    {user.is_active == 1 &&
+                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Disable'}><Icon name={'user-times'}/></Button>}
+                    {user.is_active != 1 &&
+                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Enable'}><Icon name={'user-plus'}/></Button>}
+                </td>
             </tr>;
         });
 

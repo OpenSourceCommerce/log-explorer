@@ -36,4 +36,10 @@ interface UserServiceInterface
      * @param string $password
      */
     public function setConfirmation(User $user, string $password);
+
+    /**
+     * @param User $user
+     * @param $isActive
+     */
+    public function setStatus(User $user, $isActive);
 }

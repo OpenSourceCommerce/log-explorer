@@ -10,6 +10,9 @@ const UserActions = {
     confirm(token, data) {
         return request('/api/confirmation/' + token, {method: 'PUT', body: JSON.stringify(data)});
     },
+    setStatus(id, data) {
+        return request('/api/user/status/' + id, {method: 'PUT', body: JSON.stringify(data)});
+    },
     createOrUpdate(userId, data) {
         if (userId) {
             return request('/api/user/' + userId, {method: 'PUT', body: JSON.stringify(data)});
