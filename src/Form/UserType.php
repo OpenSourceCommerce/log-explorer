@@ -30,17 +30,17 @@ class UserType extends AbstractType
                     new NotBlank(),
                 ]
             ])
-            ->add('email', EmailType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Email([
-                        'message' => 'Email address is not valid'
-                    ]),
-                ]
-            ])
         ;
         if ($isAdmin) {
             $builder
+                ->add('email', EmailType::class, [
+                    'constraints' => [
+                        new NotBlank(),
+                        new Email([
+                            'message' => 'Email address is not valid'
+                        ]),
+                    ]
+                ])
                 ->add('is_admin', NumberType::class, [
                     'constraints' => [
                         new Range(['min' => 0, 'max' => 1]),

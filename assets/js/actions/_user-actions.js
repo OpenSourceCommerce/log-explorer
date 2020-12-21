@@ -7,6 +7,12 @@ const UserActions = {
     getUser(id) {
         return request('/api/user/' + id, {method: 'GET'});
     },
+    getProfile() {
+        return request('/api/profile', {method: 'GET'});
+    },
+    updateMe(data) {
+        return request('/api/profile', {method: 'PUT', body: JSON.stringify(data)});
+    },
     confirm(token, data) {
         return request('/api/confirmation/' + token, {method: 'PUT', body: JSON.stringify(data)});
     },

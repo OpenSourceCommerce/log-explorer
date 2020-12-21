@@ -54,4 +54,15 @@ class UserController extends AbstractController
             'token' => $userToken,
         ]);
     }
+
+    /**
+     * @Route("/profile", priority=10, name="user_profile", methods = "GET")
+     * @return Response
+     */
+    public function profile(): Response
+    {
+        return $this->render('user/profile.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
 }

@@ -129,4 +129,34 @@ class UserController extends ApiController
         }
         return $this->responseError('Invalid request');
     }
+
+    /**
+     * @Route("/api/profile", methods = "GET")
+     * @return JsonResponse
+     */
+    public function profile(): JsonResponse {
+        return $this->responseSuccess([
+            'data' => $this->getUser()
+        ]);
+    }
+
+    /**
+     * @Route("/api/profile", methods = "PUT")
+     * @param Request $request
+     * @param UserServiceInterface $userService
+     * @return JsonResponse
+     */
+    public function updateProfile(
+        Request $request,
+        UserServiceInterface $userService
+    ): JsonResponse {
+        $user = $this->getUser();
+        $form = $this->createForm(UserType::class, $user, ['is_admin' => false]);
+        $form->submit($request->request->all());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userService->updateUser($form->getData());
+            return $this->responseSuccess();
+        }
+        return $this->responseFormError($form);
+    }
 }

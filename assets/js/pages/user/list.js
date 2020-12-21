@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {CardHeader, Table, Link} from '../../components';
 import {UserActions} from '../../actions';
-import {Icon} from "../../components/_icon";
-import {Button} from "../../components/_button";
+import {Icon} from '../../components/_icon';
+import {Button} from '../../components/_button';
 
 class UserList extends Component {
     constructor(props) {
@@ -39,28 +39,29 @@ class UserList extends Component {
     }
 
     onChangeStatus(key) {
-        let {users} = this.state;
+        const {users} = this.state;
         const user = users[key];
         const newStatus = user.is_active ? 0 : 1;
         const that = this;
         that.setState({
             isLoading: true
-        })
+        });
         UserActions.setStatus(user.id, {is_active: newStatus})
             .then(res => {
                 const {error} = res;
                 if (error) {
                     return;
                 }
+
                 users[key].is_active = newStatus;
                 that.setState({
-                    users: users
-                })
+                    users
+                });
             }).finally(() => {
                 that.setState({
                     isLoading: false
-                })
-        })
+                });
+            });
     }
 
     render() {
