@@ -33,4 +33,8 @@ services:
             MYSQL_PASSWORD: dev
         ports:
             - 3306:3306
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - 127.0.0.1:8025:8025
 

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('user_list') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('user_list') }}
+{% endblock %}
+

@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/welcome", name="welcome")
+     * @Route("/welcome", priority=10, name="welcome")
      * @param LogViewServiceInterface $logViewService
      * @return Response
      */
