@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -16,7 +17,7 @@ use JsonSerializable;
  * @UniqueEntity(fields={"email"}, message="Email is already taken")
  * @ORM\Table(name="users")
  */
-class User implements JsonSerializable
+class User implements UserInterface, JsonSerializable
 {
     /**
      * @ORM\Id
@@ -46,7 +47,7 @@ class User implements JsonSerializable
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $password;
 
@@ -204,9 +205,22 @@ class User implements JsonSerializable
     /**
      * @return bool
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return in_array(RoleConstant::USER_ADMIN, $this->getRoles());
+    }
+
+    /**
+     * @param bool $isAdmin
+     * @return self
+     */
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $roles = [];
+        if ($isAdmin) {
+            $roles[] = RoleConstant::USER_ADMIN;
+        }
+        return $this->setRoles($roles);
     }
 
     /**
@@ -246,12 +260,40 @@ class User implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->getId(),
             'first_name' => $this->getFirstName(),
             'last_name' => $this->getLastName(),
             'email' => $this->getEmail(),
             'is_active' => $this->getIsActive(),
             'is_confirmed' => $this->getIsConfirmed(),
             'roles' => $this->getRoles(),
+            'is_admin' => $this->isAdmin() ? 1 : 0,
+            'status' => ($this->getIsConfirmed() && $this->getIsActive()) ? 'Active' : ($this->getIsConfirmed() ? 'Inactive' : 'Pending'),
+            'last_updated' => ($this->getUpdatedAt() ?? $this->getCreatedAt())->format('Y-m-d H:i'),
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSalt()
+    {
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsername()
+    {
+        return $this->getEmail();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials()
+    {
+
     }
 }

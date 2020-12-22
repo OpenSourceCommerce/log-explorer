@@ -1,105 +1,45 @@
 <?php
 
-
 namespace App\Services\User;
-
 
 use App\Entity\User;
 use App\Entity\UserToken;
-use App\Exceptions\UserNotFoundException;
 
 interface UserServiceInterface
 {
+
     /**
-     * Create new user with password
+     * @param array $options
+     * @return User[]|array
+     */
+    public function getAllUser(array $options = []): array;
+
+    /**
      * @param User $user
-     * @param string|null $password
      * @return User
      */
-    public function create(User $user, $password = null): User;
-
-    /**
-     * Send confirmation email to user
-     * @param UserToken $token
-     */
-    public function sendActivationEmail(UserToken $token);
-
-    /**
-     * @param UserToken $token
-     * @return User
-     */
-    public function setUserConfirmed(UserToken $token): User;
-
-    /**
-     * @param string $email
-     * @return User|null
-     */
-    public function findByEmail(string $email): ?User;
+    public function createUser(User $user): User;
 
     /**
      * @param User $user
+     * @return bool
      */
-    public function forgotPassword(User $user);
+    public function updateUser(User $user): bool;
 
     /**
      * @param UserToken $token
      */
-    public function sendForgotPasswordEmail(UserToken $token);
-
-    /**
-     * @param UserToken $token
-     * @param string $password
-     */
-    public function resetPassword(UserToken $token, string $password);
-
-    /**
-     * @param User $user
-     * @param string|null $password
-     */
-    public function updateProfile(User $user, ?string $password = null);
+    public function sendInvitationEmail(UserToken $token);
 
     /**
      * @param User $user
      * @param string $password
      */
-    public function setPassword(User $user, string $password);
-
-    /**
-     * Get user roles
-     * @return array
-     */
-    public function getUserRoles(): array;
-
-    /**
-     * @param UserToken $userToken
-     * @param User $user
-     * @param string $password
-     */
-    public function activate(UserToken $userToken, User $user, string $password);
-
-    /**
-     * @param int $id
-     * @return User
-     * @throws UserNotFoundException
-     */
-    public function findById(int $id): User;
+    public function setConfirmation(User $user, string $password);
 
     /**
      * @param User $user
-     * @param int $status
+     * @param $isActive
      */
-    public function setUserStatus(User $user, int $status);
-
-    /**
-     * @param User $user
-     */
-    public function delete(User $user);
-
-    /**
-     * Set password for user
-     *
-     * @param User $user
-     * @param string $password
-     */
-    public function setUserPassword(User $user, string $password);
+    public function setStatus(User $user, $isActive);
 }

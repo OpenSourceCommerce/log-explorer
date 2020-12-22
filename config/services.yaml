@@ -12,6 +12,8 @@ parameters:
     rememberme.cookie.expiration: '%env(int:APP_REMEMBERME_EXPIRATION)%' # 30 days in seconds
     password.forgot.token.expiration: '%env(APP_FORGOT_PASSWORD_EXPIRATION)%' # empty is unlimited, +2 days
     mailer.transport: '%env(MAILER_TRANSPORT)%'
+    app.secret: '%kernel.secret%'
+    app.from_email: '%env(FROM_EMAIL)%'
 
 services:
     # default configuration for services in *this* file

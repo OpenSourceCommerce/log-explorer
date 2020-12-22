@@ -9,20 +9,21 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: ~
+            anonymous: true
+            lazy: true
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
-                entry_point: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
-#            lazy: true
-#            provider: users_in_memory
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -36,3 +37,5 @@ security:
         - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/log-view, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/api/profile, roles: ROLE_USER }
