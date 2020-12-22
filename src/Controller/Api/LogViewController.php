@@ -26,7 +26,7 @@ class LogViewController extends ApiController
      * @param LogViewServiceInterface $logviewService
      * @return JsonResponse
      */
-    public function list(LogViewServiceInterface $logviewService)
+    public function list(LogViewServiceInterface $logviewService): JsonResponse
     {
         $logview = $logviewService->list();
 
@@ -42,7 +42,7 @@ class LogViewController extends ApiController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getColumnSetting(LogView $logView, LogViewServiceInterface $logviewService, Request $request)
+    public function getColumnSetting(LogView $logView, LogViewServiceInterface $logviewService, Request $request): JsonResponse
     {
         $chunk = $request->get('chunk', 0);
         $columns = $logviewService->getColumnSetting($logView)->toArray();
@@ -84,8 +84,7 @@ class LogViewController extends ApiController
         LogView $logView,
         LogViewColumnServiceInterface $logViewColumnService,
         Request $request
-    )
-    {
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(LogViewColumnType::class);
         $form->submit($data);
@@ -118,8 +117,12 @@ class LogViewController extends ApiController
      * @param LogViewServiceInterface $logViewService
      * @return JsonResponse
      */
-    public function updateSummary(LogView $logView, Request $request, ColumnServiceInterface $columnService, LogViewServiceInterface $logViewService): JsonResponse
-    {
+    public function updateSummary(
+        LogView $logView,
+        Request $request,
+        ColumnServiceInterface $columnService,
+        LogViewServiceInterface $logViewService
+    ): JsonResponse {
         $data = $request->request->all();
         $columns = $logView->getTable()->getColumns()->toArray();
         $list = [];

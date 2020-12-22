@@ -10,7 +10,6 @@ use App\Services\User\UserServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,9 +30,9 @@ class UserController extends ApiController
     /**
      * @Route("/api/user/{id}", methods = "GET")
      * @param User $user
-     * @return Response
+     * @return JsonResponse
      */
-    public function user(User $user): Response
+    public function user(User $user): JsonResponse
     {
         return $this->responseSuccess([
             'data' => $user
@@ -45,13 +44,13 @@ class UserController extends ApiController
      * @param Request $request
      * @param UserServiceInterface $userService
      * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
+     * @return JsonResponse
      */
     public function create(
         Request $request,
         UserServiceInterface $userService,
         UrlGeneratorInterface $urlGenerator
-    ): Response {
+    ): JsonResponse {
         $form = $this->createForm(UserType::class, null, ['is_admin' => true]);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,13 +67,13 @@ class UserController extends ApiController
      * @param User $user
      * @param Request $request
      * @param UserServiceInterface $userService
-     * @return Response
+     * @return JsonResponse
      */
     public function update(
         User $user,
         Request $request,
         UserServiceInterface $userService
-    ): Response {
+    ): JsonResponse {
         $form = $this->createForm(UserType::class, $user, ['is_admin' => true]);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
@@ -90,14 +89,14 @@ class UserController extends ApiController
      * @param Request $request
      * @param UserServiceInterface $userService
      * @param UserTokenServiceInterface $userTokenService
-     * @return Response
+     * @return JsonResponse
      */
     public function confirmation(
         UserToken $userToken,
         Request $request,
         UserServiceInterface $userService,
         UserTokenServiceInterface $userTokenService
-    ): Response {
+    ): JsonResponse {
         if ($userToken->getDeletedAt()) {
             return $this->responseError('Invalid token');
         }
@@ -116,13 +115,13 @@ class UserController extends ApiController
      * @param User $user
      * @param Request $request
      * @param UserServiceInterface $userService
-     * @return Response
+     * @return JsonResponse
      */
     public function setStatus(
         User $user,
         Request $request,
         UserServiceInterface $userService
-    ): Response {
+    ): JsonResponse {
         if ($request->request->has('is_active')) {
             $userService->setStatus($user, $request->request->get('is_active'));
             return $this->responseSuccess();
@@ -135,13 +134,13 @@ class UserController extends ApiController
      * @param User $user
      * @param UserServiceInterface $userService
      * @param UserTokenServiceInterface $userTokenService
-     * @return Response
+     * @return JsonResponse
      */
     public function delete(
         User $user,
         UserServiceInterface $userService,
         UserTokenServiceInterface $userTokenService
-    ): Response {
+    ): JsonResponse {
         if ($user->getId() === $this->getUser()->getId()) {
             return $this->responseError('Can not delete yourself');
         }

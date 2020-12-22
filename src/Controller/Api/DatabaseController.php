@@ -11,8 +11,8 @@ use App\Form\TableType;
 use App\Services\Database\DatabaseServiceInterface;
 use App\Services\Table\TableServiceInterface;
 use Doctrine\DBAL\Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -21,9 +21,9 @@ class DatabaseController extends ApiController
     /**
      * @Route("/api/table", methods = "GET")
      * @param TableServiceInterface $tableService
-     * @return Response
+     * @return JsonResponse
      */
-    public function tables(TableServiceInterface $tableService): Response
+    public function tables(TableServiceInterface $tableService): JsonResponse
     {
         $data = $tableService->getAllTable();
         return $this->responseSuccess(['data' => $data]);
@@ -33,9 +33,9 @@ class DatabaseController extends ApiController
      * @Route("/api/table/{name}/columns", methods = "GET")
      * @param Table $table
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
-    public function columns(Table $table, Request $request): Response
+    public function columns(Table $table, Request $request): JsonResponse
     {
         $chunk = $request->get('chunk', 0);
         $columns = $table->getColumns()->toArray();
@@ -53,9 +53,9 @@ class DatabaseController extends ApiController
     /**
      * @Route("/api/table/sync", methods = "POST")
      * @param DatabaseServiceInterface $databaseService
-     * @return Response
+     * @return JsonResponse
      */
-    public function syncAll(DatabaseServiceInterface $databaseService): Response
+    public function syncAll(DatabaseServiceInterface $databaseService): JsonResponse
     {
         $databaseService->syncAllTableToSystem();
 
@@ -67,13 +67,13 @@ class DatabaseController extends ApiController
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
+     * @return JsonResponse
      */
     public function createTable(
         Request $request,
         DatabaseServiceInterface $databaseService,
         UrlGeneratorInterface $urlGenerator
-    ): Response {
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);
@@ -106,15 +106,13 @@ class DatabaseController extends ApiController
      * @param Table $table
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
-     * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
+     * @return JsonResponse
      */
     public function updateTable(
         Table $table,
         Request $request,
-        DatabaseServiceInterface $databaseService,
-        UrlGeneratorInterface $urlGenerator
-    ): Response {
+        DatabaseServiceInterface $databaseService
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);

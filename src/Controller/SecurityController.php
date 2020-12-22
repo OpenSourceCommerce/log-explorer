@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\UserToken;
 use App\Services\User\UserServiceInterface;
-use App\Services\User\UserTokenServiceInterface;
+use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -68,27 +69,23 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @param $token
+     * @param UserToken $userToken
      * @param ContainerBagInterface $containerBag
      * @param UserTokenServiceInterface $userTokenService
      * @return RedirectResponse|Response
      */
     public function reset(
-        $token,
+        UserToken $userToken,
         ContainerBagInterface $containerBag,
         UserTokenServiceInterface $userTokenService
     ) {
-        $forgot = $userTokenService->findByToken($token);
-        if (empty($forgot)) {
-            throw new NotFoundHttpException();
-        }
         $tokenExpiration = $containerBag->get('password.forgot.token.expiration');
         if (!empty($tokenExpiration)) {
-            if (!$userTokenService->isValidateDate($forgot->getCreatedAt(), $tokenExpiration)) {
+            if (!$userTokenService->isValidateDate($userToken->getCreatedAt(), $tokenExpiration)) {
                 throw new NotFoundHttpException();
             }
         }
 
-        return $this->render('security/reset.html.twig', ['token' => $token]);
+        return $this->render('security/reset.html.twig', ['token' => $userToken->getToken()]);
     }
 }
