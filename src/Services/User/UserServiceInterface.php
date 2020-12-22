@@ -27,9 +27,26 @@ interface UserServiceInterface
     public function updateUser(User $user): bool;
 
     /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User;
+
+    /**
+     * @param User $user
+     */
+    public function forgotPassword(User $user);
+
+    /**
      * @param UserToken $token
      */
-    public function sendInvitationEmail(UserToken $token);
+    public function sendForgotPasswordEmail(UserToken $token);
+
+    /**
+     * @param UserToken $token
+     * @param string $password
+     */
+    public function resetPassword(UserToken $token, string $password);
 
     /**
      * @param User $user
@@ -47,4 +64,12 @@ interface UserServiceInterface
      * @param User $user
      */
     public function delete(User $user);
+
+    /**
+     * Set password for user
+     *
+     * @param User $user
+     * @param string $password
+     */
+    public function setUserPassword(User $user, string $password);
 }

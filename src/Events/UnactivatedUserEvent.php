@@ -6,9 +6,10 @@ namespace App\Events;
 use App\Entity\UserToken;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class UserCreatedEvent extends Event
+class UnactivatedUserEvent extends Event
 {
-    public const USER_CREATED = 'user.created';
+    public const UNACTIVATED_USER_LOGIN = 'unactivated.user.login';
+    public const UNACTIVATED_USER_FORGOT = 'unactivated.user.forgot';
 
     /**
      * @var UserToken
@@ -16,7 +17,7 @@ class UserCreatedEvent extends Event
     protected $token;
 
     /**
-     * UserRegistrationEvent constructor.
+     * UserCreatedEvent constructor.
      * @param UserToken $token
      */
     public function __construct(UserToken $token)
@@ -24,7 +25,10 @@ class UserCreatedEvent extends Event
         $this->token = $token;
     }
 
-    public function getUserToken(): UserToken
+    /**
+     * @return UserToken
+     */
+    public function getToken()
     {
         return $this->token;
     }

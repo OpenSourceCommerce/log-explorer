@@ -5,7 +5,10 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     app.secret: '%kernel.secret%'
-    app.from_email: '%env(FROM_EMAIL)%'
+    app.user.roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER']
+    app.domain: '%env(APP_DOMAIN)%'
+    app.email.from: '%env(APP_EMAIL_FROM)%'
+    password.forgot.token.expiration: '%env(APP_FORGOT_PASSWORD_EXPIRATION)%' # empty is unlimited, +2 days
 
 services:
     # default configuration for services in *this* file

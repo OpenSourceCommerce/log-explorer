@@ -7,6 +7,7 @@ namespace App\Services\User;
 use App\Entity\User;
 use App\Entity\UserToken;
 use App\Events\UserCreatedEvent;
+use App\Events\UserForgotPasswordEvent;
 use App\Repository\UserRepository;
 use App\Services\Mailer\MailerServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
@@ -14,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+
 
 class UserService implements UserServiceInterface
 {
@@ -121,7 +123,13 @@ class UserService implements UserServiceInterface
         $this->save($user);
     }
 
-    private function setUserPassword(User $user, string $password)
+    /**
+     * Set password for user
+     *
+     * @param User $user
+     * @param string $password
+     */
+    public function setUserPassword(User $user, string $password)
     {
         $user->setPassword(
             $this->passwordEncoder->encodePassword(
@@ -129,6 +137,79 @@ class UserService implements UserServiceInterface
                 $password
             )
         );
+    }
+
+    /**
+     * @param string $email
+     * @return User
+     */
+    public function findByEmail(string $email): User
+    {
+        return $this->getRepository()->findOneBy(['email' => $email]);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function forgotPassword(User $user)
+    {
+        $token = $this->userTokenService->create($user);
+        $user->addUserToken($token);
+        $this->em->persist($token);
+        $this->save($user);
+
+        $event = new UserForgotPasswordEvent($token);
+        $this->dispatcher->dispatch($event, UserForgotPasswordEvent::NAME);
+    }
+
+    /**
+     * @param UserToken $token
+     */
+    public function sendForgotPasswordEmail(UserToken $token)
+    {
+        $user = $token->getUser();
+        $resetUrl = $this->urlGenerator->generate('reset_password', ['token' => $token->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL);
+        $data = [
+            'firstName' => $user->getFirstname(),
+            'resetUrl' => $resetUrl,
+        ];
+        $this->mailerService->sendResetPasswordEmail($user->getEmail(), $data);
+    }
+
+    /**
+     * @param UserToken $token
+     * @param string $password
+     */
+    public function resetPassword(UserToken $token, string $password)
+    {
+        $user = $token->getUser();
+        $this->setUserPassword($user, $password);
+        $user->removeUserToken($token);
+        $this->em->remove($token);
+        $this->save($user);
+    }
+
+    /**
+     * @param User $user
+     * @param string|null $password
+     */
+    public function updateProfile(User $user, ?string $password = null)
+    {
+        if ($password) {
+            $this->setUserPassword($user, $password);
+        }
+        $this->save($user);
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     */
+    public function setPassword(User $user, string $password)
+    {
+        $this->setUserPassword($user, $password);
+        $this->save($user);
     }
 
     /**

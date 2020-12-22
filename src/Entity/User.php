@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Constant\RoleConstant;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
@@ -68,6 +70,16 @@ class User implements UserInterface, JsonSerializable
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserToken", mappedBy="user")
+     */
+    private $userTokens;
+
+    public function __construct()
+    {
+        $this->userTokens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -199,16 +211,47 @@ class User implements UserInterface, JsonSerializable
     }
 
     /**
-     * @param bool $isAdmin
+     * @param $isAdmin
      * @return self
      */
-    public function setIsAdmin(bool $isAdmin): self
+    public function setIsAdmin($isAdmin): self
     {
         $roles = [];
-        if ($isAdmin) {
+        if (!empty($isAdmin)) {
             $roles[] = RoleConstant::USER_ADMIN;
         }
         return $this->setRoles($roles);
+    }
+
+    /**
+     * @return Collection|UserToken[]
+     */
+    public function getUserTokens(): Collection
+    {
+        return $this->userTokens;
+    }
+
+    public function addUserToken(UserToken $userToken): self
+    {
+        if (!$this->userTokens->contains($userToken)) {
+            $this->userTokens[] = $userToken;
+            $userToken->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserToken(UserToken $userToken): self
+    {
+        if ($this->userTokens->contains($userToken)) {
+            $this->userTokens->removeElement($userToken);
+            // set the owning side to null (unless already changed)
+            if ($userToken->getUser() === $this) {
+                $userToken->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
     /**

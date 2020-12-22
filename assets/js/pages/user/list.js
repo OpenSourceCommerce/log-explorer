@@ -64,7 +64,7 @@ class UserList extends Component {
     }
 
     onDelete(key) {
-        let {users} = this.state;
+        const {users} = this.state;
         const that = this;
         that.setState({
             isLoading: true

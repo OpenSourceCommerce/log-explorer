@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,5 +39,18 @@ class UserRepository extends ServiceEntityRepository
             $builder->setFirstResult(($page - 1) * $limit);
         }
         return $builder->getQuery()->getResult();
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function findAllIn(array $ids)
+    {
+        return $sql = $this->createQueryBuilder('u')
+            ->andWhere((new Expr())->in('u.id', ':ids'))
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
     }
 }
