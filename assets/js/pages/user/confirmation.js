@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Input, Button} from '../../components';
-import {Alert, UserActions} from '../../actions';
-import {CardHeader} from '../../components/_card-header';
+import {Input, Button, CardHeader} from '../../components';
+import {UserActions} from '../../actions';
 
 class UserConfirmationForm extends Component {
     constructor(props) {
@@ -67,7 +66,7 @@ class UserConfirmationForm extends Component {
     }
 
     render() {
-        const {id, password, rePassword, passwordError, rePasswordError, isLoading} = this.state;
+        const {password, rePassword, passwordError, rePasswordError, isLoading} = this.state;
 
         return (
             <div className="user container-fluid">
@@ -87,7 +86,7 @@ class UserConfirmationForm extends Component {
                                 <Input type={'password'} className={rePasswordError ? 'is-invalid' : ''} required={true} name={'rePassword'} placeholder="Repeat your password" value={rePassword} onChange={this.onTextChange}/>
                             </div>
                             <div className="form-group">
-                                <Button onClick={this.onSubmit}>Set password</Button>
+                                <Button onClick={this.onSubmit} isLoading={isLoading}>Set password</Button>
                             </div>
                         </form>
                     </div>

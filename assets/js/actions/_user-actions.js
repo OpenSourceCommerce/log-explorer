@@ -19,6 +19,9 @@ const UserActions = {
     setStatus(id, data) {
         return request('/api/user/status/' + id, {method: 'PUT', body: JSON.stringify(data)});
     },
+    delete(id) {
+        return request('/api/user/' + id, {method: 'DELETE'});
+    },
     createOrUpdate(userId, data) {
         if (userId) {
             return request('/api/user/' + userId, {method: 'PUT', body: JSON.stringify(data)});

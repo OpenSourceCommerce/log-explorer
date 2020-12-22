@@ -139,4 +139,13 @@ class UserService implements UserServiceInterface
         $user->setIsActive(!empty($isActive));
         $this->save($user);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(User $user)
+    {
+        $this->em->remove($user);
+        $this->em->flush();
+    }
 }

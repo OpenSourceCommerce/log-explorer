@@ -131,6 +131,26 @@ class UserController extends ApiController
     }
 
     /**
+     * @Route("/api/user/{id}", methods = "DELETE")
+     * @param User $user
+     * @param UserServiceInterface $userService
+     * @param UserTokenServiceInterface $userTokenService
+     * @return Response
+     */
+    public function delete(
+        User $user,
+        UserServiceInterface $userService,
+        UserTokenServiceInterface $userTokenService
+    ): Response {
+        if ($user->getId() === $this->getUser()->getId()) {
+            return $this->responseError('Can not delete yourself');
+        }
+        $userTokenService->deleteOfUser($user);
+        $userService->delete($user);
+        return $this->responseSuccess();
+    }
+
+    /**
      * @Route("/api/profile", methods = "GET")
      * @return JsonResponse
      */

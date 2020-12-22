@@ -42,4 +42,9 @@ interface UserServiceInterface
      * @param $isActive
      */
     public function setStatus(User $user, $isActive);
+
+    /**
+     * @param User $user
+     */
+    public function delete(User $user);
 }

@@ -97,7 +97,7 @@ class ProfileForm extends Component {
     }
 
     render() {
-        const {id, firstName, lastName, email, isLoading, firstNameError, lastNameError} = this.state;
+        const {firstName, lastName, email, isLoading, firstNameError, lastNameError} = this.state;
 
         return (
             <div className="user container-fluid">
@@ -105,11 +105,8 @@ class ProfileForm extends Component {
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">Update profile</h3>
                         <Button className="float-right" color={'success'}
-                            onClick={this.onSubmit} disabled={isLoading}>
-                            {isLoading ? (<>  <span
-                                className="spinner-border spinner-border-sm mr-2"
-                                role="status" aria-hidden="true"></span>
-                                Loading... </>) : 'Update'}
+                            onClick={this.onSubmit} isLoading={isLoading}>
+                            Update
                         </Button>
 
                     </div>

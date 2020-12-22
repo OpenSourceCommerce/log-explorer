@@ -131,11 +131,8 @@ class UserForm extends Component {
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{id === '' ? 'Create new user' : 'Update user'}</h3>
                         <Button className="float-right" color={'success'}
-                            onClick={this.onSubmit} disabled={isLoading}>
-                            {isLoading ? (<>  <span
-                                className="spinner-border spinner-border-sm mr-2"
-                                role="status" aria-hidden="true"></span>
-                                Loading... </>) : (id === '' ? 'Create user' : 'Update user')}
+                            onClick={this.onSubmit} isLoading={isLoading}>
+                            {id === '' ? 'Create user' : 'Update user'}
                         </Button>
 
                     </div>
