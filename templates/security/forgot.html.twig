@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Forgot password' | trans }}{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('forgot', null, 'app') }}
+{% endblock %}

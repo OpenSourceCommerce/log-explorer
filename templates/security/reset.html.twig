@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Reset password' | trans }}{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+    <input id="token" type="hidden" value="{{ token }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('reset', null, 'app') }}
+{% endblock %}
