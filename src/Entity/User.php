@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Constant\RoleConstant;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
@@ -67,6 +69,16 @@ class User implements JsonSerializable
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserToken", mappedBy="user")
+     */
+    private $userTokens;
+
+    public function __construct()
+    {
+        $this->userTokens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -195,6 +207,37 @@ class User implements JsonSerializable
     public function isAdmin()
     {
         return in_array(RoleConstant::USER_ADMIN, $this->getRoles());
+    }
+
+    /**
+     * @return Collection|UserToken[]
+     */
+    public function getUserTokens(): Collection
+    {
+        return $this->userTokens;
+    }
+
+    public function addUserToken(UserToken $userToken): self
+    {
+        if (!$this->userTokens->contains($userToken)) {
+            $this->userTokens[] = $userToken;
+            $userToken->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserToken(UserToken $userToken): self
+    {
+        if ($this->userTokens->contains($userToken)) {
+            $this->userTokens->removeElement($userToken);
+            // set the owning side to null (unless already changed)
+            if ($userToken->getUser() === $this) {
+                $userToken->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
     /**

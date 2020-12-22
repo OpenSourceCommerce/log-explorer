@@ -13,8 +13,13 @@ services:
         links:
             - db
             - mysql
+            - mailhog
     db:
         image: yandex/clickhouse-server
+        working_dir: /var/www
+        volumes:
+            - ./var/clickhouse:/var/lib/clickhouse
+            - .:/var/www
         ports:
             - 127.0.0.1:9000:9000
             - 127.0.0.1:8123:8123
@@ -34,3 +39,7 @@ services:
         ports:
             - 3306:3306
 
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - 127.0.0.1:8025:8025

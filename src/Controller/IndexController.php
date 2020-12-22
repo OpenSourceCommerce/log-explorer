@@ -26,7 +26,7 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/{uuid}", defaults={"uuid"=null}, name="index")
+     * @Route("/log-view/{uuid}", defaults={"uuid"=null}, name="index")
      * @param string|null $uuid
      * @param LogView|null $logView
      * @return Response
