@@ -160,32 +160,42 @@ class Index extends Component {
 
         return (
             <div className="dashboard-page container-fluid">
-                <div className="advanced-search col-12">
-                    <div className="card">
-                        <div className="card-body">
-                            <div className="row">
-                                <LogViewList data={logViews}
-                                    selected={selectedTable}
-                                    onSelected={this.setSelectedTable}/>
+                {logViews && logViews.length > 0 ? (
+                    <>
+                        <div className="advanced-search col-12">
+                            <div className="card">
+                                <div className="card-body">
+                                    <div className="row">
+                                        <LogViewList data={logViews}
+                                            selected={selectedTable}
+                                            onSelected={this.setSelectedTable}/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <AdvancedSearch
-                    onDateRangeChanged={this.onDateRangeChanged}
-                />
-                <div className="row justify-content-start flex-md-wrap">
-                    <div className="col-12 col-md-8">
-                        <FlotChart isLive={isLive}
-                            uuid={uuid}
-                            handleRealTimeClicked={this.handleRealTimeClicked}
-                            disableLive={disableLive}
+                        <AdvancedSearch
+                            onDateRangeChanged={this.onDateRangeChanged}
                         />
-                    </div>
-                    <Summary uuid={uuid}/>
+                        <div className="row justify-content-start flex-md-wrap">
+                            <div className="col-12 col-md-8">
+                                <FlotChart isLive={isLive}
+                                    uuid={uuid}
+                                    handleRealTimeClicked={this.handleRealTimeClicked}
+                                    disableLive={disableLive}
+                                />
+                            </div>
+                            <Summary uuid={uuid}/>
 
-                    <LogViewTable selectedTable={selectedTable}/>
-                </div>
+                            <LogViewTable selectedTable={selectedTable}/>
+                        </div>
+                    </>
+                ) : (
+                    <div className="spinner text-center position-absolute">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
