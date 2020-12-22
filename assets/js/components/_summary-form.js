@@ -10,7 +10,8 @@ export class SummaryForm extends Component {
         this.state = {
             logViewUuid: '',
             columns: {},
-            summary: []
+            summary: [],
+            isLoading: false
         };
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -41,6 +42,10 @@ export class SummaryForm extends Component {
         const {logViewUuid} = this.props;
         const summary = $('#summary').val();
         if (logViewUuid) {
+            const that = this;
+            that.setState({
+                isLoading: true
+            })
             LogViewActions.setSummary(logViewUuid, {columns: summary})
                 .then(res => {
                     const {error} = res;
@@ -49,13 +54,18 @@ export class SummaryForm extends Component {
                     }
 
                     Alert.success('Update successful');
-                });
+                })
+                .finally(() => {
+                    that.setState({
+                        isLoading: false
+                    })
+                })
         }
     }
 
     render() {
         const {className} = this.props;
-        const {summary, columns} = this.state;
+        const {summary, columns, isLoading} = this.state;
 
         const _columns = Object.keys(columns).map((key, index) => {
             return <option key={index} value={key}>{columns[key]}</option>;
@@ -70,7 +80,7 @@ export class SummaryForm extends Component {
                 </div>
 
                 <div className="box-footer">
-                    <Button color={'success'} onClick={this.onSubmit} >Save</Button>
+                    <Button color={'success'} onClick={this.onSubmit} isLoading={isLoading}>Save</Button>
                 </div>
             </div>
         );
