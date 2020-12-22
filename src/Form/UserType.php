@@ -45,15 +45,6 @@ class UserType extends AbstractType
                     'required' => false
                 ])
             ;
-        } else {
-            $builder
-                ->add('password', TextType::class, [
-                    'mapped' => false,
-                    'constraints' => [
-                        new Length(['min' => 6]),
-                    ]
-                ])
-            ;
         }
     }
 

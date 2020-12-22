@@ -37,7 +37,7 @@ class UserForm extends Component {
                     firstName: first_name,
                     lastName: last_name,
                     email,
-                    isAdmin: is_admin,
+                    isAdmin: is_admin == 1,
                     isLoading: false,
                     firstNameError: false,
                     lastNameError: false,
