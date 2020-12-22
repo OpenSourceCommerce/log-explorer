@@ -75,17 +75,24 @@ class UserService implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function createUser(User $user): User
+    public function createUser(User $user, ?string $password = null): User
     {
         $user->setIsActive(true);
-        $user->setIsConfirmed(false);
-
-        $token = $this->userTokenService->createToken($user, false);
+        if (empty($password)) {
+            $user->setIsConfirmed(false);
+            $token = $this->userTokenService->createToken($user, false);
+        } else {
+            $user->setIsConfirmed(true);
+            $this->setUserPassword($user, $password);
+            $token = false;
+        }
 
         $this->save($user);
 
-        $event = new UserCreatedEvent($token);
-        $this->dispatcher->dispatch($event, UserCreatedEvent::USER_CREATED);
+        if ($token) {
+            $event = new UserCreatedEvent($token);
+            $this->dispatcher->dispatch($event, UserCreatedEvent::USER_CREATED);
+        }
 
         return $user;
     }

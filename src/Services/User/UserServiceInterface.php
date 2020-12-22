@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Entity\User;
 use App\Entity\UserToken;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 interface UserServiceInterface
 {
@@ -16,9 +17,11 @@ interface UserServiceInterface
 
     /**
      * @param User $user
+     * @param string|null $password
      * @return User
+     * @throws UniqueConstraintViolationException
      */
-    public function createUser(User $user): User;
+    public function createUser(User $user, ?string $password = null): User;
 
     /**
      * @param User $user
