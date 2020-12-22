@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link} from '../../components';
+import {CardHeader, Table, Link, Icon, Button} from '../../components';
 import {UserActions} from '../../actions';
-import {Icon} from '../../components/_icon';
-import {Button} from '../../components/_button';
 
 class UserList extends Component {
     constructor(props) {
@@ -13,6 +11,7 @@ class UserList extends Component {
             isLoading: false
         };
         this.onChangeStatus = this.onChangeStatus.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     loadData() {
@@ -64,6 +63,30 @@ class UserList extends Component {
             });
     }
 
+    onDelete(key) {
+        const {users} = this.state;
+        const that = this;
+        that.setState({
+            isLoading: true
+        });
+        UserActions.delete(users[key].id)
+            .then(res => {
+                const {error} = res;
+                if (error) {
+                    return;
+                }
+
+                users.splice(key, 1);
+                that.setState({
+                    users
+                });
+            }).finally(() => {
+                that.setState({
+                    isLoading: false
+                });
+            });
+    }
+
     render() {
         const {users} = this.state;
 
@@ -74,12 +97,13 @@ class UserList extends Component {
                 <td>{user.is_admin ? 'Admin' : 'user'}</td>
                 <td>{user.status}</td>
                 <td>{user.last_updated}</td>
-                <td>
+                <td className={'text-right'}>
                     <Link href={'/user/' + user.id} className={'btn btn-sm mr-3 btn-success'} title={'Edit'}><Icon name={'edit'}/></Link>
                     {user.is_active == 1 &&
-                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Disable'}><Icon name={'user-times'}/></Button>}
+                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-warning'} title={'Disable'}><Icon name={'user-times'}/></Button>}
                     {user.is_active != 1 &&
                     <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Enable'}><Icon name={'user-plus'}/></Button>}
+                    <Button onClick={_ => this.onDelete(key)} className={'btn ml-3 btn-sm btn-danger'} title={'Delete'}><Icon name={'trash'}/></Button>
                 </td>
             </tr>;
         });

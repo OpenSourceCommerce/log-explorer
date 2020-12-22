@@ -223,11 +223,8 @@ class DatabaseForm extends Component {
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
                         <Button className="float-right" color={'success'}
-                            onClick={this.onSubmit} disabled={isLoading}>
-                            {isLoading ? (<>  <span
-                                className="spinner-border spinner-border-sm mr-2"
-                                role="status" aria-hidden="true"></span>
-                                Loading... </>) : (tableId === '' ? 'Create table' : 'Update table')}
+                            onClick={this.onSubmit} isLoading={isLoading}>
+                            {tableId === '' ? 'Create table' : 'Update table'}
                         </Button>
 
                     </div>

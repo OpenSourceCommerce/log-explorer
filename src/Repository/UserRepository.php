@@ -20,19 +20,6 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * @param array $ids
-     * @return array
-     */
-    public function findAllIn(array $ids)
-    {
-        return $sql = $this->createQueryBuilder('u')
-            ->andWhere((new Expr())->in('u.id', ':ids'))
-            ->setParameter('ids', $ids)
-            ->getQuery()
-            ->getResult();
-    }
-
     public function getAllUser(array $options)
     {
         $limit = $options['limit'] ?? 10;
@@ -52,5 +39,18 @@ class UserRepository extends ServiceEntityRepository
             $builder->setFirstResult(($page - 1) * $limit);
         }
         return $builder->getQuery()->getResult();
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function findAllIn(array $ids)
+    {
+        return $sql = $this->createQueryBuilder('u')
+            ->andWhere((new Expr())->in('u.id', ':ids'))
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -3,9 +3,13 @@
 
 namespace App\Services\Mailer;
 
-
+use Swift_Mailer;
+use Swift_SendmailTransport;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MailerService implements MailerServiceInterface
 {
@@ -32,7 +36,7 @@ class MailerService implements MailerServiceInterface
     /**
      * Get SwiftMailer Transport
      *
-     * @return \Swift_Mailer|\Swift_SendmailTransport
+     * @return Swift_Mailer|Swift_SendmailTransport
      */
     private function getMailer()
     {
@@ -46,7 +50,7 @@ class MailerService implements MailerServiceInterface
     {
         $mailer = $this->getMailer();
         $message = (new \Swift_Message($title))
-            ->setFrom($this->parameterBag->get('app.from_email'))
+            ->setFrom($this->parameterBag->get('app.email.from'))
             ->setTo($to)
             ->setBody(
                 $this->renderView($template, $data),
@@ -64,16 +68,32 @@ class MailerService implements MailerServiceInterface
         return $this->send('confirmation', 'Confirm Your Account', $email, $data);
     }
 
+
     /**
      * @param $template
      * @param $data
      * @return string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function renderView($template, $data): string
     {
         return $this->twig->render("mail/{$template}.html.twig", $data);
+    }
+
+    /**
+     * Send confirmation mail to user
+     *
+     * @param $to
+     * @param array $data
+     * @return mixed
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function sendResetPasswordEmail($to, array $data) {
+        return $this->send('reset_password', 'Reset your password', $to,
+            $data);
     }
 }

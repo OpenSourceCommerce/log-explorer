@@ -6,6 +6,7 @@ namespace App\Services\UserToken;
 
 use App\Entity\User;
 use App\Entity\UserToken;
+use App\Repository\UserTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -20,6 +21,14 @@ class UserTokenService implements UserTokenServiceInterface
     {
         $this->em = $em;
         $this->parameterBag = $parameterBag;
+    }
+
+    /**
+     * @return UserTokenRepository
+     */
+    private function getRepository(): UserTokenRepository
+    {
+        return $this->em->getRepository(UserToken::class);
     }
 
     /**
@@ -54,5 +63,13 @@ class UserTokenService implements UserTokenServiceInterface
         if ($flush) {
             $this->em->flush();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteOfUser(User $user)
+    {
+        return $this->getRepository()->deleteOfUser($user);
     }
 }

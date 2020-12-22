@@ -214,10 +214,10 @@ class User implements UserInterface, JsonSerializable
      * @param bool $isAdmin
      * @return self
      */
-    public function setIsAdmin(bool $isAdmin): self
+    public function setIsAdmin($isAdmin): self
     {
         $roles = [];
-        if ($isAdmin) {
+        if (!empty($isAdmin)) {
             $roles[] = RoleConstant::USER_ADMIN;
         }
         return $this->setRoles($roles);

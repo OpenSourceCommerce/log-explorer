@@ -15,15 +15,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            anonymous: ~
             lazy: true
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -35,7 +34,12 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/log-view, roles: ROLE_USER }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/profile, roles: ROLE_USER }
+        - { path: ^/log-view, roles: ROLE_USER }
+        - { path: ^/*, roles: ROLE_ADMIN }
+

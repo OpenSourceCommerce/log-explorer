@@ -1,0 +1,37 @@
+.welcome-page {
+  pre, a {
+    background: #ECEFF1;
+    color: #E91E63;
+    border-radius: 2px;
+  }
+
+  .tooltipContent {
+    position: relative;
+    display: inline-block;
+
+    .tooltiptext {
+      display: none;
+      background-color: black;
+      color: #fff;
+      border-radius: 6px;
+      z-index: 1;
+      top: -7px;
+      right: 200%;
+    }
+
+    .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent black;
+    }
+  }
+
+  .tooltipContent:hover .tooltiptext {
+    display: block;
+  }
+}
