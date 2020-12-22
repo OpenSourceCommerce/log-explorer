@@ -1,4 +1,5 @@
 import {request} from '..';
+import {CsrfToken} from '.';
 
 const UserActions = {
     getAllUser() {
@@ -27,7 +28,39 @@ const UserActions = {
         return request('/api/user/create', {
             method: 'POST', body: JSON.stringify(data)
         });
-    }
+    },
+    changePassword: (oldPassword, password) => {
+        let jData = $.extend({
+            _token: CsrfToken.getToken(),
+            oldPassword: oldPassword
+        }, password);
+        return request('/api/user/password', {
+            method: 'post',
+            body: JSON.stringify(jData)
+        });
+    },
+    forgot: (email) => {
+        let jData = {
+            _token: CsrfToken.getToken(),
+            email: email
+        };
+        return request('/api/forgot', {
+            method: 'post',
+            body: JSON.stringify(jData)
+        });
+    },
+    login: (email, password, remember) => {
+        let jData = {
+            _token: CsrfToken.getToken(),
+            email: email,
+            password: password,
+            _remember_me: remember
+        };
+        return request('/login', {
+            method: 'post',
+            body: JSON.stringify(jData)
+        });
+    },
 };
 
 export default UserActions;

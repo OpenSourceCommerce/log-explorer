@@ -1,8 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LiveButton } from '../../components/_live-button';
-// Import {UserActions} from '../../actions';
-// import {Route} from '../..';
+import { UserActions } from '../../actions';
 
 export class LoginForm extends Component {
     constructor(props) {
@@ -12,28 +10,28 @@ export class LoginForm extends Component {
             password: '',
             remember: false,
             message: '',
-            hidePassword: true
+            hidePassword: true,
         };
         this.handleChange = this.handleChange.bind(this);
-        // this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(e) {
         if (e.target.name === 'email') {
             this.setState({
-                email: e.target.value
+                email: e.target.value,
             });
         }
 
         if (e.target.name === 'password') {
             this.setState({
-                password: e.target.value
+                password: e.target.value,
             });
         }
 
         if (e.target.name === '_remember_me') {
             this.setState({
-                remember: e.target.checked
+                remember: e.target.checked,
             });
         }
     }
@@ -42,20 +40,19 @@ export class LoginForm extends Component {
         e.preventDefault();
 
         const {email, password, remember} = this.state;
-        /* UserActions.login(email, password, remember)
-            .then(response => {
-                if (response.error === 0) {
-                    if (typeof response.redirect !== undefined) {
-                        window.location.href = response.redirect;
-                    } else {
-                        window.location.href = '/';
-                    }
+        UserActions.login(email, password, remember).then(response => {
+            if (response.error === 0) {
+                if (typeof response.redirect !== undefined) {
+                    window.location.href = response.redirect;
                 } else {
-                    this.setState({
-                        message: response.message
-                    });
+                    window.location.href = '/';
                 }
-            }); */
+            } else {
+                this.setState({
+                    message: response.message,
+                });
+            }
+        });
     }
 
     render() {

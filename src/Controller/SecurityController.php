@@ -30,14 +30,14 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="login")
+     * @Route("/login", name="app_login", methods={"GET", "POST"})
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('welcome');
         }
 
         // get the login error if there is one
