@@ -50,50 +50,38 @@ export class WelcomePage extends Component {
             <div className="welcome-page row">
                 <div className="col-12">
                     <div className="card">
-                        <div className="card-body text-center col-md-8 offset-md-2 mt-5 mb-5">
+                        <div className="card-body text-left col-md-8 offset-md-2 mt-5 mb-5">
                             <h1>Manage your data easily!</h1>
                             <p className="mt-3 mb-3">Welcome to Log-Explore. It look you does not
                                 setup your system. To start you can follow
                                 by</p>
-                            <div className="text-center">
-                                <Button className="mr-2"
-                                    data-toggle="collapse"
-                                    data-target="#collapseExample"
-                                    aria-expanded="false"
-                                    aria-controls="collapseExample"
-                                > Create a simple data </Button>
-                                <Button className="ml-2"
-                                    color="default"
-                                    onClick={() => {
-                                        window.location.href = '/table';
-                                    }}
-                                > Create table by yourself </Button>
-                            </div>
-                            <div className="collapse m-3 text-left" id="collapseExample">
-                                <p>To quickly create sample table and sample data just run there
-                                    commands:</p>
-                                {commandList.map((item, index) => {
-                                    return (
-                                        <pre key={index}>
+                            <h4>Command console</h4>
+                            <p>To quickly create sample table and sample data just run there
+                                commands:</p>
+                            {commandList.map((item, index) => {
+                                return (
+                                    <pre key={index}>
                                             <code id={item.id}
-                                                className="d-flex justify-content-between">
+                                                  className="d-flex justify-content-between">
                                                 <span className="mr-5 mr-md-0">{item.command}</span>
                                                 <a className="copy-icon float-right tooltipContent"
-                                                    onClick={e => this.copyToClipboard(e, item.command, item.id)}
-                                                    href="#"
+                                                   onClick={e => this.copyToClipboard(e, item.command, item.id)}
+                                                   href="#"
                                                 >
                                                     <span
                                                         className="tooltiptext p-2 text-center position-absolute">
                                                         {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
                                                     </span>
                                                     <Icon name="copy" type="regular"
-                                                        className="pr-3 pr-md-0"/>
+                                                          className="pr-3 pr-md-0"/>
                                                 </a>
                                             </code>
                                         </pre>
-                                    );
-                                })}
-                            </div>
+                                );
+                            })}
+
+                            <h4>Application</h4>
+                            <p>Or if you want to create table by yourself just click <a href="/table">here</a></p>
                         </div>
                     </div>
                 </div>
