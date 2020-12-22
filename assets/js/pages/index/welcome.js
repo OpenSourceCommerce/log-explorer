@@ -44,6 +44,9 @@ export class WelcomePage extends Component {
         }, {
             id: 'createSampleData',
             command: 'php bin/console app:createsampledata'
+        }, {
+            id: 'streamSampleData',
+            command: 'php bin/console app:streamsampledata'
         }];
 
         return (
@@ -55,28 +58,46 @@ export class WelcomePage extends Component {
                             <p className="mt-3 mb-3">Welcome to Log-Explore. It look you does not
                                 setup your system. To start you can follow
                                 by</p>
+                            <h4>Command to create user</h4>
+                            <p>First, to create your account please use this command</p>
+                            <pre>
+                                <code className={"d-flex justify-content-between"}>
+                                    <span className="mr-5 mr-md-0">php bin/console app:createuser</span>
+                                    <a className="copy-icon float-right tooltipContent"
+                                       onClick={e => this.copyToClipboard(e, 'php bin/console app:createuser', 'createuser')}
+                                       href="#"
+                                    >
+                                        <span
+                                            className="tooltiptext p-2 text-center position-absolute">
+                                            {this.state['createuser'] ? 'Copy Success' : 'Copy to Clipboard!'}
+                                        </span>
+                                        <Icon name="copy" type="regular"
+                                              className="pr-3 pr-md-0"/>
+                                    </a>
+                                </code>
+                            </pre>
                             <h4>Command console</h4>
                             <p>To quickly create sample table and sample data just run there
                                 commands:</p>
                             {commandList.map((item, index) => {
                                 return (
                                     <pre key={index}>
-                                            <code id={item.id}
-                                                  className="d-flex justify-content-between">
-                                                <span className="mr-5 mr-md-0">{item.command}</span>
-                                                <a className="copy-icon float-right tooltipContent"
-                                                   onClick={e => this.copyToClipboard(e, item.command, item.id)}
-                                                   href="#"
-                                                >
-                                                    <span
-                                                        className="tooltiptext p-2 text-center position-absolute">
-                                                        {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
-                                                    </span>
-                                                    <Icon name="copy" type="regular"
-                                                          className="pr-3 pr-md-0"/>
-                                                </a>
-                                            </code>
-                                        </pre>
+                                        <code id={item.id}
+                                            className="d-flex justify-content-between">
+                                            <span className="mr-5 mr-md-0">{item.command}</span>
+                                            <a className="copy-icon float-right tooltipContent"
+                                                onClick={e => this.copyToClipboard(e, item.command, item.id)}
+                                                href="#"
+                                            >
+                                                <span
+                                                    className="tooltiptext p-2 text-center position-absolute">
+                                                    {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
+                                                </span>
+                                                <Icon name="copy" type="regular"
+                                                    className="pr-3 pr-md-0"/>
+                                            </a>
+                                        </code>
+                                    </pre>
                                 );
                             })}
 
