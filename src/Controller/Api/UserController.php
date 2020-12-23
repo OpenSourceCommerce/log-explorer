@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Entity\UserToken;
+use App\Exceptions\ExpiredUserTokenException;
 use App\Form\PasswordType;
 use App\Form\UserType;
 use App\Services\User\UserServiceInterface;
@@ -97,14 +98,14 @@ class UserController extends ApiController
         UserServiceInterface $userService,
         UserTokenServiceInterface $userTokenService
     ): JsonResponse {
-        if ($userToken->getDeletedAt()) {
-            return $this->responseError('Invalid token');
+        if ($userTokenService->isInvalid($userToken)) {
+            return $this->responseError('Expired token');
         }
         $form = $this->createForm(PasswordType::class);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
-            $userTokenService->delete($userToken, false);
             $userService->setConfirmation($userToken->getUser(), $form->get('password')->getData());
+            $userTokenService->deleteOfUser($userToken->getUser());
             return $this->responseSuccess(['redirect' => '/']);
         }
         return $this->responseFormError($form);

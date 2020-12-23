@@ -24,7 +24,14 @@ interface UserTokenServiceInterface
 
     /**
      * @param User $user
+     * @param bool $flush
      * @return mixed
      */
-    public function deleteOfUser(User $user);
+    public function deleteOfUser(User $user, bool $flush = true);
+
+    /**
+     * @param UserToken $userToken
+     * @return bool
+     */
+    public function isInvalid(UserToken $userToken): bool;
 }
