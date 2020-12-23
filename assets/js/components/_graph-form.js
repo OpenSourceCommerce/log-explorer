@@ -199,7 +199,7 @@ export class GraphForm extends Component {
             const that = this;
             that.setState({
                 isLoading: true
-            })
+            });
             GraphActions.createOrUpdate(id, {
                 table: tableId,
                 title,
@@ -220,8 +220,8 @@ export class GraphForm extends Component {
             }).finally(() => {
                 that.setState({
                     isLoading: false
-                })
-            })
+                });
+            });
         }
     }
 

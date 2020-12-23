@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="app_login", methods={"GET", "POST"})
+     * @Route("/login", name="app_login")
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
      */
@@ -40,7 +40,6 @@ class SecurityController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('welcome');
         }
-
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -58,9 +57,10 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/password/forgot", name="forgot_password")
      * @return Response
      */
-    public function forgot()
+    public function forgot(): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('index');

@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { UserActions } from '../../actions';
+import {UserActions} from '../../actions';
+import {Input} from '../../components';
 
 export class LoginForm extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ export class LoginForm extends Component {
             password: '',
             remember: false,
             message: '',
-            hidePassword: true,
+            hidePassword: true
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,19 +20,19 @@ export class LoginForm extends Component {
     handleChange(e) {
         if (e.target.name === 'email') {
             this.setState({
-                email: e.target.value,
+                email: e.target.value
             });
         }
 
         if (e.target.name === 'password') {
             this.setState({
-                password: e.target.value,
+                password: e.target.value
             });
         }
 
         if (e.target.name === '_remember_me') {
             this.setState({
-                remember: e.target.checked,
+                remember: e.target.checked
             });
         }
     }
@@ -42,14 +43,14 @@ export class LoginForm extends Component {
         const {email, password, remember} = this.state;
         UserActions.login(email, password, remember).then(response => {
             if (response.error === 0) {
-                if (typeof response.redirect !== undefined) {
+                if (response.redirect) {
                     window.location.href = response.redirect;
                 } else {
                     window.location.href = '/';
                 }
             } else {
                 this.setState({
-                    message: response.message,
+                    message: response.message
                 });
             }
         });
@@ -68,13 +69,13 @@ export class LoginForm extends Component {
                 </div>
                 }
                 <div className="input-group mb-3">
-                    <input type="email" className="form-control"
-                           onChange={this.handleChange}
-                           name={'email'}
-                           value={email}
-                           required="required"
-                           autoFocus={true}
-                           placeholder="Email"/>
+                    <Input type="email"
+                        onChange={this.handleChange}
+                        name={'email'}
+                        value={email}
+                        required="required"
+                        autoFocus={true}
+                        placeholder="Email"/>
                     <div className="input-group-append">
                         <div className="input-group-text">
                             <span className="fas fa-envelope"/>
@@ -82,8 +83,10 @@ export class LoginForm extends Component {
                     </div>
                 </div>
                 <div className="input-group mb-3">
-                    <input type="password" className="form-control"
-                           placeholder="Password"/>
+                    <Input type="password"
+                        name={'password'}
+                        onChange={this.handleChange}
+                        placeholder="Password"/>
                     <div className="input-group-append">
                         <div className="input-group-text">
                             <span className="fas fa-lock"/>
@@ -93,7 +96,9 @@ export class LoginForm extends Component {
                 <div className="row">
                     <div className="col-8">
                         <div className="icheck-primary">
-                            <input type="checkbox" id="remember"/>
+                            <Input type="checkbox" id="remember"
+                                name={'_remember_me'}
+                                onChange={this.handleChange}/>
                             <label htmlFor="remember">
                                 Remember Me
                             </label>
@@ -101,7 +106,7 @@ export class LoginForm extends Component {
                     </div>
                     <div className="col-4">
                         <button type="submit"
-                                className="btn btn-primary btn-block">Sign In
+                            className="btn btn-primary btn-block">Sign In
                         </button>
                     </div>
                 </div>
@@ -114,5 +119,5 @@ LoginForm.propTypes = {
     message: PropTypes.string,
     email: PropTypes.string,
     remember: PropTypes.bool,
-    hidePassword: PropTypes.bool,
+    hidePassword: PropTypes.bool
 };

@@ -33,19 +33,19 @@ const UserActions = {
         });
     },
     changePassword: (oldPassword, password) => {
-        let jData = $.extend({
+        const jData = $.extend({
             _token: CsrfToken.getToken(),
-            oldPassword: oldPassword
+            oldPassword
         }, password);
         return request('/api/user/password', {
             method: 'post',
             body: JSON.stringify(jData)
         });
     },
-    forgot: (email) => {
-        let jData = {
+    forgot: email => {
+        const jData = {
             _token: CsrfToken.getToken(),
-            email: email
+            email
         };
         return request('/api/forgot', {
             method: 'post',
@@ -53,17 +53,17 @@ const UserActions = {
         });
     },
     login: (email, password, remember) => {
-        let jData = {
+        const jData = {
             _token: CsrfToken.getToken(),
-            email: email,
-            password: password,
+            email,
+            password,
             _remember_me: remember
         };
         return request('/login', {
             method: 'post',
             body: JSON.stringify(jData)
         });
-    },
+    }
 };
 
 export default UserActions;

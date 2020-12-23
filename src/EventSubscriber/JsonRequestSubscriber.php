@@ -14,8 +14,6 @@ class JsonRequestSubscriber implements EventSubscriberInterface
     public function convertJsonStringToArray(ControllerEvent $event): void
     {
         $request = $event->getRequest();
-        if($request->isMethod('post'))
-        dd($request, $request->isMethod('post'));
         if ($request->getContentType() != 'json' || !$request->getContent()) {
             return;
         }

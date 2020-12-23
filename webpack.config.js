@@ -56,6 +56,7 @@ Encore
 	.addEntry('content-header', './assets/js/components/_content-header.js')
 	.addEntry('welcome-page', './assets/js/pages/index/welcome.js')
 	.addEntry('page_login', './assets/js/pages/security/login.js')
+	.addEntry('page_forgot', './assets/js/pages/security/forgot.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
 

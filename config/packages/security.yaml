@@ -35,6 +35,7 @@ security:
     access_control:
         - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/password/forgot, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

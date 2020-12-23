@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" type="image/png" href="{{ asset('/build/app/favicon.ico') }}"/>
-    {% if app.request.get('_route') == 'login' %}
+    {% if app.request.get('_route') == 'app_login' %}
         <meta name="custom" content="{{ csrf_token('authenticate') }}">
     {% else %}
         <meta name="custom" content="{{ csrf_token(constant("App\\Constant\\CsrfTokenConstant::NAME")) }}">
@@ -22,7 +22,7 @@
 </head>
 <body class="hold-transition login-page">
 {% block body %}
-    <div id="root"></div>
+    <div id="root" data-forgot-password-link="{{ path('forgot_password') }}"></div>
 {% endblock %}
 {{ encore_entry_script_tags('app') }}
 {{ encore_entry_script_tags('page_login') }}

@@ -5,22 +5,29 @@ import {ForgotForm} from './_forgot-form';
 class Forgot extends Component {
     render() {
         return (
-            <div className="container-fluid p-0">
-                <h1 className="h3 mb-3">{'Forgot password'}</h1>
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card p-2 p-sm-3 p-lg-4">
-                            <div className="card-header form-center-w-600">
-                                {'Input your email to recovery password'}
-                            </div>
-                            <div className="card-body form-center-w-600">
-                                <ForgotForm/>
-                            </div>
-                        </div>
+            <div className="login-box">
+                <div className="login-logo">
+                    <a href="../../index2.html"><b>Admin</b>LTE</a>
+                </div>
+                <div className="card">
+                    <div className="card-body login-card-body">
+                        <p className="login-box-msg">You forgot your password? Here you can
+                            easily retrieve a new password.</p>
+
+                        <ForgotForm/>
+
+                        <p className="mt-3 mb-1">
+                            <a href="login.html">Login</a>
+                        </p>
+                        <p className="mb-0">
+                            <a href="register.html" className="text-center">Register a new
+                                membership</a>
+                        </p>
                     </div>
                 </div>
             </div>
         );
     }
 }
+
 ReactDOM.render(<Forgot/>, document.querySelector('#root'));

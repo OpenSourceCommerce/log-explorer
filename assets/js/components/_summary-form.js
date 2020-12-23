@@ -45,7 +45,7 @@ export class SummaryForm extends Component {
             const that = this;
             that.setState({
                 isLoading: true
-            })
+            });
             LogViewActions.setSummary(logViewUuid, {columns: summary})
                 .then(res => {
                     const {error} = res;
@@ -58,8 +58,8 @@ export class SummaryForm extends Component {
                 .finally(() => {
                     that.setState({
                         isLoading: false
-                    })
-                })
+                    });
+                });
         }
     }
 
