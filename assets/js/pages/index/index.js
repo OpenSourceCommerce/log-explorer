@@ -4,7 +4,6 @@ import {
     AdvancedSearch,
     Summary,
     FlotChart,
-    LogViewList,
     LogViewTable
 } from '../../components';
 import { Live, LogTableActions, Event, LogViewActions } from '../../actions';
@@ -162,19 +161,11 @@ class Index extends Component {
             <div className="dashboard-page container-fluid">
                 {logViews && logViews.length > 0 ? (
                     <>
-                        <div className="advanced-search col-12">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="row">
-                                        <LogViewList data={logViews}
-                                            selected={selectedTable}
-                                            onSelected={this.setSelectedTable}/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <AdvancedSearch
                             onDateRangeChanged={this.onDateRangeChanged}
+                            data={logViews}
+                            selected={selectedTable}
+                            onSelected={this.setSelectedTable}
                         />
                         <div className="row justify-content-start flex-md-wrap">
                             <div className="col-12 col-md-8">

@@ -61,22 +61,22 @@ export class WelcomePage extends Component {
                             {commandList.map((item, index) => {
                                 return (
                                     <pre key={index}>
-                                            <code id={item.id}
-                                                  className="d-flex justify-content-between">
-                                                <span className="mr-5 mr-md-0">{item.command}</span>
-                                                <a className="copy-icon float-right tooltipContent"
-                                                   onClick={e => this.copyToClipboard(e, item.command, item.id)}
-                                                   href="#"
-                                                >
-                                                    <span
-                                                        className="tooltiptext p-2 text-center position-absolute">
-                                                        {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
-                                                    </span>
-                                                    <Icon name="copy" type="regular"
-                                                          className="pr-3 pr-md-0"/>
-                                                </a>
-                                            </code>
-                                        </pre>
+                                        <code id={item.id}
+                                            className="d-flex justify-content-between">
+                                            <span className="mr-5 mr-md-0">{item.command}</span>
+                                            <a className="copy-icon float-right tooltipContent"
+                                                onClick={e => this.copyToClipboard(e, item.command, item.id)}
+                                                href="#"
+                                            >
+                                                <span
+                                                    className="tooltiptext p-2 text-center position-absolute">
+                                                    {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
+                                                </span>
+                                                <Icon name="copy" type="regular"
+                                                    className="pr-3 pr-md-0"/>
+                                            </a>
+                                        </code>
+                                    </pre>
                                 );
                             })}
 

@@ -1,16 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FilterDate, FilterText, Button} from '.';
+import {FilterDate, FilterText, Button, LogViewList} from '.';
 import '../../styles/component/_advanced-search.scss';
 import {Live} from '../actions';
 
 export class AdvancedSearch extends React.Component {
     render() {
-        const {onDateRangeChanged} = this.props;
+        const {
+            onDateRangeChanged,
+            ...otherProps
+        } = this.props;
         return (
             <div className="advanced-search">
                 <div className="card">
                     <div className="card-body">
+                        <LogViewList
+                            {...otherProps}
+                        />
                         <div className="row">
                             <div className="col-12 col-md-6">
                                 <FilterText
