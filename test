@@ -1,0 +1,36 @@
+#!/bin/bash
+
+echo "INIT ENV"
+cp .env.dist .env.test.local
+sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local
+sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/test/' .env.test.local
+sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/test/' .env.test.local
+sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local
+
+echo "COMPOSER INSTALL"
+composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader
+
+echo "CLEAR CACHE"
+php bin/console cache:clear --env="test"
+
+echo "MIGRATION"
+php bin/console doctrine:migrations:migrate --no-interaction --env="test"
+
+echo "NPM"
+npm install
+npm run build
+
+echo "FIXTURES"
+php bin/console doctrine:fixtures:load -n --env="test"
+
+echo "DROP OLD DATABASE TABLE IF EXIST"
+php bin/console app:deletesampledatabase --env="test"
+
+echo "CREATE DATABASE TABLE"
+php bin/console app:createsampledatabase --env="test"
+
+echo "CREATE TEST DATA"
+php bin/console app:createsampledata 300 --env="test"
+
+echo "RUN UNIT TEST"
+php bin/phpunit "$*"

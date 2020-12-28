@@ -128,4 +128,14 @@ class Connection implements ConnectionInterface
     {
         return $this->connection->getSchemaManager()->listTableNames();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropTableIfExist(string $table)
+    {
+        if ($this->tableExists($table)) {
+            $this->connection->getSchemaManager()->dropTable($table);
+        }
+    }
 }
