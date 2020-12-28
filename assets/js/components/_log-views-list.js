@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Icon} from './index';
+import {Icon} from '.';
 import '../../styles/component/_log-views-list.scss';
 
 export class LogViewList extends Component {
