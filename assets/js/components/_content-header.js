@@ -9,7 +9,7 @@ class ContentHeader extends Component {
         let title = '';
 
         if (splitUrl[1] !== 'welcome') {
-            title = splitUrl[1] && !PAGE_NAME[splitUrl[1]] ? PAGE_NAME.dashboard : PAGE_NAME[splitUrl[1]];
+            title = PAGE_NAME[splitUrl[1]] || PAGE_NAME.dashboard;
         }
 
         return (
