@@ -125,6 +125,9 @@ class UserController extends ApiController
         Request $request,
         UserServiceInterface $userService
     ): JsonResponse {
+        if ($user->getId() === $this->getUser()->getId()) {
+            return $this->responseError('Can not update your status by yourself');
+        }
         if ($request->request->has('is_active')) {
             $userService->setStatus($user, $request->request->get('is_active'));
             return $this->responseSuccess();

@@ -24,6 +24,7 @@ export class Sidebar extends Component {
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'}
             ];
         }
+
         return (
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
                 <Link className="brand-link" href={'/'}>

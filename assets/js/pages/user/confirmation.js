@@ -80,6 +80,9 @@ class UserConfirmationForm extends Component {
                             <div className="form-group">
                                 <label>Password</label>
                                 <Input type={'password'} className={passwordError ? 'is-invalid' : ''} required={true} name={'password'} placeholder="Password" value={password} onChange={this.onTextChange}/>
+                                <small className="form-text text-muted">Minimum eight characters, at
+                                    least one uppercase letter, one lowercase letter, one number and
+                                    one special character.</small>
                             </div>
                             <div className="form-group">
                                 <label>Repeat your password</label>
