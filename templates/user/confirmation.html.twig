@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('user_confirmation') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.token = "{{ token.token }}";
+    </script>
+    {{ encore_entry_script_tags('user_confirmation') }}
+{% endblock %}
+

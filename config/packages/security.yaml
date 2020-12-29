@@ -1,15 +1,28 @@
 security:
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            anonymous: ~
             lazy: true
-            provider: users_in_memory
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
+            logout:
+                path: app_logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -20,5 +33,21 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/password/forgot, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/password/forgot$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/password/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/password/reset$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/profile, roles: ROLE_USER }
+        - { path: ^/log-view, roles: ROLE_USER }
+        - { path: ^/api/logview, roles: ROLE_USER }
+        - { path: ^/api/stream, roles: ROLE_USER }
+        - { path: ^/logout, roles: ROLE_USER }
+        - { path: ^/api/user/password$, roles: ROLE_USER }
+        - { path: ^/*, roles: ROLE_ADMIN }
+

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('/build/app/favicon.ico') }}"/>
+    {% if app.request.get('_route') == 'app_login' %}
+        <meta name="custom" content="{{ csrf_token('authenticate') }}">
+    {% else %}
+        <meta name="custom" content="{{ csrf_token(constant("App\\Constant\\CsrfTokenConstant::NAME")) }}">
+    {% endif %}
+
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block head %}{% endblock %}
+    {{ encore_entry_link_tags('page_forgot') }}
+    {{ encore_entry_link_tags('app') }}
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body class="hold-transition login-page">
+{% block body %}
+    <div id="root" data-login-link="{{ path('app_login') }}"></div>
+{% endblock %}
+{{ encore_entry_script_tags('app') }}
+{{ encore_entry_script_tags('page_forgot') }}
+{% block javascripts %}
+{% endblock %}
+</body>
+</html>

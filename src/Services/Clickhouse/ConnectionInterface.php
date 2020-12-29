@@ -100,4 +100,9 @@ interface ConnectionInterface
      * @return string[]|array
      */
     public function getTables(): array;
+
+    /**
+     * @param string $table
+     */
+    public function dropTableIfExist(string $table);
 }

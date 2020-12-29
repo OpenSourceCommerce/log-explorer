@@ -25,6 +25,10 @@ export class LogViewTable extends Component {
         }
     }
 
+    componentDidMount() {
+        this.loadColumns();
+    }
+
     loadColumns() {
         const {selectedTable} = this.props;
 
@@ -41,9 +45,6 @@ export class LogViewTable extends Component {
             this.setState({
                 fields: data
             });
-        }).then(() => {
-            Live.refresh();
-            window.history.pushState('logview', selectedTable.name, '/' + selectedTable.uuid);
         });
     }
 

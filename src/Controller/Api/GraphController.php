@@ -9,8 +9,8 @@ use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 use App\Form\GraphType;
 use App\Services\Graph\GraphServiceInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,9 +19,9 @@ class GraphController extends ApiController
     /**
      * @Route("/api/graph", methods = "GET")
      * @param GraphServiceInterface $graphService
-     * @return Response
+     * @return JsonResponse
      */
-    public function list(GraphServiceInterface $graphService): Response
+    public function list(GraphServiceInterface $graphService): JsonResponse
     {
         $data = $graphService->getAllGraph();
         return $this->responseSuccess([
@@ -32,9 +32,9 @@ class GraphController extends ApiController
     /**
      * @Route("/api/graph/{id}", methods = "GET")
      * @param Graph $graph
-     * @return Response
+     * @return JsonResponse
      */
-    public function graph(Graph $graph): Response
+    public function graph(Graph $graph): JsonResponse
     {
         $data = $graph->jsonSerialize();
         $data['lines'] = $graph->getLines()->toArray();
@@ -48,9 +48,9 @@ class GraphController extends ApiController
      * @param Request $request
      * @param GraphServiceInterface $graphService
      * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
+     * @return JsonResponse
      */
-    public function create(Request $request, GraphServiceInterface $graphService, UrlGeneratorInterface $urlGenerator): Response
+    public function create(Request $request, GraphServiceInterface $graphService, UrlGeneratorInterface $urlGenerator): JsonResponse
     {
         $data = $request->request->all();
         $form = $this->createForm(GraphType::class);
@@ -79,10 +79,9 @@ class GraphController extends ApiController
      * @param Graph $graph
      * @param Request $request
      * @param GraphServiceInterface $graphService
-     * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
+     * @return JsonResponse
      */
-    public function update(Graph $graph, Request $request, GraphServiceInterface $graphService, UrlGeneratorInterface $urlGenerator): Response
+    public function update(Graph $graph, Request $request, GraphServiceInterface $graphService): JsonResponse
     {
         $data = $request->request->all();
         $form = $this->createForm(GraphType::class, $graph);
@@ -108,9 +107,9 @@ class GraphController extends ApiController
      * @Route("/api/graph/{id}", methods = "DELETE")
      * @param Graph $graph
      * @param GraphServiceInterface $graphService
-     * @return Response
+     * @return JsonResponse
      */
-    public function delete(Graph $graph, GraphServiceInterface $graphService): Response
+    public function delete(Graph $graph, GraphServiceInterface $graphService): JsonResponse
     {
         if ($graph->getLogView()) {
             $this->responseError('Can not delete graph of log view');

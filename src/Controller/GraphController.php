@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GraphController extends AbstractController
 {
     /**
-     * @Route("/graph", name="graph")
+     * @Route("/graph", priority=10, name="graph")
      */
     public function index(): Response
     {

@@ -13,6 +13,28 @@
 ## Start
 - Open `http://localhost/`
 
+## Create user
+- Command to create user
+
+`php bin/console app:createuser <email>`
+```
+Description:
+  This command used to create system user
+
+Usage:
+  app:createuser [options] [--] <email>
+
+Arguments:
+  email                      User email
+
+Options:
+  -p, --password=PASSWORD    User password
+  -f, --firstname=FIRSTNAME  User first name
+  -l, --lastname=LASTNAME    User last name
+      --user                 Create normal user, default is ADMIN
+  -h, --help                 Display this help message
+```
+
 ## Sample data
 - Command to create sample table
 

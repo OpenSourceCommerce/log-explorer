@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DatabaseController extends AbstractController
 {
     /**
-     * @Route("/table", name="database")
+     * @Route("/table", priority=10, name="database")
      */
     public function index(): Response
     {

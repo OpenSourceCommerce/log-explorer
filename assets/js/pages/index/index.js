@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {
     AdvancedSearch,
@@ -6,7 +6,7 @@ import {
     FlotChart,
     LogViewTable
 } from '../../components';
-import { Live, LogTableActions, Event, LogViewActions } from '../../actions';
+import {Live, LogTableActions, Event, LogViewActions} from '../../actions';
 import '../../../styles/pages/index.scss';
 
 class Index extends Component {
@@ -48,7 +48,7 @@ class Index extends Component {
             });
         }).then(() => {
             Live.refresh();
-            window.history.pushState('logview', selectedTable.name, '/' + selectedTable.uuid);
+            window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
         });
     }
 
