@@ -11,7 +11,7 @@ class ResetPassword extends Component {
             <>
                 <div className="login-box">
                     <div className="login-logo">
-                        <a href="/"><b>Admin</b>LTE</a>
+                        <a href="/"><b>Log</b>Explorer</a>
                     </div>
                     <div className="card">
                         <div className="card-body login-card-body">
@@ -22,10 +22,10 @@ class ResetPassword extends Component {
                             <p className="mb-1">
                                 <a href={loginLink}>Login</a>
                             </p>
-                            <p className="mb-0">
+                            {/* <p className="mb-0">
                                 <a href="register.html" className="text-center">Register a new
                                     membership</a>
-                            </p>
+                            </p> */}
                         </div>
                     </div>
                 </div>
