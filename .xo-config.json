@@ -23,6 +23,7 @@
     "no-unused-vars": 0,
     "camelcase": 0,
     "radix": 0,
-    "eqeqeq": 0
+    "eqeqeq": 0,
+    "prefer-regex-literals": 0
   }
 }

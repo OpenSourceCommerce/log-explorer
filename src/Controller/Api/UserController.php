@@ -5,12 +5,14 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Entity\UserToken;
 use App\Exceptions\ExpiredUserTokenException;
+use App\Form\ChangePasswordFormType;
 use App\Form\PasswordType;
 use App\Form\UserType;
 use App\Services\User\UserServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -175,6 +177,27 @@ class UserController extends ApiController
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $userService->updateUser($form->getData());
+            return $this->responseSuccess();
+        }
+        return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/user/password", name="api_change_password")
+     * Create new user
+     * @param Request $request
+     * @param UserServiceInterface $userService
+     * @return Response
+     */
+    public function password(Request $request, UserServiceInterface $userService)
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(ChangePasswordFormType::class);
+        $form->handleRequest($request);
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $userService->setPassword($user, $form->get('password')->getData());
             return $this->responseSuccess();
         }
         return $this->responseFormError($form);

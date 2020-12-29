@@ -68,4 +68,15 @@ class UserController extends AbstractController
             'user' => $this->getUser(),
         ]);
     }
+
+    /**
+     * @Route("/profile/change-password", name="user_change_password")
+     * @return Response
+     */
+    public function changePassword(): Response
+    {
+        return $this->render('user/change_password.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
 }

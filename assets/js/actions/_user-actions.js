@@ -33,10 +33,11 @@ const UserActions = {
         });
     },
     changePassword: (oldPassword, password) => {
-        const jData = $.extend({
+        const jData = {
             _token: CsrfToken.getToken(),
-            oldPassword
-        }, password);
+            oldPassword,
+            password
+        };
         return request('/api/user/password', {
             method: 'post',
             body: JSON.stringify(jData)

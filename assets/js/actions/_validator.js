@@ -19,10 +19,10 @@ const ValidatorHelper = {
             rules,
             messages: message,
             // Errors
-            errorPlacement: function errorPlacement(error, element) {
+            errorPlacement(error, element) {
                 const $parent = $(element).parents('.form-group');
                 // Do not duplicate errors
-                if ($parent.find('.jquery-validation-error').length) {
+                if ($parent.find('.jquery-validation-error').length > 0) {
                     return;
                 }
 
