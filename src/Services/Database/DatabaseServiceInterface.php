@@ -35,4 +35,9 @@ interface DatabaseServiceInterface
      * @throws ActionDeniedException
      */
     public function updateTable(Table $table, string $name, array $columns): Table;
+
+    /**
+     * @param string $name
+     */
+    public function dropTableIfExist(string $name);
 }

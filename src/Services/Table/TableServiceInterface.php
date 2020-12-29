@@ -31,4 +31,10 @@ interface TableServiceInterface
      * @return Table[]|array
      */
     public function getAllTable(): array;
+
+    /**
+     * @param array $tables
+     * @return Table[]|array
+     */
+    public function getTableNotIn(array $tables): array;
 }
