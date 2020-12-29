@@ -6,16 +6,24 @@ import PropTypes from 'prop-types';
 
 export class Sidebar extends Component {
     render() {
-        const navList = [
-            {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
-            {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
-            {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
-            {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
-        ];
-
-        const {username, userimage} = this.props;
+        const {username, userimage, role} = this.props;
         const featureName = window.location.pathname.split('/');
-
+        let navList;
+        if (role === 'guest') {
+            navList = [];
+        } else if (role === 'user') {
+            navList = [
+                {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
+                {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
+            ];
+        } else {
+            navList = [
+                {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
+                {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
+                {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
+                {href: 'user', type: 'solid', iconName: 'users', label: 'Users'}
+            ];
+        }
         return (
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
                 <Link className="brand-link" href={'/'}>
@@ -62,7 +70,8 @@ export class Sidebar extends Component {
 }
 Sidebar.propTypes = {
     userimage: PropTypes.string,
-    username: PropTypes.string
+    username: PropTypes.string,
+    role: PropTypes.string
 };
 
 const root = document.querySelector('#sidebar');

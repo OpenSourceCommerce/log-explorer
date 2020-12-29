@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Input, Button, Text } from '../../components';
-import { Alert, UserActions, ValidatorHelper } from '../../actions';
+import {Input, Button, Text} from '../../components';
+import {Alert, UserActions, ValidatorHelper} from '../../actions';
 
 class ChangePasswordForm extends Component {
     constructor(props) {
@@ -10,7 +10,7 @@ class ChangePasswordForm extends Component {
         this.state = {
             current_password: '',
             password: '',
-            confirm_password: '',
+            confirm_password: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -19,7 +19,7 @@ class ChangePasswordForm extends Component {
     loadUser() {
         const that = this;
         this.setState({
-            isLoading: true,
+            isLoading: true
         });
         UserActions.getProfile().then(res => {
             const {error, data} = res;
@@ -35,13 +35,13 @@ class ChangePasswordForm extends Component {
                 email,
                 isLoading: false,
                 firstNameError: false,
-                lastNameError: false,
+                lastNameError: false
             });
         });
     }
 
     componentDidMount() {
-        // this.loadUser();
+        // This.loadUser();
         this.initValidator();
     }
 
@@ -53,12 +53,12 @@ class ChangePasswordForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        let hasError = false;
-        let {current_password, password} = this.state;
+        const hasError = false;
+        const {current_password, password} = this.state;
 
         if (!hasError) {
             this.setState({
-                isLoading: true,
+                isLoading: true
             });
             const that = this;
             UserActions.changePassword(current_password, password).then(res => {
@@ -73,7 +73,7 @@ class ChangePasswordForm extends Component {
                     isLoading: false,
                     current_password: '',
                     password: '',
-                    confirm_password: '',
+                    confirm_password: ''
                 });
             });
         }
@@ -90,17 +90,17 @@ class ChangePasswordForm extends Component {
             current_password: {
                 required: true,
                 passwordCapitalCharacters: true,
-                minlength: 8,
+                minlength: 8
             },
             password: {
                 required: true,
                 passwordCapitalCharacters: true,
-                minlength: 8,
+                minlength: 8
             },
             confirm_password: {
                 required: true,
-                equalTo: '#password',
-            },
+                equalTo: '#password'
+            }
         };
     }
 
@@ -122,21 +122,21 @@ class ChangePasswordForm extends Component {
                             <div className="form-group">
                                 <label>Current Password</label>
                                 <Input type={'password'}
-                                       required={true}
-                                       name={'current_password'}
-                                       id={'current_password'}
-                                       value={current_password}
-                                       placeholder="Current Password"
-                                       onChange={this.handleChange}/>
+                                    required={true}
+                                    name={'current_password'}
+                                    id={'current_password'}
+                                    value={current_password}
+                                    placeholder="Current Password"
+                                    onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
                                 <label>New Password</label>
                                 <Input type={'password'}
-                                       required={true}
-                                       name={'password'}
-                                       id={'password'}
-                                       value={password}
-                                       placeholder="Current Password" onChange={this.handleChange}/>
+                                    required={true}
+                                    name={'password'}
+                                    id={'password'}
+                                    value={password}
+                                    placeholder="Current Password" onChange={this.handleChange}/>
                                 <small className="form-text text-muted">Minimum eight characters, at
                                     least one uppercase letter, one lowercase letter, one number and
                                     one special character.</small>
@@ -144,14 +144,14 @@ class ChangePasswordForm extends Component {
                             <div className="form-group">
                                 <label>Confirm New Password</label>
                                 <Input type={'password'}
-                                       name={'confirm_password'}
-                                       id={'confirm_password'}
-                                       value={confirm_password}
-                                       placeholder="Current Password"
-                                       onChange={this.handleChange}/>
+                                    name={'confirm_password'}
+                                    id={'confirm_password'}
+                                    value={confirm_password}
+                                    placeholder="Current Password"
+                                    onChange={this.handleChange}/>
                             </div>
                             <Button type={'submit'} className="float-right" color={'success'}
-                                    isLoading={isLoading}>
+                                isLoading={isLoading}>
                                 Update
                             </Button>
                         </form>

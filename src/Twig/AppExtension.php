@@ -3,6 +3,7 @@
 
 namespace App\Twig;
 
+use App\Entity\User;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
@@ -40,6 +41,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('appVersion', [$this, 'appVersion']),
             new TwigFunction('username', [$this, 'username']),
             new TwigFunction('userImage', [$this, 'userImage']),
+            new TwigFunction('userRole', [$this, 'userRole']),
         ];
     }
 
@@ -48,7 +50,7 @@ class AppExtension extends AbstractExtension
         return $this->parameterBag->get('app.version');
     }
 
-    public function username()
+    public function username(): string
     {
         $user = $this->security->getUser();
         if (empty($user)) {
@@ -57,7 +59,7 @@ class AppExtension extends AbstractExtension
         return $user->getFirstName().' '.$user->getLastName();
     }
 
-    public function userImage()
+    public function userImage(): string
     {
         $user = $this->security->getUser();
         $email = (!empty($user)) ? $user->getUsername() : '';
@@ -67,5 +69,18 @@ class AppExtension extends AbstractExtension
         $size = 40;
 
         return "{$url}/{$email}?s={$size}&d={$default}";
+    }
+
+    public function userRole(): string
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (empty($user)) {
+            return 'guest';
+        } elseif ($user->isAdmin()) {
+            return 'admin';
+        } else {
+            return 'user';
+        }
     }
 }
