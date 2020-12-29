@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Services\Mailer\MailerServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -31,14 +32,29 @@ class UserService implements UserServiceInterface
     private $mailerService;
     /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
+    /**
+     * @var ParameterBagInterface
+     */
+    private $parameterBag;
 
+    /**
+     * UserService constructor.
+     * @param EntityManagerInterface $em
+     * @param UserTokenServiceInterface $userTokenService
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param EventDispatcherInterface $dispatcher
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param MailerServiceInterface $mailerService
+     * @param ParameterBagInterface $parameterBag
+     */
     public function __construct(
         EntityManagerInterface $em,
         UserTokenServiceInterface $userTokenService,
         UserPasswordEncoderInterface $passwordEncoder,
         EventDispatcherInterface $dispatcher,
         UrlGeneratorInterface $urlGenerator,
-        MailerServiceInterface $mailerService
+        MailerServiceInterface $mailerService,
+        ParameterBagInterface $parameterBag
     ) {
         $this->em = $em;
         $this->userTokenService = $userTokenService;
@@ -46,6 +62,7 @@ class UserService implements UserServiceInterface
         $this->dispatcher = $dispatcher;
         $this->urlGenerator = $urlGenerator;
         $this->mailerService = $mailerService;
+        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -179,6 +196,7 @@ class UserService implements UserServiceInterface
         $data = [
             'firstName' => $user->getFirstname(),
             'resetUrl' => $resetUrl,
+            'email_support' => $this->parameterBag->get('app.email.support')
         ];
         $this->mailerService->sendResetPasswordEmail($user->getEmail(), $data);
     }

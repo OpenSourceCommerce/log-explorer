@@ -44,3 +44,7 @@ services:
         class: 'App\Services\Clickhouse\Connection'
         arguments:
             $connection: '@doctrine.dbal.clickhouse_connection'
+
+    App\EventListeners\UserForgotPasswordListener:
+        tags:
+            - { name: kernel.event_listener, event: user.forgot }
