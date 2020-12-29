@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { UserActions } from '../../actions';
-import { Input, Button, Colors } from '../../components';
+import React, {Component} from 'react';
+import {UserActions} from '../../actions';
+import {Input, Button, Colors} from '../../components';
 
 export class ForgotForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             email: '',
-            emailError: '',
+            emailError: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -16,7 +16,7 @@ export class ForgotForm extends Component {
     handleChange(e) {
         if (e.target.name === 'email') {
             this.setState({
-                email: e.target.value,
+                email: e.target.value
             });
         }
     }
@@ -29,7 +29,7 @@ export class ForgotForm extends Component {
                 this.reset();
             } else {
                 this.setState({
-                    emailError: response.fields.email,
+                    emailError: response.fields.email
                 });
             }
         });
@@ -38,7 +38,7 @@ export class ForgotForm extends Component {
     reset() {
         this.setState({
             email: '',
-            emailError: '',
+            emailError: ''
         });
         $('#email').focus();
     }
@@ -55,17 +55,17 @@ export class ForgotForm extends Component {
                 }
                 <div className="form-group">
                     <Input type="email"
-                           id="email"
-                           name="email"
-                           value={this.state.email}
-                           onChange={this.handleChange}
-                           required="required"
-                           autoFocus={true}
-                           placeholder={'Enter your email'}/>
+                        id="email"
+                        name="email"
+                        value={this.state.email}
+                        onChange={this.handleChange}
+                        required="required"
+                        autoFocus={true}
+                        placeholder={'Enter your email'}/>
                 </div>
                 <div className="mt-3">
                     <Button type="submit" className={'btn-block'}
-                            color={Colors.blue}>{'Reset'}</Button>
+                        color={Colors.blue}>{'Reset'}</Button>
                 </div>
             </form>
         );

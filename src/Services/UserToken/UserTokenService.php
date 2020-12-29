@@ -7,6 +7,7 @@ namespace App\Services\UserToken;
 use App\Entity\User;
 use App\Entity\UserToken;
 use App\Repository\UserTokenRepository;
+use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -71,5 +72,26 @@ class UserTokenService implements UserTokenServiceInterface
     public function deleteOfUser(User $user)
     {
         return $this->getRepository()->deleteOfUser($user);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByToken(string $token): ?UserToken
+    {
+        return $this->getRepository()->findByToken($token);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isValidateDate(DateTimeInterface $date, $tokenExpiration): bool
+    {
+        if (empty($expiration)) {
+            // empty expiration mean no limited
+            return true;
+        }
+        $validTo = strtotime($date->format('Y-m-d H:i:s').' '.$expiration);
+        return $validTo >= time();
     }
 }

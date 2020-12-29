@@ -47,7 +47,18 @@ const UserActions = {
             _token: CsrfToken.getToken(),
             email
         };
-        return request('/api/forgot', {
+        return request('/api/password/forgot', {
+            method: 'post',
+            body: JSON.stringify(jData)
+        });
+    },
+    setPassword: (password, token) => {
+        const jData = {
+            _token: CsrfToken.getToken(),
+            token,
+            password
+        };
+        return request('/api/password/reset', {
             method: 'post',
             body: JSON.stringify(jData)
         });

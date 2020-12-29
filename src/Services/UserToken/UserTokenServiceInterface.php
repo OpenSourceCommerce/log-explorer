@@ -6,6 +6,7 @@ namespace App\Services\UserToken;
 
 use App\Entity\User;
 use App\Entity\UserToken;
+use DateTimeInterface;
 
 interface UserTokenServiceInterface
 {
@@ -27,4 +28,18 @@ interface UserTokenServiceInterface
      * @return mixed
      */
     public function deleteOfUser(User $user);
+
+    /**
+     * Find UserToken by token
+     * @param string $token
+     * @return UserToken|null
+     */
+    public function findByToken(string $token): ?UserToken;
+
+    /**
+     * @param DateTimeInterface $date
+     * @param $tokenExpiration
+     * @return bool
+     */
+    public function isValidateDate(DateTimeInterface $date, $tokenExpiration): bool;
 }

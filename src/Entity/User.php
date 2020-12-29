@@ -88,7 +88,11 @@ class User implements UserInterface, JsonSerializable
 
     public function getRoles(): ?array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = RoleConstant::USER;
+
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self

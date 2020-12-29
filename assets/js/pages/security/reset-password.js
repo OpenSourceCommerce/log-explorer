@@ -1,26 +1,43 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {ResetPasswordForm} from './_reset-password-form';
+import PropTypes from 'prop-types';
 
 class ResetPassword extends Component {
     render() {
+        const {loginLink, token} = this.props;
+
         return (
-            <div className="container-fluid p-0">
-                <h1 className="h3 mb-3">{'Reset password'}</h1>
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card p-2 p-sm-3 p-lg-4">
-                            <div className="card-header form-center-w-600">
-                                {'Input your new password'}
-                            </div>
-                            <div className="card-body form-center-w-600">
-                                <ResetPasswordForm/>
-                            </div>
+            <>
+                <div className="login-box">
+                    <div className="login-logo">
+                        <a href="/"><b>Admin</b>LTE</a>
+                    </div>
+                    <div className="card">
+                        <div className="card-body login-card-body">
+                            <p className="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
+
+                            <ResetPasswordForm token={token}/>
+
+                            <p className="mb-1">
+                                <a href={loginLink}>Login</a>
+                            </p>
+                            <p className="mb-0">
+                                <a href="register.html" className="text-center">Register a new
+                                    membership</a>
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 }
-ReactDOM.render(<ResetPassword/>, document.querySelector('#root'));
+
+ResetPassword.propTypes = {
+    loginLink: PropTypes.string,
+    token: PropTypes.string.isRequired
+};
+
+const root = document.querySelector('#root');
+ReactDOM.render(<ResetPassword {...root.dataset}/>, root);

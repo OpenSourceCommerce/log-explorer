@@ -70,6 +70,7 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/password/reset/{token}", name="reset_password")
      * @param UserToken $userToken
      * @param ContainerBagInterface $containerBag
      * @param UserTokenServiceInterface $userTokenService

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use App\Entity\UserToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,5 +29,19 @@ class UserTokenRepository extends ServiceEntityRepository
             ->delete()
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param string $token
+     * @return UserToken|null
+     * @throws NonUniqueResultException
+     */
+    public function findByToken(string $token): ?UserToken
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

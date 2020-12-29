@@ -147,10 +147,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $email
-     * @return User
+     * @inheritDoc
      */
-    public function findByEmail(string $email): User
+    public function findByEmail(string $email): ?User
     {
         return $this->getRepository()->findOneBy(['email' => $email]);
     }
@@ -160,7 +159,7 @@ class UserService implements UserServiceInterface
      */
     public function forgotPassword(User $user)
     {
-        $token = $this->userTokenService->create($user);
+        $token = $this->userTokenService->createToken($user);
         $user->addUserToken($token);
         $this->em->persist($token);
         $this->save($user);
