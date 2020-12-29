@@ -20,7 +20,6 @@ class UserToken
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userTokens",cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
@@ -33,11 +32,6 @@ class UserToken
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
-
-    /**
-     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
-     */
-    private $deletedAt;
 
     public function getId(): ?int
     {
@@ -81,18 +75,6 @@ class UserToken
         if (empty($this->createdAt)) {
             $this->createdAt = new \DateTime();
         }
-
-        return $this;
-    }
-
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
-
-    public function setDeletedAt(): self
-    {
-        $this->deletedAt = new \DateTime();
 
         return $this;
     }

@@ -49,7 +49,7 @@ class Index extends Component {
             });
         }).then(() => {
             Live.refresh();
-            window.history.pushState('logview', selectedTable.name, '/' + selectedTable.uuid);
+            window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
         });
     }
 

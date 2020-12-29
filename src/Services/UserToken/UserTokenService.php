@@ -51,7 +51,7 @@ class UserTokenService implements UserTokenServiceInterface
 
     private function generateToken(User $user): string
     {
-        return hash_hmac('sha1', $user->getEmail() . '|' . $user->getFirstName() . '|' . $user->getLastName(), $this->parameterBag->get('app.secret'));
+        return hash_hmac('sha1', $user->getEmail() . '|' . $user->getFirstName() . '|' . $user->getLastName().time(), $this->parameterBag->get('app.secret'));
     }
 
     /**
@@ -59,8 +59,7 @@ class UserTokenService implements UserTokenServiceInterface
      */
     public function delete(UserToken $token, bool $flush = true)
     {
-        $token->setDeletedAt();
-        $this->em->persist($token);
+        $this->em->remove($token);
         if ($flush) {
             $this->em->flush();
         }
@@ -69,9 +68,30 @@ class UserTokenService implements UserTokenServiceInterface
     /**
      * @inheritDoc
      */
-    public function deleteOfUser(User $user)
+    public function deleteOfUser(User $user, bool $flush = true)
     {
-        return $this->getRepository()->deleteOfUser($user);
+        foreach ($user->getUserTokens() as $token) {
+            $this->delete($token, false);
+        }
+        if ($flush) {
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isInvalid(UserToken $userToken): bool
+    {
+        $created = $userToken->getCreatedAt();
+        $expiration = $this->parameterBag->get('app.user.token.expiration');
+        if (empty($expiration)) {
+            return true;
+        }
+        $now = new \DateTime();
+        $diff = $created->diff($now);
+        $minutes = $diff->days * 24 * 60 + $diff->h * 60 + $diff->i + ($diff->s > 0 ? 1 : 0);
+        return $minutes > $expiration;
     }
 
     /**

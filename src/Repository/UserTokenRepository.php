@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\UserToken;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;

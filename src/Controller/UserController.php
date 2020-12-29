@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\UserToken;
+use App\Exceptions\ExpiredUserTokenException;
+use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -43,12 +45,13 @@ class UserController extends AbstractController
     /**
      * @Route("/confirmation/{token}", name="user_confirmation", methods = "GET")
      * @param UserToken $userToken
+     * @param UserTokenServiceInterface $userTokenService
      * @return Response
      */
-    public function confirmation(UserToken $userToken): Response
+    public function confirmation(UserToken $userToken, UserTokenServiceInterface $userTokenService): Response
     {
-        if ($userToken->getDeletedAt()) {
-            throw new NotFoundHttpException();
+        if ($userTokenService->isInvalid($userToken)) {
+            throw new ExpiredUserTokenException();
         }
         return $this->render('user/confirmation.html.twig', [
             'token' => $userToken,

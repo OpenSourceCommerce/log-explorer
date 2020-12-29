@@ -90,7 +90,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         }
 
         if (!$user->getIsConfirmed()) {
-            $event = new UnactivatedUserEvent($user->getUserTokens()->first());
+            $event = new UnactivatedUserEvent($user);
             $this->dispatcher->dispatch($event, UnactivatedUserEvent::UNACTIVATED_USER_LOGIN);
             throw new CustomUserMessageAuthenticationException('Your account does not completed activation, please recheck your email to activate first.');
         }

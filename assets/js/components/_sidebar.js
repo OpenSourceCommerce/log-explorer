@@ -2,15 +2,18 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Text, Link, Image, Icon} from '.';
 import Logo from '../../images/logo.svg';
-import userImage from '../../images/user1-128x128.jpg';
+import PropTypes from 'prop-types';
 
 export class Sidebar extends Component {
     render() {
         const navList = [
             {href: '', type: 'regular', iconName: 'circle', label: 'Dashboard'},
-            {href: 'table', type: 'solid', iconName: 'database', label: 'Database'}
+            {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
+            {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
+            {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
         ];
 
+        const {username, userimage} = this.props;
         const featureName = window.location.pathname.split('/');
 
         return (
@@ -27,11 +30,11 @@ export class Sidebar extends Component {
                 <div className="sidebar">
                     <div className="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div className="image">
-                            <Image src={userImage} className="img-circle elevation-2"
-                                alt="User Image"/>
+                            <Image src={userimage} className="img-circle elevation-2"
+                                alt={username}/>
                         </div>
                         <div className="info">
-                            <Link className={'d-block'}>Alexander Pierce</Link>
+                            <Link className={'d-block'}> { username }</Link>
                         </div>
                     </div>
 
@@ -57,5 +60,10 @@ export class Sidebar extends Component {
         );
     }
 }
+Sidebar.propTypes = {
+    userimage: PropTypes.string,
+    username: PropTypes.string
+};
 
-ReactDOM.render(<Sidebar/>, document.querySelector('#sidebar'));
+const root = document.querySelector('#sidebar');
+ReactDOM.render(<Sidebar {...(root.dataset)}/>, root);
