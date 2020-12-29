@@ -25,6 +25,10 @@ export class LogViewTable extends Component {
         }
     }
 
+    componentDidMount() {
+        this.loadColumns();
+    }
+
     loadColumns() {
         const {selectedTable} = this.props;
 
