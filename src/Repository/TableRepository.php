@@ -30,32 +30,12 @@ class TableRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    // /**
-    //  * @return Tables[] Returns an array of Tables objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getTableNotIn(array $tables)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+        $builder = $this->createQueryBuilder('t');
+        return $builder
+            ->where($builder->expr()->notIn('t.name', $tables))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Tables
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

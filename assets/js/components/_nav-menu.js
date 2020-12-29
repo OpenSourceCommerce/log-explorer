@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {NavMenuItem} from '.';
+// Import {NavMenuItem} from '.';
 
 export class NavMenu extends Component {
     render() {
@@ -12,8 +12,8 @@ export class NavMenu extends Component {
                         />
                     </a>
                 </li>
-                <NavMenuItem title="Home" link="https://google.com.vn" />
-                <NavMenuItem title="Contact" />
+                {/* <NavMenuItem title="Home" link="https://google.com.vn" /> */}
+                {/* <NavMenuItem title="Contact" /> */}
             </ul>
         );
     }

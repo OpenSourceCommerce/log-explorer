@@ -26,6 +26,7 @@ abstract class ApiController extends AbstractController
             /** @var FormError $error */
             $errors['fields'][$error->getOrigin()->getName()] = $error->getMessage();
         }
+        $errors['message'] = implode("\n", $errors['fields']);
         return $this->responseError($errors);
     }
 

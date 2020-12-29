@@ -19,7 +19,8 @@ export class GraphForm extends Component {
             tables: [],
             tableError: false,
             titleError: false,
-            maxPointError: false
+            maxPointError: false,
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.onTitleChange = this.onTitleChange.bind(this);
@@ -196,6 +197,9 @@ export class GraphForm extends Component {
 
         if (!hasError) {
             const that = this;
+            that.setState({
+                isLoading: true
+            });
             GraphActions.createOrUpdate(id, {
                 table: tableId,
                 title,
@@ -213,13 +217,17 @@ export class GraphForm extends Component {
                     Alert.success('Update successful');
                     that.loadData(id);
                 }
+            }).finally(() => {
+                that.setState({
+                    isLoading: false
+                });
             });
         }
     }
 
     render() {
         const {className} = this.props;
-        const {id, table, tableId, tables, title, maxPoint, lines, tableError, titleError, maxPointError} = this.state;
+        const {id, table, tableId, tables, title, maxPoint, lines, tableError, titleError, maxPointError, isLoading} = this.state;
 
         const _lines = lines.map((item, key) => {
             return <div key={key} className="form-group">
@@ -277,7 +285,7 @@ export class GraphForm extends Component {
                 {_lines}
 
                 <div className="box-footer">
-                    <Button color={'success'} onClick={this.onSubmit} >{id ? 'Update graph' : 'Create graph'}</Button>
+                    <Button color={'success'} onClick={this.onSubmit} isLoading={isLoading}>{id ? 'Update graph' : 'Create graph'}</Button>
                     <Button color={'primary'} className={'ml-3'} onClick={this.addMoreLine} >Add more line</Button>
                 </div>
             </div>

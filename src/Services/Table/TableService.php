@@ -68,4 +68,12 @@ class TableService implements TableServiceInterface
     {
         return $this->getRepository()->findAll();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTableNotIn(array $tables): array
+    {
+        return $this->getRepository()->getTableNotIn($tables);
+    }
 }

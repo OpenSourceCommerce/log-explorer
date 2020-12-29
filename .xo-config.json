@@ -22,6 +22,8 @@
     "react/no-unescaped-entities": 0,
     "no-unused-vars": 0,
     "camelcase": 0,
-    "radix": 0
+    "radix": 0,
+    "eqeqeq": 0,
+    "prefer-regex-literals": 0
   }
 }
