@@ -151,6 +151,20 @@ class DatabaseService implements DatabaseServiceInterface
         foreach ($tables as $table) {
             $this->syncTable($table);
         }
+        $notExistTables = $this->tableService->getTableNotIn($tables);
+        foreach ($notExistTables as $table) {
+            $this->deleteTable($table);
+        }
+    }
+
+    private function deleteTable(Table $table)
+    {
+        foreach ($table->getColumns() as $column) {
+            $this->columnService->remove($column, false);
+            $table->removeColumn($column);
+        }
+        $this->em->remove($table);
+        $this->em->flush();
     }
 
     /**
@@ -271,5 +285,17 @@ ORDER BY timestamp\n";
             }
         }
         return $table;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropTableIfExist(string $name)
+    {
+        $this->connection->dropTableIfExist($name);
+        if ($this->tableService->isTableExist($name)) {
+            $table = $this->tableService->getTableByName($name);
+            $this->deleteTable($table);
+        }
     }
 }
