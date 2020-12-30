@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\LogViewRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -36,19 +34,17 @@ class LogView implements \JsonSerializable
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity=Table::class, inversedBy="logView", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="table_id", nullable=false)
+     * @ORM\Column(name="table_name", type="string", length=255)
      */
     private $table;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Column::class)
-     * @ORM\JoinTable(name="logview_summary")
+     * @ORM\Column(type="json")
      */
     private $summary;
 
     /**
-     * @ORM\OneToMany(targetEntity=LogViewColumn::class, mappedBy="logView")
+     * @ORM\Column(type="json")
      */
     private $logViewColumns;
 
@@ -60,9 +56,9 @@ class LogView implements \JsonSerializable
 
     public function __construct()
     {
-        $this->summary = new ArrayCollection();
         $this->uuid = Uuid::uuid4();
-        $this->logViewColumns = new ArrayCollection();
+        $this->summary = [];
+        $this->logViewColumns = [];
     }
 
     public function getId(): ?int
@@ -87,12 +83,12 @@ class LogView implements \JsonSerializable
         return $this;
     }
 
-    public function getTable(): ?Table
+    public function getTable(): ?string
     {
         return $this->table;
     }
 
-    public function setTable(?Table $table): self
+    public function setTable(?string $table): self
     {
         $this->table = $table;
 
@@ -100,36 +96,17 @@ class LogView implements \JsonSerializable
     }
 
     /**
-     * @return Collection
+     * @return array
      */
-    public function getSummary(): Collection
+    public function getSummary(): array
     {
         return $this->summary;
     }
 
-    public function addSummary(Column $column): self
+    public function setSummary(array $summary): self
     {
-        if ($column->getTable()->getId() !== $this->getTable()->getId()) {
-            // column must same table
-            throw new \LogicException();
-        }
-        if (!$this->summary->contains($column)) {
-            $this->summary[] = $column;
-        }
+        $this->summary = $summary;
 
-        return $this;
-    }
-
-    public function removeSummary(Column $column): self
-    {
-        $this->summary->removeElement($column);
-
-        return $this;
-    }
-
-    public function clearSummary(): self
-    {
-        $this->summary->clear();
         return $this;
     }
 
@@ -153,36 +130,23 @@ class LogView implements \JsonSerializable
         return [
             'uuid' => $this->getUuid(),
             'name' => $this->getName(),
-            'table' => $this->getTable()->getName()
+            'table' => $this->getTable(),
+            'summary' => $this->getSummary(),
+            'logViewColumn' => $this->getLogViewColumns(),
         ];
     }
 
     /**
-     * @return Collection|LogViewColumn[]
+     * @return array|null
      */
-    public function getLogViewColumns(): Collection
+    public function getLogViewColumns(): ?array
     {
         return $this->logViewColumns;
     }
 
-    public function addLogViewColumn(LogViewColumn $logViewColumn): self
+    public function setLogViewColumn(?array $logViewColumn): self
     {
-        if (!$this->logViewColumns->contains($logViewColumn)) {
-            $this->logViewColumns[] = $logViewColumn;
-            $logViewColumn->setLogView($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLogViewColumn(LogViewColumn $logViewColumn): self
-    {
-        if ($this->logViewColumns->removeElement($logViewColumn)) {
-            // set the owning side to null (unless already changed)
-            if ($logViewColumn->getLogView() === $this) {
-                $logViewColumn->setLogView(null);
-            }
-        }
+        $this->logViewColumns = $logViewColumn;
 
         return $this;
     }

@@ -21,19 +21,9 @@ export class SummaryForm extends Component {
         const preColumns = prevProps.columns ? prevProps.columns : [];
         const preSummary = prevProps.summary ? prevProps.summary : [];
         if (columns.length !== preColumns.length || summary.length !== preSummary.length) {
-            const arrColumn = {};
-            for (const i in columns) {
-                arrColumn[columns[i].id] = columns[i].title;
-            }
-
-            const arrSummary = [];
-            for (const i in summary) {
-                arrSummary.push(summary[i].id);
-            }
-
             this.setState({
-                columns: arrColumn,
-                summary: arrSummary
+                columns: columns,
+                summary: summary
             });
         }
     }
@@ -67,8 +57,8 @@ export class SummaryForm extends Component {
         const {className} = this.props;
         const {summary, columns, isLoading} = this.state;
 
-        const _columns = Object.keys(columns).map((key, index) => {
-            return <option key={index} value={key}>{columns[key]}</option>;
+        const _columns = Object.keys(columns).map((item, key) => {
+            return <option key={key} value={columns[item]}>{columns[item]}</option>;
         });
 
         return (

@@ -3,38 +3,31 @@
 
 namespace App\Services\Database;
 
-
-use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\TableExistException;
+use App\Exceptions\TableNotExistException;
 
 interface DatabaseServiceInterface
 {
     /**
-     * Sync all existing table to system
-     */
-    public function syncAllTableToSystem();
-
-    /**
      * @param string $name
      * @param array $columns
      * @param array $options
-     * @return Table|null
+     * @return bool
      * @throws TableExistException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function createTable(string $name, array $columns, array $options = []): ?Table;
+    public function createTable(string $name, array $columns, array $options = []): bool;
 
     /**
-     * @param Table $table
-     * @param string $name
+     * @param string $table
      * @param array $columns
-     * @return Table
-     * @throws TableExistException
+     * @return bool
+     * @throws TableNotExistException
      * @throws \Doctrine\DBAL\Exception
      * @throws ActionDeniedException
      */
-    public function updateTable(Table $table, string $name, array $columns): Table;
+    public function updateTable(string $table, array $columns): bool;
 
     /**
      * @param string $name

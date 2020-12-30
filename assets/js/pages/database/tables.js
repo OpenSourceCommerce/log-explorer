@@ -13,7 +13,6 @@ class DatabaseTables extends Component {
             isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
-        this.syncAll = this.syncAll.bind(this);
         this.gotoUpdate = this.gotoUpdate.bind(this);
         this.gotoLogView = this.gotoLogView.bind(this);
     }
@@ -70,16 +69,6 @@ class DatabaseTables extends Component {
         }
     }
 
-    syncAll() {
-        DatabaseActions.syncAll().then(response => {
-            const {error} = response;
-            if (error === 0) {
-                Alert.success('Sync successful');
-                this.loadData();
-            }
-        });
-    }
-
     gotoUpdate() {
         const {currentTable} = this.state;
 
@@ -114,7 +103,7 @@ class DatabaseTables extends Component {
                                 <select className="form-control" value={currentTable} onChange={this.onTableChange}>
                                     <option value="">Please select table</option>
                                     {tables.map((item, key) => {
-                                        return <option key={key} value={item.name}>{item.name}</option>;
+                                        return <option key={key} value={item}>{item}</option>;
                                     })}
                                 </select>
                             </div>
@@ -123,7 +112,6 @@ class DatabaseTables extends Component {
                                 <Button disabled={url === ''} onClick={this.gotoLogView} className="btn btn-primary mr-md-2 mb-2">Log view setting</Button>
                                 <div className="ml-auto ml-md-0">
                                     <Link href="/table/create" className="btn btn-success mr-2 text-nowrap">Create table</Link>
-                                    <Button onClick={this.syncAll} className="btn btn-success text-nowrap">Sync table</Button>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +123,6 @@ class DatabaseTables extends Component {
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Type</th>
-                                                <th>Display name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -143,7 +130,6 @@ class DatabaseTables extends Component {
                                                 return <tr key={key}>
                                                     <td>{item.name}</td>
                                                     <td>{item.type}</td>
-                                                    <td>{item.title}</td>
                                                 </tr>;
                                             })}
                                         </tbody>

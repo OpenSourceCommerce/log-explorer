@@ -19,9 +19,10 @@ interface ConnectionInterface
      * @param string $sql
      * @param array $params
      * @param array $types
+     * @return int
      * @throws Exception
      */
-    public function exec(string $sql, array $params = [], array $types = []);
+    public function exec(string $sql, array $params = [], array $types = []): int;
 
     /**
      * @return AbstractSchemaManager

@@ -14,7 +14,7 @@
     <script>
         window.clickhouseTypes = {{ types | raw }};
         {% if table is defined %}
-        window.table_id = "{{ table.name }}";
+        window.table = "{{ table }}";
         {% endif %}
     </script>
     {{ encore_entry_script_tags('database_form') }}

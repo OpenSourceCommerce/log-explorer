@@ -1,9 +1,6 @@
 import {request} from '..';
 
 const DatabaseActions = {
-    syncAll() {
-        return request('/api/table/sync', {method: 'POST'});
-    },
     getAllTable() {
         return request('/api/table', {method: 'GET'});
     },
@@ -16,9 +13,9 @@ const DatabaseActions = {
 
         return request(url, {method: 'GET'});
     },
-    createOrUpdate(tableId, data) {
-        if (tableId) {
-            return request('/api/table/' + tableId, {method: 'PUT', body: JSON.stringify(data)});
+    createOrUpdate(table, data) {
+        if (table) {
+            return request('/api/table/' + table, {method: 'PUT', body: JSON.stringify(data)});
         }
 
         return request('/api/table/create', {
