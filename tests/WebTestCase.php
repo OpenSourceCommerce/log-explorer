@@ -61,4 +61,12 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
     {
         return $client->request($method, $uri, [], [], [], json_encode($data));
     }
+
+    protected function assertApiResponseIsSuccessful(KernelBrowser $client): void
+    {
+        $this->assertResponseIsSuccessful();
+        $json = $client->getResponse()->getContent();
+        $data = json_decode($json, true);
+        $this->assertEquals(0, $data['error']);
+    }
 }
