@@ -54,9 +54,9 @@ export class GraphForm extends Component {
                     return;
                 }
 
-                const {table_id, title, max_point, lines} = data;
+                const {table, title, max_point, lines} = data;
                 that.setState({
-                    tableId: table_id,
+                    table: table,
                     title,
                     maxPoint: max_point,
                     lines
@@ -100,7 +100,7 @@ export class GraphForm extends Component {
 
     onTableChange(e) {
         this.setState({
-            tableId: e.target.value,
+            table: e.target.value,
             tableError: false
         });
     }
@@ -148,10 +148,9 @@ export class GraphForm extends Component {
     }
 
     onSubmit() {
-        let {id, tableId, title, maxPoint, lines} = this.state;
+        let {id, table, title, maxPoint, lines} = this.state;
         let hasError = false;
-        tableId = parseInt(tableId);
-        if (isNaN(tableId)) {
+        if (table === '') {
             this.setState({
                 tableError: true
             });
@@ -201,7 +200,7 @@ export class GraphForm extends Component {
                 isLoading: true
             });
             GraphActions.createOrUpdate(id, {
-                table: tableId,
+                table: table,
                 title,
                 maxPoint,
                 lines
@@ -227,7 +226,7 @@ export class GraphForm extends Component {
 
     render() {
         const {className} = this.props;
-        const {id, table, tableId, tables, title, maxPoint, lines, tableError, titleError, maxPointError, isLoading} = this.state;
+        const {id, table, tables, title, maxPoint, lines, tableError, titleError, maxPointError, isLoading} = this.state;
 
         const _lines = lines.map((item, key) => {
             return <div key={key} className="form-group">
@@ -253,10 +252,10 @@ export class GraphForm extends Component {
                 <div className="form-group">
                     <label>Table</label>
                     {table && <Link className={'ml-3'} href={'/table/' + table} >{table}</Link>}
-                    {tables.length > 0 && <Select value={tableId} className={tableError ? 'is-invalid' : ''} onChange={this.onTableChange}>
+                    {tables.length > 0 && <Select value={table} className={tableError ? 'is-invalid' : ''} onChange={this.onTableChange}>
                         <option value="">Select table</option>
                         {tables.map((item, key) => {
-                            return <option key={key} value={item.id}>{item.name}</option>;
+                            return <option key={key} value={item}>{item}</option>;
                         })}
                     </Select>}
                 </div>

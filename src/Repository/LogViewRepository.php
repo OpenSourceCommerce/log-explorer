@@ -2,9 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Column;
 use App\Entity\LogView;
-use App\Entity\LogViewColumn;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,14 +18,4 @@ class LogViewRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, LogView::class);
     }
-
-    /*public function getColumns(LogView $logView): array
-    {
-        return $this->createQueryBuilder('l')
-            ->innerJoin(LogViewColumn::class, 'lc')
-            ->innerJoin(Column::class)
-            ->getQuery()
-            ->getResult()
-            ;
-    }*/
 }

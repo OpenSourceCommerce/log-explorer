@@ -4,11 +4,8 @@
 namespace App\Services\LogView;
 
 
-use App\Entity\Column;
 use App\Entity\Graph;
 use App\Entity\LogView;
-use App\Entity\LogViewColumn;
-use App\Entity\Table;
 
 interface LogViewServiceInterface
 {
@@ -19,13 +16,13 @@ interface LogViewServiceInterface
     public function getDefault(): ?LogView;
 
     /**
-     * @param Table $table
+     * @param string $table
      * @param Graph $graph
      * @param string|null $name
      * @param bool $flush
      * @return mixed
      */
-    public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView;
+    public function createLogView(string $table, Graph $graph, ?string $name, bool $flush = true): LogView;
 
     /**
      * List all LogView
@@ -43,15 +40,6 @@ interface LogViewServiceInterface
     public function getColumnSetting(LogView $logView);
 
     /**
-     * setup log view column setting
-     *
-     * @param LogView $logView
-     * @param bool $flush
-     * @return array
-     */
-    public function setupColumnSetting(LogView $logView, bool $flush = true);
-
-    /**
      * Find Log View by uuid
      *
      * @param string $uuid
@@ -63,9 +51,9 @@ interface LogViewServiceInterface
      * Get Log View Column
      *
      * @param LogView $logView
-     * @return mixed
+     * @return array
      */
-    public function getVisibleColumns(LogView $logView);
+    public function getVisibleColumns(LogView $logView): array;
 
     /**
      * @param LogView $logView
@@ -74,10 +62,14 @@ interface LogViewServiceInterface
     public function setSummary(LogView $logView, array $columns);
 
     /**
-     * @param LogView $logView
-     * @param Column $column
-     * @param bool $flush
-     * @return LogViewColumn
+     * @param string $name
+     * @return LogView|null
      */
-    public function addColumnSetting(LogView $logView, Column $column, $flush = true): LogViewColumn;
+    public function findByTable(string $name): ?LogView;
+
+    /**
+     * @param LogView $logView
+     * @param array $columns
+     */
+    public function setVisibleColumn(LogView $logView, array $columns);
 }

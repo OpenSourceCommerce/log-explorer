@@ -6,7 +6,7 @@ namespace App\Controller\Api;
 
 use App\Constant\ErrorCodeConstant;
 use App\Entity\LogView;
-use App\Entity\LogViewColumn;
+use App\Helper\ColumnHelper;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
@@ -85,22 +85,14 @@ class StreamController extends ApiController
             $logView = $logViewService->getDefault();
 
         }
-        $columns = $logView->getLogViewColumns();
         $options = $this->getFilter($request);
-        $columnNames = [];
-        foreach ($columns as $column) {
-            if ($column instanceof LogViewColumn) {
-                if ($column->getVisible()) {
-                    $columnNames[] = $column->getColumn()->getName();
-                }
-            } else {
-                $columnNames[] = $column->getName();
-            }
+        $columns = $logView->getLogViewColumns();
+        if (!empty($columns)) {
+            $options['columns'] = $columns;
         }
-        $options['columns'] = $columnNames;
         try {
-            $data = $streamService->getLogsInRange($logView->getTable()->getName(), $options);
-            $total = $streamService->getTotalLogsInRange($logView->getTable()->getName(), $options);
+            $data = $streamService->getLogsInRange($logView->getTable(), $options);
+            $total = $streamService->getTotalLogsInRange($logView->getTable(), $options);
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -133,16 +125,16 @@ class StreamController extends ApiController
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
         }
-        $columns = $logView->getSummary()->toArray();
+        $columns = $logView->getSummary();
         $options = $this->getFilter($request);
         $widgets = [];
         foreach ($columns as $column) {
             try {
                 $widget = [
-                    'name' => $column->getName(),
-                    'title' => $column->getTitle()
+                    'name' => $column,
+                    'title' => ColumnHelper::titleFromName($column)
                 ];
-                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable()->getName(), $widget['name'], $options);
+                $widget['data'] = $streamService->getLogSummaryInRange($logView->getTable(), $widget['name'], $options);
                 $widgets[] = $widget;
             } catch (Exception $e) {
                 return $this->responseError([
@@ -184,7 +176,7 @@ class StreamController extends ApiController
                 $line = [
                     'label' => $item->getTitle(),
                     'color' => $item->getColor(),
-                    'data' => $streamService->getLogGraphInRange($logView->getTable()->getName(), $item, $graphOffset, $options),
+                    'data' => $streamService->getLogGraphInRange($logView->getTable(), $item, $graphOffset, $options),
                 ];
                 $data[] = $line;
             } catch (Exception $e) {

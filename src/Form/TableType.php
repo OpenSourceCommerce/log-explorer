@@ -15,9 +15,6 @@ class TableType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', TextType::class, [
-                'required' => false
-            ])
             ->add('name', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
@@ -45,7 +42,6 @@ class TableType extends AbstractType
             // Configure your form options here
             'allow_extra_fields' => true,
             'csrf_protection' => false,
-//            'data_class' => Table::class,
         ]);
     }
 }

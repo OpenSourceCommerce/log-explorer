@@ -4,7 +4,6 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Entity\UserToken;
-use App\Exceptions\ExpiredUserTokenException;
 use App\Form\ChangePasswordFormType;
 use App\Form\PasswordType;
 use App\Form\UserType;

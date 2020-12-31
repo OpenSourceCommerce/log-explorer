@@ -6,7 +6,6 @@ namespace App\Services\Graph;
 
 use App\Entity\Graph;
 use App\Entity\GraphLine;
-use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 use App\Repository\GraphRepository;
@@ -50,7 +49,7 @@ class GraphService implements GraphServiceInterface
             if ($line->getId()) {
                 throw new ActionDeniedException();
             }
-            if ($this->checkIfFilterInvalid($graph->getTable()->getName(), $line->getFilter())) {
+            if ($this->checkIfFilterInvalid($graph->getTable(), $line->getFilter())) {
                 throw new BadSqlException('Bad sql: "'.$line->getFilter().'"');
             }
             $graph->addLine($line);
@@ -79,7 +78,7 @@ class GraphService implements GraphServiceInterface
                     throw new ActionDeniedException();
                 }
             }
-            if ($this->checkIfFilterInvalid($graph->getTable()->getName(), $line->getFilter())) {
+            if ($this->checkIfFilterInvalid($graph->getTable(), $line->getFilter())) {
                 throw new BadSqlException('Bad sql: "'.$line->getFilter().'"');
             }
             $graph->addLine($line);
@@ -113,7 +112,7 @@ class GraphService implements GraphServiceInterface
     /**
      * @inheritDoc
      */
-    public function createLogViewGraph(Table $table, int $maxPoint = 12, bool $flush = true): Graph
+    public function createLogViewGraph(string $table, int $maxPoint = 12, bool $flush = true): Graph
     {
         $graph = new Graph();
         $graph->setTitle('Log view');
