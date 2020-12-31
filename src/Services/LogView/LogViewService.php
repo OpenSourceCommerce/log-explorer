@@ -129,7 +129,7 @@ class LogViewService implements LogViewServiceInterface
     public function getVisibleColumns(LogView $logView): array
     {
         $visible = $logView->getLogViewColumns();
-        if (empty($visible)) {
+        if (!empty($visible)) {
             return $visible;
         } else {
             return $this->connection->getRawColumns($logView->getTable());
