@@ -1,54 +1,56 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Icon} from '.';
+import '../../styles/component/_log-views-list.scss';
 
 export class LogViewList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedItem: {}
-        };
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const {selected} = this.props;
-        const preSelected = prevProps.selected;
-        if (selected !== preSelected) {
-            this.setState({
-                selectedItem: selected
-            });
-        }
-    }
-
-    handleChange(event) {
-        const {onSelected, data} = this.props;
-        const selectedUuid = event.target.value;
-        const filteredData = data.filter(item => item.uuid === selectedUuid);
-        const selectedItem = filteredData.shift();
-
-        this.setState({selectedItem});
-
-        if (onSelected && typeof onSelected === 'function') {
-            onSelected(selectedItem);
-        }
-    }
-
     render() {
-        let {className, onSelected, data, ...rest} = this.props;
-        const {selectedItem} = this.state;
-        const value = (selectedItem && selectedItem.uuid) ? selectedItem.uuid : '';
-        className += ' form-control';
+        const {className, onSelected, data, selected, ...rest} = this.props;
+
+        let value = '';
+        let uuid = '';
+
+        if (selected) {
+            value = selected.name || '';
+            uuid = selected.uuid || '';
+        }
 
         return (
-            <select onChange={this.handleChange}
-                value={value}
-                className={className} {...rest}>
-                {data && data.map((item, index) => {
-                    return (
-                        <option key={index} value={item.uuid}>{item.name}</option>
-                    );
-                })}
-            </select>
+            <div className={`log-view-list ${className}`} {...rest}>
+                <a className="title align-items-center d-inline-flex dropdon-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+
+                    <h1 className="mr-4"> {value} </h1>
+                    <span className="btn-caret">
+                        <Icon name="angle-down" />
+                    </span>
+                </a>
+
+                <div className="dropdown-menu dropdown-menu-left animate slideIn"
+                    aria-labelledby="navbarDropdown">
+                    {data && data.map((item, index) => {
+                        return (
+                            <a key={index}
+                                value={item.uuid}
+                                className={`${item.uuid && item.uuid === uuid ? 'active' : ''} dropdown-item`}
+                                href="#"
+                                onClick={() => onSelected(item)}
+                            >
+                                {item.name}
+                            </a>
+                        );
+                    })}
+                    <div className="dropdown-divider"></div>
+                    <a className="dropdown-item"
+                        href="/table/create"
+                    >Create new one</a>
+                </div>
+            </div>
         );
     }
 }
