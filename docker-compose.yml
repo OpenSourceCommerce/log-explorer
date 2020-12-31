@@ -15,11 +15,7 @@ services:
             - mysql
             - mailhog
     db:
-        image: yandex/clickhouse-server
-        working_dir: /var/www
-        volumes:
-            - ./var/clickhouse:/var/lib/clickhouse
-            - .:/var/www
+        image: yandex/clickhouse-server:20.8.11
         ports:
             - 127.0.0.1:9000:9000
             - 127.0.0.1:8123:8123
@@ -29,8 +25,6 @@ services:
             CLICKHOUSE_DB: "logs"
     mysql:
         image: percona:5.7
-        volumes:
-            - ./var/mysql:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dev

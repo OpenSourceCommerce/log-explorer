@@ -1,6 +1,7 @@
 const Encore = require('@symfony/webpack-encore');
 const webpack = require('webpack');
 
+const path = require("path");
 require('dotenv').config( {
     path: path.join(__dirname, '.env')
 });
