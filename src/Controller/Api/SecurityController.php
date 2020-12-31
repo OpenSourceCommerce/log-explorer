@@ -49,7 +49,6 @@ class SecurityController extends ApiController
     /**
      * @Route("/api/password/reset", name="api_reset_password")
      * @param Request $request
-     * @param ContainerBagInterface $containerBag
      * @param UserTokenServiceInterface $userTokenService
      * @param UserServiceInterface $userService
      * @param UrlGeneratorInterface $urlGenerator
@@ -58,7 +57,6 @@ class SecurityController extends ApiController
      */
     public function reset (
         Request $request,
-        ContainerBagInterface $containerBag,
         UserTokenServiceInterface $userTokenService,
         UserServiceInterface $userService,
         UrlGeneratorInterface $urlGenerator
@@ -68,11 +66,8 @@ class SecurityController extends ApiController
         if (empty($forgot)) {
             throw new TokenNotFoundException();
         }
-        $tokenExpiration = $containerBag->get('password.forgot.token.expiration');
-        if (!empty($tokenExpiration)) {
-            if (!$userTokenService->isValidateDate($forgot->getCreatedAt(), $tokenExpiration)) {
-                throw new TokenExpiredException();
-            }
+        if (!$userTokenService->isInvalid($forgot)) {
+            throw new TokenExpiredException();
         }
         $form = $this->createForm(ResetPasswordFormType::class);
         $form->handleRequest($request);

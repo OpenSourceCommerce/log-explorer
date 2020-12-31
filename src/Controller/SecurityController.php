@@ -74,20 +74,15 @@ class SecurityController extends AbstractController
     /**
      * @Route("/password/reset/{token}", name="reset_password")
      * @param UserToken $userToken
-     * @param ContainerBagInterface $containerBag
      * @param UserTokenServiceInterface $userTokenService
      * @return RedirectResponse|Response
      */
     public function reset(
         UserToken $userToken,
-        ContainerBagInterface $containerBag,
         UserTokenServiceInterface $userTokenService
     ) {
-        $tokenExpiration = $containerBag->get('password.forgot.token.expiration');
-        if (!empty($tokenExpiration)) {
-            if (!$userTokenService->isValidateDate($userToken->getCreatedAt(), $tokenExpiration)) {
-                throw new NotFoundHttpException();
-            }
+        if ($userTokenService->isInvalid($userToken)) {
+            throw new NotFoundHttpException();
         }
 
         return $this->render('security/reset.html.twig', ['token' => $userToken->getToken()]);

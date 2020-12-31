@@ -53,6 +53,10 @@ jobs:
           script:
               - ./bin/phpunit
         - stage: versioning
+          before_install:
+              - sudo apt-get update -y
+              - curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              - sudo apt -y install nodejs
           script: skip
           before_deploy:
               - version=`grep -oP "app.version:\ '(.*)'" config/services.yaml | grep -oP "'(.*)'" | cut -d "'" -f 2`
@@ -60,6 +64,8 @@ jobs:
               - new_version=${array[0]}.${array[1]}.$((array[2] + 1))
               - sed -i -E "s/app.version:(\s+)'(.*)'/app.version:\ '$new_version'/g" config/services.yaml
               - echo "update master version to $new_version"
+              - npm install
+              - npm run build
           deploy:
               provider: pages:git
               token: $deploy_key

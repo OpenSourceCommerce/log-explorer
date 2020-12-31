@@ -42,11 +42,4 @@ interface UserTokenServiceInterface
      * @return UserToken|null
      */
     public function findByToken(string $token): ?UserToken;
-
-    /**
-     * @param DateTimeInterface $date
-     * @param $tokenExpiration
-     * @return bool
-     */
-    public function isValidateDate(DateTimeInterface $date, $tokenExpiration): bool;
 }

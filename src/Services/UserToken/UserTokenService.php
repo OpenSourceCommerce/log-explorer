@@ -101,17 +101,4 @@ class UserTokenService implements UserTokenServiceInterface
     {
         return $this->getRepository()->findByToken($token);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function isValidateDate(DateTimeInterface $date, $tokenExpiration): bool
-    {
-        if (empty($expiration)) {
-            // empty expiration mean no limited
-            return true;
-        }
-        $validTo = strtotime($date->format('Y-m-d H:i:s').' '.$expiration);
-        return $validTo >= time();
-    }
 }

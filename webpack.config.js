@@ -1,6 +1,13 @@
 const Encore = require('@symfony/webpack-encore');
 const webpack = require('webpack');
 
+require('dotenv').config( {
+    path: path.join(__dirname, '.env')
+});
+
+// default build output to /public/assets
+const APP_WEBPACK_FOLDER = process.env.APP_WEBPACK_FOLDER || 'assets';
+
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -9,7 +16,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 Encore
 // Directory where compiled assets will be stored
-	.setOutputPath('public/build/')
+	.setOutputPath('public/' + APP_WEBPACK_FOLDER)
 	.copyFiles({
 		from: './assets/images',
 		to: 'images/[path][name].[ext]',
@@ -25,7 +32,7 @@ Encore
 		pattern: /\.(js)$/
 	})
 // Public path used by the web server to access the output path
-	.setPublicPath('/build')
+	.setPublicPath('/' + APP_WEBPACK_FOLDER)
 // Only needed for CDN's or sub-directory deploy
 // .setManifestKeyPrefix('build/')
 

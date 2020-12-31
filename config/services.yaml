@@ -5,17 +5,13 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     app.version: '1.0.0'
-    app.user.roles: [ 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER' ]
-    app.domain: '%env(APP_DOMAIN)%'
-    app.logo: ''
+    app.webpack.folder: '%env(APP_WEBPACK_FOLDER)%'
     app.email.from: '%env(APP_EMAIL_FROM)%'
     app.email.support: '%env(APP_EMAIL_SUPPORT)%'
     app.user.token.expiration: '%env(int:APP_USER_TOKEN_EXPIRATION)%' # empty is unlimited, number of minutes
     rememberme.cookie.expiration: '%env(int:APP_REMEMBERME_EXPIRATION)%' # 30 days in seconds
-    password.forgot.token.expiration: '%env(APP_FORGOT_PASSWORD_EXPIRATION)%' # empty is unlimited, +2 days
     mailer.transport: '%env(MAILER_TRANSPORT)%'
     app.secret: '%kernel.secret%'
-    app.from_email: '%env(FROM_EMAIL)%'
 
 services:
     # default configuration for services in *this* file
