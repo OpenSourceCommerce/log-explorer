@@ -56,7 +56,7 @@ export class GraphForm extends Component {
 
                 const {table, title, max_point, lines} = data;
                 that.setState({
-                    table: table,
+                    table,
                     title,
                     maxPoint: max_point,
                     lines
@@ -200,7 +200,7 @@ export class GraphForm extends Component {
                 isLoading: true
             });
             GraphActions.createOrUpdate(id, {
-                table: table,
+                table,
                 title,
                 maxPoint,
                 lines

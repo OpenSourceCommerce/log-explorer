@@ -22,8 +22,8 @@ export class SummaryForm extends Component {
         const preSummary = prevProps.summary ? prevProps.summary : [];
         if (columns.length !== preColumns.length || summary.length !== preSummary.length) {
             this.setState({
-                columns: columns,
-                summary: summary
+                columns,
+                summary
             });
         }
     }
