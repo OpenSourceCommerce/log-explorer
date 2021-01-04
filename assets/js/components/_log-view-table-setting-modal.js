@@ -27,7 +27,7 @@ export class LogViewTableSettingModal extends Component {
     onShow() {
         const {selectedTable} = this.props;
         const that = this;
-        return LogViewActions.getColumnSetting(selectedTable.uuid, 3).then(response => {
+        return LogViewActions.getColumnSetting(selectedTable.uuid).then(response => {
             const {data, error} = response;
 
             if (error) {
@@ -39,19 +39,15 @@ export class LogViewTableSettingModal extends Component {
     }
 
     onChange(event) {
-        const {row, column} = event.target.dataset;
-
-        if (!row || !column) {
+        const name = event.target.name;
+        if (!name) {
             return;
         }
 
         const that = this;
-        const {tableColumnList} = this.state;
-        const {onSave} = this.props;
-        const logViewColumn = tableColumnList[row][column];
+        const {onSave, selectedTable} = this.props;
 
-        LogViewActions.updateColumnSetting(logViewColumn.logview.uuid, logViewColumn.column.id,
-            !logViewColumn.visible).then(response => {
+        LogViewActions.updateColumnSetting(selectedTable.uuid, name, event.target.checked).then(response => {
             const {data, error} = response;
 
             if (error) {
@@ -77,27 +73,18 @@ export class LogViewTableSettingModal extends Component {
                 showSaveButton={showSaveButton}
                 onHidden={onHidden}>
                 {tableColumnList && tableColumnList.length > 0 &&
-                tableColumnList.map((columns, row) => {
-                    return (
-                        <div key={row} className={'row'}>
-                            {columns && columns.length > 0 &&
-                            columns.map((item, index) => {
-                                return (
-                                    <div key={index} className={'col-4'}>
-                                        <Checkbox name={item.column.name}
-                                            label={item.column.title}
-                                            id={`checkbox-${item.column.name}`}
-                                            checked={item.visible}
-                                            data-row={row}
-                                            data-column={index}
-                                            onChange={this.onChange}
-                                            value="1"/>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+                    <div className={'row'}>
+                        {tableColumnList.map((item, row) => {
+                            return <div key={row} className={'col-4'}>
+                                <Checkbox name={item.name}
+                                          label={item.title}
+                                          id={`checkbox-${item.name}`}
+                                          checked={item.visible}
+                                          onChange={this.onChange}
+                                          value="1"/>
+                            </div>
+                        })}
+                    </div>}
             </Modal>
         );
     }

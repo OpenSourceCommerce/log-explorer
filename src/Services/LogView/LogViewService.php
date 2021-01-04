@@ -128,12 +128,23 @@ class LogViewService implements LogViewServiceInterface
      */
     public function getVisibleColumns(LogView $logView): array
     {
+        $columns = $this->connection->getRawColumns($logView->getTable());
         $visible = $logView->getLogViewColumns();
-        if (!empty($visible)) {
-            return $visible;
-        } else {
-            return $this->connection->getRawColumns($logView->getTable());
+        $visible = array_flip($visible);
+        $response = [];
+
+        foreach ($columns as $column) {
+            if (empty($visible) || isset($visible[$column['name']])) {
+                $response[] = [
+                    'name' => $column['name'],
+                    'title' => ColumnHelper::titleFromName($column['name']),
+                    'type' => 'String',
+                    'visible' => true,
+                ];
+            }
         }
+
+        return $response;
     }
 
     /**
@@ -147,9 +158,30 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function setVisibleColumn(LogView $logView, array $columns)
+    public function setVisibleColumn(LogView $logView, string $column, bool $visible)
     {
-        $logView->setLogViewColumn($columns);
-        $this->save($logView);
+        $changed = false;
+        $columns = $logView->getLogViewColumns();
+        if ($visible) {
+            if (!in_array($column, $columns)) {
+                $columns[] = $column;
+                $changed = true;
+            }
+        } else {
+            if (empty($columns)) {
+                $columns = $this->connection->getRawColumns($logView->getTable());
+                $columns = array_column($columns, 'name');
+            }
+            $key = array_search($column, $columns);
+            if ($key !== false) {
+                unset($columns[$key]);
+                $columns = array_values($columns);
+                $changed = true;
+            }
+        }
+        if ($changed) {
+            $logView->setLogViewColumn($columns);
+            $this->save($logView);
+        }
     }
 }
