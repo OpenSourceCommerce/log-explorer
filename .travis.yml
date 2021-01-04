@@ -18,6 +18,8 @@ stages:
       if: branch = master
     - name: versioning
       if: branch = master AND commit_message != "versioning"
+    - name: release
+      if: tag IS NOT blank
 
 jobs:
     include:
@@ -75,3 +77,31 @@ jobs:
               on:
                   branch: master
                   condition: commit_message != "versioning"
+        - stage: release
+          install:
+              - git clone "https://$deploy_key@github.com/$TRAVIS_REPO_SLUG.git" $TRAVIS_REPO_SLUG
+              - cd $TRAVIS_REPO_SLUG
+              - |
+                git config --global user.email ""
+                git config --global user.name "Versioning"
+          before_script:
+              - VERSION=`grep -oP "app.version:\ '(.*)'" config/services.yaml | grep -oP "'(.*)'" | cut -d "'" -f 2`
+              - echo "config current version is $VERSION"
+          script: skip
+          deploy:
+              provider: script
+              script: >-
+                sed -i -E "s/app.version:(\s+)'(.*)'/app.version:\ '$TRAVIS_TAG'/g" config/services.yaml &&
+                git commit -am "versioning" &&
+                git push origin master &&
+                echo "DONE: update master version to $TRAVIS_TAG" &&
+                git checkout "$TRAVIS_TAG" -b "$TRAVIS_TAG" &&
+                git tag -d "$TRAVIS_TAG" &&
+                sed -i -E "s/app.version:(\s+)'(.*)'/app.version:\ '$TRAVIS_TAG'/g" config/services.yaml &&
+                git commit -am "versioning" &&
+                git tag -f "$TRAVIS_TAG" &&
+                git push origin -f --tags &&
+                echo "DONE: replace tag to version $TRAVIS_TAG"
+              on:
+                  tags: true
+                  condition: $VERSION != $TRAVIS_TAG
