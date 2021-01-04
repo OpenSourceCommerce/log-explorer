@@ -77,12 +77,12 @@ export class LogViewTableSettingModal extends Component {
                         {tableColumnList.map((item, row) => {
                             return <div key={row} className={'col-4'}>
                                 <Checkbox name={item.name}
-                                          label={item.title}
-                                          id={`checkbox-${item.name}`}
-                                          checked={item.visible}
-                                          onChange={this.onChange}
-                                          value="1"/>
-                            </div>
+                                    label={item.title}
+                                    id={`checkbox-${item.name}`}
+                                    checked={item.visible}
+                                    onChange={this.onChange}
+                                    value="1"/>
+                            </div>;
                         })}
                     </div>}
             </Modal>

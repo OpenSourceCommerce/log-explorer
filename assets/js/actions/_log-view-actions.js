@@ -27,7 +27,7 @@ const LogViewActions = {
         const url = `/api/logview/${uuid}/setting/columns`;
 
         const body = JSON.stringify({
-            column: column,
+            column,
             visible: visible ? 1 : 0
         });
 
