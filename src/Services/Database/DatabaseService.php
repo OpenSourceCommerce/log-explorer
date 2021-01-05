@@ -149,5 +149,16 @@ ORDER BY timestamp\n";
     public function dropTableIfExist(string $name)
     {
         $this->connection->dropTableIfExist($name);
+        $logView = $this->logViewService->findByTable($name);
+        if (!empty($logView)) {
+            $graph = $logView->getGraph();
+            foreach ($graph->getLines() as $graphLine) {
+                $graph->removeLine($graphLine);
+                $this->em->remove($graphLine);
+            }
+            $this->em->remove($graph);
+            $this->em->remove($logView);
+            $this->em->flush();
+        }
     }
 }
