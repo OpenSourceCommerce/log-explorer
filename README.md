@@ -7,6 +7,9 @@
 ## Installation
 - Clone this repo
 - Run `docker-start.sh`
+
+To build the static files:
+- Update your `.env` file `APP_WEBPACK_FOLDER=assets` to `APP_WEBPACK_FOLDER=build`
 - Run `npm install`
 - Run `npm run dev`, or `npm run build` to compile for `DEV`, `PROD` environments
 
