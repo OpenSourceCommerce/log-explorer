@@ -68,7 +68,8 @@ class GraphController extends ApiController
 
 
             return $this->responseSuccess([
-                'redirect' => $urlGenerator->generate('graph_update', ['id' => $graph->getId()])
+                'redirect' => $urlGenerator->generate('graph_update', ['id' => $graph->getId()]),
+                'id' => $graph->getId(),
             ]);
         }
         return $this->responseFormError($form);

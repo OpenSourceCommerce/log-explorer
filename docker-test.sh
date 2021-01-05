@@ -7,6 +7,9 @@ docker-compose exec php bash -c "sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:330
 docker-compose exec php bash -c "sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local"
 docker-compose exec php bash -c "sed -i 's/APP_WEBPACK_FOLDER=assets/APP_WEBPACK_FOLDER=build/' .env.test.local"
 
+echo "CREATE test database"
+docker-compose exec mysql bash -c "mysql -udev -pdev -e \"CREATE DATABASE IF NOT EXISTS test;\""
+
 echo "COMPOSER INSTALL"
 docker-compose exec php bash -c "composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader"
 

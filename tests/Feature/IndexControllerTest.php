@@ -11,6 +11,7 @@ class IndexControllerTest extends webTestCase
         $client = $this->createClient();
         $client->followRedirects();
         $crawler = $client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
         $this->assertEquals('http://localhost/login', $crawler->getUri());
     }
 
@@ -19,6 +20,7 @@ class IndexControllerTest extends webTestCase
         $client = $this->getUserClient();
         $client->followRedirects();
         $crawler = $client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
         $this->assertStringStartsWith('http://localhost/log-view/', $crawler->getUri());
     }
 }
