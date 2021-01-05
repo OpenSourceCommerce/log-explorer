@@ -4,13 +4,13 @@ namespace App\Tests\Feature;
 
 use App\Tests\WebTestCase;
 
-class IndexControllerTest extends webTestCase
+class LogViewControllerTest extends webTestCase
 {
     public function testIndexGuest()
     {
         $client = $this->createClient();
         $client->followRedirects();
-        $crawler = $client->request('GET', '/');
+        $crawler = $client->request('GET', '/table/nginx_access/logview');
         $this->assertResponseIsSuccessful();
         $this->assertEquals('http://localhost/login', $crawler->getUri());
     }
@@ -18,9 +18,14 @@ class IndexControllerTest extends webTestCase
     public function testIndexUser()
     {
         $client = $this->getUserClient();
-        $client->followRedirects();
-        $crawler = $client->request('GET', '/');
+        $client->request('GET', '/table/nginx_access/logview');
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testIndexAdmin()
+    {
+        $client = $this->getAdminClient();
+        $client->request('GET', '/table/nginx_access/logview');
         $this->assertResponseIsSuccessful();
-        $this->assertStringStartsWith('http://localhost/log-view/', $crawler->getUri());
     }
 }

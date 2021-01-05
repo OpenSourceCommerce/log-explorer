@@ -4,6 +4,8 @@
 namespace App\Tests;
 
 
+use App\Entity\LogView;
+use App\Services\LogView\LogViewServiceInterface;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\DomCrawler\Crawler;
@@ -59,6 +61,26 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 
     protected function request(KernelBrowser $client, $uri, $data = [], $method = 'POST'): ?Crawler
     {
-        return $client->request($method, $uri, [], [], [], json_encode($data));
+        return $client->request($method, $uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+    }
+
+    protected function assertApiResponseIsSuccessful(KernelBrowser $client): void
+    {
+        $this->assertResponseIsSuccessful();
+        $data = $this->getApiResponse($client);
+        $this->assertEquals(0, $data['error']);
+    }
+
+    protected function getApiResponse(KernelBrowser $client): array
+    {
+        $json = $client->getResponse()->getContent();
+        return json_decode($json, true);
+    }
+
+    protected function getDefaultLogView(): ?LogView
+    {
+        /** @var LogViewServiceInterface $logViewService */
+        $logViewService = $this->getService(LogViewServiceInterface::class);
+        return $logViewService->getDefault();
     }
 }
