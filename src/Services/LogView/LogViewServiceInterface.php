@@ -69,7 +69,8 @@ interface LogViewServiceInterface
 
     /**
      * @param LogView $logView
-     * @param array $columns
+     * @param string $column
+     * @param bool $visible
      */
-    public function setVisibleColumn(LogView $logView, array $columns);
+    public function setVisibleColumn(LogView $logView, string $column, bool $visible);
 }
