@@ -118,7 +118,9 @@ class Connection implements ConnectionInterface
      */
     public function tableExists(string $table): bool
     {
-        return $this->connection->getSchemaManager()->tablesExist($table);
+        $sql = "SELECT COUNT() AS c FROM system.tables WHERE database = '{$this->connection->getDatabase()}' AND engine != 'View' AND name = '{$table}'";
+        $c = $this->connection->fetchColumn($sql);
+        return $c == 1;
     }
 
     /**

@@ -11,7 +11,7 @@
     "dev-server": "npm run lint && encore dev-server",
     "dev": "npm run lint && encore dev",
     "watch": "npm run lint && encore dev --watch",
-    "build": "npm run lint && encore production --progress",
+    "build": "encore production --progress",
     "lint": "xo --plugin=react --fix"
   },
   "repository": {
