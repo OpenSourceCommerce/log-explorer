@@ -23,6 +23,10 @@ security:
                 entry_point: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: '%rememberme.cookie.expiration%'
+                path: /
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
