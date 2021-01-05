@@ -22,8 +22,7 @@ class Graph implements \JsonSerializable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Table::class)
-     * @ORM\JoinColumn(name="table_id", nullable=false)
+     * @ORM\Column(name="table_name", type="string", length=255)
      */
     private $table;
 
@@ -67,12 +66,12 @@ class Graph implements \JsonSerializable
         return $this->id;
     }
 
-    public function getTable(): ?Table
+    public function getTable(): ?string
     {
         return $this->table;
     }
 
-    public function setTable(?Table $table): self
+    public function setTable(?string $table): self
     {
         $this->table = $table;
 
@@ -170,8 +169,7 @@ class Graph implements \JsonSerializable
     {
         return [
             'id' => $this->getId(),
-            'table_id' => $this->getTable()->getId(),
-            'table_name' => $this->getTable()->getName(),
+            'table' => $this->getTable(),
             'title' => $this->getTitle(),
             'max_point' => $this->getMaxPoint(),
             'last_updated' => ($this->getUpdatedAt() ?? $this->getCreatedAt())->format('Y-m-d H:i'),

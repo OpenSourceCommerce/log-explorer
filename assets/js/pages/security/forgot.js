@@ -7,7 +7,7 @@ class Forgot extends Component {
         return (
             <div className="login-box">
                 <div className="login-logo">
-                    <a href="../../index2.html"><b>Admin</b>LTE</a>
+                    <a href="/"><b>Log</b>Explorer</a>
                 </div>
                 <div className="card">
                     <div className="card-body login-card-body">
@@ -17,12 +17,12 @@ class Forgot extends Component {
                         <ForgotForm/>
 
                         <p className="mt-3 mb-1">
-                            <a href="login.html">Login</a>
+                            <a href="/">Login</a>
                         </p>
-                        <p className="mb-0">
+                        {/* <p className="mb-0">
                             <a href="register.html" className="text-center">Register a new
                                 membership</a>
-                        </p>
+                        </p> */}
                     </div>
                 </div>
             </div>

@@ -4,14 +4,12 @@
 namespace App\Services\LogView;
 
 
-use App\Entity\Column;
 use App\Entity\LogView;
-use App\Entity\LogViewColumn;
 use App\Entity\Graph;
-use App\Entity\Table;
+use App\Helper\ColumnHelper;
 use App\Repository\LogViewRepository;
+use App\Services\Clickhouse\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
 
 class LogViewService implements LogViewServiceInterface
 {
@@ -19,14 +17,18 @@ class LogViewService implements LogViewServiceInterface
      * @var EntityManagerInterface
      */
     private $em;
+    /** @var Connection */
+    private $connection;
 
     /**
      * LogViewService constructor.
      * @param EntityManagerInterface $em
+     * @param Connection $connection
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, Connection $connection)
     {
         $this->em = $em;
+        $this->connection = $connection;
     }
 
     private function getRepository(): LogViewRepository
@@ -45,18 +47,18 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function createLogView(Table $table, Graph $graph, ?string $name, bool $flush = true): LogView
+    public function createLogView(string $table, Graph $graph, ?string $name, bool $flush = true): LogView
     {
         if (empty($name)) {
-            $name = $table->getName();
+            $name = $table;
         }
 
         $logView = new LogView();
         $logView->setTable($table);
         $logView->setName($name);
         $logView->setGraph($graph);
-
-        $table->setLogView($logView);
+        $logView->setSummary([]);
+        $logView->setLogViewColumn([]);
 
         return $this->save($logView, $flush);
     }
@@ -81,10 +83,8 @@ class LogViewService implements LogViewServiceInterface
      */
     public function setSummary(LogView $logView, array $columns)
     {
-        $logView->clearSummary();
-        foreach ($columns as $column) {
-            $logView->addSummary($column);
-        }
+        $logView->setSummary($columns);
+
         $this->save($logView);
     }
 
@@ -98,32 +98,21 @@ class LogViewService implements LogViewServiceInterface
      */
     public function getColumnSetting(LogView $logView)
     {
-        $columns = $logView->getLogViewColumns();
+        $columns = $this->connection->getRawColumns($logView->getTable());
+        $visible = $logView->getLogViewColumns();
+        $visible = array_flip($visible);
+        $response = [];
 
-        if ($columns->isEmpty()) {
-            $this->setupColumnSetting($logView);
-        }
-
-        return $logView->getLogViewColumns();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setupColumnSetting(LogView $logView, bool $flush = true)
-    {
-        $columns = $logView->getTable()->getColumns();
-
-        /** @var Column $column */
         foreach ($columns as $column) {
-            $this->addColumnSetting($logView, $column, false);
+            $response[] = [
+                'name' => $column['name'],
+                'title' => ColumnHelper::titleFromName($column['name']),
+                'type' => 'String',
+                'visible' => (empty($visible) || isset($visible[$column['name']])),
+            ];
         }
 
-        if ($flush) {
-            $this->em->flush();
-        }
-
-        return $logView->getLogViewColumns();
+        return $response;
     }
 
     /**
@@ -137,14 +126,21 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function getVisibleColumns(LogView $logView)
+    public function getVisibleColumns(LogView $logView): array
     {
-        $columns = $logView->getLogViewColumns();
+        $columns = $this->connection->getRawColumns($logView->getTable());
+        $visible = $logView->getLogViewColumns();
+        $visible = array_flip($visible);
         $response = [];
 
         foreach ($columns as $column) {
-            if ($column->getVisible()) {
-                $response[] = $column->getColumn();
+            if (empty($visible) || isset($visible[$column['name']])) {
+                $response[] = [
+                    'name' => $column['name'],
+                    'title' => ColumnHelper::titleFromName($column['name']),
+                    'type' => 'String',
+                    'visible' => true,
+                ];
             }
         }
 
@@ -154,18 +150,38 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function addColumnSetting(LogView $logView, Column $column, $flush = true): LogViewColumn
+    public function findByTable(string $name): ?LogView
     {
-        $logViewColumn = new LogViewColumn();
-        $logViewColumn->setColumn($column);
-        $logViewColumn->setLabel($column->getTitle());
-        $logViewColumn->setLogView($logView);
-        $logViewColumn->setVisible(true);
+        return $this->getRepository()->findOneBy(['table' => $name]);
+    }
 
-        $this->em->persist($logViewColumn);
-        if ($flush) {
-            $this->em->flush();
+    /**
+     * @inheritDoc
+     */
+    public function setVisibleColumn(LogView $logView, string $column, bool $visible)
+    {
+        $changed = false;
+        $columns = $logView->getLogViewColumns();
+        if ($visible) {
+            if (!in_array($column, $columns)) {
+                $columns[] = $column;
+                $changed = true;
+            }
+        } else {
+            if (empty($columns)) {
+                $columns = $this->connection->getRawColumns($logView->getTable());
+                $columns = array_column($columns, 'name');
+            }
+            $key = array_search($column, $columns);
+            if ($key !== false) {
+                unset($columns[$key]);
+                $columns = array_values($columns);
+                $changed = true;
+            }
         }
-        return $logViewColumn;
+        if ($changed) {
+            $logView->setLogViewColumn($columns);
+            $this->save($logView);
+        }
     }
 }

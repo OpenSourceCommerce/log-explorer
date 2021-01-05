@@ -5,7 +5,6 @@ namespace App\Services\Graph;
 
 
 use App\Entity\Graph;
-use App\Entity\Table;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 
@@ -40,10 +39,10 @@ interface GraphServiceInterface
     public function delete(Graph $graph);
 
     /**
-     * @param Table $table
+     * @param string $table
      * @param int $maxPoint
      * @param bool $flush
      * @return Graph
      */
-    public function createLogViewGraph(Table $table, int $maxPoint = 12, bool $flush = true): Graph;
+    public function createLogViewGraph(string $table, int $maxPoint = 12, bool $flush = true): Graph;
 }

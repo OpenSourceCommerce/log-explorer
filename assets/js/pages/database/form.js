@@ -12,8 +12,8 @@ class DatabaseForm extends Component {
         }
 
         this.state = {
-            tableId: window.table_id ? window.table_id : '',
-            table: '',
+            isNew: !window.table,
+            table: window.table ? window.table : '',
             columns,
             ttl: '',
             tableError: false,
@@ -26,12 +26,12 @@ class DatabaseForm extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    loadColumns(tableId) {
+    loadColumns(table) {
         const that = this;
         this.setState({
             isLoading: true
         });
-        DatabaseActions.getTableColumns(tableId)
+        DatabaseActions.getTableColumns(table)
             .then(res => {
                 const {error, table, data} = res;
                 if (error) {
@@ -42,6 +42,7 @@ class DatabaseForm extends Component {
                 for (const i in data) {
                     let column = data[i];
                     column = $.extend(that.getBlankColumn(), column);
+                    column.isNew = false;
                     columns.push(column);
                 }
 
@@ -54,14 +55,14 @@ class DatabaseForm extends Component {
     }
 
     componentDidMount() {
-        const {tableId} = this.state;
-        if (tableId) {
-            this.loadColumns(tableId);
+        const {table} = this.state;
+        if (table) {
+            this.loadColumns(table);
         }
     }
 
     getBlankColumn() {
-        return {id: '', name: '', type: 'String', title: '', error: false};
+        return {isNew: true, name: '', type: 'String', error: false};
     }
 
     onTableChange(e) {
@@ -102,7 +103,7 @@ class DatabaseForm extends Component {
             isLoading: true
         });
 
-        let {tableId, table, ttl, columns} = this.state;
+        let {isNew, table, ttl, columns} = this.state;
         table = $.trim(table);
         ttl = $.trim(ttl);
         const validColumns = [];
@@ -117,28 +118,25 @@ class DatabaseForm extends Component {
         }
 
         for (const column of columns) {
-            let {id, name, title, type, error} = column;
+            let {isNew, name, type, error} = column;
             column.error = false;
             if (error) {
                 hasErrorBefore = true;
             }
 
             name = $.trim(name);
-            title = $.trim(title);
-            if (id === '' && name === '' && title === '') {
+            if (isNew && name === '') {
                 continue;
             }
 
-            if (name === '' && (title !== '')) {
+            if (name === '') {
                 column.error = true;
                 hasError = true;
                 continue;
             }
 
             validColumns.push({
-                id,
                 name,
-                title,
                 type
             });
         }
@@ -160,7 +158,7 @@ class DatabaseForm extends Component {
 
         if (!hasError) {
             const that = this;
-            DatabaseActions.createOrUpdate(tableId, {
+            DatabaseActions.createOrUpdate(isNew ? '' : table, {
                 name: table,
                 ttl,
                 columns: validColumns
@@ -175,7 +173,7 @@ class DatabaseForm extends Component {
                         window.location.href = redirect;
                     } else {
                         Alert.success('Update successful');
-                        that.loadColumns(tableId);
+                        that.loadColumns(table);
                     }
                 }).then(() => {
                     this.setState({
@@ -186,32 +184,26 @@ class DatabaseForm extends Component {
     }
 
     render() {
-        const {tableId, table, ttl, columns, tableError, noColumnError, isLoading} = this.state;
-        const readonly = tableId !== '';
+        const {isNew, table, ttl, columns, tableError, noColumnError, isLoading} = this.state;
+        const readonly = !isNew;
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
             return <div key={key} className="form-group">
                 <div className="row">
-                    <div className="col-4">
-                        <Input disabled={readonly && item.id !== ''} value={item.name}
+                    <div className="col-6">
+                        <Input disabled={readonly && !item.isNew} value={item.name}
                             className={item.error ? 'is-invalid' : ''}
                             onChange={e => this.onColumnChange(key, 'name', e)}
                             placeholder="Name"/>
                     </div>
-                    <div className="col-4">
-                        <select disabled={readonly && item.id !== ''} className="form-control"
+                    <div className="col-6">
+                        <select disabled={readonly && !item.isNew} className="form-control"
                             value={item.type}
                             onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
                                 return <option key={k} value={type}>{type}</option>;
                             })}
                         </select>
-                    </div>
-                    <div className="col-4">
-                        <Input value={item.title}
-                            onChange={e => this.onColumnChange(key, 'title', e)}
-                            placeholder="Display name"
-                        />
                     </div>
                 </div>
             </div>;
@@ -221,10 +213,10 @@ class DatabaseForm extends Component {
             <div className="database container-fluid">
                 <div className="card">
                     <div className="card-header">
-                        <h3 className="card-title align-items-center p-2">{tableId === '' ? 'Create new table' : 'Update table'}</h3>
+                        <h3 className="card-title align-items-center p-2">{isNew ? 'Create new table' : 'Update table'}</h3>
                         <Button className="float-right" color={'success'}
                             onClick={this.onSubmit} isLoading={isLoading}>
-                            {tableId === '' ? 'Create table' : 'Update table'}
+                            {isNew ? 'Create table' : 'Update table'}
                         </Button>
 
                     </div>
@@ -237,7 +229,7 @@ class DatabaseForm extends Component {
                                     placeholder="Table name" value={table}
                                     onChange={this.onTableChange}/>
                             </div>
-                            {tableId === '' &&
+                            {isNew &&
                             <div className="form-group">
                                 <label>Table TTL</label>
                                 <Input disabled={readonly} placeholder="timestamp + toIntervalMonth(100)" value={ttl} onChange={this.onTTLChange}/>
@@ -248,14 +240,11 @@ class DatabaseForm extends Component {
                                     <span className={'col-12 text-red'}>Please fill at less one column</span>
                                 </div>}
                                 <div className="row">
-                                    <div className="col-4">
+                                    <div className="col-6">
                                         Name
                                     </div>
-                                    <div className="col-4">
+                                    <div className="col-6">
                                         Type
-                                    </div>
-                                    <div className="col-4">
-                                        Display name
                                     </div>
                                 </div>
                             </div>

@@ -26,7 +26,7 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
-    public function exec(string $sql, array $params = [], array $types = [])
+    public function exec(string $sql, array $params = [], array $types = []): int
     {
         return $this->connection->executeStatement($sql, $params, $types);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Column;
 use App\Services\Clickhouse\ClickhouseServiceInterface;
 use App\Validator\DbName;
 use Symfony\Component\Form\AbstractType;
@@ -24,18 +23,12 @@ class ColumnType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', TextType::class, [
-                'required' => false
-            ])
             ->add('name', TextType::class, [
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                     new DbName(),
                 ]
-            ])
-            ->add('title', TextType::class, [
-                'required' => false
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => $this->types,
@@ -53,7 +46,6 @@ class ColumnType extends AbstractType
             // Configure your form options here
             'allow_extra_fields' => true,
             'csrf_protection' => false,
-//            'data_class' => Column::class,
         ]);
     }
 }
