@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Input, Button, Icon, Link, Select} from '.';
 import {Alert, DatabaseActions, GraphActions} from '../actions';
 import PropTypes from 'prop-types';
+import InputColor from "react-input-color";
+import '../../styles/component/_graph-form.scss';
 
 export class GraphForm extends Component {
     constructor(props) {
@@ -119,9 +121,9 @@ export class GraphForm extends Component {
         });
     }
 
-    onLineChange(key, name, e) {
+    onLineChange(key, name, value) {
         const {lines} = this.state;
-        lines[key][name] = e.target.value;
+        lines[key][name] = value;
         this.setState({
             lines
         });
@@ -231,24 +233,33 @@ export class GraphForm extends Component {
         const _lines = lines.map((item, key) => {
             return <div key={key} className="form-group">
                 <div className={'row'}>
-                    <div className={'col-3'}>
-                        <Input className={item.error && item.title === '' ? 'is-invalid' : ''} value={item.title} onChange={e => this.onLineChange(key, 'title', e)} placeholder={'Line title'} />
+                    <div className="col-12 col-md-3">
+                        <Input className={item.error && item.title === '' ? 'is-invalid' : ''} value={item.title} onChange={e => this.onLineChange(key, 'title', e.target.value)} placeholder={'Line title'} />
                     </div>
-                    <div className={'col-1'}>
-                        <Input className={item.error && item.title === '' ? 'is-invalid' : ''} value={item.color} onChange={e => this.onLineChange(key, 'color', e)} placeholder={'Line color'} />
+                    <div className="col-12 col-md-2 d-flex mt-2 mt-md-0">
+                        <Input className={`${item.error && item.title === '' ? 'is-invalid' : ''}`} value={item.color} onChange={e => this.onLineChange(key, 'color', e.target.value)} placeholder={'Line color'} />
+                        <div className="color-picker">
+                            <InputColor
+                                initialValue={item.color || '#000000'}
+                                onChange={(e) => {
+                                    if (e && e.hex) {
+                                        this.onLineChange(key, 'color', e.hex);
+                                    }
+                                }}
+                                placement="right"
+                            />
+                        </div>
                     </div>
-                    <div className={'col-7'}>
-                        <Input value={item.filter ? item.filter : ''} onChange={e => this.onLineChange(key, 'filter', e)} placeholder={'status = 200'} />
-                    </div>
-                    <div className={'col-1'}>
-                        <Button onClick={e => this.deleteLine(key)} color={'danger'}><Icon name={'trash'}/></Button>
+                    <div className="col-12 col-md-7 d-flex mt-2 mt-md-0">
+                        <Input className="mr-2" value={item.filter ? item.filter : ''} onChange={e => this.onLineChange(key, 'filter', e.target.value)} placeholder={'status = 200'} />
+                        <Button onClick={() => this.deleteLine(key)} color={'danger'}><Icon name={'trash'}/></Button>
                     </div>
                 </div>
             </div>;
         });
 
         return (
-            <div className={className}>
+            <div className={`${className} graph-form`}>
                 <div className="form-group">
                     <label>Table</label>
                     {table && <Link className={'ml-3'} href={'/table/' + table} >{table}</Link>}
@@ -273,10 +284,10 @@ export class GraphForm extends Component {
                         <div className="col-3">
                             Name
                         </div>
-                        <div className="col-1">
+                        <div className="col-2">
                             Color
                         </div>
-                        <div className="col-8">
+                        <div className="col-7">
                             Filter
                         </div>
                     </div>

@@ -135,8 +135,8 @@ export class FlotChart extends Component {
                         {...this.props}
                     />
                 </div>
-                <div className="card-body">
-                    <div id="interactive" style={{height: '300px'}}>
+                <div className="card-body pt-0 pb-0">
+                    <div id="interactive" style={{height: '250px'}}>
                         &nbsp;
                     </div>
                 </div>
