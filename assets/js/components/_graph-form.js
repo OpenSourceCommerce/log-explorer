@@ -233,26 +233,44 @@ export class GraphForm extends Component {
         const _lines = lines.map((item, key) => {
             return <div key={key} className="form-group">
                 <div className={'row'}>
-                    <div className="col-12 col-md-3">
-                        <Input className={item.error && item.title === '' ? 'is-invalid' : ''} value={item.title} onChange={e => this.onLineChange(key, 'title', e.target.value)} placeholder={'Line title'} />
+                    <div className="col-12 col-md-3 row m-md-0">
+                        <span className="d-block d-md-none col-2">Name</span>
+                        <Input
+                            className={`${item.error && item.title === '' ? 'is-invalid' : ''} col-10 col-md-12`}
+                            value={item.title}
+                            onChange={e => this.onLineChange(key, 'title', e.target.value)}
+                            placeholder={'Line title'}/>
                     </div>
-                    <div className="col-12 col-md-2 d-flex mt-2 mt-md-0">
-                        <Input className={`${item.error && item.title === '' ? 'is-invalid' : ''}`} value={item.color} onChange={e => this.onLineChange(key, 'color', e.target.value)} placeholder={'Line color'} />
-                        <div className="color-picker">
-                            <InputColor
-                                initialValue={item.color || '#000000'}
-                                onChange={(e) => {
-                                    if (e && e.hex) {
-                                        this.onLineChange(key, 'color', e.hex);
-                                    }
-                                }}
-                                placement="right"
-                            />
+                    <div className="col-12 col-md-2 mt-2 mt-md-0 row m-md-0">
+                        <span className="d-block d-md-none col-2">Color</span>
+                        <div className="col-10 col-md-12 d-flex p-0">
+                            <Input
+                                className={`${item.error && item.title === '' ? 'is-invalid' : ''}`}
+                                value={item.color}
+                                onChange={e => this.onLineChange(key, 'color', e.target.value)}
+                                placeholder={'Line color'}/>
+                            <div className="color-picker">
+                                <InputColor
+                                    initialValue={item.color || '#000000'}
+                                    onChange={(e) => {
+                                        if (e && e.hex) {
+                                            this.onLineChange(key, 'color', e.hex);
+                                        }
+                                    }}
+                                    placement="right"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div className="col-12 col-md-7 d-flex mt-2 mt-md-0">
-                        <Input className="mr-2" value={item.filter ? item.filter : ''} onChange={e => this.onLineChange(key, 'filter', e.target.value)} placeholder={'status = 200'} />
-                        <Button onClick={() => this.deleteLine(key)} color={'danger'}><Icon name={'trash'}/></Button>
+                    <div className="col-12 col-md-7 d-flex mt-2 mt-md-0 row">
+                        <span className="d-block d-md-none col-2">Filter</span>
+                        <div className="col-10 col-md-12 d-flex p-0">
+                            <Input className="mr-2" value={item.filter ? item.filter : ''}
+                                   onChange={e => this.onLineChange(key, 'filter', e.target.value)}
+                                   placeholder={'status = 200'}/>
+                            <Button onClick={() => this.deleteLine(key)} color={'danger'}><Icon
+                                name={'trash'}/></Button>
+                        </div>
                     </div>
                 </div>
             </div>;
@@ -279,8 +297,8 @@ export class GraphForm extends Component {
                     <Input className={maxPointError ? 'is-invalid' : ''} placeholder="Max point" value={maxPoint} onChange={this.onMaxPointChange}/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="exampleInputPassword1">Lines</label>
-                    <div className="row">
+                    <label htmlFor="exampleInputPassword1 mb-0 mb-md-2">Lines</label>
+                    <div className="row d-none d-md-flex">
                         <div className="col-3">
                             Name
                         </div>
@@ -291,17 +309,20 @@ export class GraphForm extends Component {
                             Filter
                         </div>
                     </div>
+                    {_lines}
                 </div>
-                {_lines}
 
                 <div className="box-footer">
-                    <Button color={'success'} onClick={this.onSubmit} isLoading={isLoading}>{id ? 'Update graph' : 'Create graph'}</Button>
-                    <Button color={'primary'} className={'ml-3'} onClick={this.addMoreLine} >Add more line</Button>
+                    <Button color={'success'} onClick={this.onSubmit}
+                            isLoading={isLoading}>{id ? 'Update graph' : 'Create graph'}</Button>
+                    <Button color={'primary'} className={'ml-3'} onClick={this.addMoreLine}>Add more
+                        line</Button>
                 </div>
             </div>
         );
     }
 }
+
 GraphForm.propTypes = {
     id: PropTypes.string,
     table: PropTypes.string,

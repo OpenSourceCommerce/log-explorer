@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, Select2} from '.';
 import PropTypes from 'prop-types';
 import {Alert, LogViewActions} from '../actions';
+import '../../styles/component/_summary-form.scss';
 
 export class SummaryForm extends Component {
     constructor(props) {
@@ -62,8 +63,8 @@ export class SummaryForm extends Component {
         });
 
         return (
-            <div className={className}>
-                <div className="form-group">
+            <div className={`${className} summary-form`}>
+                <div className="form-group select2-component">
                     <Select2 id={'summary'} multiple="multiple" data-placeholder="Select summary column" value={summary}>
                         {_columns}
                     </Select2>
