@@ -18,7 +18,7 @@ class Index extends Component {
             isRetrieveAllData: false,
             isLive: true,
             disableLive: false,
-            interval: 2000,
+            interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
             tableColumnList: []
