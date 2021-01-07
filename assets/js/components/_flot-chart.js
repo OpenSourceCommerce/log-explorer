@@ -124,8 +124,8 @@ export class FlotChart extends Component {
 
     render() {
         return (
-            <div className="card card-primary card-outline">
-                <div className="card-header">
+            <div className="card">
+                <div className="card-header pb-0">
                     <h3 className="card-title">
                         <i className="far fa-chart-bar" />
                         Interactive Area Chart
@@ -136,11 +136,11 @@ export class FlotChart extends Component {
                     />
                 </div>
                 <div className="card-body pt-0 pb-0">
-                    <div id="interactive" style={{height: '250px'}}>
+                    <div id="interactive" style={{height: '100px'}}>
                         &nbsp;
                     </div>
                 </div>
-                <div className="card-footer">
+                <div className="card-footer pt-1 pb-1">
                     <div id="legendContainer">
                         &nbsp;
                     </div>

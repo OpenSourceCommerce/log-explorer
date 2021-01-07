@@ -25,7 +25,7 @@ export class LogViewList extends Component {
                     aria-haspopup="true"
                     aria-expanded="false">
 
-                    <h1 className="mr-4"> {value} </h1>
+                    <h3 className="mr-3"> {value} </h3>
                     <span className="btn-caret">
                         <Icon name="angle-down" />
                     </span>

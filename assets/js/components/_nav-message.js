@@ -10,7 +10,7 @@ export class NavMessage extends Component {
         const {total = 0} = this.props;
 
         return (
-            <li className="nav-item dropdown">
+            <li className="nav-item dropdown d-none">
                 <Link className="nav-link" data-toggle="dropdown">
                     <Icon name="comments"/>
                     <Text className="badge badge-danger navbar-badge">

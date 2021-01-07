@@ -68,6 +68,7 @@ export class SummaryForm extends Component {
                     <Select2 id={'summary'} multiple="multiple" data-placeholder="Select summary column" value={summary}>
                         {_columns}
                     </Select2>
+                    <p className="font-italic warning-text">It will be affect to dashboard page. Please consider before add new one.</p>
                 </div>
 
                 <div className="box-footer">

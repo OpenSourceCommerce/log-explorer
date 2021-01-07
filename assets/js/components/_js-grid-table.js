@@ -6,6 +6,7 @@ import 'admin-lte/plugins/jsgrid/jsgrid-theme.min.css';
 import PropTypes from 'prop-types';
 import {Live, LogTableActions} from '../actions';
 import {LogDetailSidebar} from '.';
+import '../../styles/component/_js-grid-table.scss';
 
 export class JsGridTable extends Component {
     constructor(props) {
@@ -92,7 +93,7 @@ export class JsGridTable extends Component {
 
         return (
             <>
-                <div id="jsGrid1">
+                <div id="jsGrid1" className="jsGrid1">
                     &nbsp;
                 </div>
                 {selectedItem && <LogDetailSidebar
