@@ -58,7 +58,8 @@ class UserController extends ApiController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userService->createUser($form->getData());
             return $this->responseSuccess([
-                'redirect' => $urlGenerator->generate('user_update', ['id' => $user->getId()])
+                'redirect' => $urlGenerator->generate('user_update', ['id' => $user->getId()]),
+                'id' => $user->getId(),
             ]);
         }
         return $this->responseFormError($form);

@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Tests\Feature\Api;
+
+use App\Tests\WebTestCase;
+
+class DatabaseControllerTest extends webTestCase
+{
+    public function testGetTableUser()
+    {
+        $client = $this->getUserClient();
+        $client->request('GET', '/api/table');
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testGetTable()
+    {
+        $client = $this->getAdminClient();
+        $client->request('GET', '/api/table');
+        $this->assertApiResponseIsSuccessful($client);
+    }
+
+    public function testGetColumns()
+    {
+        $client = $this->getAdminClient();
+        $logView = $this->getDefaultLogView();
+        $client->request('GET', '/api/table/'.$logView->getTable().'/columns');
+        $this->assertApiResponseIsSuccessful($client);
+    }
+
+    public function testCreateTable()
+    {
+        $name = 'test_'.time();
+        $client = $this->getAdminClient();
+        $this->request($client, '/api/table/create', ['name' => $name, 'columns' => [['name' => 'col1', 'type' => 'String'], ['name' => 'col2', 'type' => 'Int8']]]);
+        $this->assertApiResponseIsSuccessful($client);
+        return $name;
+    }
+
+    /**
+     * @depends testCreateTable
+     */
+    public function testUpdateGraph($name)
+    {
+        $client = $this->getAdminClient();
+        $this->request($client, '/api/table/'.$name, ['name' => 'test_create', 'columns' => [['name' => 'col1', 'type' => 'String'], ['name' => 'col2', 'type' => 'Int8'], ['name' => 'col3', 'type' => 'String']]], 'PUT');
+        $this->assertApiResponseIsSuccessful($client);
+    }
+}
