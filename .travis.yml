@@ -33,14 +33,13 @@ jobs:
               - cp .env.test.local .env
               - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
               - sudo apt-get update -y
-              - curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-              - sudo apt -y install nodejs
               - sudo apt -y install apt-transport-https ca-certificates dirmngr
               - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E0C56BD4
               - echo "deb https://repo.clickhouse.tech/deb/stable/ main/" | sudo tee /etc/apt/sources.list.d/clickhouse.list
               - sudo apt-get update -y
               - sudo apt-get install -y clickhouse-server clickhouse-client
               - sudo service clickhouse-server start
+              - nvm install 14
           before_script:
               - composer self-update
               - composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader
@@ -56,9 +55,7 @@ jobs:
               - ./bin/phpunit
         - stage: versioning
           before_install:
-              - sudo apt-get update -y
-              - curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-              - sudo apt -y install nodejs
+              - nvm install 14
           script: skip
           before_deploy:
               - version=`grep -oP "app.version:\ '(.*)'" config/services.yaml | grep -oP "'(.*)'" | cut -d "'" -f 2`
@@ -78,12 +75,11 @@ jobs:
                   branch: master
                   condition: commit_message != "versioning"
         - stage: release
+          before_install:
+              - nvm install 14
           install:
               - git clone "https://$deploy_key@github.com/$TRAVIS_REPO_SLUG.git" $TRAVIS_REPO_SLUG
               - cd $TRAVIS_REPO_SLUG
-              - |
-                git config --global user.email ""
-                git config --global user.name "Versioning"
           before_script:
               - VERSION=`grep -oP "app.version:\ '(.*)'" config/services.yaml | grep -oP "'(.*)'" | cut -d "'" -f 2`
               - echo "config current version is $VERSION"
@@ -98,6 +94,9 @@ jobs:
                 git checkout "$TRAVIS_TAG" -b "$TRAVIS_TAG" &&
                 git tag -d "$TRAVIS_TAG" &&
                 sed -i -E "s/app.version:(\s+)'(.*)'/app.version:\ '$TRAVIS_TAG'/g" config/services.yaml &&
+                npm install &&
+                npm run build &&
+                git add -A . &&
                 git commit -am "versioning" &&
                 git tag -f "$TRAVIS_TAG" &&
                 git push origin -f --tags &&
