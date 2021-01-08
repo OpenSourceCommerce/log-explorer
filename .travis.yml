@@ -52,7 +52,7 @@ jobs:
               - php bin/console app:createsampledatabase --env="test"
               - php bin/console app:createsampledata 300 --env="test"
           script:
-              - ./bin/phpunit
+              - ./bin/phpunit --coverage-text
         - stage: versioning
           before_install:
               - nvm install 14

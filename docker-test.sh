@@ -20,7 +20,7 @@ if [ "$NODE_INSTALLED" == "1" ]; then
 fi
 
 echo "CREATE test database"
-docker-compose exec mysql bash -c "mysql -udev -pdev -e \"CREATE DATABASE IF NOT EXISTS test;\""
+docker-compose exec mysql bash -c "mysql -uroot -proot -e \"CREATE DATABASE IF NOT EXISTS test;GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%';\""
 
 echo "COMPOSER INSTALL"
 docker-compose exec php bash -c "composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader"
