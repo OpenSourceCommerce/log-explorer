@@ -1,0 +1,24 @@
+.summary-form {
+  .select2-component {
+    .select2 {
+      .select2-selection {
+        ul {
+          li {
+            background-color: transparent;
+            color: black;
+          }
+        }
+      }
+    }
+  }
+  .warning-text {
+    font-size: smaller;
+  }
+}
+.select2-container {
+  .select2-results {
+    ul li[aria-selected="true"] {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+.jsGrid1 {
+  .jsgrid-grid-body {
+    .jsgrid-cell {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

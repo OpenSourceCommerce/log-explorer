@@ -60,14 +60,12 @@ export class Summary extends Component {
             }
 
             return (
-                <div key={key} className="col-12 col-md-4">
-                    <div className="card">
-                        <div className="card-header">
-                            {title}
-                        </div>
-                        <div className="card-body p-0">
-                            {layout}
-                        </div>
+                <div className="card position-static" key={key}>
+                    <div className="card-header">
+                        {title}
+                    </div>
+                    <div className="card-body p-0">
+                        {layout}
                     </div>
                 </div>
             );

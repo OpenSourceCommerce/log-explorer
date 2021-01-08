@@ -13,7 +13,7 @@ export class AdvancedSearch extends React.Component {
         return (
             <div className="advanced-search">
                 <div className="card">
-                    <div className="card-body">
+                    <div className="card-body pt-2 pb-3">
                         <LogViewList
                             {...otherProps}
                         />

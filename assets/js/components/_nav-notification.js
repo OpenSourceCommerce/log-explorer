@@ -7,7 +7,7 @@ export class NavNotification extends Component {
         const {total = 0} = this.props;
 
         return (
-            <li className="nav-item dropdown">
+            <li className="nav-item dropdown d-none">
                 <Link className="nav-link" data-toggle="dropdown">
                     <Icon name="bell"/>
                     <Text className="badge badge-warning navbar-badge">{total}</Text>

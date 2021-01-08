@@ -168,14 +168,16 @@ class Index extends Component {
                             onSelected={this.setSelectedTable}
                         />
                         <div className="row justify-content-start flex-md-wrap">
-                            <div className="col-12 col-md-8">
+                            <div className="col-12">
                                 <FlotChart isLive={isLive}
                                     uuid={uuid}
                                     handleRealTimeClicked={this.handleRealTimeClicked}
                                     disableLive={disableLive}
                                 />
                             </div>
-                            <Summary uuid={uuid}/>
+                            <div className="card-columns">
+                                <Summary uuid={uuid}/>
+                            </div>
 
                             <LogViewTable selectedTable={selectedTable}/>
                         </div>

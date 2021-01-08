@@ -80,16 +80,14 @@ export class LogViewTable extends Component {
                             </DropdownItem>
                         </CardTool>
                     </CardHeader>
-                    <div className="card-body">
+                    <div className="card-body pt-0">
                         {fields && fields.length > 0 &&
                         <JsGridTable
+                            height='auto'
                             logview={selectedTable}
                             fields={fields}
-                            pageSize={5}
+                            pageSize={100}
                         />}
-                    </div>
-                    <div className="card-footer">
-                        Footer
                     </div>
                 </div>
             </div>)
