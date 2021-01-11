@@ -136,6 +136,9 @@ Options:
   -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
 
+## E-Mail
+- This project includes Mailhog. You can access the Web-Mail-Overview at `http://localhost:8025/`
+
 ## Documentation
 
 #### [Api Documentation](/docs/api/README.md)
