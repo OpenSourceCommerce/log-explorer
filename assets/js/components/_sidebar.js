@@ -13,12 +13,12 @@ export class Sidebar extends Component {
             navList = [];
         } else if (role === 'user') {
             navList = [
-                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
+                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Dashboard'},
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
             ];
         } else {
             navList = [
-                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
+                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Dashboard'},
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'}
