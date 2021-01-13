@@ -7,7 +7,8 @@ const Colors = {
     black: 'dark',
     white: 'white',
     light: 'light',
-    info: 'info'
+    info: 'info',
+    default: 'default',
 };
 
 module.exports = {Colors};

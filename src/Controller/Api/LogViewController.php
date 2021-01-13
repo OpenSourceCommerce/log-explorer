@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 
 
 use App\Entity\LogView;
+use App\Form\LogViewAllColumnsType;
 use App\Form\LogViewColumnType;
 use App\Services\Clickhouse\Connection;
 use App\Services\LogView\LogViewServiceInterface;
@@ -94,6 +95,31 @@ class LogViewController extends ApiController
             $column = $form->get('column')->getData();
             $visible = $form->get('visible')->getData();
             $logViewService->setVisibleColumn($logView, $column, !empty($visible));
+            return $this->responseSuccess();
+        }
+
+        return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/logview/{uuid}/setting/all-columns", name="update_all_logview_columns_setting", methods={"PUT"})
+     * @param LogView $logView
+     * @param Request $request
+     * @param LogViewServiceInterface $logViewService
+     * @return JsonResponse
+     */
+    public function updateAllColumnsSetting(
+        LogView $logView,
+        Request $request,
+        LogViewServiceInterface $logViewService
+    ): JsonResponse {
+        $data = $request->request->all();
+        $form = $this->createForm(LogViewAllColumnsType::class);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $visible = $form->get('visible')->getData();
+            $logViewService->setVisibleColumns($logView, !empty($visible));
             return $this->responseSuccess();
         }
 
