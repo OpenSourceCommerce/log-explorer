@@ -65,16 +65,9 @@ export class LogViewTable extends Component {
     }
 
     onDataLoaded(res) {
-        const {itemsCount, data, queryTime, queryReadRows, queryReadBytes, queryResultBytes, queryMemory} = res;
-        const queryInfo = {
-            total: itemsCount,
-            current: data.length,
-            queryTime,
-            queryReadRows,
-            queryReadBytes,
-            queryResultBytes,
-            queryMemory
-        }
+        const {itemsCount, data, queryInfo} = res;
+        queryInfo.total = itemsCount;
+        queryInfo.current = data.length;
         this.setState({queryInfo});
     }
 

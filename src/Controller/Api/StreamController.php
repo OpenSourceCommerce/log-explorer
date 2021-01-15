@@ -98,17 +98,15 @@ class StreamController extends ApiController
             $data = $streamService->getLogsInRange($logView->getTable(), $options);
             $total = $streamService->getTotalLogsInRange($logView->getTable(), $options);
             $log = $streamService->getLogByTrackId($trackId);
-            $queryTime = 0;
-            $queryMemory = 0;
-            $queryReadRows = 0;
-            $queryReadBytes = 0;
-            $queryResultBytes = 0;
+            $queryInfo = [];
             if ($log) {
-                $queryTime = $log['query_duration_ms'];
-                $queryMemory = $log['memory_usage'];
-                $queryReadRows = $log['read_rows'];
-                $queryReadBytes = $log['read_bytes'];
-                $queryResultBytes = $log['result_bytes'];
+                $queryInfo = [
+                    'queryTime' => $log['query_duration_ms'],
+                    'queryMemory' => $log['memory_usage'],
+                    'queryReadRows' => $log['read_rows'],
+                    'queryReadBytes' => $log['read_bytes'],
+                    'queryResultBytes' => $log['result_bytes'],
+                ];
             }
         } catch (Exception $e) {
             return $this->responseError([
@@ -121,11 +119,7 @@ class StreamController extends ApiController
         return $this->responseSuccess([
             'data' => $data,
             'itemsCount' => $total,
-            'queryTime' => $queryTime,
-            'queryMemory' => $queryMemory,
-            'queryReadRows' => $queryReadRows,
-            'queryReadBytes' => $queryReadBytes,
-            'queryResultBytes' => $queryResultBytes,
+            'queryInfo' => $queryInfo,
         ]);
     }
 
