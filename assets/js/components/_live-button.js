@@ -10,7 +10,7 @@ export class LiveButton extends Component {
                 <div className="d-inline-flex justify-content-between">
                     Real time
                     <ToggleButton
-                        className={disableLive ? "ml-3 disable" : "ml-3"}
+                        className="ml-3"
                         onChange={handleRealTimeClicked}
                         checked={isLive}
                         disabled={disableLive}

@@ -43,13 +43,3 @@
     }
   }
 }
-.disable.checkbox.switcher {
-  label {
-    input {
-      &:checked + span {
-        background: #eee;
-        border-color: #eee;
-      }
-    }
-  }
-}
