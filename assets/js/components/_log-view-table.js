@@ -1,19 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CardHeader, CardTool, DropdownItem, JsGridTable, LogViewTableSettingModal} from '.';
-import {Live, LogTableActions} from '../actions';
+import {CardHeader, CardTool, DropdownItem, JsGridTable, LogViewTableSettingModal, QueryInfo} from '.';
+import {LogTableActions} from '../actions';
 
 export class LogViewTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showTableSettingModal: false,
-            fields: []
+            fields: [],
+            queryInfo: {}
         };
 
         this.showTableSettingModal = this.showTableSettingModal.bind(this);
         this.hideTableSettingModal = this.hideTableSettingModal.bind(this);
         this.onTableSettingModalChanged = this.onTableSettingModalChanged.bind(this);
+        this.onDataLoaded = this.onDataLoaded.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -62,9 +64,23 @@ export class LogViewTable extends Component {
         this.loadColumns();
     }
 
+    onDataLoaded(res) {
+        const {itemsCount, data, queryTime, queryReadRows, queryReadBytes, queryResultBytes, queryMemory} = res;
+        const queryInfo = {
+            total: itemsCount,
+            current: data.length,
+            queryTime,
+            queryReadRows,
+            queryReadBytes,
+            queryResultBytes,
+            queryMemory
+        }
+        this.setState({queryInfo});
+    }
+
     render() {
         const {selectedTable} = this.props;
-        const {fields, showTableSettingModal} = this.state;
+        const {fields, showTableSettingModal, queryInfo} = this.state;
 
         return (
             (fields && fields.length > 0 && <div className="col-12 col-md-auto">
@@ -81,12 +97,16 @@ export class LogViewTable extends Component {
                         </CardTool>
                     </CardHeader>
                     <div className="card-body pt-0">
+                        <div className={'row mb-3'}>
+                            <QueryInfo queryInfo={queryInfo} className={'col-12'}/>
+                        </div>
                         {fields && fields.length > 0 &&
                         <JsGridTable
                             height='auto'
                             logview={selectedTable}
                             fields={fields}
                             pageSize={100}
+                            onDataLoaded={this.onDataLoaded}
                         />}
                     </div>
                 </div>

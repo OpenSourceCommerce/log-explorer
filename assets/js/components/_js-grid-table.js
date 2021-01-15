@@ -43,7 +43,8 @@ export class JsGridTable extends Component {
             dataType = 'json',
             autoload = true,
             paging = true,
-            fields = []
+            fields = [],
+            onDataLoaded = false
         } = this.props;
         const that = this;
         const uuid = logview ? logview.uuid : null;
@@ -67,7 +68,12 @@ export class JsGridTable extends Component {
                         return $.ajax({
                             url: dataSrc,
                             data: filter,
-                            dataType
+                            dataType,
+                            success: function (res) {
+                                if (onDataLoaded) {
+                                    onDataLoaded(res);
+                                }
+                            }
                         });
                     }
                 },
@@ -118,5 +124,6 @@ JsGridTable.propTypes = {
     paging: PropTypes.bool,
     height: PropTypes.string,
     width: PropTypes.string,
-    autoload: PropTypes.bool
+    autoload: PropTypes.bool,
+    onDataLoaded: PropTypes.func
 };
