@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Constant\ErrorCodeConstant;
 use App\Entity\LogView;
 use App\Helper\ColumnHelper;
+use App\Helper\StringHelper;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use Doctrine\DBAL\Exception;
@@ -74,6 +75,7 @@ class StreamController extends ApiController
      * @param LogViewServiceInterface $logViewService
      * @param StreamServiceInterface $streamService
      * @return JsonResponse
+     * @throws \Exception
      */
     public function list(
         ?LogView $logView,
@@ -91,8 +93,21 @@ class StreamController extends ApiController
             $options['columns'] = $columns;
         }
         try {
+            $trackId = StringHelper::random();
+            $options['trackId'] = $trackId;
             $data = $streamService->getLogsInRange($logView->getTable(), $options);
             $total = $streamService->getTotalLogsInRange($logView->getTable(), $options);
+            $log = $streamService->getLogByTrackId($trackId);
+            $queryInfo = [];
+            if ($log) {
+                $queryInfo = [
+                    'queryTime' => $log['query_duration_ms'],
+                    'queryMemory' => $log['memory_usage'],
+                    'queryReadRows' => $log['read_rows'],
+                    'queryReadBytes' => $log['read_bytes'],
+                    'queryResultBytes' => $log['result_bytes'],
+                ];
+            }
         } catch (Exception $e) {
             return $this->responseError([
                 'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
@@ -104,6 +119,7 @@ class StreamController extends ApiController
         return $this->responseSuccess([
             'data' => $data,
             'itemsCount' => $total,
+            'queryInfo' => $queryInfo,
         ]);
     }
 

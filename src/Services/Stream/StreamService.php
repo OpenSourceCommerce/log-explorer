@@ -56,6 +56,14 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
+    public function trackIdLog(string $trackId): string
+    {
+        return '/*LE-TRACK-ID-'.$trackId.'*/';
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getLogsInRange(string $table, array $options = [])
     {
         $builder = $this->makeQueryBuilder($table, $options);
@@ -73,8 +81,23 @@ class StreamService implements StreamServiceInterface
         if ($page) {
             $builder->setFirstResult(($page - 1) * $limit);
         }
-        return $builder->execute()
-            ->fetchAll();
+        $trackId = $options['trackId'] ?? '';
+        $track = '';
+        if ($trackId) {
+            $track = $this->trackIdLog($trackId);
+        }
+        return $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLogByTrackId(string $trackId)
+    {
+        $track = $this->trackIdLog($trackId);
+        $this->connection->exec('SYSTEM FLUSH LOGS');
+        $sql = "SELECT * FROM system.query_log WHERE type = 'QueryFinish' AND query LIKE '%{$track}'";
+        return $this->connection->fetchColumn($sql);
     }
 
     /**
