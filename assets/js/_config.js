@@ -27,6 +27,12 @@ export const request = (requestURL, parameters = {}, throwError = true) => {
                     }
 
                     const {error, message} = responseData;
+
+                    if (error === Event.ERROR_PERMISSION_DENIED) {
+                        window.location = '/login';
+                        return;
+                    }
+
                     if (throwError && error !== 0) {
                         Alert.error(message);
                         Event.bus.trigger(Event.RESPONSE_ERROR, responseData);
