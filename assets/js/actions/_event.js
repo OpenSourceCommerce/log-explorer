@@ -2,6 +2,7 @@ import {emit, subscribe} from '@nextcloud/event-bus';
 
 const Event = {
     ERROR_INVALID_QUERY: 2,
+    ERROR_PERMISSION_DENIED: 3,
     REFRESH: 'refresh',
     RESPONSE_ERROR: 'response_error',
     bus: {
