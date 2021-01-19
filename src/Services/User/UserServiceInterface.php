@@ -75,4 +75,10 @@ interface UserServiceInterface
      * @param string $password
      */
     public function setUserPassword(User $user, string $password);
+
+    /**
+     * @param UserToken $token
+     * @return mixed
+     */
+    public function sendInvitationEmail(UserToken $token);
 }
