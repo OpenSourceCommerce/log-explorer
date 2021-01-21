@@ -10,7 +10,7 @@
     "test": "xo",
     "dev-server": "npm run lint && encore dev-server",
     "dev": "encore dev",
-    "watch": "npm run lint && encore dev --watch",
+    "watch": "encore dev --watch",
     "build": "encore production --progress",
     "lint": "xo --plugin=react --fix"
   },
@@ -30,6 +30,7 @@
     "popover": "^2.4.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-grid-layout": "^1.2.0",
     "react-inlinesvg": "^2.1.1"
   },
   "devDependencies": {

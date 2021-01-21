@@ -101,4 +101,6 @@ export class ResponsiveGridLayout extends Component {
     }
 }
 
-ResponsiveGridLayout.propTypes = {};
+ResponsiveGridLayout.propTypes = {
+    data: PropTypes.array
+};
