@@ -69,20 +69,19 @@ class StreamService implements StreamServiceInterface
         $needFlip = false;
         $builder = $this->makeQueryBuilder($table, $options);
         $limit = $options['limit'] ?? 100;
-//        $timer = $options['timer'] ?? 'timestamp';
-//        $sort = $options['sort'] ?? $timer;
+        $timer = $options['timer'] ?? 'timestamp';
+        $sort = $options['sort'] ?? $timer;
         $order = strtoupper($options['order'] ?? 'DESC');
         $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
         $builder->select($columns)
             ->setMaxResults($limit);
-//        if ($sort) {
-//            $builder->orderBy($sort, $order);
-//        }
         if ($page) {
             $total = $options['total'];
-            if (empty($total) || $order === 'ASC') {
+            if ($order === 'ASC') {
                 $builder->setFirstResult(($page - 1) * $limit);
+            } elseif (empty($total)) {
+                $builder->orderBy($sort, $order);
             } else {
                 $needFlip = true;
                 $offset = $total - $page * $limit;
