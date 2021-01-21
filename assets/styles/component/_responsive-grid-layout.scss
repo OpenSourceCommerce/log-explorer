@@ -1,0 +1,30 @@
+.responsive-grid-layout {
+  .widget {
+
+    .dropdown {
+      display: block;
+      color: black;
+    }
+
+    &:hover {
+      .dropdown {
+        display: block;
+      }
+    }
+  }
+
+  .static {
+    background: blue;
+  }
+
+  .droppable-element {
+    height: 50px;
+    width: 250px;
+    background: skyblue;
+    margin: 10px;
+    border: 2px dashed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
