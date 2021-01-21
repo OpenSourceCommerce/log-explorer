@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {ControlSidebar as ControlSidebar_} from 'admin-lte/dist/js/adminlte';
-import {Link, Icon} from '.';
+import {Link, Icon, Colors, Button} from '.';
+import '../../styles/component/_control-sidebar.scss';
 
 export class ControlSidebar extends Component {
     close(event) {
@@ -14,7 +15,10 @@ export class ControlSidebar extends Component {
     }
 
     render() {
-        let {className = '', theme = 'dark', item, title = '', children, visible = false, onCloseLogDetailSideBar, ...rest} = this.props;
+        let {className = '', theme = 'dark', item, title = '',
+            children, visible = false, onCloseLogDetailSideBar,
+            headerActions,
+            ...rest} = this.props;
         className += ` control-sidebar control-sidebar-${theme}`;
 
         if (Array.isArray(children)) {
@@ -41,6 +45,15 @@ export class ControlSidebar extends Component {
         return (
             <aside className={className} {...rest}>
                 <div className="card-header d-flex justify-content-around">
+                    {headerActions && <div className={'btn-group control-sidebar-header-actions'}>
+                        <Button type={'button'}
+                                color={Colors.light}
+                                className={'dropdown-toggle dropdown-icon btn-sm'}
+                                data-toggle={'dropdown'}/>
+                        <div className="dropdown-menu">
+                            {headerActions}
+                        </div>
+                    </div>}
                     <h3 className="text-center ml-auto">{title}</h3>
                     <Link className={'ml-auto mr-2'}
                         href="#" onClick={event => {
@@ -67,5 +80,6 @@ ControlSidebar.propTypes = {
     children: PropTypes.any.isRequired,
     visible: PropTypes.bool,
     item: PropTypes.object,
-    onCloseLogDetailSideBar: PropTypes.func
+    onCloseLogDetailSideBar: PropTypes.func,
+    headerActions: PropTypes.any,
 };

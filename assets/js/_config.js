@@ -5,7 +5,7 @@ export const DEFAULT_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-export const request = (requestURL, parameters = {}) => {
+export const request = (requestURL, parameters = {}, throwError = true) => {
     requestURL += requestURL.includes('?') ? '&' : '?';
     const headers = DEFAULT_HEADERS;
     if (parameters.upload) {
@@ -27,7 +27,13 @@ export const request = (requestURL, parameters = {}) => {
                     }
 
                     const {error, message} = responseData;
-                    if (error !== 0) {
+
+                    if (error === Event.ERROR_PERMISSION_DENIED) {
+                        window.location = '/login';
+                        return;
+                    }
+
+                    if (throwError && error !== 0) {
                         Alert.error(message);
                         Event.bus.trigger(Event.RESPONSE_ERROR, responseData);
                     }

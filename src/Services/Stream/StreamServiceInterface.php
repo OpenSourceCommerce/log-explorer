@@ -9,6 +9,12 @@ use App\Entity\GraphLine;
 interface StreamServiceInterface
 {
     /**
+     * @param string $trackId
+     * @return string
+     */
+    public function trackIdLog(string $trackId): string;
+
+    /**
      * Get logs in range
      * @param string $table
      * @param array $options
@@ -50,4 +56,10 @@ interface StreamServiceInterface
      * @param array $options
      */
     public function getTotalLogsInRange(string $name, array $options = []);
+
+    /**
+     * @param string $trackId
+     * @return array|false
+     */
+    public function getLogByTrackId(string $trackId);
 }

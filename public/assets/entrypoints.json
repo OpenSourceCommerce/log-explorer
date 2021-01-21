@@ -4,151 +4,151 @@
       "js": [
         "/assets/1.3301961a.js",
         "/assets/3.c8b19e01.js",
-        "/assets/app.f785e4d6.js"
+        "/assets/app.e5622bf3.js"
       ],
       "css": [
-        "/assets/3.d2bfbcf3.css",
-        "/assets/app.9a6bf460.css"
+        "/assets/3.f5f2116c.css",
+        "/assets/app.53188317.css"
       ]
     },
     "page_index": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_index.560a43a8.js"
+        "/assets/page_index.3b85b18a.js"
       ],
       "css": [
-        "/assets/page_index.3db73847.css"
+        "/assets/page_index.5cd65b88.css"
       ]
     },
     "database_tables": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/database_tables.4dee8a70.js"
+        "/assets/database_tables.7112bc00.js"
       ],
       "css": [
-        "/assets/database_tables.74b0bdcc.css"
+        "/assets/database_tables.c94ec32e.css"
       ]
     },
     "database_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/database_form.d603a3fe.js"
+        "/assets/database_form.98aabf32.js"
       ],
       "css": [
-        "/assets/database_form.74b0bdcc.css"
+        "/assets/database_form.c94ec32e.css"
       ]
     },
     "graph_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/graph_form.1cd8d836.js"
+        "/assets/graph_form.31f783a1.js"
       ],
       "css": [
-        "/assets/graph_form.74b0bdcc.css"
+        "/assets/graph_form.c94ec32e.css"
       ]
     },
     "graph_list": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/graph_list.841bd48d.js"
+        "/assets/graph_list.3027566b.js"
       ],
       "css": [
-        "/assets/graph_list.74b0bdcc.css"
+        "/assets/graph_list.c94ec32e.css"
       ]
     },
     "logview_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/logview_form.4341ccb7.js"
+        "/assets/logview_form.a413a066.js"
       ],
       "css": [
-        "/assets/logview_form.74b0bdcc.css"
+        "/assets/logview_form.c94ec32e.css"
       ]
     },
     "user_list": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_list.e55ed478.js"
+        "/assets/user_list.71e4b5fc.js"
       ],
       "css": [
-        "/assets/user_list.74b0bdcc.css"
+        "/assets/user_list.c94ec32e.css"
       ]
     },
     "user_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_form.7dc1cf52.js"
+        "/assets/user_form.542f3a81.js"
       ],
       "css": [
-        "/assets/user_form.74b0bdcc.css"
+        "/assets/user_form.c94ec32e.css"
       ]
     },
     "user_confirmation": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_confirmation.b1b9d2de.js"
+        "/assets/user_confirmation.1370dd3e.js"
       ],
       "css": [
-        "/assets/user_confirmation.74b0bdcc.css"
+        "/assets/user_confirmation.c94ec32e.css"
       ]
     },
     "user_profile": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_profile.6bf7b61e.js"
+        "/assets/user_profile.35d478f0.js"
       ],
       "css": [
-        "/assets/user_profile.74b0bdcc.css"
+        "/assets/user_profile.c94ec32e.css"
       ]
     },
     "navbar": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/navbar.a709c2b4.js"
+        "/assets/navbar.7c4717a2.js"
       ],
       "css": [
-        "/assets/navbar.74b0bdcc.css"
+        "/assets/navbar.c94ec32e.css"
       ]
     },
     "sidebar": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/sidebar.88322e12.js"
+        "/assets/sidebar.6c4e8643.js"
       ],
       "css": [
-        "/assets/sidebar.74b0bdcc.css"
+        "/assets/sidebar.c94ec32e.css"
       ]
     },
     "js_grid": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/js_grid.fef5c7ea.js"
+        "/assets/js_grid.cb9b6784.js"
       ],
       "css": [
-        "/assets/js_grid.a97942ab.css"
+        "/assets/js_grid.a808a8a0.css"
       ]
     },
     "flot_chart": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/flot_chart.92a9ca3b.js"
+        "/assets/flot_chart.2ff17ba1.js"
       ],
       "css": [
-        "/assets/flot_chart.d9be74aa.css"
+        "/assets/flot_chart.392ef8ea.css"
       ]
     },
     "content-header": {
@@ -162,50 +162,50 @@
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/welcome-page.43fbe8a5.js"
+        "/assets/welcome-page.b9720b60.js"
       ],
       "css": [
-        "/assets/welcome-page.89e5a371.css"
+        "/assets/welcome-page.7157d8c5.css"
       ]
     },
     "page_login": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_login.bdb35fb8.js"
+        "/assets/page_login.c697d643.js"
       ],
       "css": [
-        "/assets/page_login.74b0bdcc.css"
+        "/assets/page_login.c94ec32e.css"
       ]
     },
     "page_forgot": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_forgot.ad48a500.js"
+        "/assets/page_forgot.924257df.js"
       ],
       "css": [
-        "/assets/page_forgot.74b0bdcc.css"
+        "/assets/page_forgot.c94ec32e.css"
       ]
     },
     "page_reset": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_reset.c4d17dd9.js"
+        "/assets/page_reset.5115b08e.js"
       ],
       "css": [
-        "/assets/page_reset.74b0bdcc.css"
+        "/assets/page_reset.c94ec32e.css"
       ]
     },
     "page_change_password": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_change_password.6ee6a810.js"
+        "/assets/page_change_password.d40c3012.js"
       ],
       "css": [
-        "/assets/page_change_password.74b0bdcc.css"
+        "/assets/page_change_password.c94ec32e.css"
       ]
     }
   }

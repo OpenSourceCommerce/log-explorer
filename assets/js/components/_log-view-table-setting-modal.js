@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Checkbox, Modal} from '.';
+import {Checkbox, Modal, Button, Colors} from '.';
 import {LogViewActions} from '../actions';
 
 export class LogViewTableSettingModal extends Component {
@@ -13,6 +13,7 @@ export class LogViewTableSettingModal extends Component {
 
         this.onShow = this.onShow.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.toggleAll = this.toggleAll.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -62,6 +63,34 @@ export class LogViewTableSettingModal extends Component {
         });
     }
 
+    toggleAll() {
+        const {tableColumnList} = this.state;
+        let currentState = true;
+
+        tableColumnList.map((item) => {
+            if (!item.visible) {
+                currentState = false;
+            }
+        });
+
+        const that = this;
+        const {onSave, selectedTable} = this.props;
+
+        LogViewActions.updateAllColumnsSetting(selectedTable.uuid, !currentState).then(response => {
+            const {data, error} = response;
+
+            if (error) {
+                return;
+            }
+
+            that.onShow().then(() => {
+                if (typeof onSave === 'function') {
+                    onSave(data);
+                }
+            });
+        });
+    }
+
     render() {
         const {show, onHidden, onSave, showSaveButton = true} = this.props;
         const {tableColumnList} = this.state;
@@ -72,6 +101,14 @@ export class LogViewTableSettingModal extends Component {
                 saveButtonAction={onSave}
                 showSaveButton={showSaveButton}
                 onHidden={onHidden}>
+                <div className="row">
+                    <Button onClick={this.toggleAll}
+                            type={'button'}
+                            className={'btn-sm mb-2'}
+                            color={Colors.default}>
+                        Toggle All
+                    </Button>
+                </div>
                 {tableColumnList && tableColumnList.length > 0 &&
                     <div className={'row'}>
                         {tableColumnList.map((item, row) => {
@@ -81,7 +118,8 @@ export class LogViewTableSettingModal extends Component {
                                     id={`checkbox-${item.name}`}
                                     checked={item.visible}
                                     onChange={this.onChange}
-                                    value="1"/>
+                                    value="1"
+                                    className={'table-column'}/>
                             </div>;
                         })}
                     </div>}

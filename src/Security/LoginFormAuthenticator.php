@@ -113,6 +113,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $currentMethod = $context->getMethod();
         $context->setMethod('GET');
         $uri = parse_url($url)['path'];
+        if (substr($uri, 5) === '/api/') {
+            return false;
+        }
         $routeName = $this->router->match($uri)['_route'];
         // set back original http method
         $context->setMethod($currentMethod);

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Feature\Api;
 
+use App\Constant\ErrorCodeConstant;
 use App\Tests\WebTestCase;
 
 class GraphControllerTest extends webTestCase
@@ -10,7 +11,9 @@ class GraphControllerTest extends webTestCase
     {
         $client = $this->getUserClient();
         $client->request('GET', '/api/graph');
-        $this->assertResponseStatusCodeSame(403);
+        $this->assertResponseIsSuccessful();
+        $data = $this->getApiResponse($client);
+        $this->assertEquals(ErrorCodeConstant::ERROR_PERMISSION_DENIED, $data['error']);
     }
 
     public function testGetGraphs()

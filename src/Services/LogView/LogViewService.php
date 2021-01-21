@@ -184,4 +184,21 @@ class LogViewService implements LogViewServiceInterface
             $this->save($logView);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setVisibleColumns(LogView $logView, bool $visible)
+    {
+        $columns = ['url'];
+
+        if ($visible) {
+            $columns = $this->connection->getRawColumns($logView->getTable());
+            $columns = array_column($columns, 'name');
+            $columns = array_values($columns);
+        }
+
+        $logView->setLogViewColumn($columns);
+        $this->save($logView);
+    }
 }

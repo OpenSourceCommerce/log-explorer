@@ -56,25 +56,64 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
+    public function trackIdLog(string $trackId): string
+    {
+        return '/*LE-TRACK-ID-'.$trackId.'*/';
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getLogsInRange(string $table, array $options = [])
     {
+        $needFlip = false;
         $builder = $this->makeQueryBuilder($table, $options);
-        $limit = $options['limit'] ?? 30;
+        $limit = $options['limit'] ?? 100;
         $timer = $options['timer'] ?? 'timestamp';
         $sort = $options['sort'] ?? $timer;
-        $order = $options['order'] ?? 'DESC';
+        $order = strtoupper($options['order'] ?? 'DESC');
         $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
         $builder->select($columns)
             ->setMaxResults($limit);
-        if ($sort) {
-            $builder->orderBy($sort, $order);
-        }
         if ($page) {
-            $builder->setFirstResult(($page - 1) * $limit);
+            $total = $options['total'];
+            if ($order === 'ASC') {
+                $builder->setFirstResult(($page - 1) * $limit);
+            } elseif (empty($total)) {
+                $builder->orderBy($sort, $order);
+            } else {
+                $needFlip = true;
+                $offset = $total - $page * $limit;
+                if ($offset < 0) {
+                    $limit += $offset;
+                    $offset = 0;
+                }
+                $builder->setFirstResult($offset)
+                    ->setMaxResults($limit);
+            }
         }
-        return $builder->execute()
-            ->fetchAll();
+        $trackId = $options['trackId'] ?? '';
+        $track = '';
+        if ($trackId) {
+            $track = $this->trackIdLog($trackId);
+        }
+        $data = $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        if ($needFlip) {
+            $data = array_reverse($data);
+        }
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLogByTrackId(string $trackId)
+    {
+        $track = $this->trackIdLog($trackId);
+        $this->connection->exec('SYSTEM FLUSH LOGS');
+        $sql = "SELECT * FROM system.query_log WHERE type = 'QueryFinish' AND query LIKE '%{$track}'";
+        return $this->connection->fetchColumn($sql);
     }
 
     /**

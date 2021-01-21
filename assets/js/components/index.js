@@ -40,6 +40,7 @@ export const {SummaryForm} = require('./_summary-form');
 export const {Spinner} = require('./_spinner');
 export const {LogViewTable} = require('./_log-view-table');
 export const {NavUser} = require('./_nav-user');
+export const {QueryInfo} = require('./_query-info');
 export const {DoughnutPieChart} = require('./widget/_doughnut-pie-chart');
 export const {ResponsiveGridLayout} = require('./widget/_responsive-grid-layout');
 export const {WidgetManagement} = require('./widget/_widget-management');

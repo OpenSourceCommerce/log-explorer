@@ -19,6 +19,7 @@ doctrine:
                 options:
                     enable_http_compression: 1
                     max_execution_time: 60
+                    max_threads: '%env(int:DATABASE_THREADS)%'
         types:
             uuid: Ramsey\Uuid\Doctrine\UuidType
     orm:
