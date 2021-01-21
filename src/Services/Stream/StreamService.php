@@ -66,27 +66,44 @@ class StreamService implements StreamServiceInterface
      */
     public function getLogsInRange(string $table, array $options = [])
     {
+        $needFlip = false;
         $builder = $this->makeQueryBuilder($table, $options);
-        $limit = $options['limit'] ?? 30;
-        $timer = $options['timer'] ?? 'timestamp';
-        $sort = $options['sort'] ?? $timer;
-        $order = $options['order'] ?? 'DESC';
+        $limit = $options['limit'] ?? 100;
+//        $timer = $options['timer'] ?? 'timestamp';
+//        $sort = $options['sort'] ?? $timer;
+        $order = strtoupper($options['order'] ?? 'DESC');
         $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
         $builder->select($columns)
             ->setMaxResults($limit);
-        if ($sort) {
-            $builder->orderBy($sort, $order);
-        }
+//        if ($sort) {
+//            $builder->orderBy($sort, $order);
+//        }
         if ($page) {
-            $builder->setFirstResult(($page - 1) * $limit);
+            $total = $options['total'];
+            if (empty($total) || $order === 'ASC') {
+                $builder->setFirstResult(($page - 1) * $limit);
+            } else {
+                $needFlip = true;
+                $offset = $total - $page * $limit;
+                if ($offset < 0) {
+                    $limit += $offset;
+                    $offset = 0;
+                }
+                $builder->setFirstResult($offset)
+                    ->setMaxResults($limit);
+            }
         }
         $trackId = $options['trackId'] ?? '';
         $track = '';
         if ($trackId) {
             $track = $this->trackIdLog($trackId);
         }
-        return $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        $data = $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        if ($needFlip) {
+            $data = array_reverse($data);
+        }
+        return $data;
     }
 
     /**

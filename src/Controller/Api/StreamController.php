@@ -95,8 +95,9 @@ class StreamController extends ApiController
         try {
             $trackId = StringHelper::random();
             $options['trackId'] = $trackId;
-            $data = $streamService->getLogsInRange($logView->getTable(), $options);
             $total = $streamService->getTotalLogsInRange($logView->getTable(), $options);
+            $options['total'] = $total;
+            $data = $streamService->getLogsInRange($logView->getTable(), $options);
             $log = $streamService->getLogByTrackId($trackId);
             $queryInfo = [];
             if ($log) {
