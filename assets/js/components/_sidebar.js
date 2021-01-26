@@ -21,7 +21,9 @@ export class Sidebar extends Component {
                 {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
-                {href: 'user', type: 'solid', iconName: 'users', label: 'Users'}
+                {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
+                {href: 'dashboard', type: 'solid', iconName: 'users', label: 'Dashboards'},
+                {href: 'widget', type: 'solid', iconName: 'users', label: 'Widgets'}
             ];
         }
 
