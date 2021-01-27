@@ -132,10 +132,8 @@ class WidgetPage extends Component {
         return (
             <div>
                 <WidgetManagement
-                    addNew={(widgetList) => {
-                        this.setState({
-                            widgetList,
-                        })
+                    addNew={(newWidget) => {
+                        console.log(newWidget);
                     }}
                     widgetList={widgetList}
                     key={widgetList}
