@@ -7,6 +7,7 @@ namespace App\Services\Widget;
 use App\Entity\Widget;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
+use App\Exceptions\NoDataException;
 use App\Widget\WidgetInterface;
 
 interface WidgetServiceInterface
@@ -22,6 +23,7 @@ interface WidgetServiceInterface
      * @return Widget
      * @throws ActionDeniedException
      * @throws BadSqlException
+     * @throws NoDataException
      */
     public function createWidget(WidgetInterface $data): Widget;
 
@@ -31,6 +33,7 @@ interface WidgetServiceInterface
      * @return Widget
      * @throws ActionDeniedException
      * @throws BadSqlException
+     * @throws NoDataException
      */
     public function updateWidget(Widget $widget, WidgetInterface $data): Widget;
 

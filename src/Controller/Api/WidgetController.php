@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Entity\Widget;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
+use App\Exceptions\NoDataException;
 use App\Form\WidgetType;
 use App\Services\Widget\WidgetServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -61,7 +62,7 @@ class WidgetController extends ApiController
                 $widget = $widgetService->createWidget($data);
             } catch (ActionDeniedException $e) {
                 return $this->responseError('Can not create widget');
-            } catch (BadSqlException $e) {
+            } catch (BadSqlException | NoDataException $e) {
                 return $this->responseError($e->getMessage());
             }
 
@@ -92,7 +93,7 @@ class WidgetController extends ApiController
                 $widgetService->updateWidget($widget, $data);
             } catch (ActionDeniedException $e) {
                 return $this->responseError('Can not update widget');
-            } catch (BadSqlException $e) {
+            } catch (BadSqlException | NoDataException $e) {
                 return $this->responseError($e->getMessage());
             }
 

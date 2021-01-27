@@ -31,6 +31,9 @@ class TableWidget extends WidgetAbstract
     protected function isValidData(array $data): bool
     {
         $row = reset($data);
-        return count($row) === 2;
+        if (count($row) !== 2) {
+            return false;
+        }
+        return isset($row['label']) && isset($row['value']);
     }
 }

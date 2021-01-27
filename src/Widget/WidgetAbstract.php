@@ -62,10 +62,10 @@ abstract class WidgetAbstract implements WidgetInterface
         try {
             $data = $this->connection->fetchAll($this->getQuery());
         } catch (Exception $e) {
-            throw new BadSqlException('Invalid query');
+            throw new BadSqlException('Invalid input query');
         }
         if (empty($data)) {
-            throw new NoDataException('No data return');
+            throw new NoDataException('No data return so query can not be validate');
         }
         return $this->isValidData($data);
     }

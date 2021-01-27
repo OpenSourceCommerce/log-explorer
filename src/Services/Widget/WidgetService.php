@@ -37,9 +37,7 @@ class WidgetService implements WidgetServiceInterface
      */
     public function createWidget(WidgetInterface $data): Widget
     {
-        if (!$data->isValid()) {
-            throw new BadSqlException('Your query was invalid');
-        }
+        $data->isValid();
         $widget = new Widget();
         $widget->setTitle($data->getTitle());
         $widget->setType($data->getType());
@@ -54,9 +52,7 @@ class WidgetService implements WidgetServiceInterface
      */
     public function updateWidget(Widget $widget, WidgetInterface $data): Widget
     {
-        if (!$data->isValid()) {
-            throw new BadSqlException('Your query was invalid');
-        }
+        $data->isValid();
         $widget->setTitle($data->getTitle());
         $widget->setQuery($data->getQuery());
         $this->em->persist($widget);
