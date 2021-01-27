@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Table(name="dashboards")
  * @ORM\HasLifecycleCallbacks
  */
-class Dashboard
+class Dashboard implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -136,5 +136,18 @@ class Dashboard
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'uuid' => $this->getUuid()->toString(),
+            'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
+        ];
     }
 }

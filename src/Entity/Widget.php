@@ -6,13 +6,14 @@ use App\Repository\WidgetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
  * @ORM\Entity(repositoryClass=WidgetRepository::class)
  * @ORM\Table(name="widgets")
  * @ORM\HasLifecycleCallbacks
  */
-class Widget
+class Widget implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -155,5 +156,19 @@ class Widget
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'type' => $this->getType(),
+            'query' => $this->getQuery(),
+            'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
+        ];
     }
 }
