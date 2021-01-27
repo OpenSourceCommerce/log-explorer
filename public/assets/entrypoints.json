@@ -15,140 +15,140 @@
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_index.3b85b18a.js"
+        "/assets/page_index.c5b31196.js"
       ],
       "css": [
-        "/assets/page_index.5cd65b88.css"
+        "/assets/page_index.b02aef88.css"
       ]
     },
     "database_tables": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/database_tables.7112bc00.js"
+        "/assets/database_tables.203b5069.js"
       ],
       "css": [
-        "/assets/database_tables.c94ec32e.css"
+        "/assets/database_tables.d73afdc1.css"
       ]
     },
     "database_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/database_form.98aabf32.js"
+        "/assets/database_form.9afbb0e3.js"
       ],
       "css": [
-        "/assets/database_form.c94ec32e.css"
+        "/assets/database_form.d73afdc1.css"
       ]
     },
     "graph_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/graph_form.31f783a1.js"
+        "/assets/graph_form.bc77ed34.js"
       ],
       "css": [
-        "/assets/graph_form.c94ec32e.css"
+        "/assets/graph_form.d73afdc1.css"
       ]
     },
     "graph_list": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/graph_list.3027566b.js"
+        "/assets/graph_list.b51fcf8b.js"
       ],
       "css": [
-        "/assets/graph_list.c94ec32e.css"
+        "/assets/graph_list.d73afdc1.css"
       ]
     },
     "logview_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/logview_form.a413a066.js"
+        "/assets/logview_form.78922179.js"
       ],
       "css": [
-        "/assets/logview_form.c94ec32e.css"
+        "/assets/logview_form.d73afdc1.css"
       ]
     },
     "user_list": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_list.71e4b5fc.js"
+        "/assets/user_list.af244764.js"
       ],
       "css": [
-        "/assets/user_list.c94ec32e.css"
+        "/assets/user_list.d73afdc1.css"
       ]
     },
     "user_form": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_form.542f3a81.js"
+        "/assets/user_form.2f4d4c0e.js"
       ],
       "css": [
-        "/assets/user_form.c94ec32e.css"
+        "/assets/user_form.d73afdc1.css"
       ]
     },
     "user_confirmation": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_confirmation.1370dd3e.js"
+        "/assets/user_confirmation.3362746f.js"
       ],
       "css": [
-        "/assets/user_confirmation.c94ec32e.css"
+        "/assets/user_confirmation.d73afdc1.css"
       ]
     },
     "user_profile": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/user_profile.35d478f0.js"
+        "/assets/user_profile.59bc0166.js"
       ],
       "css": [
-        "/assets/user_profile.c94ec32e.css"
+        "/assets/user_profile.d73afdc1.css"
       ]
     },
     "navbar": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/navbar.7c4717a2.js"
+        "/assets/navbar.742eec8d.js"
       ],
       "css": [
-        "/assets/navbar.c94ec32e.css"
+        "/assets/navbar.d73afdc1.css"
       ]
     },
     "sidebar": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/sidebar.6c4e8643.js"
+        "/assets/sidebar.9199ef4d.js"
       ],
       "css": [
-        "/assets/sidebar.c94ec32e.css"
+        "/assets/sidebar.d73afdc1.css"
       ]
     },
     "js_grid": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/js_grid.cb9b6784.js"
+        "/assets/js_grid.eb963623.js"
       ],
       "css": [
-        "/assets/js_grid.a808a8a0.css"
+        "/assets/js_grid.4eca6089.css"
       ]
     },
     "flot_chart": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/flot_chart.2ff17ba1.js"
+        "/assets/flot_chart.3236c9e7.js"
       ],
       "css": [
-        "/assets/flot_chart.392ef8ea.css"
+        "/assets/flot_chart.3fc6134b.css"
       ]
     },
     "content-header": {
@@ -162,50 +162,50 @@
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/welcome-page.b9720b60.js"
+        "/assets/welcome-page.4d64542c.js"
       ],
       "css": [
-        "/assets/welcome-page.7157d8c5.css"
+        "/assets/welcome-page.2a702b85.css"
       ]
     },
     "page_login": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_login.c697d643.js"
+        "/assets/page_login.238afd64.js"
       ],
       "css": [
-        "/assets/page_login.c94ec32e.css"
+        "/assets/page_login.d73afdc1.css"
       ]
     },
     "page_forgot": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_forgot.924257df.js"
+        "/assets/page_forgot.f51daca9.js"
       ],
       "css": [
-        "/assets/page_forgot.c94ec32e.css"
+        "/assets/page_forgot.d73afdc1.css"
       ]
     },
     "page_reset": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_reset.5115b08e.js"
+        "/assets/page_reset.f46440c9.js"
       ],
       "css": [
-        "/assets/page_reset.c94ec32e.css"
+        "/assets/page_reset.d73afdc1.css"
       ]
     },
     "page_change_password": {
       "js": [
         "/assets/1.3301961a.js",
         "/assets/0.625f89e8.js",
-        "/assets/page_change_password.d40c3012.js"
+        "/assets/page_change_password.a51bdd16.js"
       ],
       "css": [
-        "/assets/page_change_password.c94ec32e.css"
+        "/assets/page_change_password.d73afdc1.css"
       ]
     }
   }
