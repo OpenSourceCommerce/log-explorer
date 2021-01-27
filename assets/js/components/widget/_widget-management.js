@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button, DoughnutPieChart, FilterDate, FilterText, Input} from "../index";
-import {Live} from "../../actions";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
@@ -30,7 +29,7 @@ export class WidgetManagement extends Component {
         // default Doughnut when user create new widget
         const initialData = {
             layout: {i: '', x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-            dataWidget: [...DATA_FROM_API],
+            dataWidget: [],
             widgetHeader: '',
             widgetType: WIDGET_TYPE.doughnut,
         }
@@ -61,10 +60,9 @@ export class WidgetManagement extends Component {
 
     render() {
         const {widgetDetail, widgetId} = this.state;
-        const {widgetList} = this.props;
 
         const WidgetLayout = ({widgetDetail, widgetId}) => {
-            const {widgetType, widgetHeader, dataWidget, layout} = widgetDetail;
+            const {widgetType, widgetHeader, dataWidget} = widgetDetail;
             let component;
             switch (widgetType) {
                 case WIDGET_TYPE.doughnut:
@@ -114,7 +112,7 @@ export class WidgetManagement extends Component {
 
         const addNew = (widgetDetail, widgetId) => {
             let layout;
-            const { widgetType } = widgetDetail;
+            const { widgetType, widgetHeader, query } = widgetDetail;
 
             switch (widgetType) {
                 case WIDGET_TYPE.doughnut:
@@ -132,15 +130,14 @@ export class WidgetManagement extends Component {
                 }
             }
 
-            this.props.addNew([
-                ...widgetList,
-                {   ...widgetDetail,
-                    layout,
-                }
-            ])
+            this.props.addNew({
+                widgetQuery: query,
+                widgetHeader,
+                widgetType,
+            });
 
             this.setState({
-                widgetId: widgetId + 1,
+                widgetId: parseInt(widgetId) + 1,
                 widgetDetail: { ...this.state.initialData },
             })
         }
@@ -149,27 +146,28 @@ export class WidgetManagement extends Component {
             <div className="editable-widget">
                 <div className="filter-panel card">
                     <div className="card-body row">
-                        <div className="col-12 col-md-6">
+                        <div className="col-12 col-md-8">
                             <FilterText
                                 label="What are you looking for ?"
                                 placeholder="status = 200 AND url LIKE '%product%'"
+                                onChange={(e) => onChangeData(e.target)}
                             />
                         </div>
-                        <div className="input-search col-12 col-md-4 mt-2 mt-md-0">
-                            <FilterDate
-                                label="Date Range"
-                                onDateRangeChanged={(f, t) => console.log(f, t)}
-                            />
-                        </div>
-                        <div className="col-6 col-md-1 btn-action-group mt-4">
+                        {/*<div className="input-search col-12 col-md-3 mt-2 mt-md-0">*/}
+                        {/*    <FilterDate*/}
+                        {/*        label="Date Range"*/}
+                        {/*        onDateRangeChanged={(f, t) => console.log(f, t)}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
+                        <div className="col-6 col-md-2 btn-action-group mt-4 pr-0">
                             <Button className="btn-search w-100 mt-0 mt-md-2"
                                     onClick={() => addNew(widgetDetail, widgetId)}>
-                                Add New
+                                Add new
                             </Button>
                         </div>
-                        <div className="col-6 col-md-1 btn-action-group mt-4">
+                        <div className="col-6 col-md-2 btn-action-group mt-4">
                             <Button className="btn-search w-100 mt-0 mt-md-2"
-                                    type="default"
+                                    color="default"
                                     onClick={() => console.log('Cancel clicked')}>
                                 Cancel
                             </Button>
