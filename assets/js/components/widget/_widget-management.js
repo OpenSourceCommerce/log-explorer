@@ -138,7 +138,7 @@ export class WidgetManagement extends Component {
 
             this.setState({
                 widgetId: parseInt(widgetId) + 1,
-                widgetDetail: { ...this.state.initialData },
+                // widgetDetail: { ...this.state.initialData },
             })
         }
 

@@ -27,6 +27,7 @@ abstract class WidgetAbstract implements WidgetInterface
     public function setTitle(string $title): WidgetInterface
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -44,6 +45,7 @@ abstract class WidgetAbstract implements WidgetInterface
     public function setQuery(string $query): WidgetInterface
     {
         $this->query = $query;
+        return $this;
     }
 
     /**

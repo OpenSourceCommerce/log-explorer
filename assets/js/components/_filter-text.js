@@ -59,6 +59,7 @@ export class FilterText extends Component {
                     className={className}
                     id="filter-text"
                     type="search"
+                    name="query"
                     value={value}
                     placeholder={placeholder}
                     aria-label="Search"

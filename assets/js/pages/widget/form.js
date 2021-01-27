@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {WidgetManagement} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
+import {WidgetActions} from "../../actions";
 
 class WidgetPage extends Component {
     render() {
@@ -133,6 +134,11 @@ class WidgetPage extends Component {
             <div>
                 <WidgetManagement
                     addNew={(newWidget) => {
+                        WidgetActions.createOrUpdate(widget, {
+                            title: newWidget.widgetHeader,
+                            type: 1,
+                            query: newWidget.widgetQuery
+                        })
                         console.log(newWidget);
                     }}
                     widgetList={widgetList}
