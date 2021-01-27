@@ -69,7 +69,10 @@ abstract class WidgetAbstract implements WidgetInterface
         if (empty($data)) {
             throw new NoDataException('No data return so query can not be validate');
         }
-        return $this->isValidData($data);
+        if (!$this->isValidData($data)) {
+            throw new BadSqlException('Invalid select query');
+        }
+        return true;
     }
 
     /**

@@ -8,6 +8,14 @@ class WidgetPage extends Component {
     render() {
         const {widget} = this.props;
 
+        if (widget) {
+            WidgetActions.loadWidget(widget)
+                .then(res => {
+                    const {error, data} = res;
+                    console.log(data);
+                })
+        }
+
         const widgetList = [
             {
                 layout: {i: "1", x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2, static: true},
