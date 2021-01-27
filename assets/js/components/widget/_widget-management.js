@@ -161,10 +161,17 @@ export class WidgetManagement extends Component {
                                 onDateRangeChanged={(f, t) => console.log(f, t)}
                             />
                         </div>
-                        <div className="col-12 col-md-2 btn-action-group mt-4">
+                        <div className="col-6 col-md-1 btn-action-group mt-4">
                             <Button className="btn-search w-100 mt-0 mt-md-2"
                                     onClick={() => addNew(widgetDetail, widgetId)}>
-                                SEARCH
+                                Add New
+                            </Button>
+                        </div>
+                        <div className="col-6 col-md-1 btn-action-group mt-4">
+                            <Button className="btn-search w-100 mt-0 mt-md-2"
+                                    type="default"
+                                    onClick={() => console.log('Cancel clicked')}>
+                                Cancel
                             </Button>
                         </div>
                     </div>

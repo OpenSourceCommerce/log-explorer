@@ -1,9 +1,26 @@
-.jsGrid1 {
-  .jsgrid-grid-body {
-    .jsgrid-cell {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+.js-grip-table {
+  .jsGrid1 {
+    .jsgrid-grid-body {
+      .jsgrid-cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .jsgrid-pager-container {
+      display: none !important;
     }
   }
+
+  .pagination-cus {
+    .p-button {
+      background: none;
+      color: #007bff;
+    }
+    .input-page-number {
+      width: 8%;
+    }
+  }
+
 }

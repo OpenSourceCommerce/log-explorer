@@ -5,14 +5,16 @@ import 'admin-lte/plugins/jsgrid/jsgrid.min.css';
 import 'admin-lte/plugins/jsgrid/jsgrid-theme.min.css';
 import PropTypes from 'prop-types';
 import {Live, LogTableActions} from '../actions';
-import {LogDetailSidebar} from '.';
+import {LogDetailSidebar, Icon, Input, Button} from '.';
 import '../../styles/component/_js-grid-table.scss';
 
 export class JsGridTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedItem: null
+            selectedItem: null,
+            pageIndex: 1,
+            itemCount: 0,
         };
         this.loadData = this.loadData.bind(this);
     }
@@ -37,7 +39,6 @@ export class JsGridTable extends Component {
             width = '100%',
             pageSize = 30,
             pageButtonCount = 5,
-            pageIndex = 1,
             pageLoading = true,
             logview,
             dataType = 'json',
@@ -59,9 +60,7 @@ export class JsGridTable extends Component {
                 paging,
                 pageSize,
                 pageButtonCount,
-                pageIndex,
                 pageLoading,
-
                 controller: {
                     loadData(filter) {
                         filter = LogTableActions.getOptions(filter);
@@ -69,10 +68,13 @@ export class JsGridTable extends Component {
                             url: dataSrc,
                             data: filter,
                             dataType,
-                            success: function (res) {
+                            success: (res) => {
                                 if (onDataLoaded) {
                                     onDataLoaded(res);
                                 }
+                                that.setState({
+                                    itemsCount: res.itemsCount,
+                                })
                             }
                         });
                     }
@@ -95,10 +97,28 @@ export class JsGridTable extends Component {
     }
 
     render() {
-        const {selectedItem} = this.state;
+        const {selectedItem, pageIndex, itemsCount} = this.state;
+
+        const { pageSize } = this.props;
+
+        let maxPageNumber = 0;
+
+        if (itemsCount && itemsCount > 0) {
+            maxPageNumber = Math.floor(itemsCount / pageSize);
+            if ( itemsCount % pageSize > 0 ) {
+                maxPageNumber++;
+            }
+        };
+
+        const gotoPages = (pageIndex) => {
+            this.setState({
+                pageIndex: parseInt(pageIndex),
+            });
+            $("#jsGrid1").jsGrid("openPage", pageIndex);
+        };
 
         return (
-            <>
+            <div className="js-grip-table">
                 <div id="jsGrid1" className="jsGrid1">
                     &nbsp;
                 </div>
@@ -108,7 +128,47 @@ export class JsGridTable extends Component {
                         this.setState({selectedItem: null});
                     }}
                 />}
-            </>
+                {maxPageNumber && maxPageNumber > 1 && <div className="mt-2 pagination-cus">
+                    <div className="d-flex align-items-center justify-content-center">
+                        <Button className="border-0 p-button"
+                                disabled={pageIndex === 1}
+                                onClick={() => gotoPages(1)}
+                        >
+                            <Icon name="step-backward p-icon"></Icon>
+                        </Button>
+                        <Button className="border-0 p-button"
+                                disabled={pageIndex === 1}
+                                onClick={() => gotoPages(pageIndex - 1)}
+                        >
+                            <Icon name="chevron-left p-icon"></Icon>
+                        </Button>
+                        <Input className="p-2 input-page-number h-75 text-right pl-2"
+                               type="number"
+                               min="1"
+                               max={maxPageNumber}
+                               value={pageIndex+''}
+                               onChange={(e) => {
+                                   let newIndex = e.target.value;
+                                   if (parseInt(newIndex) > maxPageNumber) {
+                                       newIndex = maxPageNumber;
+                                   }
+                                   gotoPages(newIndex);
+                               }}
+                        ></Input>
+                        <p className="total-page m-0 p-2">/   {maxPageNumber} </p>
+                        <Button className="border-0 p-button"
+                                disabled={pageIndex === maxPageNumber}
+                                onClick={() => gotoPages(pageIndex + 1)}
+                        >
+                            <Icon name="chevron-right p-icon"></Icon></Button>
+                        <Button className="border-0 p-button"
+                                disabled={pageIndex === maxPageNumber}
+                                onClick={() => gotoPages(maxPageNumber)}>
+                            <Icon name="step-forward p-icon"></Icon>
+                        </Button>
+                    </div>
+                </div>}
+            </div>
         );
     }
 }
@@ -120,7 +180,7 @@ JsGridTable.propTypes = {
     pageSize: PropTypes.number,
     pageLoading: PropTypes.bool,
     pageButtonCount: PropTypes.number,
-    pageIndex: PropTypes.number,
+    //pageIndex: PropTypes.number,
     paging: PropTypes.bool,
     height: PropTypes.string,
     width: PropTypes.string,
