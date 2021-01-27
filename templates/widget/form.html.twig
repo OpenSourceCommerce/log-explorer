@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Widget{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('widget_form') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"{% if widget is defined %} data-widget="{{ widget.id }}"{% endif %}></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('widget_form') }}
+{% endblock %}
