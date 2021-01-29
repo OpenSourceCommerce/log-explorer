@@ -76,6 +76,14 @@ abstract class WidgetAbstract implements WidgetInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getData()
+    {
+        return $this->connection->fetchAll($this->getQuery());
+    }
+
+    /**
      * @param array $data
      * @return bool
      */

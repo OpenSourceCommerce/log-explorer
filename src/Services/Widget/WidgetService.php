@@ -5,7 +5,6 @@ namespace App\Services\Widget;
 
 
 use App\Entity\Widget;
-use App\Exceptions\BadSqlException;
 use App\Repository\WidgetRepository;
 use App\Widget\WidgetInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -73,7 +72,19 @@ class WidgetService implements WidgetServiceInterface
      */
     public function delete(Widget $widget)
     {
+        foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
+            $this->em->remove($dashboardWidget);
+        }
         $this->em->remove($widget);
         $this->em->flush();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWidgetData(Widget $entity)
+    {
+        $widget = $this->widgetIteration->getWidgetFromEntity($entity);
+        return $widget->getData();
     }
 }

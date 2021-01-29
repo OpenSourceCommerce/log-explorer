@@ -41,4 +41,10 @@ interface WidgetServiceInterface
      * @param Widget $widget
      */
     public function delete(Widget $widget);
+
+    /**
+     * @param Widget $entity
+     * @return mixed
+     */
+    public function getWidgetData(Widget $entity);
 }

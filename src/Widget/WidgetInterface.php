@@ -6,6 +6,7 @@ namespace App\Widget;
 
 use App\Exceptions\BadSqlException;
 use App\Exceptions\NoDataException;
+use Doctrine\DBAL\Exception;
 
 interface WidgetInterface
 {
@@ -31,9 +32,22 @@ interface WidgetInterface
     public function getTitle(): string;
 
     /**
+     * @param string $query
+     * @return self
+     */
+    public function setQuery(string $query): self;
+
+    /**
      * @return string
      */
     public function getQuery(): string;
+
+    /**
+     * Get query data
+     * @return mixed
+     * @throws Exception
+     */
+    public function getData();
 
     /**
      * @return bool

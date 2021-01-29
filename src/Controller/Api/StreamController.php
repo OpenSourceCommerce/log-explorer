@@ -5,15 +5,19 @@ namespace App\Controller\Api;
 
 
 use App\Constant\ErrorCodeConstant;
+use App\Entity\Dashboard;
 use App\Entity\LogView;
+use App\Entity\Widget;
 use App\Helper\ColumnHelper;
 use App\Helper\StringHelper;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
+use App\Services\Widget\WidgetServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class StreamController extends ApiController
 {
@@ -205,6 +209,46 @@ class StreamController extends ApiController
                 ]);
             }
         }
+        return $this->responseSuccess([
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/dashboard/{uuid}", methods = "GET")
+     * @param Dashboard $dashboard
+     * @return JsonResponse
+     */
+    public function dashboard(Dashboard $dashboard): JsonResponse
+    {
+        return $this->responseSuccess([
+            'data' => $dashboard,
+            'widgets' => $dashboard->getDashboardWidgets()->toArray(),
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/widget/{uuid}/{widget_id}", methods = "GET")
+     * @param Dashboard $dashboard
+     * @param Widget $widget
+     * @param WidgetServiceInterface $widgetService
+     * @Entity("widget", expr="repository.find(widget_id)")
+     * @return JsonResponse
+     */
+    public function widget(Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService): JsonResponse
+    {
+        // this is public API so uuid just used to prevent scan by widget_id
+        $isOk = false;
+        foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
+            if ($dashboardWidget->getDashboard()->getId() === $dashboard->getId()) {
+                $isOk = true;
+                break;
+            }
+        }
+        if (!$isOk) {
+            return $this->responseError('Invalid request');
+        }
+        $data = $widgetService->getWidgetData($widget);
         return $this->responseSuccess([
             'data' => $data,
         ]);

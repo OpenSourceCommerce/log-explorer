@@ -39,4 +39,13 @@ class CounterWidget extends WidgetAbstract
         }
         return true;
     }
+
+    public function getData()
+    {
+        $data = parent::getData();
+        if (!empty($data)) {
+            return reset($data[0]);
+        }
+        return null;
+    }
 }

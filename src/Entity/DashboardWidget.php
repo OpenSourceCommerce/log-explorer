@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="dashboard_widgets")
  * @ORM\HasLifecycleCallbacks
  */
-class DashboardWidget
+class DashboardWidget implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -175,7 +175,7 @@ class DashboardWidget
         return $this;
     }
 
-    public function getFixed(): ?bool
+    public function isFixed(): ?bool
     {
         return $this->fixed;
     }
@@ -215,5 +215,24 @@ class DashboardWidget
         $this->updatedAt = new \DateTime();
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'dashboard_id' => $this->getDashboard()->getId(),
+            'widget_id' => $this->getWidget()->getId(),
+            'x' => $this->getX(),
+            'y' => $this->getY(),
+            'width' => $this->getWidth(),
+            'height' => $this->getHeight(),
+            'minWidth' => $this->getMinWidth(),
+            'minHeight' => $this->getMinHeight(),
+            'fixed' => $this->isFixed() ? 1 : 0,
+        ];
     }
 }
