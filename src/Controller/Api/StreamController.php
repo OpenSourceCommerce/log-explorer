@@ -10,6 +10,7 @@ use App\Entity\LogView;
 use App\Entity\Widget;
 use App\Helper\ColumnHelper;
 use App\Helper\StringHelper;
+use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use App\Services\Widget\WidgetServiceInterface;
@@ -211,6 +212,18 @@ class StreamController extends ApiController
         }
         return $this->responseSuccess([
             'data' => $data,
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/dashboards", methods = "GET")
+     * @param DashboardServiceInterface $dashboardService
+     * @return JsonResponse
+     */
+    public function dashboards(DashboardServiceInterface $dashboardService): JsonResponse
+    {
+        return $this->responseSuccess([
+            'data' => $dashboardService->getDashboards()
         ]);
     }
 

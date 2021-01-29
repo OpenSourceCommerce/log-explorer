@@ -30,6 +30,15 @@ const LogTableActions = {
     },
     getGraph(uuid) {
         return request('/api/stream/' + this.getUuid(uuid) + '/graph?' + new URLSearchParams(this.getOptions()));
+    },
+    getDashboards() {
+        return request('/api/stream/dashboards');
+    },
+    getDashboard(uuid) {
+        return request(`/api/stream/dashboard/${uuid}`);
+    },
+    getWidget(uuid, widgetId) {
+        return request(`/api/stream/dashboard/${uuid}/${widgetId}`);
     }
 };
 
