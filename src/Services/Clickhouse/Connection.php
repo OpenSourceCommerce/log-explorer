@@ -2,8 +2,12 @@
 
 namespace App\Services\Clickhouse;
 
+use App\ClickHouse\ClickHouseStatement;
+use ClickHouseDB\Client;
+use Doctrine\DBAL\Abstraction\Result;
 use Doctrine\ORM\EntityManagerInterface;
 use \FOD\DBALClickHouse\Connection as ClickHouseConnection;
+use Throwable;
 
 class Connection implements ConnectionInterface
 {
@@ -45,6 +49,23 @@ class Connection implements ConnectionInterface
     public function fetchAll(string $query, array $params = [], array $types = [])
     {
         return $this->connection->fetchAllAssociative($query, $params, $types);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fetchAllInSingleThread(string $query, array $params = [], array $types = [])
+    {
+        /** @var \App\ClickHouse\ClickHouseConnection $conn */
+        $conn = $this->connection->getWrappedConnection();
+        $maxThreads = $conn->getClickHouseClient()->settings()->get('max_threads');
+        $conn->getClickHouseClient()->settings()->set('max_threads', 1);
+        try {
+            $ret = $this->connection->fetchAllAssociative($query, $params, $types);
+        } finally {
+            $conn->getClickHouseClient()->settings()->set('max_threads', $maxThreads);
+        }
+        return $ret;
     }
 
     /**

@@ -8,19 +8,24 @@ use App\Entity\GraphLine;
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class StreamService implements StreamServiceInterface
 {
     /** @var Connection */
     private $connection;
+    /** @var ParameterBagInterface */
+    private $parameterBag;
 
     /**
      * StreamService constructor.
      * @param Connection $connection
+     * @param ParameterBagInterface $parameterBag
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, ParameterBagInterface $parameterBag)
     {
         $this->connection = $connection;
+        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -98,7 +103,7 @@ class StreamService implements StreamServiceInterface
         if ($trackId) {
             $track = $this->trackIdLog($trackId);
         }
-        $data = $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        $data = $this->connection->fetchAllInSingleThread($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
         if ($needFlip) {
             $data = array_reverse($data);
         }

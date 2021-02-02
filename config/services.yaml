@@ -12,6 +12,7 @@ parameters:
     rememberme.cookie.expiration: '%env(int:APP_REMEMBERME_EXPIRATION)%' # 30 days in seconds
     mailer.transport: '%env(MAILER_TRANSPORT)%'
     app.secret: '%kernel.secret%'
+    app.clickhouse.max_threads: '%env(int:DATABASE_THREADS)%'
 
 services:
     # default configuration for services in *this* file
