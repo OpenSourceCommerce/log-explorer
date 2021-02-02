@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app.version: '1.0.15'
+    app.version: '1.0.16'
     app.webpack.folder: '%env(APP_WEBPACK_FOLDER)%'
     app.email.from: '%env(APP_EMAIL_FROM)%'
     app.email.support: '%env(APP_EMAIL_SUPPORT)%'
