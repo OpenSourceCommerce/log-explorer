@@ -7,7 +7,6 @@ namespace App\Services\Stream;
 use App\Entity\GraphLine;
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\Query\Expr;
 
 class StreamService implements StreamServiceInterface
 {
@@ -98,7 +97,7 @@ class StreamService implements StreamServiceInterface
         if ($trackId) {
             $track = $this->trackIdLog($trackId);
         }
-        $data = $this->connection->fetchAll($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        $data = $this->connection->fetchAllInSingleThread($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
         if ($needFlip) {
             $data = array_reverse($data);
         }

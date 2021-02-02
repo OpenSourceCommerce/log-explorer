@@ -43,6 +43,14 @@ interface ConnectionInterface
      * @param array $types
      * @throws Exception
      */
+    public function fetchAllInSingleThread(string $query, array $params = [], array $types = []);
+
+    /**
+     * @param string $query
+     * @param array $params
+     * @param array $types
+     * @throws Exception
+     */
     public function fetchColumn(string $query, array $params = [], array $types = []);
 
     /**

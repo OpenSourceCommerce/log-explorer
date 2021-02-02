@@ -50,6 +50,23 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
+    public function fetchAllInSingleThread(string $query, array $params = [], array $types = [])
+    {
+        /** @var \App\ClickHouse\ClickHouseConnection $conn */
+        $conn = $this->connection->getWrappedConnection();
+        $maxThreads = $conn->getClickHouseClient()->settings()->get('max_threads');
+        $conn->getClickHouseClient()->settings()->set('max_threads', 1);
+        try {
+            $ret = $this->connection->fetchAllAssociative($query, $params, $types);
+        } finally {
+            $conn->getClickHouseClient()->settings()->set('max_threads', $maxThreads);
+        }
+        return $ret;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function fetchColumn(string $query, array $params = [], array $types = [])
     {
         return $this->connection->fetchAssociative($query, $params, $types);
@@ -109,7 +126,6 @@ class Connection implements ConnectionInterface
     public function getColumns(string $table)
     {
         /** @var EntityManagerInterface $em */
-//        $em->getConnection()->get
         return $this->getSchemaManager()->listTableColumns($table);
     }
 
