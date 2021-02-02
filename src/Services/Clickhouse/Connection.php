@@ -2,12 +2,8 @@
 
 namespace App\Services\Clickhouse;
 
-use App\ClickHouse\ClickHouseStatement;
-use ClickHouseDB\Client;
-use Doctrine\DBAL\Abstraction\Result;
 use Doctrine\ORM\EntityManagerInterface;
 use \FOD\DBALClickHouse\Connection as ClickHouseConnection;
-use Throwable;
 
 class Connection implements ConnectionInterface
 {
@@ -130,7 +126,6 @@ class Connection implements ConnectionInterface
     public function getColumns(string $table)
     {
         /** @var EntityManagerInterface $em */
-//        $em->getConnection()->get
         return $this->getSchemaManager()->listTableColumns($table);
     }
 
