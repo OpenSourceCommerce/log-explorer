@@ -7,25 +7,19 @@ namespace App\Services\Stream;
 use App\Entity\GraphLine;
 use App\Services\Clickhouse\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\Query\Expr;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class StreamService implements StreamServiceInterface
 {
     /** @var Connection */
     private $connection;
-    /** @var ParameterBagInterface */
-    private $parameterBag;
 
     /**
      * StreamService constructor.
      * @param Connection $connection
-     * @param ParameterBagInterface $parameterBag
      */
-    public function __construct(Connection $connection, ParameterBagInterface $parameterBag)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->parameterBag = $parameterBag;
     }
 
     /**
