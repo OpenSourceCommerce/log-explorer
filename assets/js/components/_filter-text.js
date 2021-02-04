@@ -30,6 +30,8 @@ export class FilterText extends Component {
     }
 
     handleChange(e) {
+        const { onChange } = this.props;
+        if (onChange) onChange(e);
         this.setState({
             value: e && e.target ? e.target.value : '',
             isInvalid: false

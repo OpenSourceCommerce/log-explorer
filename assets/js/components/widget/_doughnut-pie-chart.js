@@ -7,8 +7,7 @@ import {WidgetHeader} from "../index";
 
 export class DoughnutPieChart extends Component {
     componentDidMount() {
-        const {data, type = 'doughnut', id} = this.props;
-        console.log('id', id);
+        const {data, type = WIDGET_TYPE.doughnut, id = 'new'} = this.props;
         if (type === WIDGET_TYPE.doughnut || type === WIDGET_TYPE.pie) {
             const doughnutChartCanvas = $(`#chart${id}`).get(0).getContext('2d')
             const charData = {
@@ -27,7 +26,7 @@ export class DoughnutPieChart extends Component {
 
             const chart = new Chart(doughnutChartCanvas, {
                 //'pie', 'doughnut'
-                type,
+                type: WIDGET_TYPE.doughnut === type ? 'doughnut' : 'pie',
                 data: charData,
                 options: chartOptions
             })
@@ -35,14 +34,13 @@ export class DoughnutPieChart extends Component {
     }
 
     render() {
-        const {id, type, minHeight = '250', height = '250', className, widgetHeader} = this.props;
-        console.log('id', id);
+        const {id = 'new', type, minHeight = '250', height = '250', className, widgetHeader} = this.props;
         return (
             <>
                 <WidgetHeader header={widgetHeader}/>
                 <div className="card-body pt-0 pb-2">
                     <div className={`doughnut-pie-chart ${className || ''}`}>
-                        {WIDGET_TYPE[type] ?
+                        {type ?
                             <canvas id={`chart${id}`}
                                     min-height={minHeight}
                                     height={height}
