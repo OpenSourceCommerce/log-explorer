@@ -16,7 +16,7 @@ export class LogViewList extends Component {
         }
 
         return (
-            <div className={`log-view-list ${className}`} {...rest}>
+            <div className={`log-view-list ${className || ''}`} {...rest}>
                 <a className="title align-items-center d-inline-flex dropdon-toggle"
                     href="#"
                     id="navbarDropdown"

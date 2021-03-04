@@ -1,0 +1,6 @@
+.form-field {
+  .required:after {
+    content:" *";
+    color: red;
+  }
+}

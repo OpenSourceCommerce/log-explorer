@@ -4,16 +4,16 @@ import {Button, DoughnutPieChart, FilterDate, FilterText, Input} from "../index"
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
+import {DatabaseActions, WidgetActions} from "../../actions";
+import {isEqual} from "lodash";
+import {FormField} from "../_form-field";
 
-const WIDGET = {
-    placeHolder: 'Please select widget widgetType',
-    data: [
-        {label: 'Doughnut', value: WIDGET_TYPE.doughnut},
-        {label: 'Pie', value: WIDGET_TYPE.pie},
-        {label: 'Counter Sum', value: WIDGET_TYPE.counterSum},
-        {label: 'Table', value: WIDGET_TYPE.table},
-    ]
-}
+const WIDGET = [
+    {label: 'Doughnut', value: WIDGET_TYPE.doughnut},
+    {label: 'Pie', value: WIDGET_TYPE.pie},
+    {label: 'Counter Sum', value: WIDGET_TYPE.counterSum},
+    {label: 'Table', value: WIDGET_TYPE.table},
+]
 
 const DATA_FROM_API = [
     {label: 'Mobile', value: 2000},
@@ -26,51 +26,241 @@ export class WidgetManagement extends Component {
     constructor(props) {
         super(props);
 
-        // default Doughnut when user create new widget
+        // initial data will be data exist when user edit widget
         const initialData = {
-            layout: {i: '', x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-            dataWidget: [],
-            widgetHeader: '',
-            widgetType: WIDGET_TYPE.doughnut,
+            field: '',
+            order: '',
+            size: '',
+            table: '',
+            title: '',
+            type: ''
+            // field: "timestamp",
+            // order: "asc",
+            // size: 10,
+            // table: "nginx_access",
+            // title: "adsdasdasd",
+            // type: "4"
+        }
+        this.state = {
+            errors: {},
+            initialData,
+            widgetDetail: {
+                //layout: {i: '', x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
+                ...initialData,
+            },
+            isLoading: false,
         }
 
-        this.state = {
-            // currently only handle for add new not edit and only view permission
-            widgetDetail: {...initialData},
-            initialData,
-        }
+        this.onChangeData = this.onChangeData.bind(this);
+        this.addNew = this.addNew.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         /*
            When user wanna edit any widget, will be call API to get widget detail here
 
-
         */
-        // If create new widget we will use data below
+        this.setState({
+            isLoading: true,
+        });
 
-        const {widgetList} = this.props;
-        const widgetId = widgetList.length + 1;
+        const {widget} = this.props;
+        const {widgetDetail, initialData} = this.state;
+
+        const [
+            tableRes,
+            widgetDetailRes,
+        ] = await Promise.all([
+            DatabaseActions.getAllTable(),
+            widget && WidgetActions.loadWidget(widget),
+        ]);
+
+        let tables = [];
+
+        if (tableRes && tableRes.data && tableRes.data.length > 0) {
+            tables = tableRes.data.map(item => ({
+                value: item,
+                label: item
+            }))
+        }
+
+        let newWidgetDetail = {...widgetDetail};
+        let newInitialData = {...initialData};
+
+        if (widgetDetailRes && widgetDetailRes.data) {
+            newWidgetDetail = {...widgetDetailRes.data};
+            newInitialData = {...widgetDetailRes.data};
+
+        }
+
+        let columns = [];
+
+        if (widgetDetail && widgetDetail.table) {
+            const columnRes = await DatabaseActions.getTableColumns(widgetDetail.table);
+            columns = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
+                value: item.name,
+                label: item.name
+            })) : [];
+        }
 
         this.setState({
-            widgetId: widgetId.toString(),
-        })
+            tables,
+            columns,
+            widgetDetail: newWidgetDetail,
+            initialData: newInitialData,
+            isLoading: false,
+        });
+
+        // If create new widget we will use data below
+    }
+
+    async onChangeData({name, value}) {
+        if (name) {
+            const {errors} = this.state;
+
+            if (name === 'table') {
+                const columnRes = await DatabaseActions.getTableColumns(value);
+                const columns = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
+                    value: item.name,
+                    label: item.name
+                })) : [];
+
+                this.setState({columns});
+            }
+
+            let newErrorArray = {...errors};
+            if (value) {
+                // remove field in error if have value
+                newErrorArray = Object.keys({...errors}).reduce(function (obj, key) {
+                    if (key !== name) obj[key] = errors[key];
+                    return obj;
+                }, {});
+            } else {
+                newErrorArray = {
+                    ...newErrorArray,
+                    [name]: true,
+                }
+            }
+
+            this.setState((preState) => ({
+                widgetDetail: {
+                    ...preState.widgetDetail,
+                    [name]: value,
+                },
+                errors: {...newErrorArray},
+            }))
+        }
+    }
+
+    generateOption(data, field) {
+        let options = data;
+        if (field === 'order') {
+            options = [
+                {value: 'asc', label: 'Ascending'},
+                {value: 'desc', label: 'Descending'},
+            ]
+        } else if (field === 'size') {
+            options = [
+                {value: '1', label: '1'},
+                {value: '5', label: '5'},
+                {value: '10', label: '10'},
+                {value: '20', label: '20'},
+            ]
+        } else if (field === 'type') {
+            options = [...WIDGET]
+        }
+
+        if (options && options.length > 0) {
+            return (
+                <>
+                    <option value='' className='d-none'>{`Select ${field}`}</option>
+                    {options.map((item, index) => (
+                        <option value={item.value}
+                                key={index}
+                        >
+                            {item.label}
+                        </option>))}
+                </>
+            )
+        } else {
+            return null;
+        }
+    }
+
+    async addNew() {
+        // let layout;
+        const {widgetDetail} = this.state;
+        const {title, table, field, order, size, type, id} = this.state.widgetDetail;
+
+        let errors;
+        Object.entries(widgetDetail).forEach(([key, value]) => {
+            console.log(key, value)
+            if (!value) {
+                errors = {
+                    ...errors,
+                    [key]: true,
+                }
+            }
+        });
+
+        if (errors && Object.keys(errors).length > 0) {
+            this.setState({
+                errors,
+            });
+            console.log('errors', errors);
+            return;
+        }
+
+
+        console.log('widgetDetail', widgetDetail);
+
+        // switch (widgetType) {
+        //     case WIDGET_TYPE.doughnut:
+        //     case WIDGET_TYPE.pie: {
+        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2};
+        //         break;
+        //     }
+        //     case WIDGET_TYPE.counterSum: {
+        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1};
+        //         break;
+        //     }
+        //     case WIDGET_TYPE.table: {
+        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 3, minW: 3, minH: 3};
+        //         break;
+        //     }
+        // }
+
+        const resp = await WidgetActions.createOrUpdate(id, {
+            title,
+            type,
+        });
+
+        console.log(resp);
+        // after success set new data for initialData
 
     }
 
     render() {
-        const {widgetDetail, widgetId} = this.state;
+        const {
+            widgetDetail,
+            initialData,
+            tables,
+            columns,
+            defaultData,
+            errors,
+            isLoading
+        } = this.state;
 
-        const WidgetLayout = ({widgetDetail, widgetId}) => {
-            const {widgetType, widgetHeader, dataWidget} = widgetDetail;
+        const WidgetLayout = ({widgetDetail, id}) => {
+            const {type, title, dataWidget} = widgetDetail;
             let component;
-            switch (widgetType) {
+            switch (type) {
                 case WIDGET_TYPE.doughnut:
                 case WIDGET_TYPE.pie: {
                     component = <DoughnutPieChart
-                        id={widgetId}
-                        type={widgetType}
-                        widgetHeader={widgetHeader}
+                        id={id}
+                        type={type}
+                        widgetHeader={title}
                         data={dataWidget}
                         height='500'
                         minHeight='500'
@@ -80,7 +270,7 @@ export class WidgetManagement extends Component {
                 case WIDGET_TYPE.counterSum: {
                     component = <CounterSum
                         data={dataWidget}
-                        widgetHeader={widgetHeader}
+                        widgetHeader={title}
                     />
                     break;
                 }
@@ -88,7 +278,7 @@ export class WidgetManagement extends Component {
                     component = <WidgetTable
                         key={dataWidget}
                         data={dataWidget}
-                        widgetHeader={widgetHeader}
+                        widgetHeader={title}
                         isDashboardComponent={true}
                     />
                     break;
@@ -97,133 +287,139 @@ export class WidgetManagement extends Component {
             return component;
         };
 
-        const onChangeData = ({name, value}) => {
-            console.log({name, value});
-            this.setState((preState) => ({
-                widgetDetail: {
-                    ...preState.widgetDetail,
-                    [name]: value,
-                    layout: {
-                        ...preState.widgetDetail.layout,
-                    }
-                }
-            }))
-        }
-
-        const addNew = (widgetDetail, widgetId) => {
-            let layout;
-            const { widgetType, widgetHeader, query } = widgetDetail;
-
-            switch (widgetType) {
-                case WIDGET_TYPE.doughnut:
-                case WIDGET_TYPE.pie: {
-                    layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2};
-                    break;
-                }
-                case WIDGET_TYPE.counterSum: {
-                    layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1};
-                    break;
-                }
-                case WIDGET_TYPE.table: {
-                    layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 3, minW: 3, minH: 3};
-                    break;
-                }
-            }
-
-            this.props.addNew({
-                widgetQuery: query,
-                widgetHeader,
-                widgetType,
-            });
-
-            this.setState({
-                widgetId: parseInt(widgetId) + 1,
-                // widgetDetail: { ...this.state.initialData },
-            })
-        }
+        const {title, table, field, order, size, type} = widgetDetail;
 
         return (
             <div className="editable-widget">
-                <div className="filter-panel card">
-                    <div className="card-body row">
-                        <div className="col-12 col-md-8">
-                            <FilterText
-                                label="What are you looking for ?"
-                                placeholder="status = 200 AND url LIKE '%product%'"
-                                onChange={(e) => onChangeData(e.target)}
-                            />
-                        </div>
-                        {/*<div className="input-search col-12 col-md-3 mt-2 mt-md-0">*/}
-                        {/*    <FilterDate*/}
-                        {/*        label="Date Range"*/}
-                        {/*        onDateRangeChanged={(f, t) => console.log(f, t)}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
-                        <div className="col-6 col-md-2 btn-action-group mt-4 pr-0">
-                            <Button className="btn-search w-100 mt-0 mt-md-2"
-                                    onClick={() => addNew(widgetDetail, widgetId)}>
-                                Add new
-                            </Button>
-                        </div>
-                        <div className="col-6 col-md-2 btn-action-group mt-4">
-                            <Button className="btn-search w-100 mt-0 mt-md-2"
-                                    color="default"
-                                    onClick={() => console.log('Cancel clicked')}>
-                                Cancel
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-                {widgetDetail && widgetDetail.dataWidget ? (
-                    <div className="widget-panel row">
-                        <div className="select-widget-widgetType col-12 col-md-3">
+                {/*<div className="filter-panel card">*/}
+                {/*    <div className="card-body row">*/}
+                {/*        <div className="col-12 col-md-8">*/}
+                {/*            <FilterText*/}
+                {/*                label="What are you looking for ?"*/}
+                {/*                placeholder="status = 200 AND url LIKE '%product%'"*/}
+                {/*                onChange={(e) => onChangeData(e.target)}*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*        /!*<div className="input-search col-12 col-md-3 mt-2 mt-md-0">*!/*/}
+                {/*        /!*    <FilterDate*!/*/}
+                {/*        /!*        label="Date Range"*!/*/}
+                {/*        /!*        onDateRangeChanged={(f, t) => console.log(f, t)}*!/*/}
+                {/*        /!*    />*!/*/}
+                {/*        /!*</div>*!/*/}
+
+                {/*    </div>*/}
+                {/*</div>*/}
+                {isLoading ?
+                    (<span
+                        className="spinner-border spinner-border-sm mr-2"
+                        role="status" aria-hidden="true"></span>) :
+                    (<div className="widget-panel row">
+                        <div className="select-widget-widgetType col-12 col-md-4">
                             <div className="card">
                                 <div className="card-header pr-3 pl-3">Setting</div>
                                 <div className="card-body pr-2 pl-2">
                                     <div className="col-12">
-                                        <div className="header">
-                                            <div>
-                                                <p className="float-left mb-2">Header</p>
-                                            </div>
-                                            <Input
-                                                placeholder='Input header'
-                                                name="widgetHeader"
-                                                onBlur={(e) => onChangeData(e.target)}
-                                            />
-                                        </div>
-                                        <div className="widgetType">
-                                            <div>
-                                                <p className="float-left mb-2">Type</p>
-                                            </div>
-                                            <select
-                                                className="form-control"
-                                                aria-label="Default select"
-                                                name="widgetType"
-                                                defaultValue={widgetDetail.widgetType}
-                                                onChange={(e) => onChangeData(e.target, widgetId)}
+                                        <FormField
+                                            label='Header'
+                                            value={title}
+                                            placeholder='Input header'
+                                            fieldName='title'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            errors={errors}
+                                        />
+                                        <FormField
+                                            label='Datatable'
+                                            value={table}
+                                            fieldName='table'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                        >
+                                            {this.generateOption(tables, 'table')}
+                                        </FormField>
+                                        <FormField
+                                            label='Field'
+                                            value={field}
+                                            fieldName='field'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                            disabled={!table}
+                                        >
+                                            {this.generateOption(columns, 'column')}
+                                        </FormField>
+                                        <div className="row">
+                                            <FormField
+                                                className='col-12 col-md-6'
+                                                label='Order'
+                                                value={order}
+                                                fieldName='order'
+                                                onChange={(e) => this.onChangeData(e.target)}
+                                                isMandatory={true}
+                                                type='select'
+                                                errors={errors}
                                             >
-                                                {WIDGET.data.map((item, index) => (
-                                                    <option value={item.value}
-                                                            key={index}
-                                                    >
-                                                        {item.label}
-                                                    </option>))}
-                                            </select>
+                                                {this.generateOption(null, 'order')}
+                                            </FormField>
+                                            <FormField
+                                                className='col-12 col-md-6 pt-md-0'
+                                                label='Size'
+                                                value={size}
+                                                fieldName='size'
+                                                onChange={(e) => this.onChangeData(e.target)}
+                                                isMandatory={true}
+                                                type='select'
+                                                errors={errors}
+                                            >
+                                                {this.generateOption(null, 'size')}
+                                            </FormField>
+                                        </div>
+                                        <FormField
+                                            label='Type'
+                                            value={type}
+                                            fieldName='type'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                        >
+                                            {this.generateOption(null, 'type')}
+                                        </FormField>
+                                        <div className="row">
+                                            <div className="col-12 col-md-6 btn-action-group">
+                                                <Button className="btn-search w-100 mt-0 mt-md-2"
+                                                        onClick={() => this.addNew()}
+                                                        disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
+                                                >
+                                                    {`${widgetDetail.id ? 'Update' : 'Add new'}`}
+                                                </Button>
+                                            </div>
+                                            <div
+                                                className="col-12 col-md-6 btn-action-group pt-2 pt-md-0">
+                                                <Button className="btn-search w-100 mt-0 mt-md-2"
+                                                        color="default"
+                                                        onClick={() => history.back()}>
+                                                    Cancel
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="widget col-12 col-md-9">
+                        <div className="widget col-12 col-md-8">
                             <div className="card pb-5">
-                                {widgetDetail && widgetDetail.dataWidget && widgetDetail.dataWidget.length > 0 ?
-                                    <WidgetLayout widgetDetail={widgetDetail} widgetId={widgetId}/> :
+                                {defaultData && defaultData && defaultData.length > 0 ?
+                                    <WidgetLayout widgetDetail={defaultData} id={id}/> :
                                     <p className="text-center"> No data display.</p>
                                 }
                             </div>
                         </div>
-                    </div>
-                ) : <p className="text-center mt-5"> No data for display </p>}
+                    </div>)
+                }
             </div>
         );
     }
@@ -233,6 +429,5 @@ WidgetManagement.propTypes = {
     onChange: PropTypes.func,
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
-    className: PropTypes.string,
-    widgetList: PropTypes.array
+    className: PropTypes.string
 };

@@ -4,8 +4,8 @@ export const PAGE_NAME = {
 };
 
 export const WIDGET_TYPE = {
-    doughnut: 'doughnut',
-    pie: 'pie',
-    counterSum: 'counterSum',
-    table: 'table'
+    doughnut: '4',
+    pie: '2',
+    counterSum: '1',
+    table: '3'
 }
