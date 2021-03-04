@@ -3,17 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\WidgetRepository;
+use App\Widget\WidgetAttributesInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 
 /**
  * @ORM\Entity(repositoryClass=WidgetRepository::class)
  * @ORM\Table(name="widgets")
  * @ORM\HasLifecycleCallbacks
  */
-class Widget implements \JsonSerializable
+class Widget implements \JsonSerializable, WidgetAttributesInterface
 {
     /**
      * @ORM\Id
@@ -33,9 +33,24 @@ class Widget implements \JsonSerializable
     private $type;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(name="from_table", type="string", length=255)
      */
-    private $query;
+    private $table;
+
+    /**
+     * @ORM\Column(name="select_column", type="string", length=255, nullable=true)
+     */
+    private $column;
+
+    /**
+     * @ORM\Column(name="order_desc", type="boolean", options = {"default": 1})
+     */
+    private $orderDesc;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $size;
 
     /**
      * @ORM\Column(name="created_at", type="datetime")
@@ -82,18 +97,6 @@ class Widget implements \JsonSerializable
     public function setType(int $type): self
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getQuery(): ?string
-    {
-        return $this->query;
-    }
-
-    public function setQuery(string $query): self
-    {
-        $this->query = $query;
 
         return $this;
     }
@@ -167,8 +170,59 @@ class Widget implements \JsonSerializable
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'type' => $this->getType(),
-            'query' => $this->getQuery(),
+            'table' => $this->getTable(),
+            'column' => $this->getColumn(),
+            'order_desc' => $this->isOrderDesc(),
+            'size' => $this->getSize(),
             'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
         ];
+    }
+
+    public function getTable(): ?string
+    {
+        return $this->table;
+    }
+
+    public function setTable(string $table): self
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    public function getColumn(): ?string
+    {
+        return $this->column;
+    }
+
+    public function setColumn(string $column): self
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+    public function isOrderDesc(): ?bool
+    {
+        return $this->orderDesc;
+    }
+
+    public function setIsOrderDesc(bool $orderDesc): self
+    {
+        $this->orderDesc = $orderDesc;
+
+        return $this;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
+    }
+
+    public function setSize(?int $size): self
+    {
+        $this->size = $size;
+
+        return $this;
     }
 }

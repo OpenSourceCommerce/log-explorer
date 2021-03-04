@@ -11,6 +11,7 @@ use App\Entity\Widget;
 use App\Helper\ColumnHelper;
 use App\Helper\StringHelper;
 use App\Services\Dashboard\DashboardServiceInterface;
+use App\Services\Database\DatabaseServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use App\Services\Widget\WidgetServiceInterface;
@@ -245,23 +246,21 @@ class StreamController extends ApiController
      * @param Dashboard $dashboard
      * @param Widget $widget
      * @param WidgetServiceInterface $widgetService
-     * @Entity("widget", expr="repository.find(widget_id)")
+     * @param StreamServiceInterface $streamService
      * @return JsonResponse
+     * @Entity("widget", expr="repository.find(widget_id)")
      */
-    public function widget(Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService): JsonResponse
+    public function widget(Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService, StreamServiceInterface $streamService): JsonResponse
     {
         // this is public API so uuid just used to prevent scan by widget_id
-        $isOk = false;
         foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
-            if ($dashboardWidget->getDashboard()->getId() === $dashboard->getId()) {
-                $isOk = true;
-                break;
+            if ($dashboardWidget->getDashboard()->getId() !== $dashboard->getId()) {
+                return $this->responseError('Invalid request');
             }
         }
-        if (!$isOk) {
-            return $this->responseError('Invalid request');
-        }
-        $data = $widgetService->getWidgetData($widget);
+        $widgetItem = $widgetService->getWidgetInterface($widget);
+        $data = $streamService->getWidgetData($dashboard, $widgetItem);
+
         return $this->responseSuccess([
             'data' => $data,
         ]);

@@ -4,11 +4,13 @@
 namespace App\Services\Widget;
 
 
+use App\Entity\Dashboard;
 use App\Entity\Widget;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 use App\Exceptions\NoDataException;
 use App\Widget\WidgetInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 interface WidgetServiceInterface
 {
@@ -19,23 +21,16 @@ interface WidgetServiceInterface
     public function getWidgets(array $options = []): array;
 
     /**
-     * @param WidgetInterface $data
+     * @param Widget $widget
      * @return Widget
-     * @throws ActionDeniedException
-     * @throws BadSqlException
-     * @throws NoDataException
      */
-    public function createWidget(WidgetInterface $data): Widget;
+    public function createWidget(Widget $widget): Widget;
 
     /**
      * @param Widget $widget
-     * @param WidgetInterface $data
      * @return Widget
-     * @throws ActionDeniedException
-     * @throws BadSqlException
-     * @throws NoDataException
      */
-    public function updateWidget(Widget $widget, WidgetInterface $data): Widget;
+    public function updateWidget(Widget $widget): Widget;
 
     /**
      * @param Widget $widget
@@ -46,5 +41,5 @@ interface WidgetServiceInterface
      * @param Widget $entity
      * @return mixed
      */
-    public function getWidgetData(Widget $entity);
+    public function getWidgetInterface(Widget $entity): WidgetInterface;
 }

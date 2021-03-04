@@ -15,6 +15,12 @@ interface WidgetIterationInterface
     public function getWidgets(): array;
 
     /**
+     * @param int $type
+     * @return WidgetInterface
+     */
+    public function widgetFromType(int $type): WidgetInterface;
+
+    /**
      * @param Widget $entity
      * @return WidgetInterface
      */

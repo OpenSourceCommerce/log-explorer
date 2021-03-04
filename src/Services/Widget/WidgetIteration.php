@@ -14,6 +14,7 @@ use App\Widget\WidgetInterface;
 
 class WidgetIteration implements WidgetIterationInterface
 {
+    /** @var WidgetInterface[]|array */
     private $list;
 
     public function __construct(Connection $connection)
@@ -26,7 +27,11 @@ class WidgetIteration implements WidgetIterationInterface
         ];
     }
 
-    private function widgetFromType(int $type): WidgetInterface
+    /**
+     * @param int $type
+     * @return WidgetInterface
+     */
+    public function widgetFromType(int $type): WidgetInterface
     {
         /** @var WidgetInterface $item */
         foreach ($this->list as $item) {
@@ -51,8 +56,7 @@ class WidgetIteration implements WidgetIterationInterface
     public function getWidgetFromEntity(Widget $entity): WidgetInterface
     {
         $widget = $this->widgetFromType($entity->getType());
-        $widget->setTitle($entity->getTitle());
-        $widget->setQuery($entity->getQuery());
+        $widget->setAttributes($entity);
         return $widget;
     }
 }

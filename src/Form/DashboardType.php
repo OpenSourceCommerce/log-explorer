@@ -19,6 +19,8 @@ class DashboardType extends AbstractType
                     new NotBlank(),
                 ]
             ])
+            ->add('query', TextType::class, [
+            ])
         ;
     }
 

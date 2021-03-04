@@ -36,6 +36,11 @@ class Dashboard implements \JsonSerializable
     private $title;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $query;
+
+    /**
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
@@ -149,5 +154,17 @@ class Dashboard implements \JsonSerializable
             'uuid' => $this->getUuid()->toString(),
             'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
         ];
+    }
+
+    public function getQuery(): ?string
+    {
+        return $this->query;
+    }
+
+    public function setQuery(?string $query): self
+    {
+        $this->query = $query;
+
+        return $this;
     }
 }

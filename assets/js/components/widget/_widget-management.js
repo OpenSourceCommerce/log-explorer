@@ -193,15 +193,15 @@ export class WidgetManagement extends Component {
         const {title, table, field, order, size, type, id} = this.state.widgetDetail;
 
         let errors;
-        Object.entries(widgetDetail).forEach(([key, value]) => {
-            console.log(key, value)
-            if (!value) {
-                errors = {
-                    ...errors,
-                    [key]: true,
-                }
-            }
-        });
+        // Object.entries(widgetDetail).forEach(([key, value]) => {
+        //     console.log(key, value)
+        //     if (!value) {
+        //         errors = {
+        //             ...errors,
+        //             [key]: true,
+        //         }
+        //     }
+        // });
 
         if (errors && Object.keys(errors).length > 0) {
             this.setState({
@@ -230,10 +230,16 @@ export class WidgetManagement extends Component {
         //     }
         // }
 
-        const resp = await WidgetActions.createOrUpdate(id, {
+        let data = {
             title,
             type,
-        });
+            table,
+            column: field,
+            isOrderDesc: order === 'desc',
+            size,
+        }
+
+        const resp = await WidgetActions.createOrUpdate(id, data);
 
         console.log(resp);
         // after success set new data for initialData
@@ -344,7 +350,7 @@ export class WidgetManagement extends Component {
                                             value={field}
                                             fieldName='field'
                                             onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={true}
+                                            isMandatory={false}
                                             type='select'
                                             errors={errors}
                                             disabled={!table}
@@ -370,7 +376,7 @@ export class WidgetManagement extends Component {
                                                 value={size}
                                                 fieldName='size'
                                                 onChange={(e) => this.onChangeData(e.target)}
-                                                isMandatory={true}
+                                                isMandatory={false}
                                                 type='select'
                                                 errors={errors}
                                             >

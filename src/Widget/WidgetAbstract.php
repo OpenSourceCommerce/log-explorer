@@ -4,16 +4,16 @@
 namespace App\Widget;
 
 
-use App\Exceptions\BadSqlException;
-use App\Exceptions\NoDataException;
 use App\Services\Clickhouse\Connection;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 abstract class WidgetAbstract implements WidgetInterface
 {
-    private $title;
-    private $query;
+    /** @var Connection */
     private $connection;
+
+    /** @var WidgetAttributesInterface */
+    protected $attributes;
 
     public function __construct(Connection $connection)
     {
@@ -21,71 +21,28 @@ abstract class WidgetAbstract implements WidgetInterface
     }
 
     /**
-     * @param string $title
-     * @return WidgetInterface
+     * @inheritDoc
      */
-    public function setTitle(string $title): WidgetInterface
+    public function hasSingleResult(): bool
     {
-        $this->title = $title;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $query
-     * @return WidgetInterface
-     */
-    public function setQuery(string $query): WidgetInterface
-    {
-        $this->query = $query;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getQuery(): string
-    {
-        return $this->query;
+        return false;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValid(): bool
+    public function setAttributes(WidgetAttributesInterface $attributes)
     {
-        try {
-            $data = $this->connection->fetchAll($this->getQuery());
-        } catch (Exception $e) {
-            throw new BadSqlException('Invalid input query');
-        }
-        if (empty($data)) {
-            throw new NoDataException('No data return so query can not be validate');
-        }
-        if (!$this->isValidData($data)) {
-            throw new BadSqlException('Invalid select query');
-        }
-        return true;
+        $this->attributes = $attributes;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getData()
+    public function getAttributes(): ?WidgetAttributesInterface
     {
-        return $this->connection->fetchAll($this->getQuery());
+        return $this->attributes;
     }
 
-    /**
-     * @param array $data
-     * @return bool
-     */
-    protected abstract function isValidData(array $data): bool;
+    protected function createQueryBuilder(): QueryBuilder
+    {
+        return $this->connection->createQueryBuilder();
+    }
 }

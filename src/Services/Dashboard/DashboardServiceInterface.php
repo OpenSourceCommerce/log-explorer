@@ -9,6 +9,7 @@ use App\Entity\DashboardWidget;
 use App\Entity\Widget;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 interface DashboardServiceInterface
 {

@@ -4,8 +4,10 @@
 namespace App\Services\Stream;
 
 
+use App\Entity\Dashboard;
 use App\Entity\GraphLine;
 use App\Services\Clickhouse\Connection;
+use App\Widget\WidgetInterface;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 
@@ -200,5 +202,25 @@ class StreamService implements StreamServiceInterface
         return $builder->select('COUNT()')
             ->execute()
             ->fetchColumn();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem)
+    {
+        $builder = $widgetItem->getQueryBuilder();
+        if ($dashboard->getQuery()) {
+            $builder->andWhere($dashboard->getQuery());
+        }
+        if ($widgetItem->hasSingleResult()) {
+            return $builder
+                ->execute()
+                ->fetchColumn();
+        } else {
+            return $builder
+                ->execute()
+                ->fetchAll();
+        }
     }
 }

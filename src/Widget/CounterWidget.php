@@ -5,10 +5,10 @@ namespace App\Widget;
 
 
 use App\Constant\WidgetConstant;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class CounterWidget extends WidgetAbstract
 {
-
     /**
      * @inheritDoc
      */
@@ -28,24 +28,20 @@ class CounterWidget extends WidgetAbstract
     /**
      * @inheritDoc
      */
-    protected function isValidData(array $data): bool
+    public function hasSingleResult(): bool
     {
-        if (count($data) !== 1) {
-            return false;
-        }
-        $row = $data[0];
-        if (count($row) !== 1) {
-            return false;
-        }
         return true;
     }
 
-    public function getData()
+    /**
+     * @inheritDoc
+     */
+    public function getQueryBuilder(): QueryBuilder
     {
-        $data = parent::getData();
-        if (!empty($data)) {
-            return reset($data[0]);
-        }
-        return null;
+        return $this->createQueryBuilder()
+            ->select('COUNT() AS value')
+            ->from($this->attributes->getTable())
+            ->orderBy('value', 'DESC')
+            ;
     }
 }

@@ -6,7 +6,7 @@ namespace App\Widget;
 
 use App\Constant\WidgetConstant;
 
-class PieChartWidget extends WidgetAbstract
+class PieChartWidget extends TableWidget
 {
 
     /**
@@ -23,17 +23,5 @@ class PieChartWidget extends WidgetAbstract
     public function getName(): string
     {
         return WidgetConstant::NAME_PIE_CHART;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function isValidData(array $data): bool
-    {
-        $row = reset($data);
-        if (count($row) !== 2) {
-            return false;
-        }
-        return isset($row['label']) && isset($row['value']);
     }
 }

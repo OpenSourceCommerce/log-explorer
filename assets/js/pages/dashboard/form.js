@@ -4,6 +4,7 @@ import {Button, ResponsiveGridLayout, Select2, FormField, Icon} from '../../comp
 import '../../../styles/component/_dashboard-form.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {isEqual} from "lodash";
+import {DashboardActions} from "../../actions";
 
 class DashboardPage extends Component {
     constructor(props) {
@@ -65,20 +66,22 @@ class DashboardPage extends Component {
         const {dashboard} = this.state;
         const { title } = dashboard;
 
-        if (!title) {
-            this.setState({
-                errors: {
-                    title: true,
-                }
-            });
-            return;
-        } else {
-            // if save success
-            this.setState({
-                errors: {},
-                initialData: {...dashboard}
-            })
-        }
+        DashboardActions.createOrUpdate(null, {title});
+
+        // if (!title) {
+        //     this.setState({
+        //         errors: {
+        //             title: true,
+        //         }
+        //     });
+        //     return;
+        // } else {
+        //     // if save success
+        //     this.setState({
+        //         errors: {},
+        //         initialData: {...dashboard}
+        //     })
+        // }
     }
 
     render() {

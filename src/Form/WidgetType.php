@@ -2,17 +2,18 @@
 
 namespace App\Form;
 
+use App\Entity\Widget;
 use App\Services\Widget\WidgetIterationInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataMapperInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class WidgetType extends AbstractType implements DataMapperInterface
+class WidgetType extends AbstractType
 {
     /** @var WidgetIterationInterface */
     private $widgetIteration;
@@ -45,12 +46,17 @@ class WidgetType extends AbstractType implements DataMapperInterface
                     new NotBlank(),
                 ]
             ])
-            ->add('query', TextType::class, [
+            ->add('table', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
                 ]
             ])
-            ->setDataMapper($this)
+            ->add('column', TextType::class, [
+            ])
+            ->add('isOrderDesc', CheckboxType::class, [
+            ])
+            ->add('size', NumberType::class, [
+            ])
         ;
     }
 
@@ -60,34 +66,7 @@ class WidgetType extends AbstractType implements DataMapperInterface
             // Configure your form options here
             'allow_extra_fields' => true,
             'csrf_protection' => false,
+            'data_class' => Widget::class
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function mapDataToForms($viewData, iterable $forms)
-    {
-        // ignore
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function mapFormsToData(iterable $forms, &$viewData)
-    {
-        /** @var FormInterface[] $forms */
-        $forms = iterator_to_array($forms);
-        $type = $forms['type']->getData();
-        $title = $forms['title']->getData();
-        $query = $forms['query']->getData();
-        foreach ($this->widgetIteration->getWidgets() as $item) {
-            if ($item->getType() === $type) {
-                $viewData = $item;
-                break;
-            }
-        }
-        $viewData->setTitle($title);
-        $viewData->setQuery($query);
     }
 }

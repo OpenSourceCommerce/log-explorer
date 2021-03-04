@@ -4,9 +4,11 @@
 namespace App\Services\Widget;
 
 
+use App\Entity\Dashboard;
 use App\Entity\Widget;
 use App\Repository\WidgetRepository;
 use App\Widget\WidgetInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 
@@ -34,13 +36,9 @@ class WidgetService implements WidgetServiceInterface
     /**
      * @inheritDoc
      */
-    public function createWidget(WidgetInterface $data): Widget
+    public function createWidget(Widget $widget): Widget
     {
-        $data->isValid();
-        $widget = new Widget();
-        $widget->setTitle($data->getTitle());
-        $widget->setType($data->getType());
-        $widget->setQuery($data->getQuery());
+        $this->validateTable($widget);
         $this->em->persist($widget);
         $this->em->flush();
         return $widget;
@@ -49,11 +47,8 @@ class WidgetService implements WidgetServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateWidget(Widget $widget, WidgetInterface $data): Widget
+    public function updateWidget(Widget $widget): Widget
     {
-        $data->isValid();
-        $widget->setTitle($data->getTitle());
-        $widget->setQuery($data->getQuery());
         $this->em->persist($widget);
         $this->em->flush();
         return $widget;
@@ -82,9 +77,8 @@ class WidgetService implements WidgetServiceInterface
     /**
      * @inheritDoc
      */
-    public function getWidgetData(Widget $entity)
+    public function getWidgetInterface(Widget $entity): WidgetInterface
     {
-        $widget = $this->widgetIteration->getWidgetFromEntity($entity);
-        return $widget->getData();
+        return $this->widgetIteration->getWidgetFromEntity($entity);
     }
 }

@@ -4,9 +4,7 @@
 namespace App\Widget;
 
 
-use App\Exceptions\BadSqlException;
-use App\Exceptions\NoDataException;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 interface WidgetInterface
 {
@@ -21,38 +19,24 @@ interface WidgetInterface
     public function getName(): string;
 
     /**
-     * @param string $title
-     * @return self
+     * If this widget has single result like COUNT
      */
-    public function setTitle(string $title): self;
+    public function hasSingleResult(): bool;
 
     /**
-     * @return string
+     * Set widget attributes
+     * @param WidgetAttributesInterface $attributes
      */
-    public function getTitle(): string;
+    public function setAttributes(WidgetAttributesInterface $attributes);
 
     /**
-     * @param string $query
-     * @return self
+     * Get widget attributes
+     * @return WidgetAttributesInterface|null
      */
-    public function setQuery(string $query): self;
+    public function getAttributes(): ?WidgetAttributesInterface;
 
     /**
-     * @return string
+     * @return QueryBuilder
      */
-    public function getQuery(): string;
-
-    /**
-     * Get query data
-     * @return mixed
-     * @throws Exception
-     */
-    public function getData();
-
-    /**
-     * @return bool
-     * @throws BadSqlException
-     * @throws NoDataException
-     */
-    public function isValid(): bool;
+    public function getQueryBuilder(): QueryBuilder;
 }

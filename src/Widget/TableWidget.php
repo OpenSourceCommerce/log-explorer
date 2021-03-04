@@ -5,6 +5,7 @@ namespace App\Widget;
 
 
 use App\Constant\WidgetConstant;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class TableWidget extends WidgetAbstract
 {
@@ -28,12 +29,18 @@ class TableWidget extends WidgetAbstract
     /**
      * @inheritDoc
      */
-    protected function isValidData(array $data): bool
+    public function getQueryBuilder(): QueryBuilder
     {
-        $row = reset($data);
-        if (count($row) !== 2) {
-            return false;
+        $builder = $this->createQueryBuilder()
+            ->select($this->attributes->getColumn().' AS label')
+            ->addSelect('COUNT() AS value')
+            ->from($this->attributes->getTable())
+            ->groupBy($this->attributes->getColumn())
+            ->orderBy('value', $this->attributes->isOrderDesc() ? 'DESC' : 'ASC')
+            ;
+        if ($this->attributes->getSize()) {
+            $builder->setMaxResults($this->attributes->getSize());
         }
-        return isset($row['label']) && isset($row['value']);
+        return $builder;
     }
 }
