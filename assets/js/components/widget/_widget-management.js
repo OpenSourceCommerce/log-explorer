@@ -6,6 +6,7 @@ import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
 import {DatabaseActions, WidgetActions} from "../../actions";
 import {isEqual} from "lodash";
+import {FormField} from "../_form-field";
 
 const WIDGET = [
     {label: 'Doughnut', value: WIDGET_TYPE.doughnut},
@@ -25,11 +26,14 @@ export class WidgetManagement extends Component {
     constructor(props) {
         super(props);
 
+        // initial data will be data exist when user edit widget
         const initialData = {
+            field: '',
+            order: '',
+            size: '',
+            table: '',
             title: '',
-            type: WIDGET_TYPE.doughnut,
-            size: 10,
-            order: 'asc'
+            type: ''
             // field: "timestamp",
             // order: "asc",
             // size: 10,
@@ -126,7 +130,11 @@ export class WidgetManagement extends Component {
 
             let newErrorArray = {...errors};
             if (value) {
-                delete newErrorArray[name];
+                // remove field in error if have value
+                newErrorArray = Object.keys({...errors}).reduce(function (obj, key) {
+                    if (key !== name) obj[key] = errors[key];
+                    return obj;
+                }, {});
             } else {
                 newErrorArray = {
                     ...newErrorArray,
@@ -179,10 +187,10 @@ export class WidgetManagement extends Component {
         }
     }
 
-    addNew() {
+    async addNew() {
         // let layout;
         const {widgetDetail} = this.state;
-        const {title, table, field, order, size, type} = this.state.widgetDetail;
+        const {title, table, field, order, size, type, id} = this.state.widgetDetail;
 
         let errors;
         Object.entries(widgetDetail).forEach(([key, value]) => {
@@ -199,7 +207,7 @@ export class WidgetManagement extends Component {
             this.setState({
                 errors,
             });
-            console.log(errors)
+            console.log('errors', errors);
             return;
         }
 
@@ -222,11 +230,13 @@ export class WidgetManagement extends Component {
         //     }
         // }
 
-        // WidgetActions.createOrUpdate(id, {
-        //     title,
-        //     type,
-        //     query,
-        // })
+        const resp = await WidgetActions.createOrUpdate(id, {
+            title,
+            type,
+        });
+
+        console.log(resp);
+        // after success set new data for initialData
 
     }
 
@@ -279,8 +289,6 @@ export class WidgetManagement extends Component {
 
         const {title, table, field, order, size, type} = widgetDetail;
 
-        console.log('table', table);
-        console.log('table', tables);
         return (
             <div className="editable-widget">
                 {/*<div className="filter-panel card">*/}
@@ -311,90 +319,75 @@ export class WidgetManagement extends Component {
                                 <div className="card-header pr-3 pl-3">Setting</div>
                                 <div className="card-body pr-2 pl-2">
                                     <div className="col-12">
-                                        <div className="header form-group">
-                                            <label>Header</label>
-                                            <Input
-                                                className={`${errors.title && 'is-invalid'}`}
-                                                placeholder='Input header'
-                                                name="title"
-                                                defaultValue={title}
-                                                onBlur={(e) => this.onChangeData(e.target)}
-                                            />
-                                            {errors.title && <span id="exampleInputPassword1-error"
-                                                                   className="error invalid-feedback">Please provide a tittle</span>}
-                                        </div>
-                                        <div className="widgetTable form-group">
-                                            <label>Datatable</label>
-                                            <select
-                                                className="form-control"
-                                                aria-label="Default select"
-                                                name="table"
-                                                defaultValue={table}
+                                        <FormField
+                                            label='Header'
+                                            value={title}
+                                            placeholder='Input header'
+                                            fieldName='title'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            errors={errors}
+                                        />
+                                        <FormField
+                                            label='Datatable'
+                                            value={table}
+                                            fieldName='table'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                        >
+                                            {this.generateOption(tables, 'table')}
+                                        </FormField>
+                                        <FormField
+                                            label='Field'
+                                            value={field}
+                                            fieldName='field'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                            disabled={!table}
+                                        >
+                                            {this.generateOption(columns, 'column')}
+                                        </FormField>
+                                        <div className="row">
+                                            <FormField
+                                                className='col-12 col-md-6'
+                                                label='Order'
+                                                value={order}
+                                                fieldName='order'
                                                 onChange={(e) => this.onChangeData(e.target)}
+                                                isMandatory={true}
+                                                type='select'
+                                                errors={errors}
                                             >
-                                                {this.generateOption(tables, 'table')}
-                                            </select>
-                                            <span id="exampleInputPassword1-error"
-                                                  className="error invalid-feedback">Please provide a table</span>
-                                        </div>
-                                        <div className=" widgetTable form-group">
-                                            <label>Field</label>
-                                            <select
-                                                className="form-control"
-                                                aria-label="Default select"
-                                                name="field"
-                                                value={field}
+                                                {this.generateOption(null, 'order')}
+                                            </FormField>
+                                            <FormField
+                                                className='col-12 col-md-6 pt-md-0'
+                                                label='Size'
+                                                value={size}
+                                                fieldName='size'
                                                 onChange={(e) => this.onChangeData(e.target)}
+                                                isMandatory={true}
+                                                type='select'
+                                                errors={errors}
                                             >
-                                                {this.generateOption(columns, 'column')}
-                                            </select>
-                                            <span id="exampleInputPassword1-error"
-                                                  className="error invalid-feedback">Please provide a field</span>
+                                                {this.generateOption(null, 'size')}
+                                            </FormField>
                                         </div>
-                                        <div className=" row">
-                                            <div className="col-12 col-md-6 form-group">
-                                                <label>Order</label>
-                                                <select
-                                                    className="form-control"
-                                                    aria-label="Default select"
-                                                    name="order"
-                                                    defaultValue={order}
-                                                    onChange={(e) => this.onChangeData(e.target)}
-                                                >
-                                                    {this.generateOption(null, 'order')}
-                                                </select>
-                                                <span id="exampleInputPassword1-error"
-                                                      className="error invalid-feedback">Please provide a order</span>
-                                            </div>
-                                            <div className="col-12 col-md-6  pt-md-0 form-group">
-                                                <label>Size</label>
-                                                <select
-                                                    className="form-control"
-                                                    aria-label="Default select"
-                                                    name="size"
-                                                    defaultValue={size}
-                                                    onChange={(e) => this.onChangeData(e.target)}
-                                                >
-                                                    {this.generateOption(null, 'size')}
-                                                </select>
-                                                <span id="exampleInputPassword1-error"
-                                                      className="error invalid-feedback">Please provide a size</span>
-                                            </div>
-                                        </div>
-                                        <div className=" widgetType form-group">
-                                            <label>Type</label>
-                                            <select
-                                                className="form-control"
-                                                aria-label="Default select"
-                                                name="type"
-                                                defaultValue={type}
-                                                onChange={(e) => this.onChangeData(e.target)}
-                                            >
-                                                {this.generateOption(null, 'type')}
-                                            </select>
-                                            <span id="exampleInputPassword1-error"
-                                                  className="error invalid-feedback">Please provide a type</span>
-                                        </div>
+                                        <FormField
+                                            label='Type'
+                                            value={type}
+                                            fieldName='type'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                        >
+                                            {this.generateOption(null, 'type')}
+                                        </FormField>
                                         <div className="row">
                                             <div className="col-12 col-md-6 btn-action-group">
                                                 <Button className="btn-search w-100 mt-0 mt-md-2"
