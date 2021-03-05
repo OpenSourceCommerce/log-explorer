@@ -38,7 +38,6 @@ class WidgetService implements WidgetServiceInterface
      */
     public function createWidget(Widget $widget): Widget
     {
-        $this->validateTable($widget);
         $this->em->persist($widget);
         $this->em->flush();
         return $widget;
