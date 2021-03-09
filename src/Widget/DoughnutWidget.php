@@ -6,7 +6,7 @@ namespace App\Widget;
 
 use App\Constant\WidgetConstant;
 
-class DoughnutWidget extends TableWidget
+class DoughnutWidget extends PieChartWidget
 {
 
     /**

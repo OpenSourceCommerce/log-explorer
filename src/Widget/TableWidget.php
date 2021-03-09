@@ -21,6 +21,22 @@ class TableWidget extends WidgetAbstract
     /**
      * @inheritDoc
      */
+    public function getMinWidth(): int
+    {
+        return 3;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMinHeight(): int
+    {
+        return 3;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return WidgetConstant::NAME_TABLE;
@@ -40,6 +56,9 @@ class TableWidget extends WidgetAbstract
             ;
         if ($this->attributes->getSize()) {
             $builder->setMaxResults($this->attributes->getSize());
+        }
+        if ($this->attributes->getQuery()) {
+            $builder->andWhere($this->attributes->getQuery());
         }
         return $builder;
     }

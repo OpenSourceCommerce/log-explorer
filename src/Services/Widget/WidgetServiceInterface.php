@@ -21,6 +21,12 @@ interface WidgetServiceInterface
     public function getWidgets(array $options = []): array;
 
     /**
+     * @param array $options
+     * @return array|Widget[]
+     */
+    public function getWidgetIds(array $options = []): array;
+
+    /**
      * @param Widget $widget
      * @return Widget
      */
@@ -42,4 +48,16 @@ interface WidgetServiceInterface
      * @return mixed
      */
     public function getWidgetInterface(Widget $entity): WidgetInterface;
+
+    /**
+     * @param array $ids
+     * @return bool
+     */
+    public function checkWidgetIdSameTable(array $ids): bool;
+
+    /**
+     * @param array $ids
+     * @return Widget[]|array
+     */
+    public function getAllByIds(array $ids): array;
 }

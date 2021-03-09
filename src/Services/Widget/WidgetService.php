@@ -64,6 +64,14 @@ class WidgetService implements WidgetServiceInterface
     /**
      * @inheritDoc
      */
+    public function getWidgetIds(array $options = []): array
+    {
+        return $this->getRepository()->getAllId($options);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function delete(Widget $widget)
     {
         foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
@@ -79,5 +87,21 @@ class WidgetService implements WidgetServiceInterface
     public function getWidgetInterface(Widget $entity): WidgetInterface
     {
         return $this->widgetIteration->getWidgetFromEntity($entity);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkWidgetIdSameTable(array $ids): bool
+    {
+        return $this->getRepository()->checkWidgetIdSameTable($ids);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllByIds(array $ids): array
+    {
+        return $this->getRepository()->getAllByIds($ids);
     }
 }

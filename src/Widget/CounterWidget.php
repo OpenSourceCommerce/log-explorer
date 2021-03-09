@@ -20,6 +20,22 @@ class CounterWidget extends WidgetAbstract
     /**
      * @inheritDoc
      */
+    public function getMinWidth(): int
+    {
+        return 3;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMinHeight(): int
+    {
+        return 1;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return WidgetConstant::NAME_COUNTER;
@@ -38,10 +54,14 @@ class CounterWidget extends WidgetAbstract
      */
     public function getQueryBuilder(): QueryBuilder
     {
-        return $this->createQueryBuilder()
+        $builder = $this->createQueryBuilder()
             ->select('COUNT() AS value')
             ->from($this->attributes->getTable())
             ->orderBy('value', 'DESC')
             ;
+        if ($this->attributes->getQuery()) {
+            $builder->andWhere($this->attributes->getQuery());
+        }
+        return $builder;
     }
 }

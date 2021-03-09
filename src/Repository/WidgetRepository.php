@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Widget;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,30 @@ class WidgetRepository extends ServiceEntityRepository
         parent::__construct($registry, Widget::class);
     }
 
-    // /**
-    //  * @return Widget[] Returns an array of Widget objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getAllId($options = []): array
     {
         return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('w.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('id')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getArrayResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Widget
+    public function getAllByIds($ids = []): array
     {
         return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
+            ->where((new Expr())->in('w.id', $ids))
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    public function checkWidgetIdSameTable(array $ids): bool
+    {
+        $tables = $this->createQueryBuilder('w')
+            ->select('from_table')
+            ->where((new Expr())->in('id', $ids))
+            ->groupBy('from_table')
+            ->getQuery()
+            ->getArrayResult();
+        return count($tables) === 1;
+    }
 }

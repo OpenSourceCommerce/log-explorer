@@ -9,6 +9,7 @@ use App\Entity\Widget;
 use App\Form\DashboardType;
 use App\Form\DashboardWidgetType;
 use App\Services\Dashboard\DashboardServiceInterface;
+use App\Services\Widget\WidgetServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -47,10 +48,15 @@ class DashboardController extends ApiController
      * @Route("/api/dashboard/create", methods = "POST")
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
+     * @param WidgetServiceInterface $widgetService
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    public function create(Request $request, DashboardServiceInterface $dashboardService, UrlGeneratorInterface $urlGenerator): JsonResponse
+    public function create(
+        Request $request,
+        DashboardServiceInterface $dashboardService,
+        WidgetServiceInterface $widgetService,
+        UrlGeneratorInterface $urlGenerator): JsonResponse
     {
         $data = $request->request->all();
         $form = $this->createForm(DashboardType::class);
@@ -58,7 +64,9 @@ class DashboardController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dashboard = $form->getData();
-            $dashboard = $dashboardService->createDashboard($dashboard);
+            $widgetIds = $form->get('widgets')->getData();
+            $widgets = $widgetService->getAllByIds($widgetIds);
+            $dashboard = $dashboardService->createDashboard($dashboard, $widgets);
 
             return $this->responseSuccess([
                 'redirect' => $urlGenerator->generate('dashboard_edit', ['id' => $dashboard->getId()]),
