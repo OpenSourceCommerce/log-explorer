@@ -168,10 +168,13 @@ ORDER BY timestamp\n";
     /**
      * @inheritDoc
      */
-    public function checkColumnBelongToTable(string $table, string $column): bool
+    public function checkColumnBelongToTable(string $table, ?string $column): bool
     {
         if (!$this->connection->tableExists($table)) {
             throw new TableNotExistException();
+        }
+        if (empty($column)) {
+            return true;
         }
         $columns = $this->connection->getColumns($table);
         if (isset($columns[$column])) {

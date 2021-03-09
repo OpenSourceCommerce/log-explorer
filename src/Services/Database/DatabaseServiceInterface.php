@@ -39,10 +39,10 @@ interface DatabaseServiceInterface
 
     /**
      * @param string $table
-     * @param string $column
+     * @param string|null $column
      * @return bool
      * @throws TableNotExistException
      * @throws ColumnNotExistException
      */
-    public function checkColumnBelongToTable(string $table, string $column): bool;
+    public function checkColumnBelongToTable(string $table, ?string $column): bool;
 }
