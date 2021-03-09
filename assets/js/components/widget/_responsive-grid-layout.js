@@ -27,7 +27,6 @@ export class ResponsiveGridLayout extends Component {
 
     render() {
         const { data } = this.props;
-        console.log('data', data);
         const { mounted, compactType } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
@@ -55,36 +54,39 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {data.map((item) => {
-
-                        let WidgetLayout = ({layout, dataWidget, widgetHeader, widgetType}) => {
+                        let WidgetLayout = ({layout, dataWidget, title, type}) => {
                             let component;
-                            switch (widgetType) {
-                                case WIDGET_TYPE.doughnut:
-                                case WIDGET_TYPE.pie: {
-                                    component = <DoughnutPieChart
-                                        id={layout.i}
-                                        widgetHeader={widgetHeader}
-                                        type={widgetType}
-                                        data={dataWidget}
-                                        height='250'
-                                        minHeight='250'
-                                    />;
-                                    break;
+                            if (layout && dataWidget) {
+                                switch (type) {
+                                    case WIDGET_TYPE.doughnut:
+                                    case WIDGET_TYPE.pie: {
+                                        component = <DoughnutPieChart
+                                            id={layout.i}
+                                            widgetHeader={title}
+                                            type={type}
+                                            data={dataWidget}
+                                            height='250'
+                                            minHeight='250'
+                                        />;
+                                        break;
+                                    }
+                                    case WIDGET_TYPE.counterSum: {
+                                        component = <CounterSum
+                                            data={dataWidget}
+                                            widgetHeader={title}
+                                        />
+                                        break;
+                                    }
+                                    case WIDGET_TYPE.table: {
+                                        component = <WidgetTable
+                                            data={dataWidget}
+                                            widgetHeader={title}
+                                            isDashboardComponent={true}
+                                        />
+                                    }
                                 }
-                                case WIDGET_TYPE.counterSum: {
-                                    component = <CounterSum
-                                        data={dataWidget}
-                                        widgetHeader={widgetHeader}
-                                    />
-                                    break;
-                                }
-                                case WIDGET_TYPE.table: {
-                                    component = <WidgetTable
-                                        data={dataWidget}
-                                        widgetHeader={widgetHeader}
-                                        isDashboardComponent={true}
-                                    />
-                                }
+                            } else {
+                                component = <> No data </>;
                             }
                             return component;
                         }

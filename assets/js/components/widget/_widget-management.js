@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, DoughnutPieChart, FilterDate, FilterText, Input} from "../index";
+import {Button, DoughnutPieChart, Toast} from "../index";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
@@ -28,18 +28,12 @@ export class WidgetManagement extends Component {
 
         // initial data will be data exist when user edit widget
         const initialData = {
-            field: '',
-            order: '',
+            column: '',
+            order: 'asc',
             size: '',
             table: '',
             title: '',
             type: ''
-            // field: "timestamp",
-            // order: "asc",
-            // size: 10,
-            // table: "nginx_access",
-            // title: "adsdasdasd",
-            // type: "4"
         }
         this.state = {
             errors: {},
@@ -52,7 +46,7 @@ export class WidgetManagement extends Component {
         }
 
         this.onChangeData = this.onChangeData.bind(this);
-        this.addNew = this.addNew.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     async componentDidMount() {
@@ -65,7 +59,7 @@ export class WidgetManagement extends Component {
         });
 
         const {widget} = this.props;
-        const {widgetDetail, initialData} = this.state;
+        const {initialData} = this.state;
 
         const [
             tableRes,
@@ -83,20 +77,24 @@ export class WidgetManagement extends Component {
                 label: item
             }))
         }
-
-        let newWidgetDetail = {...widgetDetail};
         let newInitialData = {...initialData};
+        let newWidgetDetail = {...initialData};
 
         if (widgetDetailRes && widgetDetailRes.data) {
-            newWidgetDetail = {...widgetDetailRes.data};
-            newInitialData = {...widgetDetailRes.data};
+            newWidgetDetail = {
+                ...widgetDetailRes.data,
+                order: widgetDetailRes.data.order_desc ? 'desc' : 'asc',
+            };
+            newInitialData = {
+                ...newWidgetDetail
+            };
 
         }
 
         let columns = [];
 
-        if (widgetDetail && widgetDetail.table) {
-            const columnRes = await DatabaseActions.getTableColumns(widgetDetail.table);
+        if (newWidgetDetail && newWidgetDetail.table) {
+            const columnRes = await DatabaseActions.getTableColumns(newWidgetDetail.table);
             columns = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
                 value: item.name,
                 label: item.name
@@ -187,63 +185,74 @@ export class WidgetManagement extends Component {
         }
     }
 
-    async addNew() {
+    async onSubmit() {
         // let layout;
         const {widgetDetail} = this.state;
-        const {title, table, field, order, size, type, id} = this.state.widgetDetail;
-
-        let errors;
-        // Object.entries(widgetDetail).forEach(([key, value]) => {
-        //     console.log(key, value)
-        //     if (!value) {
-        //         errors = {
-        //             ...errors,
-        //             [key]: true,
-        //         }
-        //     }
-        // });
-
-        if (errors && Object.keys(errors).length > 0) {
-            this.setState({
-                errors,
-            });
-            console.log('errors', errors);
-            return;
-        }
-
+        const {title, table, column, order, size, type, id} = this.state.widgetDetail;
 
         console.log('widgetDetail', widgetDetail);
+        let data;
+        Object.entries(widgetDetail).forEach(([key, value]) => {
+            if (key === 'order') {
+                data = {
+                    ...data,
+                    isOrderDesc: order === 'desc',
+                }
+            }
 
-        // switch (widgetType) {
-        //     case WIDGET_TYPE.doughnut:
-        //     case WIDGET_TYPE.pie: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2};
-        //         break;
-        //     }
-        //     case WIDGET_TYPE.counterSum: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1};
-        //         break;
-        //     }
-        //     case WIDGET_TYPE.table: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 3, minW: 3, minH: 3};
-        //         break;
-        //     }
-        // }
-
-        let data = {
-            title,
-            type,
-            table,
-            column: field,
-            isOrderDesc: order === 'desc',
-            size,
-        }
+            if (value) {
+                data = {
+                    ...data,
+                    [key]: value,
+                }
+            }
+        });
 
         const resp = await WidgetActions.createOrUpdate(id, data);
 
-        console.log(resp);
-        // after success set new data for initialData
+        if (resp && !resp.error && resp.redirect) {
+            // ToastrHelper.success('Reset successful');
+            window.location.href = resp.redirect;
+            return;
+        } else {
+            const {fields} = resp;
+            this.setState({
+                errors: {...fields},
+            })
+        }
 
+        // if (errors && Object.keys(errors).length > 0) {
+        //     this.setState({
+        //         errors,
+        //     });
+        //     console.log('errors', errors);
+        //     return;
+        // }
+
+        switch (widgetType) {
+            case WIDGET_TYPE.doughnut:
+            case WIDGET_TYPE.pie: {
+                layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2};
+                break;
+            }
+            case WIDGET_TYPE.counterSum: {
+                layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1};
+                break;
+            }
+            case WIDGET_TYPE.table: {
+                layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 3, minW: 3, minH: 3};
+                break;
+            }
+        }
+
+        // let data = {
+        //     title,
+        //     type,
+        //     table,
+        //     column,
+        //     isOrderDesc: order === 'desc',
+        //     size,
+        // }
     }
 
     render() {
@@ -293,28 +302,12 @@ export class WidgetManagement extends Component {
             return component;
         };
 
-        const {title, table, field, order, size, type} = widgetDetail;
+        const {title, table, column, order, size, type} = widgetDetail;
+
+        const isCounterSumType = type === WIDGET_TYPE.counterSum;
 
         return (
             <div className="editable-widget">
-                {/*<div className="filter-panel card">*/}
-                {/*    <div className="card-body row">*/}
-                {/*        <div className="col-12 col-md-8">*/}
-                {/*            <FilterText*/}
-                {/*                label="What are you looking for ?"*/}
-                {/*                placeholder="status = 200 AND url LIKE '%product%'"*/}
-                {/*                onChange={(e) => onChangeData(e.target)}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*        /!*<div className="input-search col-12 col-md-3 mt-2 mt-md-0">*!/*/}
-                {/*        /!*    <FilterDate*!/*/}
-                {/*        /!*        label="Date Range"*!/*/}
-                {/*        /!*        onDateRangeChanged={(f, t) => console.log(f, t)}*!/*/}
-                {/*        /!*    />*!/*/}
-                {/*        /!*</div>*!/*/}
-
-                {/*    </div>*/}
-                {/*</div>*/}
                 {isLoading ?
                     (<span
                         className="spinner-border spinner-border-sm mr-2"
@@ -345,10 +338,10 @@ export class WidgetManagement extends Component {
                                         >
                                             {this.generateOption(tables, 'table')}
                                         </FormField>
-                                        <FormField
-                                            label='Field'
-                                            value={field}
-                                            fieldName='field'
+                                        {!isCounterSumType && <FormField
+                                            label='Column'
+                                            value={column}
+                                            fieldName='column'
                                             onChange={(e) => this.onChangeData(e.target)}
                                             isMandatory={false}
                                             type='select'
@@ -356,10 +349,10 @@ export class WidgetManagement extends Component {
                                             disabled={!table}
                                         >
                                             {this.generateOption(columns, 'column')}
-                                        </FormField>
+                                        </FormField>}
                                         <div className="row">
                                             <FormField
-                                                className='col-12 col-md-6'
+                                                className={`col-12 ${!isCounterSumType && 'col-md-6'}`}
                                                 label='Order'
                                                 value={order}
                                                 fieldName='order'
@@ -370,7 +363,7 @@ export class WidgetManagement extends Component {
                                             >
                                                 {this.generateOption(null, 'order')}
                                             </FormField>
-                                            <FormField
+                                            {!isCounterSumType && <FormField
                                                 className='col-12 col-md-6 pt-md-0'
                                                 label='Size'
                                                 value={size}
@@ -381,7 +374,7 @@ export class WidgetManagement extends Component {
                                                 errors={errors}
                                             >
                                                 {this.generateOption(null, 'size')}
-                                            </FormField>
+                                            </FormField>}
                                         </div>
                                         <FormField
                                             label='Type'
@@ -397,7 +390,7 @@ export class WidgetManagement extends Component {
                                         <div className="row">
                                             <div className="col-12 col-md-6 btn-action-group">
                                                 <Button className="btn-search w-100 mt-0 mt-md-2"
-                                                        onClick={() => this.addNew()}
+                                                        onClick={() => this.onSubmit()}
                                                         disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
                                                 >
                                                     {`${widgetDetail.id ? 'Update' : 'Add new'}`}
