@@ -43,6 +43,11 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
     private $column;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $query;
+
+    /**
      * @ORM\Column(name="order_desc", type="boolean", options = {"default": 1})
      */
     private $orderDesc;
@@ -172,6 +177,7 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
             'type' => $this->getType(),
             'table' => $this->getTable(),
             'column' => $this->getColumn(),
+            'query' => $this->getQuery(),
             'order_desc' => $this->isOrderDesc(),
             'size' => $this->getSize(),
             'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
@@ -198,6 +204,18 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
     public function setColumn(string $column): self
     {
         $this->column = $column;
+
+        return $this;
+    }
+
+    public function getQuery(): ?string
+    {
+        return $this->query;
+    }
+
+    public function setQuery(string $query): self
+    {
+        $this->query = $query;
 
         return $this;
     }

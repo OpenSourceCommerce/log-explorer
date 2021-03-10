@@ -9,6 +9,7 @@ use App\Entity\DashboardWidget;
 use App\Entity\Widget;
 use App\Repository\DashboardRepository;
 use App\Repository\DashboardWidgetRepository;
+use App\Services\Widget\WidgetIterationInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 
@@ -16,10 +17,13 @@ class DashboardService implements DashboardServiceInterface
 {
     /** @var EntityManagerInterface */
     private $em;
+    /** @var WidgetIterationInterface */
+    private $widgetIteration;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, WidgetIterationInterface $widgetIteration)
     {
         $this->em = $em;
+        $this->widgetIteration = $widgetIteration;
     }
 
     /**
@@ -41,11 +45,31 @@ class DashboardService implements DashboardServiceInterface
     /**
      * @inheritDoc
      */
-    public function createDashboard(Dashboard $dashboard): Dashboard
+    public function createDashboard(Dashboard $dashboard, array $widgets = []): Dashboard
     {
         $this->em->persist($dashboard);
+        foreach ($widgets as $widget) {
+            $dashboardWidget = $this->createDashboardWidget($dashboard, $widget);
+            $this->em->persist($dashboardWidget);
+        }
         $this->em->flush();
         return $dashboard;
+    }
+
+    private function createDashboardWidget(Dashboard $dashboard, Widget $widget): DashboardWidget
+    {
+        $define = $this->widgetIteration->widgetFromType($widget->getType());
+
+        $dashboardWidget = new DashboardWidget();
+        $dashboardWidget->setDashboard($dashboard);
+        $dashboardWidget->setWidget($widget);
+        $dashboardWidget->setFixed(false);
+        $dashboardWidget->setX(0);
+        $dashboardWidget->setY(0);
+        $dashboardWidget->setWidth($define->getMinWidth());
+        $dashboardWidget->setHeight($define->getMinHeight());
+
+        return $dashboardWidget;
     }
 
     /**

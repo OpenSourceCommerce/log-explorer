@@ -65,13 +65,20 @@ class WidgetController extends ApiController
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Widget $widget */
             $widget = $form->getData();
-            try {
-                $databaseService->checkColumnBelongToTable($widget->getTable(), $widget->getColumn());
-            } catch (TableNotExistException $e) {
-                return $this->responseError('Table does not exist');
-            } catch (ColumnNotExistException $e) {
-                return $this->responseError('Column does not exist');
+            $define = $widgetService->getWidgetInterface($widget);
+            if (!$define->hasSingleResult()) {
+                if (empty($widget->getColumn())) {
+                    return $this->responseError('Column is required');
+                }
+                try {
+                    $databaseService->checkColumnBelongToTable($widget->getTable(), $widget->getColumn());
+                } catch (TableNotExistException $e) {
+                    return $this->responseError('Table does not exist');
+                } catch (ColumnNotExistException $e) {
+                    return $this->responseError('Column does not exist');
+                }
             }
             $widget = $widgetService->createWidget($form->getData());
 

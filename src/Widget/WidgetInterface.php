@@ -19,6 +19,18 @@ interface WidgetInterface
     public function getName(): string;
 
     /**
+     * Get widget min width
+     * @return int
+     */
+    public function getMinWidth(): int;
+
+    /**
+     * Get widget min height
+     * @return int
+     */
+    public function getMinHeight(): int;
+
+    /**
      * If this widget has single result like COUNT
      */
     public function hasSingleResult(): bool;

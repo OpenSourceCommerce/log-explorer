@@ -15,9 +15,10 @@ interface DashboardServiceInterface
 {
     /**
      * @param Dashboard $dashboard
+     * @param Widget[]|array $widgets
      * @return Dashboard
      */
-    public function createDashboard(Dashboard $dashboard): Dashboard;
+    public function createDashboard(Dashboard $dashboard, array $widgets = []): Dashboard;
 
     /**
      * @param Dashboard $dashboard

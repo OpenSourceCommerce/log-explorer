@@ -25,12 +25,6 @@ class DashboardWidgetType extends AbstractType
             ->add('height', IntegerType::class, [
                 'required' => true,
             ])
-            ->add('minWidth', IntegerType::class, [
-                'required' => true,
-            ])
-            ->add('minHeight', IntegerType::class, [
-                'required' => true,
-            ])
             ->add('fixed', IntegerType::class, [
                 'required' => true,
             ])

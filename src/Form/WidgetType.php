@@ -53,6 +53,8 @@ class WidgetType extends AbstractType
             ])
             ->add('column', TextType::class, [
             ])
+            ->add('query', TextType::class, [
+            ])
             ->add('isOrderDesc', CheckboxType::class, [
             ])
             ->add('size', NumberType::class, [

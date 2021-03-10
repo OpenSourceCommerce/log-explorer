@@ -50,16 +50,6 @@ class DashboardWidget implements \JsonSerializable
     private $height;
 
     /**
-     * @ORM\Column(type="integer", options={"default" : 0})
-     */
-    private $minWidth;
-
-    /**
-     * @ORM\Column(type="integer", options={"default" : 0})
-     */
-    private $minHeight;
-
-    /**
      * @ORM\Column(type="boolean", options={"default" : 0})
      */
     private $fixed;
@@ -151,30 +141,6 @@ class DashboardWidget implements \JsonSerializable
         return $this;
     }
 
-    public function getMinWidth(): ?int
-    {
-        return $this->minWidth;
-    }
-
-    public function setMinWidth(int $minWidth): self
-    {
-        $this->minWidth = $minWidth;
-
-        return $this;
-    }
-
-    public function getMinHeight(): ?int
-    {
-        return $this->minHeight;
-    }
-
-    public function setMinHeight(int $minHeight): self
-    {
-        $this->minHeight = $minHeight;
-
-        return $this;
-    }
-
     public function isFixed(): ?bool
     {
         return $this->fixed;
@@ -230,8 +196,6 @@ class DashboardWidget implements \JsonSerializable
             'y' => $this->getY(),
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
-            'minWidth' => $this->getMinWidth(),
-            'minHeight' => $this->getMinHeight(),
             'fixed' => $this->isFixed() ? 1 : 0,
         ];
     }

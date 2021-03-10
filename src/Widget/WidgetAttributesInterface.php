@@ -12,6 +12,8 @@ interface WidgetAttributesInterface
 
     public function getColumn(): ?string;
 
+    public function getQuery(): ?string;
+
     public function isOrderDesc(): ?bool;
 
     public function getSize(): ?int;
