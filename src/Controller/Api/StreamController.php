@@ -14,6 +14,7 @@ use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\Database\DatabaseServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
+use App\Services\Widget\WidgetIterationInterface;
 use App\Services\Widget\WidgetServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -231,13 +232,22 @@ class StreamController extends ApiController
     /**
      * @Route("/api/stream/dashboard/{uuid}", methods = "GET")
      * @param Dashboard $dashboard
+     * @param WidgetIterationInterface $widgetIteration
      * @return JsonResponse
      */
-    public function dashboard(Dashboard $dashboard): JsonResponse
+    public function dashboard(Dashboard $dashboard, WidgetIterationInterface $widgetIteration): JsonResponse
     {
+        $sizeConfigs = [];
+        foreach ($widgetIteration->getWidgets() as $widget) {
+            $sizeConfigs[$widget->getType()] = [
+                'minWidth' => $widget->getMinWidth(),
+                'minHeight' => $widget->getMinHeight(),
+            ];
+        }
         return $this->responseSuccess([
             'data' => $dashboard,
             'widgets' => $dashboard->getDashboardWidgets()->toArray(),
+            'configs' => ['size' => $sizeConfigs],
         ]);
     }
 
