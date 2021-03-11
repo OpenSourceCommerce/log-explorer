@@ -43,7 +43,7 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/{uuid}", name="dashboard")
+     * @Route("/dashboard/{uuid}", name="dashboard", priority=10)
      * @param Dashboard $dashboard
      * @return Response
      */
