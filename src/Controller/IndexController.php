@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Dashboard;
 use App\Entity\LogView;
 use App\Services\LogView\LogViewServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +39,18 @@ class IndexController extends AbstractController
         }
         return $this->render('index/index.html.twig', [
             'uuid' => $uuid,
+        ]);
+    }
+
+    /**
+     * @Route("/dashboard/{uuid}", name="dashboard")
+     * @param Dashboard $dashboard
+     * @return Response
+     */
+    public function dashboard(Dashboard $dashboard): Response
+    {
+        return $this->render('index/dashboard.html.twig', [
+            'dashboard' => $dashboard,
         ]);
     }
 }

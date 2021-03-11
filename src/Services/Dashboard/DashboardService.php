@@ -149,4 +149,12 @@ class DashboardService implements DashboardServiceInterface
         $this->em->remove($dashboardWidget);
         $this->em->flush();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultDashboard(): ?Dashboard
+    {
+        return $this->getRepository()->findOneBy([]);
+    }
 }
