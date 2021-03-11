@@ -63,4 +63,9 @@ interface DashboardServiceInterface
      * @param Widget $widget
      */
     public function removeWidget(Dashboard $dashboard, Widget $widget);
+
+    /**
+     *
+     */
+    public function getDefaultDashboard(): ?Dashboard;
 }
