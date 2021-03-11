@@ -4,11 +4,9 @@
 namespace App\Services\Widget;
 
 
-use App\Entity\Dashboard;
 use App\Entity\Widget;
 use App\Repository\WidgetRepository;
 use App\Widget\WidgetInterface;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 
@@ -94,6 +92,9 @@ class WidgetService implements WidgetServiceInterface
      */
     public function checkWidgetIdSameTable(array $ids): bool
     {
+        if (count($ids) === 1) {
+            return true;
+        }
         return $this->getRepository()->checkWidgetIdSameTable($ids);
     }
 

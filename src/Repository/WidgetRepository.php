@@ -23,10 +23,11 @@ class WidgetRepository extends ServiceEntityRepository
 
     public function getAllId($options = []): array
     {
-        return $this->createQueryBuilder('w')
-            ->select('id')
+        $ret = $this->createQueryBuilder('w')
+            ->select('w.id')
             ->getQuery()
             ->getArrayResult();
+        return array_column($ret, 'id');
     }
 
     public function getAllByIds($ids = []): array
@@ -40,9 +41,9 @@ class WidgetRepository extends ServiceEntityRepository
     public function checkWidgetIdSameTable(array $ids): bool
     {
         $tables = $this->createQueryBuilder('w')
-            ->select('from_table')
-            ->where((new Expr())->in('id', $ids))
-            ->groupBy('from_table')
+            ->select('w.from_table')
+            ->where((new Expr())->in('w.id', $ids))
+            ->groupBy('w.from_table')
             ->getQuery()
             ->getArrayResult();
         return count($tables) === 1;
