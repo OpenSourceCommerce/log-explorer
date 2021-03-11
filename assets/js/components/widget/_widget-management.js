@@ -384,7 +384,7 @@ export class WidgetManagement extends Component {
                                             </FormField>}
                                         </div>
                                         <FilterText
-                                            label="STATUS = 200"
+                                            label="Filter"
                                             placeholder="status = 200 AND url LIKE '%product%'"
                                             onChange={(e) => this.onChangeData(e.target)}
                                         />
