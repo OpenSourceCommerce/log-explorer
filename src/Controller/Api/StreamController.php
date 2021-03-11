@@ -263,10 +263,15 @@ class StreamController extends ApiController
     public function widget(Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService, StreamServiceInterface $streamService): JsonResponse
     {
         // this is public API so uuid just used to prevent scan by widget_id
+        $isOK = false;
         foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
-            if ($dashboardWidget->getDashboard()->getId() !== $dashboard->getId()) {
-                return $this->responseError('Invalid request');
+            if ($dashboardWidget->getDashboard()->getId() === $dashboard->getId()) {
+                $isOK = true;
+                break;
             }
+        }
+        if (!$isOK) {
+            return $this->responseError('Widget does not belong to dashboard');
         }
         $widgetItem = $widgetService->getWidgetInterface($widget);
         $data = $streamService->getWidgetData($dashboard, $widgetItem);
