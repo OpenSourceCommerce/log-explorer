@@ -188,6 +188,7 @@ class DashboardWidget implements \JsonSerializable
      */
     public function jsonSerialize()
     {
+        $widget = $this->getWidget();
         return [
             'id' => $this->getId(),
             'dashboard_id' => $this->getDashboard()->getId(),
@@ -197,6 +198,8 @@ class DashboardWidget implements \JsonSerializable
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
             'fixed' => $this->isFixed() ? 1 : 0,
+            'title' => $widget ? $widget->getTitle() : '',
+            'type' => $widget ? $widget->getType() : null,
         ];
     }
 }
