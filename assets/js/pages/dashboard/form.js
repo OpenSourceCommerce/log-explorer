@@ -4,13 +4,14 @@ import {Button, ResponsiveGridLayout, Select2, FormField, Icon} from '../../comp
 import '../../../styles/component/_dashboard-form.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {isEqual} from "lodash";
-import {DashboardActions, WidgetActions} from "../../actions";
+import {DashboardActions, DatabaseActions, WidgetActions} from "../../actions";
 
 class DashboardPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            tables: [],
             widgetSelected: [],
             dashboardDetail: {},
             initialData: {},
@@ -61,19 +62,39 @@ class DashboardPage extends Component {
 
         const [
             dashboardRes,
-            widgetListRes
+            tableRes,
+            widgetListRes,
         ] = await Promise.all([
             dashboard && DashboardActions.loadDashboard(dashboard),
+            DatabaseActions.getAllTable(),
             WidgetActions.listWidget(),
         ]);
 
         const dashboardDetail = dashboardRes && !dashboardRes.error && dashboardRes.data ? dashboardRes.data : {};
         const widgets = widgetListRes && widgetListRes.data && widgetListRes.data.length > 0 ? widgetListRes.data : [];
+        let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map(item => ({
+            value: item,
+            label: item
+        })) : [];
 
         this.setState({
             dashboardDetail,
             initialData: {...dashboardDetail},
-            widgets,
+            widgets: [
+                ...widgets,
+                {
+                    column: "url",
+                    id: 1,
+                    last_updated: "2021-03-10 08:01",
+                    order_desc: true,
+                    query: null,
+                    size: 10,
+                    table: "nginx_access_abc",
+                    title: "Widget 2",
+                    type: 2,
+                }
+            ],
+            tables,
             isLoading: false,
         });
     }
@@ -98,7 +119,7 @@ class DashboardPage extends Component {
 
         const response = await DashboardActions.createOrUpdate(id, {
             title,
-            dashboardWidgets: [...widgetSelected].map(item => item.id),
+            widgets: [...widgetSelected].map(item => item.id),
         });
 
         if (response && !response.error && response.redirect) {
@@ -117,7 +138,8 @@ class DashboardPage extends Component {
             initialData,
             errors,
             widgets,
-            isLoading
+            isLoading,
+            tables
         } = this.state;
 
         // const widgets = [
@@ -241,11 +263,11 @@ class DashboardPage extends Component {
         //     }
         // ]
 
-        const _columns = [...widgets].map((item, key) => {
-            return <option key={key} value={item.title}>{item.title}</option>;
-        });
+        const {title = '', description = '', table} = dashboardDetail;
 
-        const {title = '', description = ''} = dashboardDetail;
+        const widgetList = table ? widgets.filter(item => item.table === table) : [];
+
+        const _columns = widgetList.map((item, key) => <option key={key} value={item.title}>{item.title}</option>);
 
         return (
             <div className="dashboard-management">
@@ -286,36 +308,40 @@ class DashboardPage extends Component {
                                 value={description}
                                 onChange={(e) => this.onChangeData(e.target)}
                             />
-                            <div className="d-inline-flex">
-                                <Button className="btn-search mb-3"
-                                        disabled={isEqual(initialData, dashboardDetail) || Object.keys(errors).length > 0}
-                                        onClick={() => this.onSubmitForm()}
-                                >
-                                    Save
-                                </Button>
-                                {initialData.title &&
-                                <Button className="btn-search mb-3 ml-2"
-                                        data-toggle="collapse"
-                                        data-target="#collapseEditableDashboard"
-                                        aria-expanded="false"
-                                        aria-controls="collapseEditableDashboard"
-                                        color="default"
-                                >
-                                    Cancel
-                                </Button>}
-                            </div>
                         </div>
+                        <FormField
+                            label='Datatable'
+                            value={table}
+                            fieldName='table'
+                            onChange={(e) => this.onChangeData(e.target)}
+                            isMandatory={true}
+                            type='select'
+                            errors={errors}
+                        >
+                            <>
+                                <option value='' className='d-none'>{`Select table`}</option>
+                                {tables.map((item, index) => (
+                                    <option value={item.value}
+                                            key={index}
+                                    >
+                                        {item.label}
+                                    </option>))}
+                            </>
+                        </FormField>
                         <div className="widget form-group">
                             <label>Widgets</label>
                             <Select2
                                 id={'widget-selected'}
                                 multiple="multiple"
-                                data-placeholder="Select widget"
+                                disabled={!table}
+                                data-placeholder={`${table ? 'Select widget' : 'Please select table first'}`}
                                 value={widgetSelected && widgetSelected.length > 0 ? widgetSelected.map(item => item.title) : []}
                                 onChange={(e) => {
                                     const summary = $('#widget-selected').val();
                                     const newWidgetList = summary.reduce((obj, item) => {
-                                        const newWidget = [...this.state.widgets].filter(el => el.title === item);
+                                        const { table } = this.state.dashboardDetail;
+                                        const widgetList = table ? widgets.filter(item => item.table === table) : [];
+                                        const newWidget = [...widgetList].filter(el => el.title === item);
                                         if (newWidget) {
                                             const {} = newWidget[0];
                                             obj.push({
@@ -332,6 +358,24 @@ class DashboardPage extends Component {
                             >
                                 {_columns}
                             </Select2>
+                        </div>
+                        <div className="d-inline-flex">
+                            <Button className="btn-search mb-3"
+                                    disabled={isEqual(initialData, dashboardDetail) || Object.keys(errors).length > 0}
+                                    onClick={() => this.onSubmitForm()}
+                            >
+                                Save
+                            </Button>
+                            {initialData.title &&
+                            <Button className="btn-search mb-3 ml-2"
+                                    data-toggle="collapse"
+                                    data-target="#collapseEditableDashboard"
+                                    aria-expanded="false"
+                                    aria-controls="collapseEditableDashboard"
+                                    color="default"
+                            >
+                                Cancel
+                            </Button>}
                         </div>
                     </div>
                 </div>)}
