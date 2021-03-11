@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, DoughnutPieChart, Toast} from "../index";
+import {Button, DoughnutPieChart, FilterText, FormField} from "../index";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
 import {DatabaseActions, WidgetActions} from "../../actions";
 import {isEqual} from "lodash";
-import {FormField} from "../_form-field";
 
 const WIDGET = [
     {label: 'Doughnut', value: WIDGET_TYPE.doughnut},
@@ -325,6 +324,17 @@ export class WidgetManagement extends Component {
                                             errors={errors}
                                         />
                                         <FormField
+                                            label='Type'
+                                            value={type}
+                                            fieldName='type'
+                                            onChange={(e) => this.onChangeData(e.target)}
+                                            isMandatory={true}
+                                            type='select'
+                                            errors={errors}
+                                        >
+                                            {this.generateOption(null, 'type')}
+                                        </FormField>
+                                        <FormField
                                             label='Datatable'
                                             value={table}
                                             fieldName='table'
@@ -373,17 +383,11 @@ export class WidgetManagement extends Component {
                                                 {this.generateOption(null, 'size')}
                                             </FormField>}
                                         </div>
-                                        <FormField
-                                            label='Type'
-                                            value={type}
-                                            fieldName='type'
+                                        <FilterText
+                                            label="STATUS = 200"
+                                            placeholder="status = 200 AND url LIKE '%product%'"
                                             onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={true}
-                                            type='select'
-                                            errors={errors}
-                                        >
-                                            {this.generateOption(null, 'type')}
-                                        </FormField>
+                                        />
                                         <div className="row">
                                             <div className="col-12 col-md-6 btn-action-group">
                                                 <Button className="btn-search w-100 mt-0 mt-md-2"
