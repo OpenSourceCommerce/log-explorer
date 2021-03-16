@@ -39,8 +39,13 @@ class DashboardController extends ApiController
      */
     public function dashboard(Dashboard $dashboard): JsonResponse
     {
+        $widgets = [];
+        foreach ($dashboard->getDashboardWidgets() as $dashboardWidget) {
+            $widgets[] = $dashboardWidget->getWidget();
+        }
         return $this->responseSuccess([
             'data' => $dashboard,
+            'widgets' => $widgets,
         ]);
     }
 
