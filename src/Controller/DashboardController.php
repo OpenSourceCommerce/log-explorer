@@ -33,7 +33,7 @@ class DashboardController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/create", name="dashboard_create")
+     * @Route("/dashboard/create", priority=10, name="dashboard_create")
      * @return Response
      */
     public function create(): Response
