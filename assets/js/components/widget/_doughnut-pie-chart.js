@@ -6,8 +6,19 @@ import {Icon} from "../_icon";
 import {WidgetHeader} from "../index";
 
 export class DoughnutPieChart extends Component {
+    getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
     componentDidMount() {
         const {data, type = WIDGET_TYPE.doughnut, id = 'new'} = this.props;
+
+        console.log('data', data);
 
         if (data && data.length > 0) {
             if (type === WIDGET_TYPE.doughnut || type === WIDGET_TYPE.pie) {
@@ -17,14 +28,19 @@ export class DoughnutPieChart extends Component {
                     datasets: [
                         {
                             data: data.map(item => item.value),
-                            backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                            backgroundColor: data.map(() => this.getRandomColor()),
                         }
                     ]
                 }
                 const chartOptions = {
                     maintainAspectRatio: false,
                     responsive: true,
+                    legend: {
+                        display: false,
+                    }
                 }
+
+                console.log('charData', charData);
 
                 const chart = new Chart(doughnutChartCanvas, {
                     //'pie', 'doughnut'

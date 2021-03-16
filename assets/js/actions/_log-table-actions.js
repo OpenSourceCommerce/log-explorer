@@ -38,7 +38,7 @@ const LogTableActions = {
         return request(`/api/stream/dashboard/${uuid}`);
     },
     getWidget(uuid, widgetId) {
-        return request(`/api/stream/dashboard/${uuid}/${widgetId}`);
+        return request(`/api/stream/widget/${uuid}/${widgetId}`);
     }
 };
 

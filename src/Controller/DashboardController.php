@@ -42,7 +42,7 @@ class DashboardController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/{id}", name="dashboard_edit")
+     * @Route("/dashboard/edit/{id}", name="dashboard_edit")
      * @param Dashboard $dashboard
      * @return Response
      */

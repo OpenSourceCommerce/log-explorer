@@ -71,6 +71,7 @@ Encore
 	.addEntry('dashboard_form', './assets/js/pages/dashboard/form.js')
 	.addEntry('widget_list', './assets/js/pages/widget/list.js')
 	.addEntry('widget_form', './assets/js/pages/widget/form.js')
+  .addEntry('dashboard-page', './assets/js/pages/index/dashboard.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
 

@@ -165,7 +165,7 @@ class DashboardPage extends Component {
         //         widgetType: WIDGET_TYPE.doughnut,
         //     }, {
         //         layout: {i: "c", x: 6, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
+        //         11: [
         //             {label: 'Mobile', value: 2000},
         //             {label: 'Desktop', value: 700},
         //             {label: 'Bot', value: 350},

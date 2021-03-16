@@ -64,11 +64,14 @@ class DashboardList extends Component {
                                     </thead>
                                     <tbody>
                                     {dashboards.map((item, key) => {
-                                        const url = '/dashboard/' + item.id;
+                                        const url = '/dashboard/edit/' + item.id;
                                         return <tr key={key}>
                                             <td>{item.title}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
+                                                <Button onClick={e => {
+                                                    window.location.href = '/dashboard';
+                                                }} color={'success'}><Icon name={'eye'}/></Button>
                                                 <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
                                                 <Button onClick={e => this.deleteDashboard(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                             </td>

@@ -32,6 +32,7 @@ export class ResponsiveGridLayout extends Component {
         // row Height : 340 / 2;
 
         const layout = data && data.length > 0 ? data.map(item => item.layout) : [];
+        console.log('layout',layout);
         return (
             <div className="responsive-grid-layout">
                 { data && data.length > 0  ? <ResponsiveReactGridLayout
@@ -54,9 +55,9 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {data.map((item) => {
-                        let WidgetLayout = ({layout, dataWidget, title, type}) => {
+                        let WidgetLayout = ({layout, data, title, type}) => {
                             let component;
-                            if (layout && dataWidget) {
+                            if (layout && data) {
                                 switch (type) {
                                     case WIDGET_TYPE.doughnut:
                                     case WIDGET_TYPE.pie: {
@@ -64,7 +65,7 @@ export class ResponsiveGridLayout extends Component {
                                             id={layout.i}
                                             widgetHeader={title}
                                             type={type}
-                                            data={dataWidget}
+                                            data={data}
                                             height='250'
                                             minHeight='250'
                                         />;
@@ -72,14 +73,14 @@ export class ResponsiveGridLayout extends Component {
                                     }
                                     case WIDGET_TYPE.counterSum: {
                                         component = <CounterSum
-                                            data={dataWidget}
+                                            data={data}
                                             widgetHeader={title}
                                         />
                                         break;
                                     }
                                     case WIDGET_TYPE.table: {
                                         component = <WidgetTable
-                                            data={dataWidget}
+                                            data={data}
                                             widgetHeader={title}
                                             isDashboardComponent={true}
                                         />
@@ -90,7 +91,6 @@ export class ResponsiveGridLayout extends Component {
                             }
                             return component;
                         }
-
                         return (
                             <div key={item.layout.i} data-grid={item.layout} className="widget card">
                                 <WidgetLayout {...item}/>
