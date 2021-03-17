@@ -75,8 +75,27 @@ class DashboardService implements DashboardServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateDashboard(Dashboard $dashboard): Dashboard
+    public function updateDashboard(Dashboard $dashboard, array $widgets = []): Dashboard
     {
+        $oldWidgets = [];
+        foreach ($dashboard->getDashboardWidgets() as $dashboardWidget) {
+            $oldWidgets[$dashboardWidget->getWidget()->getId()] = $dashboardWidget;
+        }
+        // add new widgets
+        /** @var Widget $widget */
+        foreach ($widgets as $widget) {
+            if (isset($oldWidgets[$widget->getId()])) {
+                unset($oldWidgets[$widget->getId()]);
+                continue;
+            } else {
+                $dashboardWidget = $this->createDashboardWidget($dashboard, $widget);
+                $this->em->persist($dashboardWidget);
+            }
+        }
+        // remove widgets
+        foreach ($oldWidgets as $dashboardWidget) {
+            $this->em->remove($dashboardWidget);
+        }
         $this->em->persist($dashboard);
         $this->em->flush();
         return $dashboard;

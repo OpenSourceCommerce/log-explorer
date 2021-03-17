@@ -22,9 +22,10 @@ interface DashboardServiceInterface
 
     /**
      * @param Dashboard $dashboard
+     * @param array $widgets
      * @return Dashboard
      */
-    public function updateDashboard(Dashboard $dashboard): Dashboard;
+    public function updateDashboard(Dashboard $dashboard, array $widgets = []): Dashboard;
 
     /**
      * @param array $options

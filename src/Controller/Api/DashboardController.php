@@ -86,9 +86,10 @@ class DashboardController extends ApiController
      * @param Dashboard $dashboard
      * @param Request $request
      * @param DashboardServiceInterface $dashboardService
+     * @param WidgetServiceInterface $widgetService
      * @return JsonResponse
      */
-    public function update(Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService): JsonResponse
+    public function update(Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, WidgetServiceInterface $widgetService): JsonResponse
     {
         $data = $request->request->all();
         $form = $this->createForm(DashboardType::class, $dashboard);
@@ -96,7 +97,9 @@ class DashboardController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $dashboard = $form->getData();
-            $dashboardService->updateDashboard($dashboard);
+            $widgetIds = $form->get('widgets')->getData();
+            $widgets = $widgetService->getAllByIds($widgetIds);
+            $dashboardService->updateDashboard($dashboard, $widgets);
 
             return $this->responseSuccess();
         }
