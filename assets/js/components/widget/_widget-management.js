@@ -103,6 +103,7 @@ export class WidgetManagement extends Component {
     }
 
     async onChangeData({name, value}, isUpdateWidget) {
+        const mandatoryField = ['title', 'type', 'table', 'order']
         if (name) {
             const {errors} = this.state;
 
@@ -124,9 +125,11 @@ export class WidgetManagement extends Component {
                     return obj;
                 }, {});
             } else {
-                newErrorArray = {
-                    ...newErrorArray,
-                    [name]: true,
+                if (mandatoryField.includes(name)) {
+                    newErrorArray = {
+                        ...newErrorArray,
+                        [name]: true,
+                    }
                 }
             }
 
@@ -270,6 +273,9 @@ export class WidgetManagement extends Component {
         const {title, table, column, order, size, type, id } = widgetDetail;
 
         const isCounterSumType = type === WIDGET_TYPE.counterSum;
+
+        console.log('errors', errors);
+        console.log('isEqual(initialData, widgetDetail)', isEqual(initialData, widgetDetail));
 
         return (
             <div className="editable-widget">
