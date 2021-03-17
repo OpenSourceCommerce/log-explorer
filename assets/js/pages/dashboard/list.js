@@ -71,8 +71,8 @@ class DashboardList extends Component {
                                             <td>
                                                 <Button onClick={e => {
                                                     window.location.href = '/dashboard';
-                                                }} color={'success'}><Icon name={'eye'}/></Button>
-                                                <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
+                                                }} className="mr-2" ><Icon name={'eye'}/></Button>
+                                                <Link href={url} className={'btn btn-success mr-2'}><Icon name={'edit'}/></Link>
                                                 <Button onClick={e => this.deleteDashboard(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                             </td>
                                         </tr>;

@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import {Button, ResponsiveGridLayout, Select2, FormField, Icon} from '../../components/';
 import '../../../styles/component/_dashboard-form.scss';
 import {WIDGET_TYPE} from "../../utils";
-import {isEqual} from "lodash";
-import {DashboardActions, DatabaseActions, WidgetActions} from "../../actions";
+import {isEqual, differenceWith} from "lodash";
+import {Alert, DashboardActions, DatabaseActions, WidgetActions} from "../../actions";
 
 class DashboardPage extends Component {
     constructor(props) {
@@ -13,6 +13,7 @@ class DashboardPage extends Component {
         this.state = {
             tables: [],
             widgetSelected: [],
+            initialWidgetSelected: [],
             dashboardDetail: {},
             initialData: {},
             errors: {},
@@ -70,18 +71,29 @@ class DashboardPage extends Component {
             WidgetActions.listWidget(),
         ]);
 
-        const dashboardDetail = dashboardRes && !dashboardRes.error && dashboardRes.data ? dashboardRes.data : {};
-        const widgets = widgetListRes && widgetListRes.data && widgetListRes.data.length > 0 ? widgetListRes.data : [];
+
+        const widgetSelected = dashboardRes && !dashboardRes.error && dashboardRes.widgets && dashboardRes.widgets.length > 0 ? [...dashboardRes.widgets] : [];
+
+        const dashboardDetail = dashboardRes && !dashboardRes.error && dashboardRes.data ? {
+            ...dashboardRes.data,
+            table: widgetSelected[0].table,
+        } : {};
+
+        const widgetList = widgetListRes && widgetListRes.data && widgetListRes.data.length > 0 ? widgetListRes.data : [];
+
         let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map(item => ({
             value: item,
             label: item
         })) : [];
 
+
         this.setState({
             dashboardDetail,
             initialData: {...dashboardDetail},
-            widgets: [
-                ...widgets,
+            widgetSelected,
+            initialWidgetSelected: [...widgetSelected],
+            widgetList: [
+                ...widgetList,
                 {
                     column: "url",
                     id: 1,
@@ -122,11 +134,19 @@ class DashboardPage extends Component {
             widgets: [...widgetSelected].map(item => item.id),
         });
 
-        if (response && !response.error && response.redirect) {
-            window.location.href = response.redirect;
-            return;
+        if (response && !response.error) {
+            Alert.success(`${id ? 'Update' : 'Add new' } successful`);
+            if (response.redirect) {
+                window.location.href = response.redirect;
+                return;
+            }
+
+            this.setState({
+                initialWidgetSelected: [...widgetSelected],
+                initialData: {...dashboardDetail},
+            })
         } else {
-            // error will be handle here
+            Alert.error(response.error || 'Cant save new information');
         }
 
     }
@@ -134,140 +154,27 @@ class DashboardPage extends Component {
     render() {
         const {
             widgetSelected,
+            initialWidgetSelected,
             dashboardDetail,
             initialData,
             errors,
-            widgets,
+            widgetList,
             isLoading,
             tables
         } = this.state;
 
-        // const widgets = [
-        //     {
-        //         layout: {i: "a", x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2, static: true},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         title: 'Devices and Machine',
-        //         widgetType: WIDGET_TYPE.doughnut
-        //     }, {
-        //         layout: {i: "b", x: 3, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 1',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "c", x: 6, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-        //         11: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 2',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "d", x: 0, y: 2, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 3',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "e", x: 3, y: 2, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 4',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "h", x: 6, y: 2, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 5',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "i", x: 0, y: 4, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 6',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }, {
-        //         layout: {i: "j", x: 3, y: 4, w: 3, h: 1, minW: 3, minH: 1},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 872966},
-        //         ],
-        //         widgetHeader: 'Devices 7',
-        //         widgetType: WIDGET_TYPE.counterSum,
-        //     }, {
-        //         layout: {i: "k", x: 6, y: 4, w: 3, h: 1, minW: 3, minH: 1},
-        //         dataWidget: [
-        //             {label: 'Des', value: 392423482},
-        //         ],
-        //         widgetHeader: 'Devices 8',
-        //         widgetType: WIDGET_TYPE.counterSum,
-        //     }, {
-        //         layout: {i: "l", x: 0, y: 6, w: 3, h: 3, minW: 3, minH: 3},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices and Machine 9',
-        //         widgetType: WIDGET_TYPE.table,
-        //     }, {
-        //         layout: {i: "m", x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1},
-        //         dataWidget: [
-        //             {label: 'Des', value: 392423482},
-        //         ],
-        //         widgetHeader: 'Devices 10',
-        //         widgetType: WIDGET_TYPE.counterSum,
-        //     }, {
-        //         layout: {i: "n", x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-        //         dataWidget: [
-        //             {label: 'Mobile', value: 2000},
-        //             {label: 'Desktop', value: 700},
-        //             {label: 'Bot', value: 350},
-        //             {label: 'Botm', value: 34},
-        //         ],
-        //         widgetHeader: 'Devices 11',
-        //         widgetType: WIDGET_TYPE.doughnut,
-        //     }
-        // ]
-
         const {title = '', description = '', table} = dashboardDetail;
 
-        const widgetList = table ? widgets.filter(item => item.table === table) : [];
+        const widgetTable = table ? widgetList.filter(item => item.table === table) : [];
+        const _columns = widgetTable.map((item, key) => <option key={key}
+                                                                value={item.title}>{item.title}</option>);
 
-        const _columns = widgetList.map((item, key) => <option key={key} value={item.title}>{item.title}</option>);
+        const isEditMode = initialData.title;
+
+        const isDataChange = !isEqual(initialData, dashboardDetail) ||
+            !isEqual(initialWidgetSelected.sort(), widgetSelected.sort());
+
+        console.log(isDataChange);
 
         return (
             <div className="dashboard-management">
@@ -277,22 +184,12 @@ class DashboardPage extends Component {
                     <div className="card-header">
                         <span className="align-items-center d-inline-flex">
                             <h3 className="mb-0">{`${title || 'Create new dashboard'}`}</h3>
-                            {initialData.title &&
-                            <a href="#"
-                               data-toggle="collapse"
-                               data-target="#collapseEditableDashboard"
-                               aria-expanded="false"
-                               aria-controls="collapseEditableDashboard"
-                            >
-                                <Icon name='pencil-alt' className="pl-2 pt-1"/>
-                            </a>}
                         </span>
                     </div>
                     <div className="card-body">
-                        <div
-                            className={`dashboard-information collapse ${!initialData.title && 'show'}`}
-                            id="collapseEditableDashboard">
+                        <div className={`${isEditMode ? 'row' : ''}`}>
                             <FormField
+                                className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
                                 label='Title'
                                 placeholder='Dashboard title'
                                 fieldName='title'
@@ -302,32 +199,34 @@ class DashboardPage extends Component {
                                 errors={errors}
                             />
                             <FormField
+                                className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
                                 label='Description'
                                 placeholder='Dashboard description'
                                 fieldName='description'
                                 value={description}
                                 onChange={(e) => this.onChangeData(e.target)}
                             />
+                            <FormField
+                                className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
+                                label='Datatable'
+                                value={table}
+                                fieldName='table'
+                                onChange={(e) => this.onChangeData(e.target)}
+                                isMandatory={true}
+                                type='select'
+                                errors={errors}
+                            >
+                                <>
+                                    <option value='' className='d-none'>{`Select table`}</option>
+                                    {tables.map((item, index) => (
+                                        <option value={item.value}
+                                                key={index}
+                                        >
+                                            {item.label}
+                                        </option>))}
+                                </>
+                            </FormField>
                         </div>
-                        <FormField
-                            label='Datatable'
-                            value={table}
-                            fieldName='table'
-                            onChange={(e) => this.onChangeData(e.target)}
-                            isMandatory={true}
-                            type='select'
-                            errors={errors}
-                        >
-                            <>
-                                <option value='' className='d-none'>{`Select table`}</option>
-                                {tables.map((item, index) => (
-                                    <option value={item.value}
-                                            key={index}
-                                    >
-                                        {item.label}
-                                    </option>))}
-                            </>
-                        </FormField>
                         <div className="widget form-group">
                             <label>Widgets</label>
                             <Select2
@@ -336,16 +235,16 @@ class DashboardPage extends Component {
                                 disabled={!table}
                                 data-placeholder={`${table ? 'Select widget' : 'Please select table first'}`}
                                 value={widgetSelected && widgetSelected.length > 0 ? widgetSelected.map(item => item.title) : []}
-                                onChange={(e) => {
+                                onChange={() => {
                                     const summary = $('#widget-selected').val();
                                     const newWidgetList = summary.reduce((obj, item) => {
-                                        const { table } = this.state.dashboardDetail;
-                                        const widgetList = table ? widgets.filter(item => item.table === table) : [];
-                                        const newWidget = [...widgetList].filter(el => el.title === item);
+                                        const {dashboardDetail, widgetList} = this.state;
+                                        const {table} = dashboardDetail;
+                                        const widgetTable = table ? widgetList.filter(item => item.table === table) : [];
+                                        const newWidget = [...widgetTable].find(el => el.title === item);
                                         if (newWidget) {
-                                            const {} = newWidget[0];
                                             obj.push({
-                                                ...newWidget[0],
+                                                ...newWidget,
                                             });
                                         }
                                         return obj;
@@ -361,7 +260,7 @@ class DashboardPage extends Component {
                         </div>
                         <div className="d-inline-flex">
                             <Button className="btn-search mb-3"
-                                    disabled={isEqual(initialData, dashboardDetail) || Object.keys(errors).length > 0}
+                                    disabled={!isDataChange || Object.keys(errors).length > 0}
                                     onClick={() => this.onSubmitForm()}
                             >
                                 Save

@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import LogTableActions from "../../actions/_log-table-actions";
-import {ResponsiveGridLayout} from "../../components";
+import {FilterDate, FilterText, ResponsiveGridLayout} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
+import {Button} from "../../components/_button";
+import {Icon} from "../../components/_icon";
+import {Live} from "../../actions";
 
 export class DashboardPage extends Component {
     constructor(props) {
@@ -74,10 +77,37 @@ export class DashboardPage extends Component {
     }
 
     render() {
-        const {widgets,isLoading} = this.state;
+        const {widgets,isLoading, dashboardDetail} = this.state;
+
+        const { title } = dashboardDetail;
 
         return (
             <div className="dashboard-container">
+                <h3 className="col-12">{title}</h3>
+                <div className="filter col-12">
+                    <div className="card">
+                        <div className="card-body row">
+                            <div className="col-12 col-md-6">
+                                <FilterText
+                                    label="Filter"
+                                    placeholder="status = 200 AND url LIKE '%product%'"
+                                />
+                            </div>
+                            <div className="input-search col-12 col-md-4 mt-2 mt-md-0">
+                                <FilterDate
+                                    label="Date Range"
+                                    onDateRangeChanged={() => console.log('1')}
+                                />
+                            </div>
+                            <div className="col-12 col-md-2 btn-action-group mt-4">
+                                <Button className="btn-search w-100 mt-0 mt-md-2">
+                                    <Icon name="sync" className="mr-2" />
+                                    Refresh
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {isLoading ? <p>Waiting</p> : <ResponsiveGridLayout data={widgets}/>}
             </div>
         );

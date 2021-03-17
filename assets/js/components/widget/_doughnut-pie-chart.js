@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Chart from 'admin-lte/plugins/chart.js/Chart';
 import PropTypes from 'prop-types';
 import {WIDGET_TYPE} from "../../utils";
-import {Icon} from "../_icon";
 import {WidgetHeader} from "../index";
 
 export class DoughnutPieChart extends Component {
@@ -36,7 +35,8 @@ export class DoughnutPieChart extends Component {
                     maintainAspectRatio: false,
                     responsive: true,
                     legend: {
-                        display: false,
+                        align: 'start',
+                        position: 'right',
                     }
                 }
 
