@@ -41,6 +41,7 @@ export class FormField extends Component {
             onChange,
             onBlur,
             isMandatory = false,
+            isHiddenLabel = false,
             children,
             errors,
             ...rest
@@ -53,7 +54,7 @@ export class FormField extends Component {
 
         return (
             <div className={`form-field form-group ${className}`}>
-                <label className={isMandatory ? 'required' : ''}>{label}</label>
+                {!isHiddenLabel && <label className={isMandatory ? 'required' : ''}>{label}</label>}
                 <FormFieldComponent
                     className={`${isInvalidField && 'is-invalid'}`}
                     name={fieldName}

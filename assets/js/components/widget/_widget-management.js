@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, DoughnutPieChart, FilterText, FormField} from "../index";
+import {Button, FilterText, FormField} from "../index";
 import {WIDGET_TYPE} from "../../utils";
-import {CounterSum} from "./_counter-sum";
-import {WidgetTable} from "./_widget-table";
-import {DatabaseActions, WidgetActions} from "../../actions";
+import {Alert, DatabaseActions, WidgetActions} from "../../actions";
 import {isEqual} from "lodash";
 
 const WIDGET = [
@@ -14,13 +12,6 @@ const WIDGET = [
     {label: 'Table', value: WIDGET_TYPE.table},
 ]
 
-const DATA_FROM_API = [
-    {label: 'Mobile', value: 2000},
-    {label: 'Desktop', value: 700},
-    {label: 'Bot', value: 350},
-    {label: 'Botm', value: 34},
-];
-
 export class WidgetManagement extends Component {
     constructor(props) {
         super(props);
@@ -28,11 +19,11 @@ export class WidgetManagement extends Component {
         // initial data will be data exist when user edit widget
         const initialData = {
             column: '',
-            order: 'asc',
-            size: '',
+            order: 'desc',
+            size: '5',
             table: '',
             title: '',
-            type: ''
+            type: '4'
         }
         this.state = {
             errors: {},
@@ -103,12 +94,16 @@ export class WidgetManagement extends Component {
             widgetDetail: newWidgetDetail,
             initialData: newInitialData,
             isLoading: false,
+        }, () => {
+            const {updateInitialData} = this.props;
+            if (updateInitialData) updateInitialData(newWidgetDetail);
         });
 
         // If create new widget we will use data below
     }
 
-    async onChangeData({name, value}) {
+    async onChangeData({name, value}, isUpdateWidget) {
+        const mandatoryField = ['title', 'type', 'table', 'order']
         if (name) {
             const {errors} = this.state;
 
@@ -130,9 +125,11 @@ export class WidgetManagement extends Component {
                     return obj;
                 }, {});
             } else {
-                newErrorArray = {
-                    ...newErrorArray,
-                    [name]: true,
+                if (mandatoryField.includes(name)) {
+                    newErrorArray = {
+                        ...newErrorArray,
+                        [name]: true,
+                    }
                 }
             }
 
@@ -142,7 +139,12 @@ export class WidgetManagement extends Component {
                     [name]: value,
                 },
                 errors: {...newErrorArray},
-            }))
+            }), () => {
+                const {onUpdateWidget} = this.props;
+                if (isUpdateWidget && onUpdateWidget) {
+                    onUpdateWidget(name, value);
+                }
+            })
         }
     }
 
@@ -184,9 +186,8 @@ export class WidgetManagement extends Component {
     async onSubmit() {
         // let layout;
         const {widgetDetail} = this.state;
-        const {title, table, column, order, size, type, id} = this.state.widgetDetail;
+        const { order, id} = widgetDetail;
 
-        console.log('widgetDetail', widgetDetail);
         let data;
         Object.entries(widgetDetail).forEach(([key, value]) => {
             if (key === 'order') {
@@ -206,9 +207,16 @@ export class WidgetManagement extends Component {
 
         const resp = await WidgetActions.createOrUpdate(id, data);
 
-        if (resp && !resp.error && resp.redirect) {
-            // ToastrHelper.success('Reset successful');
-            window.location.href = resp.redirect;
+        if (resp && !resp.error) {
+            Alert.success(`${id ? 'Update' : 'Add new' } successful`);
+            if (resp.redirect) {
+                window.location.href = resp.redirect;
+                return;
+            } else {
+                this.setState({
+                    initialData: {...widgetDetail},
+                })
+            }
             return;
         } else {
             const {fields} = resp;
@@ -257,168 +265,133 @@ export class WidgetManagement extends Component {
             initialData,
             tables,
             columns,
-            defaultData,
             errors,
             isLoading
         } = this.state;
 
-        const WidgetLayout = ({widgetDetail, id}) => {
-            const {type, title, dataWidget} = widgetDetail;
-            let component;
-            switch (type) {
-                case WIDGET_TYPE.doughnut:
-                case WIDGET_TYPE.pie: {
-                    component = <DoughnutPieChart
-                        id={id}
-                        type={type}
-                        widgetHeader={title}
-                        data={dataWidget}
-                        height='500'
-                        minHeight='500'
-                    />;
-                    break;
-                }
-                case WIDGET_TYPE.counterSum: {
-                    component = <CounterSum
-                        data={dataWidget}
-                        widgetHeader={title}
-                    />
-                    break;
-                }
-                case WIDGET_TYPE.table: {
-                    component = <WidgetTable
-                        key={dataWidget}
-                        data={dataWidget}
-                        widgetHeader={title}
-                        isDashboardComponent={true}
-                    />
-                    break;
-                }
-            }
-            return component;
-        };
-
-        const {title, table, column, order, size, type} = widgetDetail;
+        const {
+            title,
+            table,
+            column,
+            order,
+            size,
+            type,
+            id,
+            query
+        } = widgetDetail;
 
         const isCounterSumType = type === WIDGET_TYPE.counterSum;
 
         return (
             <div className="editable-widget">
                 {isLoading ?
-                    (<span
+                    <span
                         className="spinner-border spinner-border-sm mr-2"
-                        role="status" aria-hidden="true"></span>) :
-                    (<div className="widget-panel row">
-                        <div className="select-widget-widgetType col-12 col-md-4">
-                            <div className="card">
-                                <div className="card-header pr-3 pl-3">Setting</div>
-                                <div className="card-body pr-2 pl-2">
-                                    <div className="col-12">
-                                        <FormField
-                                            label='Header'
-                                            value={title}
-                                            placeholder='Input header'
-                                            fieldName='title'
-                                            onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={true}
-                                            errors={errors}
-                                        />
-                                        <FormField
-                                            label='Type'
-                                            value={type}
-                                            fieldName='type'
-                                            onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={true}
-                                            type='select'
-                                            errors={errors}
+                        role="status" aria-hidden="true"></span> :
+                    <div className="card">
+                        <div className="card-header pr-3 pl-3">{id ? 'Update setting' : 'Setting'}</div>
+                        <div className="card-body pr-2 pl-2">
+                            <div className="col-12">
+                                <FormField
+                                    label='Header'
+                                    value={title}
+                                    placeholder='Input header'
+                                    fieldName='title'
+                                    onChange={(e) => this.onChangeData(e.target)}
+                                    onBlur={(e) => this.onChangeData(e.target, true)}
+                                    isMandatory={true}
+                                    errors={errors}
+                                />
+                                <FormField
+                                    label='Type'
+                                    value={type}
+                                    fieldName='type'
+                                    onChange={(e) => this.onChangeData(e.target, true)}
+                                    isMandatory={true}
+                                    type='select'
+                                    errors={errors}
+                                >
+                                    {this.generateOption(null, 'type')}
+                                </FormField>
+                                <FormField
+                                    label='Datatable'
+                                    value={table}
+                                    fieldName='table'
+                                    onChange={(e) => this.onChangeData(e.target)}
+                                    isMandatory={true}
+                                    type='select'
+                                    errors={errors}
+                                >
+                                    {this.generateOption(tables, 'table')}
+                                </FormField>
+                                {!isCounterSumType && <FormField
+                                    label='Column'
+                                    value={column}
+                                    fieldName='column'
+                                    onChange={(e) => this.onChangeData(e.target, true)}
+                                    isMandatory={false}
+                                    type='select'
+                                    errors={errors}
+                                    disabled={!table}
+                                >
+                                    {this.generateOption(columns, 'column')}
+                                </FormField>}
+                                <div className="row">
+                                    <FormField
+                                        className={`col-12 ${!isCounterSumType && 'col-md-6'}`}
+                                        label='Order'
+                                        value={order}
+                                        fieldName='order'
+                                        onChange={(e) => this.onChangeData(e.target)}
+                                        isMandatory={true}
+                                        type='select'
+                                        errors={errors}
+                                    >
+                                        {this.generateOption(null, 'order')}
+                                    </FormField>
+                                    {!isCounterSumType && <FormField
+                                        className='col-12 col-md-6 pt-md-0'
+                                        label='Size'
+                                        value={size}
+                                        fieldName='size'
+                                        onChange={(e) => this.onChangeData(e.target, true)}
+                                        isMandatory={false}
+                                        type='select'
+                                        errors={errors}
+                                    >
+                                        {this.generateOption(null, 'size')}
+                                    </FormField>}
+                                </div>
+                                <div className='form-field form-group'>
+                                    <label>Filter</label>
+                                    <FilterText
+                                        fieldName='query'
+                                        value={query}
+                                        placeholder="status = 200 AND url LIKE '%product%'"
+                                        onBlur={(e) => this.onChangeData(e.target)}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <div className="col-12 col-md-6 btn-action-group">
+                                        <Button className="btn-search w-100 mt-0 mt-md-2"
+                                                onClick={() => this.onSubmit()}
+                                                disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
                                         >
-                                            {this.generateOption(null, 'type')}
-                                        </FormField>
-                                        <FormField
-                                            label='Datatable'
-                                            value={table}
-                                            fieldName='table'
-                                            onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={true}
-                                            type='select'
-                                            errors={errors}
-                                        >
-                                            {this.generateOption(tables, 'table')}
-                                        </FormField>
-                                        {!isCounterSumType && <FormField
-                                            label='Column'
-                                            value={column}
-                                            fieldName='column'
-                                            onChange={(e) => this.onChangeData(e.target)}
-                                            isMandatory={false}
-                                            type='select'
-                                            errors={errors}
-                                            disabled={!table}
-                                        >
-                                            {this.generateOption(columns, 'column')}
-                                        </FormField>}
-                                        <div className="row">
-                                            <FormField
-                                                className={`col-12 ${!isCounterSumType && 'col-md-6'}`}
-                                                label='Order'
-                                                value={order}
-                                                fieldName='order'
-                                                onChange={(e) => this.onChangeData(e.target)}
-                                                isMandatory={true}
-                                                type='select'
-                                                errors={errors}
-                                            >
-                                                {this.generateOption(null, 'order')}
-                                            </FormField>
-                                            {!isCounterSumType && <FormField
-                                                className='col-12 col-md-6 pt-md-0'
-                                                label='Size'
-                                                value={size}
-                                                fieldName='size'
-                                                onChange={(e) => this.onChangeData(e.target)}
-                                                isMandatory={false}
-                                                type='select'
-                                                errors={errors}
-                                            >
-                                                {this.generateOption(null, 'size')}
-                                            </FormField>}
-                                        </div>
-                                        <FilterText
-                                            label="Filter"
-                                            placeholder="status = 200 AND url LIKE '%product%'"
-                                            onChange={(e) => this.onChangeData(e.target)}
-                                        />
-                                        <div className="row">
-                                            <div className="col-12 col-md-6 btn-action-group">
-                                                <Button className="btn-search w-100 mt-0 mt-md-2"
-                                                        onClick={() => this.onSubmit()}
-                                                        disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
-                                                >
-                                                    {`${widgetDetail.id ? 'Update' : 'Add new'}`}
-                                                </Button>
-                                            </div>
-                                            <div
-                                                className="col-12 col-md-6 btn-action-group pt-2 pt-md-0">
-                                                <Button className="btn-search w-100 mt-0 mt-md-2"
-                                                        color="default"
-                                                        onClick={() => history.back()}>
-                                                    Cancel
-                                                </Button>
-                                            </div>
-                                        </div>
+                                            {`${id ? 'Update' : 'Add new'}`}
+                                        </Button>
+                                    </div>
+                                    <div
+                                        className="col-12 col-md-6 btn-action-group pt-2 pt-md-0">
+                                        <Button className="btn-search w-100 mt-0 mt-md-2"
+                                                color="default"
+                                                onClick={() => history.back()}>
+                                            Cancel
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="widget col-12 col-md-8">
-                            <div className="card pb-5">
-                                {defaultData && defaultData && defaultData.length > 0 ?
-                                    <WidgetLayout widgetDetail={defaultData} id={id}/> :
-                                    <p className="text-center"> No data display.</p>
-                                }
-                            </div>
-                        </div>
-                    </div>)
+                    </div>
                 }
             </div>
         );

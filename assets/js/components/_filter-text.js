@@ -6,9 +6,11 @@ import {Live, Event} from '../actions';
 export class FilterText extends Component {
     constructor(props) {
         super(props);
+
+        const {value} = this.props;
         this.state = {
             isInvalid: false,
-            value: ''
+            value,
         };
         this.onKeyUp = this.onKeyUp.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -30,8 +32,6 @@ export class FilterText extends Component {
     }
 
     handleChange(e) {
-        const { onChange } = this.props;
-        if (onChange) onChange(e);
         this.setState({
             value: e && e.target ? e.target.value : '',
             isInvalid: false
@@ -54,9 +54,7 @@ export class FilterText extends Component {
 
         return (
             <div {...rest}>
-                <div>
-                    <p className="float-left mb-2">{label}</p>
-                </div>
+                {label &&  <p className="float-left mb-2">{label}</p>}
                 <Input
                     className={className}
                     id="filter-text"
@@ -67,6 +65,10 @@ export class FilterText extends Component {
                     aria-label="Search"
                     onKeyUp={this.onKeyUp}
                     onChange={this.handleChange}
+                    onBlur={(e) => {
+                        const {onBlur} = this.props;
+                        if (onBlur) onBlur(e);
+                    }}
                 />
             </div>
         );

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {DoughnutPieChart} from "../index";
+import {DoughnutPieChart, WidgetHeader} from "../index";
 import {Responsive, WidthProvider} from "react-grid-layout/index";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -8,6 +8,7 @@ import '../../../styles/component/_responsive-grid-layout.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
+import LogTableActions from "../../actions/_log-table-actions";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -21,18 +22,60 @@ export class ResponsiveGridLayout extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({ mounted: true });
+        const { dashboardDetail } = this.props;
+
+        if (dashboardDetail) {
+            const { configs, widgets, uuid } = dashboardDetail;
+
+            console.log('widgets', widgets);
+            let data = [];
+
+            if (widgets && widgets.length > 0) {
+                const rawWidget = widgets.map((item) => LogTableActions.getWidget(uuid, item.widget_id));
+                const widgetRes = await Promise.all(rawWidget);
+
+                data = widgetRes && widgetRes.length > 0 && widgetRes.reduce((arr, item, index) => {
+                    const {error, data} = item;
+                    const {id, x, y, width, height, fixed, title, type, widget_id} = widgets[index];
+                    const {minWidth, minHeight} = configs.size[type];
+
+                    if (!error && data && data.length > 0) {
+                        arr.push({
+                            data,
+                            layout: {
+                                i: id.toString(),
+                                x,
+                                y,
+                                w: width,
+                                h: height,
+                                minW: minWidth,
+                                minH: minHeight,
+                                static: !!fixed
+                            },
+                            title,
+                            widget_id,
+                            type: type.toString()
+                        });
+                    }
+                    return arr;
+                }, []);
+            }
+
+            this.setState({
+                data,
+            })
+        }
     }
 
     render() {
-        const { data } = this.props;
-        const { mounted, compactType } = this.state;
+        const { isResizable = true, isDraggable = true, onLayoutChange, removeWidget } = this.props;
+        const { mounted, compactType, data } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
 
         const layout = data && data.length > 0 ? data.map(item => item.layout) : [];
-        console.log('layout',layout);
         return (
             <div className="responsive-grid-layout">
                 { data && data.length > 0  ? <ResponsiveReactGridLayout
@@ -40,9 +83,7 @@ export class ResponsiveGridLayout extends Component {
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
                     layout={layout}
-                    onLayoutChange={(e) => {
-                        console.log("1", e);
-                    }}
+                    onLayoutChange={onLayoutChange}
                     // onDrop={onDrop}
                     // WidthProvider option
                     measureBeforeMount={false}
@@ -51,11 +92,12 @@ export class ResponsiveGridLayout extends Component {
                     useCSSTransforms={mounted}
                     compactType={compactType}
                     preventCollision={!compactType}
-                    isDroppable={true}
+                    isDraggable={isDraggable}
+                    isResizable={isResizable}
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {data.map((item) => {
-                        let WidgetLayout = ({layout, data, title, type}) => {
+                        let WidgetLayout = ({layout, data, type}) => {
                             let component;
                             if (layout && data) {
                                 switch (type) {
@@ -63,7 +105,6 @@ export class ResponsiveGridLayout extends Component {
                                     case WIDGET_TYPE.pie: {
                                         component = <DoughnutPieChart
                                             id={layout.i}
-                                            widgetHeader={title}
                                             type={type}
                                             data={data}
                                             height='250'
@@ -74,14 +115,12 @@ export class ResponsiveGridLayout extends Component {
                                     case WIDGET_TYPE.counterSum: {
                                         component = <CounterSum
                                             data={data}
-                                            widgetHeader={title}
                                         />
                                         break;
                                     }
                                     case WIDGET_TYPE.table: {
                                         component = <WidgetTable
                                             data={data}
-                                            widgetHeader={title}
                                             isDashboardComponent={true}
                                         />
                                     }
@@ -93,6 +132,7 @@ export class ResponsiveGridLayout extends Component {
                         }
                         return (
                             <div key={item.layout.i} data-grid={item.layout} className="widget card">
+                                <WidgetHeader header={item.title} removeWidget={() => removeWidget(item.widget_id)}/>
                                 <WidgetLayout {...item}/>
                             </div>
                         )
@@ -104,5 +144,8 @@ export class ResponsiveGridLayout extends Component {
 }
 
 ResponsiveGridLayout.propTypes = {
-    data: PropTypes.array
+    data: PropTypes.array,
+    isResizable: PropTypes.bool,
+    isDraggable: PropTypes.bool,
+    removeWidget: PropTypes.func
 };
