@@ -8,23 +8,18 @@ export class WidgetTable extends Component {
 
         const Row = ({label, value, isHeader}) => (
             <div
-                className={`${!isHeader ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4`}>
+                className='border-top row widget-table-row pt-2 pb-2 mr-4 ml-4'>
                 <div
-                    className={`label-col col-8 p-0 ${isHeader ? 'font-weight-bold' : ''}`}>{label || '<Select column name>'}</div>
+                    className={`label-col col-8 p-0`}>{label || '<Select column name>'}</div>
                 <div
-                    className={`value-col col-4 text-right pl-0 ${isHeader ? 'font-weight-bold' : ''}`}>{!isHeader ? value : 'Count'}</div>
+                    className='value-col col-4 text-right pl-0'>{!isHeader ? value : 'Count'}</div>
             </div>
         )
 
         return (
             <>
                 {data && data.length > 0 ? <>
-                    {(widgetHeader || isDashboardComponent) && (
-                        <>
-                            <WidgetHeader header={widgetHeader}/>
-                            <Row label={column} isHeader={isDashboardComponent}/>
-                        </>)
-                    }
+                    {(isDashboardComponent) && <Row label={column} isHeader={isDashboardComponent}/>}
                     <div className="widget-table">
                         {data.map((item, index) => {
                             return <Row {...item}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {DoughnutPieChart, WidgetManagement} from "../../components";
+import {DoughnutPieChart, WidgetHeader, WidgetManagement} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "../../components/widget/_counter-sum";
 import {WidgetTable} from "../../components/widget/_widget-table";
@@ -128,7 +128,7 @@ class WidgetPage extends Component {
                 }
                 case WIDGET_TYPE.counterSum: {
                     component = <CounterSum
-                        data={dataWidget}
+                        data={dataWidget.length}
                         widgetHeader={title}
                     />
                     break;

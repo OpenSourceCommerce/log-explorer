@@ -265,17 +265,22 @@ export class WidgetManagement extends Component {
             initialData,
             tables,
             columns,
-            defaultData,
             errors,
             isLoading
         } = this.state;
 
-        const {title, table, column, order, size, type, id } = widgetDetail;
+        const {
+            title,
+            table,
+            column,
+            order,
+            size,
+            type,
+            id,
+            query
+        } = widgetDetail;
 
         const isCounterSumType = type === WIDGET_TYPE.counterSum;
-
-        console.log('errors', errors);
-        console.log('isEqual(initialData, widgetDetail)', isEqual(initialData, widgetDetail));
 
         return (
             <div className="editable-widget">
@@ -357,11 +362,15 @@ export class WidgetManagement extends Component {
                                         {this.generateOption(null, 'size')}
                                     </FormField>}
                                 </div>
-                                <FilterText
-                                    label="Filter"
-                                    placeholder="status = 200 AND url LIKE '%product%'"
-                                    onChange={(e) => this.onChangeData(e.target)}
-                                />
+                                <div className='form-field form-group'>
+                                    <label>Filter</label>
+                                    <FilterText
+                                        fieldName='query'
+                                        value={query}
+                                        placeholder="status = 200 AND url LIKE '%product%'"
+                                        onBlur={(e) => this.onChangeData(e.target)}
+                                    />
+                                </div>
                                 <div className="row">
                                     <div className="col-12 col-md-6 btn-action-group">
                                         <Button className="btn-search w-100 mt-0 mt-md-2"

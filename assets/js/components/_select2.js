@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import 'admin-lte/plugins/select2/js/select2';
 import 'admin-lte/plugins/select2/css/select2.css';
+import '../../styles/component/_select2.scss';
 
 export class Select2 extends Component {
     constructor(props) {
