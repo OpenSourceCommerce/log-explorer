@@ -68,7 +68,8 @@ interface StreamServiceInterface
     /**
      * @param Dashboard $dashboard
      * @param WidgetInterface $widgetItem
+     * @param array $options
      * @return mixed
      */
-    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem);
+    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem, array $options = []);
 }

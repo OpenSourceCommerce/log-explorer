@@ -40,19 +40,24 @@ class StreamService implements StreamServiceInterface
         $builder = $this->connection->createQueryBuilder()
             ->from($table);
         if ($timer) {
-            if ($from) {
-                $builder->andWhere($timer . ' ' . $fromOperator . ' :from')
-                    ->setParameter('from', $from->format('Y-m-d H:i:s'));
-            }
-            if ($to) {
-                $builder->andWhere($timer . ' <= :to')
-                    ->setParameter('to', $to->format('Y-m-d H:i:s'));
-            }
+            $this->makeTimeFilter($builder, $from, $to);
         }
         if ($filter) {
             $builder->andWhere($filter);
         }
         return $builder;
+    }
+
+    private function makeTimeFilter(QueryBuilder $builder, $from, $to): QueryBuilder
+    {
+        if ($from) {
+            $builder->andWhere('timestamp >= :from')
+                ->setParameter('from', $from->format('Y-m-d H:i:s'));
+        }
+        if ($to) {
+            $builder->andWhere('timestamp <= :to')
+                ->setParameter('to', $to->format('Y-m-d H:i:s'));
+        }
     }
 
     /**
@@ -207,11 +212,19 @@ class StreamService implements StreamServiceInterface
     /**
      * @inheritDoc
      */
-    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem)
+    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem, array $options = [])
     {
+        $from = $options['from'] ?? false;
+        $to = $options['to'] ?? false;
+        $filter = $options['filter'] ?? false;
+
         $builder = $widgetItem->getQueryBuilder();
         if ($dashboard->getQuery()) {
             $builder->andWhere($dashboard->getQuery());
+        }
+        $this->makeTimeFilter($builder, $from, $to);
+        if ($filter) {
+            $builder->andWhere($filter);
         }
         if ($widgetItem->hasSingleResult()) {
             return $builder

@@ -253,6 +253,7 @@ class StreamController extends ApiController
 
     /**
      * @Route("/api/stream/widget/{uuid}/{widget_id}", methods = "GET")
+     * @param Request $request
      * @param Dashboard $dashboard
      * @param Widget $widget
      * @param WidgetServiceInterface $widgetService
@@ -260,7 +261,7 @@ class StreamController extends ApiController
      * @return JsonResponse
      * @Entity("widget", expr="repository.find(widget_id)")
      */
-    public function widget(Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService, StreamServiceInterface $streamService): JsonResponse
+    public function widget(Request $request, Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService, StreamServiceInterface $streamService): JsonResponse
     {
         // this is public API so uuid just used to prevent scan by widget_id
         $isOK = false;
@@ -273,8 +274,9 @@ class StreamController extends ApiController
         if (!$isOK) {
             return $this->responseError('Widget does not belong to dashboard');
         }
+        $options = $this->getFilter($request);
         $widgetItem = $widgetService->getWidgetInterface($widget);
-        $data = $streamService->getWidgetData($dashboard, $widgetItem);
+        $data = $streamService->getWidgetData($dashboard, $widgetItem, $options);
 
         return $this->responseSuccess([
             'data' => $data,

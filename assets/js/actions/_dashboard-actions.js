@@ -21,7 +21,7 @@ const DashboardActions = {
         return request(`/api/dashboard/${dashboardId}/add/${widgetId}`, {method: 'POST', body: JSON.stringify(options)});
     },
     updateWidget(dashboardId, widgetId, options) {
-        return request(`/api/dashboard/${dashboardId}/update/${widgetId}`, {method: 'POST', body: JSON.stringify(options)});
+        return request(`/api/dashboard/${dashboardId}/update/${widgetId}`, {method: 'PUT', body: JSON.stringify(options)});
     },
     removeWidget(dashboardId, widgetId) {
         return request(`/api/dashboard/${dashboardId}/remove/${widgetId}`, {method: 'DELETE'});
