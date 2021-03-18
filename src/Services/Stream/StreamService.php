@@ -58,6 +58,7 @@ class StreamService implements StreamServiceInterface
             $builder->andWhere('timestamp <= :to')
                 ->setParameter('to', $to->format('Y-m-d H:i:s'));
         }
+        return $builder;
     }
 
     /**
