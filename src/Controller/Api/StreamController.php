@@ -44,7 +44,7 @@ class StreamController extends ApiController
     private function getFilter(Request $request): array
     {
         $options = [];
-        if ($request->query->has('from')) {
+        if (!empty($request->query->get('from'))) {
             $from = $request->query->get('from');
             if (is_numeric($from)) {
                 $from = new \DateTime("- {$from} minutes");
@@ -52,24 +52,25 @@ class StreamController extends ApiController
                 $from = new \DateTime($from);
             }
             $options['from'] = $from;
-        } else {
-            $options['from'] = new \DateTime('- 1 hour');
         }
-        if ($request->query->has('to')) {
+//        else {
+//            $options['from'] = new \DateTime('- 1 hour');
+//        }
+        if (!empty($request->query->get('to'))) {
             $to = $request->query->get('to');
             $to = new \DateTime($to);
             $options['to'] = $to;
         }
-        if ($request->query->has('filter')) {
+        if (!empty($request->query->get('filter'))) {
             $filter = $request->query->get('filter');
             $options['filter'] = $filter;
         } else {
             $options['filter'] = false;
         }
-        if ($request->query->has('pageIndex')) {
+        if (!empty($request->query->get('pageIndex'))) {
             $options['page'] = intval($request->query->get('pageIndex'));
         }
-        if ($request->query->has('pageSize')) {
+        if (!empty($request->query->get('pageSize'))) {
             $options['limit'] = intval($request->query->get('pageSize'));
         }
         return $options;
