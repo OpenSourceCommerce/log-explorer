@@ -201,6 +201,7 @@ class DashboardWidget implements \JsonSerializable
             'title' => $widget->getTitle(),
             'type' => $widget->getType(),
             'table' => $widget->getTable(),
+            'column' => $widget->getColumn(),
         ];
     }
 }
