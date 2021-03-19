@@ -25,6 +25,7 @@ class DashboardPage extends Component {
         this.onChangeData = this.onChangeData.bind(this);
         this.onSubmitForm = this.onSubmitForm.bind(this);
         this.onLayoutChange = this.onLayoutChange.bind(this);
+        //this.getWidgetDetail = this.getWidgetDetail.bind(this);
     }
 
 
@@ -109,20 +110,7 @@ class DashboardPage extends Component {
             initialData: {...dashboardDetail},
             widgetSelected,
             initialWidgetSelected: [...widgetSelected],
-            widgetList: [
-                ...widgetList,
-                {
-                    column: "url",
-                    id: 1,
-                    last_updated: "2021-03-10 08:01",
-                    order_desc: true,
-                    query: null,
-                    size: 10,
-                    table: "nginx_access_abc",
-                    title: "Widget 2",
-                    type: 2,
-                }
-            ],
+            widgetList: [...widgetList],
             tables,
             initialLogTableDashboard: initialLogTableDashboard,
             logTableDashboard: initialLogTableDashboard,
@@ -192,9 +180,6 @@ class DashboardPage extends Component {
             tables,
             logTableDashboard,
         } = this.state;
-
-
-        console.log('dashboardDetail', dashboardDetail);
 
         const {title = '', description = '', table} = dashboardDetail;
 
@@ -313,11 +298,10 @@ class DashboardPage extends Component {
                             </div>
                         </div>
 
-                        <ResponsiveGridLayout
-                            key={dashboardDetail}
-                            dashboardDetail={logTableDashboard}
-                            onLayoutChange={(e) => this.onLayoutChange(e)}
-                        />
+                        {/*<ResponsiveGridLayout*/}
+                        {/*    data={widgetSelected}*/}
+                        {/*    onLayoutChange={(e) => this.onLayoutChange(e)}*/}
+                        {/*/>*/}
                     </>)}
             </div>
         );

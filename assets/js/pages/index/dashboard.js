@@ -23,7 +23,8 @@ export class DashboardPage extends Component {
         this.onSaveChange = this.onSaveChange.bind(this);
         this.removeWidget = this.removeWidget.bind(this);
         this.loadingData = this.loadingData.bind(this);
-        this.isFilterChange = this.isFilterChange.bind(this);
+        this.getWidgetDetail = this.getWidgetDetail.bind(this);
+        this.onChangeFilter = this.onChangeFilter.bind(this);
     }
 
     async componentDidMount() {
@@ -37,6 +38,10 @@ export class DashboardPage extends Component {
     }
 
     async loadingData() {
+        this.setState({
+            isLoading: true,
+        })
+
         const uuid = window.uuid;
 
         const [dashboardRes, widgetListRes] = await Promise.all([
@@ -51,23 +56,29 @@ export class DashboardPage extends Component {
         if (dashboardRes && !dashboardRes.error) {
 
             const {widgets, data, configs} = dashboardRes;
+
+            const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
+
             dashboardDetail = {
                 ...data,
                 configs: configs && configs.size ? {...configs} : {},
-                widgets: widgets && widgets.length > 0 ? [...widgets] : [],
+                widgets: [...widgetList],
             } || {};
-
         }
 
         this.setState({
             dashboardDetail,
             widgetList,
             isLoading: false,
-        })
+        });
     }
 
     async onSaveChange(widgetId) {
-        const { dashboardDetail, widgetList } = this.state;
+        this.setState({
+            isLoading: true,
+        })
+
+        const {dashboardDetail, widgetList} = this.state;
         const {id} = dashboardDetail;
         let newWidget = {};
         const widget = widgetList.find(item => item.id.toString() === widgetId);
@@ -97,7 +108,10 @@ export class DashboardPage extends Component {
     }
 
     async removeWidget(id) {
-        const { dashboardDetail } = this.state;
+        this.setState({
+            isLoading: true,
+        })
+        const {dashboardDetail} = this.state;
         const removeWidgetRes = await DashboardActions.removeWidget(dashboardDetail.id, id);
 
         if (removeWidgetRes && !removeWidgetRes.error) {
@@ -105,27 +119,59 @@ export class DashboardPage extends Component {
         }
     }
 
-    async isFilterChange({name, value}) {
-        const { dashboardDetail } = this.state;
-        const { widgets, uuid } = dashboardDetail;
+    async getWidgetDetail(widgets, configs, uuid) {
+        let data = [];
+        if (widgets && widgets.length > 0) {
+            const rawWidget = widgets.map((item) => LogTableActions.getWidget(uuid, item.widget_id));
+            const widgetRes = await Promise.all(rawWidget);
 
-        const rawFilter =  widgets.map(item => LogTableActions.getWidget(uuid, item.widget_id))
-        const filterDataRes = await Promise.all(rawFilter);
+            data = widgetRes && widgetRes.length > 0 && widgetRes.reduce((arr, item, index) => {
+                const {error, data} = item;
+                const {id, x, y, width, height, fixed, title, type, widget_id} = widgets[index];
+                const {minWidth, minHeight} = configs.size[type];
 
-        const newWidgetData = widgets.map((item,index) => {
-            const {data, error} = filterDataRes[index];
-            return {
-                ...item,
-                data: !error && data && data.length > 0 ? [...data] : [],
-            }
+                if (!error) {
+                    arr.push({
+                        ...widgets[index],
+                        data,
+                        layout: {
+                            i: id.toString(),
+                            x,
+                            y,
+                            w: width,
+                            h: height,
+                            minW: minWidth,
+                            minH: minHeight,
+                            static: !!fixed
+                        },
+                        title,
+                        widget_id,
+                        type: type.toString()
+                    });
+                }
+                return arr;
+            }, []);
+        }
+        return data;
+    }
+
+    async onChangeFilter() {
+        this.setState({
+            isLoading: true,
         })
+
+        const { dashboardDetail } = this.state;
+        const { widgets, configs, uuid } = dashboardDetail;
+        const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
         this.setState({
             dashboardDetail: {
                 ...dashboardDetail,
-                widgets: [...newWidgetData]
-            }
+                widgets: [...widgetList],
+            },
+            isLoading: false,
         })
+
     }
 
     render() {
@@ -138,6 +184,7 @@ export class DashboardPage extends Component {
         } = this.state;
 
         const {title, widgets} = dashboardDetail;
+
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
 
@@ -152,13 +199,13 @@ export class DashboardPage extends Component {
                                     <FilterText
                                         label="Filter"
                                         placeholder="status = 200 AND url LIKE '%product%'"
-                                        onBlur={(e) => this.isFilterChange(e.target)}
+                                        onBlur={(e) => this.onChangeFilter()}
                                     />
                                 </div>
                                 <div className="input-search col-12 col-md-4 mt-2 mt-md-0">
                                     <FilterDate
                                         label="Date Range"
-                                        onDateRangeChanged={() => console.log('1')}
+                                        onDateRangeChanged={() => this.onChangeFilter()}
                                     />
                                 </div>
                                 <div className="col-12 col-md-2 btn-action-group mt-4">
@@ -170,7 +217,9 @@ export class DashboardPage extends Component {
                             </div>
                         </div>
                     </div>
-                    {isLoading ? <p>Waiting</p> : <div key={dashboardDetail.widgets}>
+                    {isLoading ? <span
+                        className="spinner-border spinner-border-sm mr-2"
+                        role="status" aria-hidden="true"/> : <div key={widgets}>
                         <div className="col-12">
                             <div className="d-flex flex-row justify-content-end">
                                 {isClickedAddNew ? (
@@ -219,7 +268,7 @@ export class DashboardPage extends Component {
                             </div>
                         </div>
                         <ResponsiveGridLayout
-                            dashboardDetail={dashboardDetail}
+                            data={widgets}
                             isResizable={true}
                             isDraggable={true}
                             removeWidget={(id) => this.removeWidget(id)}
