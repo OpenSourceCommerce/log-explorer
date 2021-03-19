@@ -23,62 +23,22 @@ export class ResponsiveGridLayout extends Component {
     }
 
     async componentDidMount() {
-        this.setState({ mounted: true });
-        const { dashboardDetail } = this.props;
-
-        if (dashboardDetail) {
-            const { configs, widgets, uuid } = dashboardDetail;
-
-            console.log('widgets', widgets);
-            let data = [];
-
-            if (widgets && widgets.length > 0) {
-                const rawWidget = widgets.map((item) => LogTableActions.getWidget(uuid, item.widget_id));
-                const widgetRes = await Promise.all(rawWidget);
-
-                data = widgetRes && widgetRes.length > 0 && widgetRes.reduce((arr, item, index) => {
-                    const {error, data} = item;
-                    const {id, x, y, width, height, fixed, title, type, widget_id} = widgets[index];
-                    const {minWidth, minHeight} = configs.size[type];
-
-                    if (!error && data && data.length > 0) {
-                        arr.push({
-                            data,
-                            layout: {
-                                i: id.toString(),
-                                x,
-                                y,
-                                w: width,
-                                h: height,
-                                minW: minWidth,
-                                minH: minHeight,
-                                static: !!fixed
-                            },
-                            title,
-                            widget_id,
-                            type: type.toString()
-                        });
-                    }
-                    return arr;
-                }, []);
-            }
-
-            this.setState({
-                data,
-            })
-        }
+        this.setState({
+            mounted: true,
+        });
     }
 
     render() {
-        const { isResizable = true, isDraggable = true, onLayoutChange, removeWidget } = this.props;
-        const { mounted, compactType, data } = this.state;
+        const { isResizable = true, data, isDraggable = true, onLayoutChange, removeWidget, ...rest } = this.props;
+        const { mounted, compactType, isLoading } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
-
         const layout = data && data.length > 0 ? data.map(item => item.layout) : [];
         return (
-            <div className="responsive-grid-layout">
-                { data && data.length > 0  ? <ResponsiveReactGridLayout
+            <>{isLoading ? <span
+                className="spinner-border spinner-border-sm mr-2"
+                role="status" aria-hidden="true"/> :  <div className="responsive-grid-layout" {...rest}>
+                { data && data.length > 0  && <ResponsiveReactGridLayout
                     {...this.props}
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
@@ -137,8 +97,8 @@ export class ResponsiveGridLayout extends Component {
                             </div>
                         )
                     })}
-                </ResponsiveReactGridLayout> : <p className="text-center"> No widget exist </p>}
-            </div>
+                </ResponsiveReactGridLayout>}
+            </div>} </>
         );
     }
 }
