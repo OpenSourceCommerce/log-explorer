@@ -7,7 +7,7 @@ export class WidgetTable extends Component {
 
         const Row = ({label, value, isHeader}) => (
             <div
-                className={`${isDashboardComponent ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4'`} >
+                className={`${!isHeader ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4`} >
                 <div
                     className={`label-col col-8 p-0`}>{label || '<Select column name>'}</div>
                 <div
