@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {WidgetHeader} from "./_widget-header";
 
 export class WidgetTable extends Component {
     render() {
-        const {data, isDashboardComponent, widgetHeader, column} = this.props;
+        const {data, isDashboardComponent, column} = this.props;
 
         const Row = ({label, value, isHeader}) => (
             <div
-                className='border-top row widget-table-row pt-2 pb-2 mr-4 ml-4'>
+                className={`${isDashboardComponent ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4'`} >
                 <div
                     className={`label-col col-8 p-0`}>{label || '<Select column name>'}</div>
                 <div

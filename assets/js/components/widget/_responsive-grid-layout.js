@@ -57,7 +57,7 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {data.map((item) => {
-                        let WidgetLayout = ({layout, data, type}) => {
+                        let WidgetLayout = ({layout, data, type, column}) => {
                             let component;
                             if (layout && data) {
                                 switch (type) {
@@ -80,6 +80,7 @@ export class ResponsiveGridLayout extends Component {
                                     }
                                     case WIDGET_TYPE.table: {
                                         component = <WidgetTable
+                                            column={column}
                                             data={data}
                                             isDashboardComponent={true}
                                         />
