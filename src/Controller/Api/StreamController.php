@@ -41,37 +41,33 @@ class StreamController extends ApiController
         ]);
     }
 
-    private function getFilter(Request $request): array
+    private function getFilter(Request $request, $fromRequired = true): array
     {
         $options = [];
-        if (!empty($request->query->get('from'))) {
-            $from = $request->query->get('from');
+        if (!empty($from = $request->query->get('from'))) {
             if (is_numeric($from)) {
                 $from = new \DateTime("- {$from} minutes");
             } else {
                 $from = new \DateTime($from);
             }
             $options['from'] = $from;
+        } elseif ($fromRequired) {
+            $options['from'] = new \DateTime('- 1 hour');
         }
-//        else {
-//            $options['from'] = new \DateTime('- 1 hour');
-//        }
-        if (!empty($request->query->get('to'))) {
-            $to = $request->query->get('to');
+        if (!empty($to = $request->query->get('to'))) {
             $to = new \DateTime($to);
             $options['to'] = $to;
         }
-        if (!empty($request->query->get('filter'))) {
-            $filter = $request->query->get('filter');
+        if (!empty($filter = $request->query->get('filter'))) {
             $options['filter'] = $filter;
         } else {
             $options['filter'] = false;
         }
-        if (!empty($request->query->get('pageIndex'))) {
-            $options['page'] = intval($request->query->get('pageIndex'));
+        if (!empty($pageIndex = $request->query->get('pageIndex'))) {
+            $options['page'] = intval($pageIndex);
         }
-        if (!empty($request->query->get('pageSize'))) {
-            $options['limit'] = intval($request->query->get('pageSize'));
+        if (!empty($pageSize = $request->query->get('pageSize'))) {
+            $options['limit'] = intval($pageSize);
         }
         return $options;
     }
@@ -275,7 +271,7 @@ class StreamController extends ApiController
         if (!$isOK) {
             return $this->responseError('Widget does not belong to dashboard');
         }
-        $options = $this->getFilter($request);
+        $options = $this->getFilter($request, false);
         $widgetItem = $widgetService->getWidgetInterface($widget);
         $data = $streamService->getWidgetData($dashboard, $widgetItem, $options);
 

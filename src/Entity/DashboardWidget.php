@@ -192,14 +192,15 @@ class DashboardWidget implements \JsonSerializable
         return [
             'id' => $this->getId(),
             'dashboard_id' => $this->getDashboard()->getId(),
-            'widget_id' => $this->getWidget()->getId(),
+            'widget_id' => $widget->getId(),
             'x' => $this->getX(),
             'y' => $this->getY(),
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
             'fixed' => $this->isFixed() ? 1 : 0,
-            'title' => $widget ? $widget->getTitle() : '',
-            'type' => $widget ? $widget->getType() : null,
+            'title' => $widget->getTitle(),
+            'type' => $widget->getType(),
+            'table' => $widget->getTable(),
         ];
     }
 }
