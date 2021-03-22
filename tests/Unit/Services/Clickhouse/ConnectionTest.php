@@ -13,21 +13,19 @@ class ConnectionTest extends WebTestCase
     {
         /** @var ConnectionInterface $conn */
         $conn = $this->getService(ConnectionInterface::class);
-        $ret = $conn->fetchAll('SELECT COUNT() FROM nginx_access');
+        $ret = $conn->fetchAll('SELECT COUNT() as c FROM nginx_access');
         $this->assertIsArray($ret);
         $ret = reset($ret);
-        var_dump($ret);
-        $this->assertArrayHasKey('COUNT()', $ret);
+        $this->assertArrayHasKey('c', $ret);
     }
 
     public function testFetchColumn()
     {
         /** @var ConnectionInterface $conn */
         $conn = $this->getService(ConnectionInterface::class);
-        $ret = $conn->fetchColumn('SELECT COUNT() FROM nginx_access');
+        $ret = $conn->fetchColumn('SELECT COUNT() as c FROM nginx_access');
         $this->assertIsArray($ret);
-        var_dump($ret);
-        $this->assertArrayHasKey('COUNT()', $ret);
+        $this->assertArrayHasKey('c', $ret);
     }
 
     public function testFetchOne()
