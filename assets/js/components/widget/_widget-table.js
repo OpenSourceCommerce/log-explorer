@@ -9,7 +9,7 @@ export class WidgetTable extends Component {
             <div
                 className={`${!isHeader ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4`} >
                 <div
-                    className={`label-col col-8 p-0`}>{label || '<Select column name>'}</div>
+                    className={`label-col col-8 p-0`}>{label || ''}</div>
                 <div
                     className='value-col col-4 text-right pl-0'>{!isHeader ? value : 'Count'}</div>
             </div>
@@ -18,7 +18,7 @@ export class WidgetTable extends Component {
         return (
             <>
                 {data && data.length > 0 ? <>
-                    {(isDashboardComponent) && <Row label={column} isHeader={isDashboardComponent}/>}
+                    {(isDashboardComponent) && <Row label={column ||  '<Select column name>'} isHeader={isDashboardComponent}/>}
                     <div className="widget-table">
                         {data.map((item, index) => {
                             return <Row {...item}

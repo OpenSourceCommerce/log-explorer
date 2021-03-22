@@ -29,7 +29,14 @@ export class ResponsiveGridLayout extends Component {
     }
 
     render() {
-        const { isResizable = true, data, isDraggable = true, onLayoutChange, removeWidget, ...rest } = this.props;
+        const {
+            isResizable = true,
+            data,
+            isDraggable = true,
+            onLayoutChange,
+            removeWidget,
+            editWidget,
+            ...rest } = this.props;
         const { mounted, compactType, isLoading } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
@@ -93,7 +100,10 @@ export class ResponsiveGridLayout extends Component {
                         }
                         return (
                             <div key={item.layout.i} data-grid={item.layout} className="widget card">
-                                <WidgetHeader header={item.title} removeWidget={() => removeWidget(item.widget_id)}/>
+                                <WidgetHeader header={item.title}
+                                              removeWidget={() => removeWidget(item.widget_id)}
+                                              editWidget={() => editWidget(item.widget_id)}
+                                />
                                 <WidgetLayout {...item}/>
                             </div>
                         )

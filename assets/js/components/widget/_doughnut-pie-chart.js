@@ -24,7 +24,13 @@ export class DoughnutPieChart extends Component {
                     datasets: [
                         {
                             data: data.map(item => item.value),
-                            backgroundColor: data.map(() => this.getRandomColor()),
+                            backgroundColor: data.reduce((arr) => {
+                                const colorCode = this.getRandomColor();
+                                if(!arr.includes(colorCode)) {
+                                    arr.push(colorCode);
+                                }
+                                return arr;
+                            }, []),
                         }
                     ]
                 }
