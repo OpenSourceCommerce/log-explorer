@@ -16,6 +16,7 @@ class ConnectionTest extends WebTestCase
         $ret = $conn->fetchAll('SELECT COUNT() FROM nginx_access');
         $this->assertIsArray($ret);
         $ret = reset($ret);
+        var_dump($ret);
         $this->assertArrayHasKey('COUNT()', $ret);
     }
 
@@ -25,6 +26,7 @@ class ConnectionTest extends WebTestCase
         $conn = $this->getService(ConnectionInterface::class);
         $ret = $conn->fetchColumn('SELECT COUNT() FROM nginx_access');
         $this->assertIsArray($ret);
+        var_dump($ret);
         $this->assertArrayHasKey('COUNT()', $ret);
     }
 
