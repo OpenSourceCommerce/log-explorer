@@ -13,7 +13,7 @@ class ConnectionTest extends WebTestCase
     {
         /** @var ConnectionInterface $conn */
         $conn = $this->getService(ConnectionInterface::class);
-        $ret = $conn->fetchAll('SELECT COUNT(*) FROM nginx_access');
+        $ret = $conn->fetchAll('SELECT COUNT() FROM nginx_access');
         $this->assertIsArray($ret);
         $ret = reset($ret);
         $this->assertArrayHasKey('COUNT()', $ret);
@@ -23,7 +23,7 @@ class ConnectionTest extends WebTestCase
     {
         /** @var ConnectionInterface $conn */
         $conn = $this->getService(ConnectionInterface::class);
-        $ret = $conn->fetchColumn('SELECT COUNT(*) FROM nginx_access');
+        $ret = $conn->fetchColumn('SELECT COUNT() FROM nginx_access');
         $this->assertIsArray($ret);
         $this->assertArrayHasKey('COUNT()', $ret);
     }
@@ -32,7 +32,7 @@ class ConnectionTest extends WebTestCase
     {
         /** @var ConnectionInterface $conn */
         $conn = $this->getService(ConnectionInterface::class);
-        $ret = $conn->fetchOne('SELECT COUNT(*) FROM nginx_access');
+        $ret = $conn->fetchOne('SELECT COUNT() FROM nginx_access');
         $this->assertIsNumeric($ret);
     }
 }
