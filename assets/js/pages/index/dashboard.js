@@ -272,9 +272,12 @@ export class DashboardPage extends Component {
                         </div>
                         <ResponsiveGridLayout
                             data={widgets}
-                            isResizable={true}
-                            isDraggable={true}
+                            isResizable={false}
+                            isDraggable={false}
                             removeWidget={(id) => this.removeWidget(id)}
+                            editWidget={(id) => {
+                                window.location.href = '/widget/' + id;
+                            }}
                         />
                     </div>}
                 </div>

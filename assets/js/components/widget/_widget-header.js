@@ -24,7 +24,7 @@ export class WidgetHeader extends Component {
                     </div>
                     <div className="dropdown-menu"
                          aria-labelledby="dropdownMenuButton">
-                        <a className="dropdown-item" href="#">Stick widget</a>
+                        <a className="dropdown-item d-none" href="#">Stick widget</a>
                         <a className="dropdown-item" href="#" onClick={() => editWidget()}>Edit</a>
                         <a className="dropdown-item" href="#" onClick={() => removeWidget()}>Remove</a>
                     </div>
