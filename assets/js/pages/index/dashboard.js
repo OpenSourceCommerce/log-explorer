@@ -160,8 +160,8 @@ export class DashboardPage extends Component {
             isLoading: true,
         })
 
-        const { dashboardDetail } = this.state;
-        const { widgets, configs, uuid } = dashboardDetail;
+        const {dashboardDetail} = this.state;
+        const {widgets, configs, uuid} = dashboardDetail;
         const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
         this.setState({
@@ -209,7 +209,10 @@ export class DashboardPage extends Component {
                                     />
                                 </div>
                                 <div className="col-12 col-md-2 btn-action-group mt-4">
-                                    <Button className="btn-search mt-0 mt-md-2 w-100">
+                                    <Button className="btn-search mt-0 mt-md-2 w-100"
+                                            disabled={isLoading}
+                                            onClick={() => this.onChangeFilter()}
+                                    >
                                         <Icon name="sync" className="mr-2"/>
                                         Refresh
                                     </Button>

@@ -4,6 +4,13 @@ import {Alert, WidgetActions} from "../../actions";
 import {Button, CardHeader, Icon, Link, Table, ResponsiveGridLayout} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 
+const WIDGET = {
+    [WIDGET_TYPE.doughnut]: 'Doughnut',
+    [WIDGET_TYPE.pie]: 'Pie',
+    [WIDGET_TYPE.counterSum]: 'Counter Sum',
+    [WIDGET_TYPE.table]: 'Table',
+}
+
 class WidgetList extends Component {
     constructor(props) {
         super(props);
@@ -70,7 +77,7 @@ class WidgetList extends Component {
                                         const url = '/widget/' + item.id;
                                         return <tr key={key}>
                                             <td>{item.title}</td>
-                                            <td>{item.type}</td>
+                                            <td>{WIDGET[item.type]}</td>
                                             <td>{item.query}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
