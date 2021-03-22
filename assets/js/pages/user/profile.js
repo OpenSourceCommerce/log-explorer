@@ -1,18 +1,23 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Input, Button, Text} from '../../components';
+import {WIDGET_TYPE} from "../../utils";
+import {Input, Button, Text, ResponsiveGridLayout,WidgetManagement} from '../../components';
 import {Alert, UserActions} from '../../actions';
 
 class ProfileForm extends Component {
     constructor(props) {
         super(props);
 
+        //data structure
+
+
+
         this.state = {
             firstName: '',
             lastName: '',
             email: '',
             firstNameError: false,
-            lastNameError: false
+            lastNameError: false,
         };
         this.onTextChange = this.onTextChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -98,7 +103,6 @@ class ProfileForm extends Component {
 
     render() {
         const {firstName, lastName, email, isLoading, firstNameError, lastNameError} = this.state;
-
         return (
             <div className="user container-fluid">
                 <div className="card">

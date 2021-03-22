@@ -3,6 +3,8 @@
 
 namespace App\Services\Database;
 
+use App\Entity\Dashboard;
+use App\Exceptions\ColumnNotExistException;
 use App\Exceptions\TableExistException;
 use App\Exceptions\TableNotExistException;
 use App\Services\Clickhouse\ClickhouseServiceInterface;
@@ -10,6 +12,7 @@ use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Graph\GraphServiceInterface;
 use App\Services\GraphLine\GraphLineServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DatabaseService implements DatabaseServiceInterface
@@ -160,5 +163,23 @@ ORDER BY timestamp\n";
             $this->em->remove($logView);
             $this->em->flush();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkColumnBelongToTable(string $table, ?string $column): bool
+    {
+        if (!$this->connection->tableExists($table)) {
+            throw new TableNotExistException();
+        }
+        if (empty($column)) {
+            return true;
+        }
+        $columns = $this->connection->getColumns($table);
+        if (isset($columns[$column])) {
+            return true;
+        }
+        throw new ColumnNotExistException();
     }
 }

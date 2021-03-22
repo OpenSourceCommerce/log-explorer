@@ -5,15 +5,22 @@ namespace App\Controller\Api;
 
 
 use App\Constant\ErrorCodeConstant;
+use App\Entity\Dashboard;
 use App\Entity\LogView;
+use App\Entity\Widget;
 use App\Helper\ColumnHelper;
 use App\Helper\StringHelper;
+use App\Services\Dashboard\DashboardServiceInterface;
+use App\Services\Database\DatabaseServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
+use App\Services\Widget\WidgetIterationInterface;
+use App\Services\Widget\WidgetServiceInterface;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class StreamController extends ApiController
 {
@@ -34,36 +41,33 @@ class StreamController extends ApiController
         ]);
     }
 
-    private function getFilter(Request $request): array
+    private function getFilter(Request $request, $fromRequired = true): array
     {
         $options = [];
-        if ($request->query->has('from')) {
-            $from = $request->query->get('from');
+        if (!empty($from = $request->query->get('from'))) {
             if (is_numeric($from)) {
                 $from = new \DateTime("- {$from} minutes");
             } else {
                 $from = new \DateTime($from);
             }
             $options['from'] = $from;
-        } else {
+        } elseif ($fromRequired) {
             $options['from'] = new \DateTime('- 1 hour');
         }
-        if ($request->query->has('to')) {
-            $to = $request->query->get('to');
+        if (!empty($to = $request->query->get('to'))) {
             $to = new \DateTime($to);
             $options['to'] = $to;
         }
-        if ($request->query->has('filter')) {
-            $filter = $request->query->get('filter');
+        if (!empty($filter = $request->query->get('filter'))) {
             $options['filter'] = $filter;
         } else {
             $options['filter'] = false;
         }
-        if ($request->query->has('pageIndex')) {
-            $options['page'] = intval($request->query->get('pageIndex'));
+        if (!empty($pageIndex = $request->query->get('pageIndex'))) {
+            $options['page'] = intval($pageIndex);
         }
-        if ($request->query->has('pageSize')) {
-            $options['limit'] = intval($request->query->get('pageSize'));
+        if (!empty($pageSize = $request->query->get('pageSize'))) {
+            $options['limit'] = intval($pageSize);
         }
         return $options;
     }
@@ -205,6 +209,72 @@ class StreamController extends ApiController
                 ]);
             }
         }
+        return $this->responseSuccess([
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/dashboards", methods = "GET")
+     * @param DashboardServiceInterface $dashboardService
+     * @return JsonResponse
+     */
+    public function dashboards(DashboardServiceInterface $dashboardService): JsonResponse
+    {
+        return $this->responseSuccess([
+            'data' => $dashboardService->getDashboards()
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/dashboard/{uuid}", methods = "GET")
+     * @param Dashboard $dashboard
+     * @param WidgetIterationInterface $widgetIteration
+     * @return JsonResponse
+     */
+    public function dashboard(Dashboard $dashboard, WidgetIterationInterface $widgetIteration): JsonResponse
+    {
+        $sizeConfigs = [];
+        foreach ($widgetIteration->getWidgets() as $widget) {
+            $sizeConfigs[$widget->getType()] = [
+                'minWidth' => $widget->getMinWidth(),
+                'minHeight' => $widget->getMinHeight(),
+            ];
+        }
+        return $this->responseSuccess([
+            'data' => $dashboard,
+            'widgets' => $dashboard->getDashboardWidgets()->toArray(),
+            'configs' => ['size' => $sizeConfigs],
+        ]);
+    }
+
+    /**
+     * @Route("/api/stream/widget/{uuid}/{widget_id}", methods = "GET")
+     * @param Request $request
+     * @param Dashboard $dashboard
+     * @param Widget $widget
+     * @param WidgetServiceInterface $widgetService
+     * @param StreamServiceInterface $streamService
+     * @return JsonResponse
+     * @Entity("widget", expr="repository.find(widget_id)")
+     */
+    public function widget(Request $request, Dashboard $dashboard, Widget $widget, WidgetServiceInterface $widgetService, StreamServiceInterface $streamService): JsonResponse
+    {
+        // this is public API so uuid just used to prevent scan by widget_id
+        $isOK = false;
+        foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
+            if ($dashboardWidget->getDashboard()->getId() === $dashboard->getId()) {
+                $isOK = true;
+                break;
+            }
+        }
+        if (!$isOK) {
+            return $this->responseError('Widget does not belong to dashboard');
+        }
+        $options = $this->getFilter($request, false);
+        $widgetItem = $widgetService->getWidgetInterface($widget);
+        $data = $streamService->getWidgetData($dashboard, $widgetItem, $options);
+
         return $this->responseSuccess([
             'data' => $data,
         ]);

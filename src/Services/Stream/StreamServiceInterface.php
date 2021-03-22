@@ -4,7 +4,9 @@
 namespace App\Services\Stream;
 
 
+use App\Entity\Dashboard;
 use App\Entity\GraphLine;
+use App\Widget\WidgetInterface;
 
 interface StreamServiceInterface
 {
@@ -62,4 +64,12 @@ interface StreamServiceInterface
      * @return array|false
      */
     public function getLogByTrackId(string $trackId);
+
+    /**
+     * @param Dashboard $dashboard
+     * @param WidgetInterface $widgetItem
+     * @param array $options
+     * @return mixed
+     */
+    public function getWidgetData(Dashboard $dashboard, WidgetInterface $widgetItem, array $options = []);
 }

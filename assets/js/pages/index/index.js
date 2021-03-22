@@ -177,7 +177,7 @@ class Index extends Component {
                                     disableLive={disableLive}
                                 />
                             </div>
-                            <div className="card-columns">
+                            <div className="col-12 card-columns">
                                 <Summary uuid={uuid}/>
                             </div>
 

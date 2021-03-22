@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello IndexController!{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('dashboard-page') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.uuid = "{{ dashboard.uuid }}";
+    </script>
+    {{ encore_entry_script_tags('dashboard-page') }}
+{% endblock %}

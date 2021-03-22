@@ -8,3 +8,5 @@ export const GraphActions = require('./_graph-actions').default;
 export const UserActions = require('./_user-actions').default;
 export const CsrfToken = require('./_csrf-token').default;
 export const ValidatorHelper = require('./_validator').default;
+export const DashboardActions = require('./_dashboard-actions').default;
+export const WidgetActions = require('./_widget-actions').default;
