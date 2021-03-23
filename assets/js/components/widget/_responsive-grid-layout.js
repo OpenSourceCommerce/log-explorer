@@ -8,7 +8,6 @@ import '../../../styles/component/_responsive-grid-layout.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
-import LogTableActions from "../../actions/_log-table-actions";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -36,6 +35,7 @@ export class ResponsiveGridLayout extends Component {
             onLayoutChange,
             removeWidget,
             editWidget,
+            stickWidget,
             ...rest } = this.props;
         const { mounted, compactType, isLoading } = this.state;
         // min Width :x 356;
@@ -50,7 +50,7 @@ export class ResponsiveGridLayout extends Component {
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
                     layout={layout}
-                    onLayoutChange={onLayoutChange}
+                    onLayoutChange={(e) => onLayoutChange(e)}
                     // onDrop={onDrop}
                     // WidthProvider option
                     measureBeforeMount={false}
@@ -103,6 +103,7 @@ export class ResponsiveGridLayout extends Component {
                                 <WidgetHeader header={item.title}
                                               removeWidget={() => removeWidget(item.widget_id)}
                                               editWidget={() => editWidget(item.widget_id)}
+                                              stickWidget={() => stickWidget(item.widget_id)}
                                 />
                                 <WidgetLayout {...item}/>
                             </div>
@@ -118,5 +119,8 @@ ResponsiveGridLayout.propTypes = {
     data: PropTypes.array,
     isResizable: PropTypes.bool,
     isDraggable: PropTypes.bool,
-    removeWidget: PropTypes.func
+    removeWidget: PropTypes.func,
+    editWidget: PropTypes.func,
+    stickWidget: PropTypes.func,
+    onLayoutChange: PropTypes.func
 };

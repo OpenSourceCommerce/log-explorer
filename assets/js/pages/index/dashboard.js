@@ -4,7 +4,7 @@ import LogTableActions from "../../actions/_log-table-actions";
 import {FilterDate, FilterText, ResponsiveGridLayout, Select2} from "../../components";
 import {Button} from "../../components/_button";
 import {Icon} from "../../components/_icon";
-import {WidgetActions} from "../../actions";
+import {Alert, WidgetActions} from "../../actions";
 import DashboardActions from "../../actions/_dashboard-actions";
 import {WIDGET_TYPE} from "../../utils";
 import {FormField} from "../../components/_form-field";
@@ -25,6 +25,7 @@ export class DashboardPage extends Component {
         this.loadingData = this.loadingData.bind(this);
         this.getWidgetDetail = this.getWidgetDetail.bind(this);
         this.onChangeFilter = this.onChangeFilter.bind(this);
+        this.onLayoutChange = this.onLayoutChange.bind(this);
     }
 
     async componentDidMount() {
@@ -171,6 +172,50 @@ export class DashboardPage extends Component {
             },
             isLoading: false,
         })
+    }
+
+    editWidget(widgetId, fixed) {
+        const {dashboardDetail} = this.state;
+        if (widgetId) {
+            console.log(widgetId)
+            // DashboardActions.updateWidget(dashboardDetail.id, widgetId, {fixed,}).then(r => {
+            //
+            //     }
+            // );
+        }
+    }
+
+    onLayoutChange(e) {
+        const {dashboardDetail} = this.state;
+        const { widgets, id } = dashboardDetail;
+        console.log('widgets', widgets);
+        widgets.forEach((item) => {
+            const { layout, widget_id } = item;
+            let  isChangePosition = false;
+            const widget = e.find(el => el.i === layout.i);
+            Object.keys(layout).forEach((key) => {
+                if (layout[key] !== widget[key]) {
+                    isChangePosition = true;
+                    return;
+                }
+            })
+            if (isChangePosition) {
+                const { x, y, w, h } = layout;
+                DashboardActions.updateWidget(id, widget_id, {
+                    x,
+                    y,
+                    w,
+                    h,
+                }).then(res => {
+                    const {error} = res;
+                    if (error) {
+                        return;
+                    } else {
+                        Alert.error('Change position success');
+                    }
+                });
+            }
+        });
 
     }
 
@@ -272,12 +317,14 @@ export class DashboardPage extends Component {
                         </div>
                         <ResponsiveGridLayout
                             data={widgets}
-                            isResizable={false}
-                            isDraggable={false}
+                            isResizable={true}
+                            isDraggable={true}
                             removeWidget={(id) => this.removeWidget(id)}
+                            editWidget={(id) => this.editWidget(id)}
                             editWidget={(id) => {
                                 window.location.href = '/widget/' + id;
                             }}
+                            onLayoutChange={(e) => this.onLayoutChange(e)}
                         />
                     </div>}
                 </div>

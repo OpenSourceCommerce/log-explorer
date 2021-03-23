@@ -8,6 +8,7 @@ export class WidgetHeader extends Component {
             header,
             removeWidget,
             editWidget,
+            stickWidget,
         } = this.props;
         return (
             <div className="card-header pb-0 pt-2 pl-3 pr-2 font-weight-bold border-bottom-0">
@@ -24,7 +25,7 @@ export class WidgetHeader extends Component {
                     </div>
                     <div className="dropdown-menu"
                          aria-labelledby="dropdownMenuButton">
-                        <a className="dropdown-item d-none" href="#">Stick widget</a>
+                        <a className="dropdown-item" href="#" onClick={() => stickWidget()}>Stick widget</a>
                         <a className="dropdown-item" href="#" onClick={() => editWidget()}>Edit</a>
                         <a className="dropdown-item" href="#" onClick={() => removeWidget()}>Remove</a>
                     </div>
@@ -39,4 +40,5 @@ WidgetHeader.propTypes = {
     header: PropTypes.string,
     removeWidget: PropTypes.func,
     editWidget: PropTypes.func,
+    stickWidget: PropTypes.func,
 };
