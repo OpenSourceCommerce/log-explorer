@@ -69,7 +69,7 @@ export class DoughnutPieChart extends Component {
                                 <p>Widget not available</p>
                             }
                         </div> :
-                        <p>No data</p>
+                        <p className="m-5">No data</p>
                     }
                 </div>
 

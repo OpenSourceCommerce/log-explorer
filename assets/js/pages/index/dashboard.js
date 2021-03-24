@@ -26,6 +26,7 @@ export class DashboardPage extends Component {
         this.getWidgetDetail = this.getWidgetDetail.bind(this);
         this.onChangeFilter = this.onChangeFilter.bind(this);
         this.onLayoutChange = this.onLayoutChange.bind(this);
+        this.stickWidget = this.stickWidget.bind(this);
     }
 
     async componentDidMount() {
@@ -135,16 +136,14 @@ export class DashboardPage extends Component {
                     arr.push({
                         ...widgets[index],
                         data,
-                        layout: {
-                            i: id.toString(),
-                            x,
-                            y,
-                            w: width,
-                            h: height,
-                            minW: minWidth,
-                            minH: minHeight,
-                            static: !!fixed
-                        },
+                        i: id.toString(),
+                        x,
+                        y,
+                        w: width,
+                        h: height,
+                        minW: minWidth,
+                        minH: minHeight,
+                        static: !!fixed,
                         title,
                         widget_id,
                         type: type.toString()
@@ -165,6 +164,7 @@ export class DashboardPage extends Component {
         const {widgets, configs, uuid} = dashboardDetail;
         const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
+
         this.setState({
             dashboardDetail: {
                 ...dashboardDetail,
@@ -174,49 +174,78 @@ export class DashboardPage extends Component {
         })
     }
 
-    editWidget(widgetId, fixed) {
+    async stickWidget(widgetId, fixed,index) {
+        this.setState({
+            isLoading: true,
+        })
         const {dashboardDetail} = this.state;
+        const widgets = [...dashboardDetail.widgets];
+        const {x, y, w, h} = widgets[index];
         if (widgetId) {
-            console.log(widgetId)
-            // DashboardActions.updateWidget(dashboardDetail.id, widgetId, {fixed,}).then(r => {
-            //
-            //     }
-            // );
+            const stickWidgetRes = await DashboardActions.updateWidget(dashboardDetail.id, widgetId, {
+                fixed: fixed === true ? 1 : 0,
+                x,
+                y,
+                width: w,
+                height: h
+            });
+
+            if (!stickWidgetRes.error) {
+                widgets[index].static = fixed;
+                this.setState({
+                    dashboardDetail: {
+                        ...dashboardDetail,
+                        widgets,
+                    },
+                    isLoading: false,
+                });
+            }
         }
     }
 
     onLayoutChange(e) {
         const {dashboardDetail} = this.state;
-        const { widgets, id } = dashboardDetail;
-        console.log('widgets', widgets);
-        widgets.forEach((item) => {
-            const { layout, widget_id } = item;
-            let  isChangePosition = false;
-            const widget = e.find(el => el.i === layout.i);
-            Object.keys(layout).forEach((key) => {
-                if (layout[key] !== widget[key]) {
+        const {widgets, id} = dashboardDetail;
+        const keyForCheck = ['x', 'y', 'w', 'h'];
+        const newWidgetPosition = [...widgets].map((item) => {
+            const {widget_id} = item;
+            let isChangePosition = false;
+            const widget = e.find(el => el.i === item.i);
+            Object.keys(item).forEach((key) => {
+                if (keyForCheck.includes(key) && item[key] !== widget[key]) {
                     isChangePosition = true;
                     return;
                 }
             })
             if (isChangePosition) {
-                const { x, y, w, h } = layout;
+                const {x, y, w, h} = widget;
                 DashboardActions.updateWidget(id, widget_id, {
                     x,
                     y,
-                    w,
-                    h,
+                    width: w,
+                    height: h,
                 }).then(res => {
                     const {error} = res;
                     if (error) {
-                        return;
+                        this.setState({
+
+                        })
                     } else {
-                        Alert.error('Change position success');
+                        //Alert.success('Change position success');
                     }
                 });
             }
+            return {
+                ...item,
+                ...widget,
+            }
         });
-
+        this.setState({
+            dashboardDetail: {
+                ...dashboardDetail,
+                widgets: [...newWidgetPosition]
+            }
+        })
     }
 
     render() {
@@ -316,11 +345,14 @@ export class DashboardPage extends Component {
                             </div>
                         </div>
                         <ResponsiveGridLayout
-                            data={widgets}
+                            layouts={widgets ? widgets.map(item => ({
+                                ...item.layout,
+                                ...item,
+                            })) : []}
                             isResizable={true}
                             isDraggable={true}
                             removeWidget={(id) => this.removeWidget(id)}
-                            editWidget={(id) => this.editWidget(id)}
+                            stickWidget={this.stickWidget}
                             editWidget={(id) => {
                                 window.location.href = '/widget/' + id;
                             }}
@@ -334,4 +366,11 @@ export class DashboardPage extends Component {
     }
 }
 
-ReactDOM.render(<DashboardPage/>, document.querySelector('#root'));
+ReactDOM
+    .render(
+        <DashboardPage/>,
+        document
+            .querySelector(
+                '#root'
+            ))
+;

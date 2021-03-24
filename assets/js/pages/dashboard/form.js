@@ -160,8 +160,8 @@ class DashboardPage extends Component {
 
     onLayoutChange(e) {
         const { logTableDashboard } = this.state;
-        console.log('logTableDashboard', logTableDashboard);
-        console.log('e', e);
+        // console.log('logTableDashboard', logTableDashboard);
+        // console.log('e', e);
 
         // const { widgets } = logTableDashboard;
         // let widgetNewPosition = [...widgets];
