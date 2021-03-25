@@ -345,10 +345,7 @@ export class DashboardPage extends Component {
                             </div>
                         </div>
                         <ResponsiveGridLayout
-                            layouts={widgets ? widgets.map(item => ({
-                                ...item.layout,
-                                ...item,
-                            })) : []}
+                            layouts={widgets}
                             isResizable={true}
                             isDraggable={true}
                             removeWidget={(id) => this.removeWidget(id)}
@@ -366,11 +363,4 @@ export class DashboardPage extends Component {
     }
 }
 
-ReactDOM
-    .render(
-        <DashboardPage/>,
-        document
-            .querySelector(
-                '#root'
-            ))
-;
+ReactDOM.render(<DashboardPage/>, document.querySelector('#root'));
