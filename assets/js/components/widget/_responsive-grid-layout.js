@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {DoughnutPieChart, WidgetHeader} from "../index";
-import {Responsive, WidthProvider} from "react-grid-layout/index";
+import {Responsive, WidthProvider} from "react-grid-layout";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import '../../../styles/component/_responsive-grid-layout.scss';
@@ -18,6 +18,7 @@ export class ResponsiveGridLayout extends Component {
         this.state = {
             compactType: "horizontal",
             mounted: false,
+            currentBreakpoint: '',
         };
     }
 
@@ -37,10 +38,13 @@ export class ResponsiveGridLayout extends Component {
             editWidget,
             stickWidget,
             ...rest } = this.props;
-        const { mounted, compactType, isLoading } = this.state;
+        const { mounted,
+            compactType,
+            isLoading,
+            currentBreakpoint
+        } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
-
         return (
             <>{isLoading ? <span
                 className="spinner-border spinner-border-sm mr-2"
@@ -49,8 +53,11 @@ export class ResponsiveGridLayout extends Component {
                     {...this.props}
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
-                    layout={layouts}
-                    onLayoutChange={(e) => onLayoutChange(e)}
+                    layouts={{lg: [...layouts]}}
+                    onLayoutChange={(e) => onLayoutChange(e, currentBreakpoint)}
+                    onBreakpointChange={(currentBreakpoint) => this.setState({
+                        currentBreakpoint,
+                    })}
                     // onDrop={onDrop}
                     // WidthProvider option
                     measureBeforeMount={false}
@@ -64,7 +71,7 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {layouts.map((item, index) => {
-                        let WidgetLayout = ({i, data, type, column}) => {
+                        let WidgetLayout = ({i, data, type, column, color}) => {
                             let component;
                             if (i && data) {
                                 switch (type) {
@@ -76,6 +83,7 @@ export class ResponsiveGridLayout extends Component {
                                             data={data}
                                             height='250'
                                             minHeight='250'
+                                            color={color}
                                         />;
                                         break;
                                     }

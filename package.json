@@ -34,6 +34,7 @@
     "react-inlinesvg": "^2.1.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/preset-react": "^7.12.5",
     "@symfony/webpack-encore": "^0.31.0",
     "core-js": "^3.7.0",

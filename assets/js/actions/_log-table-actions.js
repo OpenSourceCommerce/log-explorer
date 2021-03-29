@@ -1,10 +1,10 @@
 import {request} from '..';
 
 const LogTableActions = {
-    getOptions(query = {}) {
+    getOptions(filterQuery, query = {}) {
         const from = $('#date-range-from').val();
         const to = $('#date-range-to').val();
-        const filter = $('#filter-text').val();
+        const filter = filterQuery || $('#filter-text').val();
         if (from) {
             query.from = from;
         }
@@ -37,8 +37,8 @@ const LogTableActions = {
     getDashboard(uuid) {
         return request(`/api/stream/dashboard/${uuid}`);
     },
-    getWidget(uuid, widgetId) {
-        return request(`/api/stream/widget/${uuid}/${widgetId}?${new URLSearchParams(this.getOptions())}`);
+    getWidget(uuid, widgetId, filterQuery) {
+        return request(`/api/stream/widget/${uuid}/${widgetId}?${new URLSearchParams(this.getOptions(filterQuery))}`);
     }
 };
 
