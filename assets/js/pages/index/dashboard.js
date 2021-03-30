@@ -41,18 +41,7 @@ export class DashboardPage extends Component {
             })) : [];
 
             this.setState({
-                tables: [
-                    ...tables,
-                    { value: '2', label: 'Table 2', isSelected: false },
-                    { value: '3', label: 'Table 3', isSelected: false },
-                    { value: '4', label: 'Table 4', isSelected: false },
-                    { value: '5', label: 'Table 5', isSelected: false },
-                    { value: '6', label: 'Table 6', isSelected: false },
-                    { value: '7', label: 'Table 7', isSelected: false },
-                    { value: '8', label: 'Table 8', isSelected: false },
-                    { value: '9', label: 'Table 9', isSelected: false },
-                    { value: '10', label: 'Table 10', isSelected: false },
-                ],
+                tables,
             })
 
             await this.loadingData();
@@ -372,7 +361,7 @@ export class DashboardPage extends Component {
                                 <div className="col-12">
                                     <div className="row">
                                         <div className="col-12 col-md-3 mt-2 mt-md-0">
-                                            <label>Add widget</label>
+                                            <p className="mb-2">Add widget</p>
                                             <FormField
                                                 isHiddenLabel={true}
                                                 value={widgetSelected}
