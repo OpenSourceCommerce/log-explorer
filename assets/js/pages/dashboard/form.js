@@ -158,16 +158,6 @@ class DashboardPage extends Component {
 
     }
 
-    onLayoutChange(e) {
-        const { logTableDashboard } = this.state;
-        // console.log('logTableDashboard', logTableDashboard);
-        // console.log('e', e);
-
-        // const { widgets } = logTableDashboard;
-        // let widgetNewPosition = [...widgets];
-        // const
-    }
-
     render() {
         const {
             widgetSelected,
@@ -297,11 +287,6 @@ class DashboardPage extends Component {
                                 </div>
                             </div>
                         </div>
-
-                        {/*<ResponsiveGridLayout*/}
-                        {/*    data={widgetSelected}*/}
-                        {/*    onLayoutChange={(e) => this.onLayoutChange(e)}*/}
-                        {/*/>*/}
                     </>)}
             </div>
         );
