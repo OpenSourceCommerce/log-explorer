@@ -11,7 +11,7 @@ use App\Form\TableType;
 use App\Services\Clickhouse\Connection;
 use App\Services\Database\DatabaseServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -83,7 +83,7 @@ class DatabaseController extends ApiController
                 return $this->responseError([
                     'message' => 'Table already exist'
                 ]);
-            } catch (Exception $e) {
+            } catch (DBALException $e) {
                 return $this->responseError([
                     'message' => 'Can not create table, please check if any table or column value is invalid'
                 ]);
@@ -119,7 +119,7 @@ class DatabaseController extends ApiController
                 return $this->responseError([
                     'message' => 'Table does not exist'
                 ]);
-            } catch (Exception $e) {
+            } catch (DBALException $e) {
                 return $this->responseError([
                     'message' => 'Can not update table, please check if any table or column value is invalid'
                 ]);
@@ -132,6 +132,63 @@ class DatabaseController extends ApiController
         }
         return $this->responseError([
             'message' => 'Can not update table'
+        ]);
+    }
+
+    /**
+     * @Route("/api/table/{table}/{column}", methods = "DELETE")
+     * @param string $table
+     * @param string $column
+     * @param DatabaseServiceInterface $databaseService
+     * @return JsonResponse
+     */
+    public function removeColumn(
+        string $table,
+        string $column,
+        DatabaseServiceInterface $databaseService
+    ): JsonResponse {
+        if ($column === 'timestamp') {
+            return $this->responseError('Can not remove "timestamp" column');
+        }
+        try {
+            $databaseService->removeTableColumn($table, $column);
+        } catch (TableNotExistException $e) {
+            return $this->responseError('Table does not exist');
+        } catch (DBALException $e) {
+            return $this->responseError('Can not remove column '.$e->getMessage());
+        }
+        return $this->responseSuccess([
+            'message' => 'Delete successful'
+        ]);
+    }
+
+    /**
+     * @Route("/api/table/{table}/{column}", methods = "PUT")
+     * @param string $table
+     * @param string $column
+     * @param Request $request
+     * @param DatabaseServiceInterface $databaseService
+     * @return JsonResponse
+     */
+    public function updateColumn(
+        string $table,
+        string $column,
+        Request $request,
+        DatabaseServiceInterface $databaseService
+    ): JsonResponse {
+        if ($column === 'timestamp') {
+            return $this->responseError('Can not update "timestamp" column');
+        }
+        try {
+
+            $databaseService->removeTableColumn($table, $column);
+        } catch (TableNotExistException $e) {
+            return $this->responseError('Table does not exist');
+        } catch (DBALException $e) {
+            return $this->responseError('Can not remove column '.$e->getMessage());
+        }
+        return $this->responseSuccess([
+            'message' => 'Delete successful'
         ]);
     }
 }

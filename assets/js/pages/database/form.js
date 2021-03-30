@@ -43,6 +43,7 @@ class DatabaseForm extends Component {
                     let column = data[i];
                     column = $.extend(that.getBlankColumn(), column);
                     column.isNew = false;
+                    column.origin = column.name;
                     columns.push(column);
                 }
 
@@ -62,7 +63,7 @@ class DatabaseForm extends Component {
     }
 
     getBlankColumn() {
-        return {isNew: true, name: '', type: 'String', error: false};
+        return {isNew: true, name: '', origin: '', type: 'String', error: false};
     }
 
     onTableChange(e) {
@@ -98,6 +99,24 @@ class DatabaseForm extends Component {
         });
     }
 
+    deleteColumn(key) {
+        let {table, columns} = this.state;
+        Alert.confirm(`Are you sure to delete "${columns[key].name}" column?`, () => {
+            DatabaseActions.deleteColumn(table, columns[key].name)
+                .then(res => {
+                    const {error} = res;
+                    if (error !== 0) {
+                        return;
+                    }
+                    Alert.success('Remove successful');
+                    columns.splice(key, 1);
+                    this.setState({
+                        columns
+                    });
+                })
+        });
+    }
+
     onSubmit() {
         this.setState({
             isLoading: true
@@ -118,7 +137,7 @@ class DatabaseForm extends Component {
         }
 
         for (const column of columns) {
-            let {isNew, name, type, error} = column;
+            let {isNew, name, origin, type, error} = column;
             column.error = false;
             if (error) {
                 hasErrorBefore = true;
@@ -137,6 +156,7 @@ class DatabaseForm extends Component {
 
             validColumns.push({
                 name,
+                origin,
                 type
             });
         }
@@ -188,16 +208,17 @@ class DatabaseForm extends Component {
         const readonly = !isNew;
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
+            const disabled = readonly && !item.isNew && item.name === 'timestamp';
             return <div key={key} className="form-group">
                 <div className="row">
-                    <div className="col-6">
-                        <Input disabled={readonly && !item.isNew} value={item.name}
+                    <div className="col-5">
+                        <Input disabled={disabled} value={item.name}
                             className={item.error ? 'is-invalid' : ''}
                             onChange={e => this.onColumnChange(key, 'name', e)}
                             placeholder="Name"/>
                     </div>
-                    <div className="col-6">
-                        <select disabled={readonly && !item.isNew} className="form-control"
+                    <div className="col-5">
+                        <select disabled={disabled} className="form-control"
                             value={item.type}
                             onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
@@ -205,6 +226,10 @@ class DatabaseForm extends Component {
                             })}
                         </select>
                     </div>
+                    {!disabled &&
+                    <div className="col-2">
+                        <a onClick={() => this.deleteColumn(key)} href='javascript:void(0);' className="btn btn-danger"><i className="fa fa-trash"></i></a>
+                    </div>}
                 </div>
             </div>;
         });

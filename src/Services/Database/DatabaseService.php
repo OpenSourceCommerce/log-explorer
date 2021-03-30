@@ -123,6 +123,11 @@ ORDER BY timestamp\n";
         return "ALTER TABLE {$tableName} ADD COLUMN `{$column['name']}` {$column['type']}";
     }
 
+    private function makeDropColumnQuery(string $table, string $column): string
+    {
+        return "ALTER TABLE {$table} DROP COLUMN `{$column}`";
+    }
+
     /**
      * @inheritDoc
      */
@@ -181,5 +186,25 @@ ORDER BY timestamp\n";
             return true;
         }
         throw new ColumnNotExistException();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeTableColumn(string $table, string $column)
+    {
+        if (!$this->connection->tableExists($table)) {
+            throw new TableNotExistException();
+        }
+        $columns = $this->connection->getColumns($table);
+        if (!isset($columns[$column])) {
+            // not exist or already deleted
+            return true;
+        }
+        $query = $this->makeDropColumnQuery($table, $column);
+        if (!$this->connection->exec($query)) {
+            return false;
+        }
+        return true;
     }
 }

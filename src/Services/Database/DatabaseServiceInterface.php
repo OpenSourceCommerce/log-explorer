@@ -45,4 +45,12 @@ interface DatabaseServiceInterface
      * @throws ColumnNotExistException
      */
     public function checkColumnBelongToTable(string $table, ?string $column): bool;
+
+    /**
+     * @param string $table
+     * @param string $column
+     * @throws TableNotExistException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function removeTableColumn(string $table, string $column);
 }
