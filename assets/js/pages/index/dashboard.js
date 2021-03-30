@@ -23,7 +23,6 @@ export class DashboardPage extends Component {
             }],
             widgetSelected: null,
             isLoading: false,
-            isClickedAddNew: false,
         };
     }
 
@@ -97,6 +96,10 @@ export class DashboardPage extends Component {
     }
 
     onSaveChange = async (widgetId) => {
+        if (widgetId === 'createNewOne') {
+            window.location.href = '/widget/create';
+            return;
+        }
         this.setState({
             isLoading: true,
         })
@@ -351,7 +354,6 @@ export class DashboardPage extends Component {
             dashboardDetail,
             widgetList,
             widgetSelected,
-            isClickedAddNew,
             tables,
             filters,
         } = this.state;
@@ -366,32 +368,57 @@ export class DashboardPage extends Component {
                     <h3 className="col-12">{title}</h3>
                     <div className="filter col-12">
                         <div className="card">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="input-search col-12 col-md-3 mt-2 mt-md-0">
-                                        <FilterDate
-                                            label="Date Range"
-                                            onDateRangeChanged={() => this.onChangeFilter()}
-                                        />
-                                    </div>
-                                    <div className="col-12 col-md-1 btn-action-group mt-4">
-                                        <Button className="btn-search mt-0 mt-md-2 w-100"
-                                                disabled={isLoading}
-                                                onClick={() => this.onChangeFilter()}
-                                        >
-                                            <Icon name="sync" className="mr-2"/>
-                                            Refresh
-                                        </Button>
-                                    </div>
-                                    <div className="col-12 col-md-1 offset-md-7 btn-action-group mt-4">
-                                        <Button className="btn-search mt-0 mt-md-2 float-right"
-                                                data-toggle="collapse"
-                                                href="#collapseAdvanceSearch"
-                                                aria-expanded="false"
-                                                aria-controls="collapseAdvanceSearch"
-                                        >
-                                            <Icon name="filter"/>
-                                        </Button>
+                            <div className="card-body pb-0">
+                                <div className="col-12">
+                                    <div className="row">
+                                        <div className="col-12 col-md-3 mt-2 mt-md-0">
+                                            <label>Add widget</label>
+                                            <FormField
+                                                isHiddenLabel={true}
+                                                value={widgetSelected}
+                                                fieldName='widgetSelected'
+                                                onChange={(e) => this.onSaveChange(e.target.value)}
+                                                type='select'
+                                            >
+                                                <>
+                                                    <option value='' className='d-none'>
+                                                        {`${columns.length === 0 ? 'Nothing for select' : 'Select widget add to table'}`}
+                                                    </option>
+                                                    {columns.length === 0 && <option value='createNewOne'>
+                                                        {'Create new one'}
+                                                    </option>}
+                                                    {columns.map((item, index) => (
+                                                        <option value={item.id} key={index}>
+                                                            {item.title}
+                                                        </option>))}
+                                                </>
+                                            </FormField>
+                                        </div>
+                                        <div className="input-search col-12 col-md-3 mt-2 mt-md-0">
+                                            <FilterDate
+                                                label="Date Range"
+                                                onDateRangeChanged={() => this.onChangeFilter()}
+                                            />
+                                        </div>
+                                        <div className="col-12 col-md-1 btn-action-group mt-4">
+                                            <Button className="btn-search mt-0 mt-md-2 w-100"
+                                                    disabled={isLoading}
+                                                    onClick={() => this.onChangeFilter()}
+                                            >
+                                                <Icon name="sync" className="mr-2"/>
+                                                Refresh
+                                            </Button>
+                                        </div>
+                                        <div className="col-12 col-md-1 offset-md-4 btn-action-group mt-4">
+                                            <Button className="btn-search mt-0 mt-md-2 float-right"
+                                                    data-toggle="collapse"
+                                                    href="#collapseAdvanceSearch"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapseAdvanceSearch"
+                                            >
+                                                <Icon name="filter"/>
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="collapse col-12"
@@ -401,7 +428,7 @@ export class DashboardPage extends Component {
                                          key={filters}>
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
-                                            return (<div className="row mt-3 mb-3" key={index}>
+                                            return (<div className="row ml-0 mt-2" key={index}>
                                                 <div className="col-12 col-md-9 d-flex pl-0">
                                                     {filters.length !== 1 &&
                                                     <Button className="bg-transparent border-0 btn btn-light"
@@ -440,7 +467,7 @@ export class DashboardPage extends Component {
                                             </div>);
                                         })}
                                     </div>
-                                    <div className="d-flex justify-content-end">
+                                    <div className="d-flex justify-content-end mb-2">
                                         {tables.length > filters.length && <div className="col-6 col-md-1 btn-action-group">
                                             <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => this.setState({
                                                 filters: [ ...filters, {
@@ -464,66 +491,20 @@ export class DashboardPage extends Component {
                         </div>
                     </div>
                     {isLoading ? <span
-                        className="spinner-border spinner-border-sm mr-2"
-                        role="status" aria-hidden="true"/> : <div key={widgets}>
-                        <div className="col-12">
-                            <div className="d-flex flex-row justify-content-end">
-                                {isClickedAddNew ? (
-                                    <>
-                                        <FormField
-                                            className="mb-0 mr-2 w-100"
-                                            isHiddenLabel={true}
-                                            value={widgetSelected}
-                                            fieldName='widgetSelected'
-                                            onChange={(e) => this.onSaveChange(e.target.value)}
-                                            type='select'
-                                        >
-                                            <>
-                                                <option value='' className='d-none'>
-                                                    {`Select widget for add new `}
-                                                </option>
-                                                {columns.map((item, index) => (
-                                                    <option value={item.id} key={index}>
-                                                        {item.title}
-                                                    </option>))}
-                                            </>
-                                        </FormField>
-                                        <Button className="btn-search"
-                                                data-toggle="modal"
-                                                data-target="#addWidgetModal"
-                                                onClick={() => {
-                                                    this.setState({
-                                                        isClickedAddNew: false,
-                                                    })
-                                                }}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </>) : (<Button className="btn-search"
-                                                    data-toggle="modal"
-                                                    data-target="#addWidgetModal"
-                                                    onClick={() => {
-                                                        this.setState({
-                                                            isClickedAddNew: true,
-                                                        })
-                                                    }}
-                                >
-                                    <Icon name="plus" className="mr-2"/>
-                                    Add widget
-                                </Button>)}
-                            </div>
-                        </div>
-                        <ResponsiveGridLayout
-                            layouts={widgets}
-                            isResizable={true}
-                            isDraggable={true}
-                            removeWidget={(id) => this.removeWidget(id)}
-                            stickWidget={this.stickWidget}
-                            editWidget={(id) => {
-                                window.location.href = '/widget/' + id;
-                            }}
-                            onLayoutChange={this.onLayoutChange}
-                        />
+                        className="spinner-border spinner-border-sm"
+                        role="status" aria-hidden="true"/> :
+                        <div key={widgets}>
+                            <ResponsiveGridLayout
+                                layouts={widgets}
+                                isResizable={true}
+                                isDraggable={true}
+                                removeWidget={(id) => this.removeWidget(id)}
+                                stickWidget={this.stickWidget}
+                                editWidget={(id) => {
+                                    window.location.href = '/widget/' + id;
+                                }}
+                                onLayoutChange={this.onLayoutChange}
+                            />
                     </div>}
                 </div>
             </>
