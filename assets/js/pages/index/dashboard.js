@@ -189,7 +189,7 @@ export class DashboardPage extends Component {
 
             data = widgetRes && widgetRes.length > 0 && widgetRes.reduce((arr, item, index) => {
                 const {error, data} = item;
-                const {id, x, y, width, height, fixed, title, type, widget_id, color} = widgets[index];
+                const {id, x, y, width, height, fixed, title, type, widget_id, color, w, h} = widgets[index];
                 const {minWidth, minHeight} = configs.size[type];
 
                 if (!error) {
@@ -199,8 +199,8 @@ export class DashboardPage extends Component {
                         i: id.toString(),
                         x,
                         y,
-                        w: width,
-                        h: height,
+                        w: w || width,
+                        h: h || height,
                         minW: minWidth,
                         minH: minHeight,
                         static: !!fixed,
