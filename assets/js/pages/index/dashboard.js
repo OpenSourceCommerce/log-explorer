@@ -441,7 +441,7 @@ export class DashboardPage extends Component {
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
                                             return (<div className="row ml-0 mt-2" key={query || table}>
-                                                <div className="col-12 col-md-9 d-flex pl-0">
+                                                <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
                                                     >
@@ -455,7 +455,7 @@ export class DashboardPage extends Component {
                                                     />
                                                 </div>
                                                 <FormField
-                                                    className="col-12 col-md-3 mb-0"
+                                                    className="col-12 col-md-3 mb-0 mb-2 mb-md-0"
                                                     value={table}
                                                     fieldName='table'
                                                     isHiddenLabel={true}
@@ -488,7 +488,7 @@ export class DashboardPage extends Component {
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}
-                                        <div className="col-6 col-md-1 btn-action-group">
+                                        <div className="col-6 col-md-1 btn-action-group pr-0">
                                             <Button className="btn-search mt-0 mt-md-2 w-100"
                                                     disabled={isLoading}
                                                     onClick={() => this.applyFilter()}
