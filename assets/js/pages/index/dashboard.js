@@ -34,14 +34,19 @@ export class DashboardPage extends Component {
 
             const tableRes = await DatabaseActions.getAllTable();
 
-            let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map(item => ({
+            let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map((item, index) => ({
                 value: item,
                 label: item,
-                isSelected: false,
+                isSelected: index === 0 ? true : false,
             })) : [];
 
             this.setState({
                 tables,
+                filters: [{
+                    id: 0,
+                    query: '',
+                    table: tables[0].value,
+                }],
             })
 
             await this.loadingData();
@@ -101,15 +106,15 @@ export class DashboardPage extends Component {
             switch (widget.type.toString()) {
                 case WIDGET_TYPE.doughnut:
                 case WIDGET_TYPE.pie: {
-                    newWidget = {x: 0, y: 0, width: 3, height: 2, fixed: 0};
+                    newWidget = {x: 0, y: 0, width: 3, height: 2, fixed: null};
                     break;
                 }
                 case WIDGET_TYPE.counterSum: {
-                    newWidget = {x: 0, y: 0, width: 3, height: 1, fixed: 0};
+                    newWidget = {x: 0, y: 0, width: 3, height: 1, fixed: null};
                     break;
                 }
                 case WIDGET_TYPE.table: {
-                    newWidget = {x: 0, y: 0, width: 3, height: 3, fixed: 0};
+                    newWidget = {x: 0, y: 0, width: 3, height: 3, fixed: null};
                     break;
                 }
             }
@@ -139,7 +144,7 @@ export class DashboardPage extends Component {
         const {uuid} = dashboardDetail;
         let widgets = [...dashboardDetail.widgets];
         const rawWidget = widgets.map((item) => {
-            if (filters.length === 1 && !filters[0].table && !filters[0].query) {
+            if (filters.length === 1 && !filters[0].query) {
                 return LogTableActions.getWidget(uuid, item.widget_id);
             } else {
                 const tableSelected = filters.find(el => el.table === item.table);
@@ -155,6 +160,9 @@ export class DashboardPage extends Component {
                 if (item && !item.error) {
                     widgets[index].data = item.data;
                     widgets[index].duration = 1000;
+                    if (widgets[index].color && widgets[index].color.length !== item.data.length) {
+                        widgets[index].color = item.data.map(() => this.getRandomColor());
+                    }
                 }
             })
         }
@@ -199,7 +207,7 @@ export class DashboardPage extends Component {
                         title,
                         widget_id,
                         type: type.toString(),
-                        color: color && color.length > 0 ? color : data.reduce((arr) => {
+                        color: color && color.length > 0 && color.length === data.length ? color : data.reduce((arr) => {
                             const colorCode = this.getRandomColor();
                             if(!arr.includes(colorCode)) {
                                 arr.push(colorCode);
@@ -269,7 +277,8 @@ export class DashboardPage extends Component {
             let filters = [...preState.filters].filter((el) => id !== el.id);
             if (filters.length === 0) {
                 filters.push({
-                    id: 0
+                    id: 0,
+                    table: tables[0].table,
                 })
             }
             filters.map((item, index) => ({...item, id:index}));
@@ -293,7 +302,7 @@ export class DashboardPage extends Component {
         const {x, y, w, h} = widgets[index];
         if (widgetId) {
             const stickWidgetRes = await DashboardActions.updateWidget(dashboardDetail.id, widgetId, {
-                fixed: fixed === true ? 1 : 0,
+                fixed: fixed === true ? 1 : null,
                 x,
                 y,
                 width: w,
@@ -463,8 +472,6 @@ export class DashboardPage extends Component {
                                                     type='select'
                                                 >
                                                     <>
-                                                        <option value='' className='d-none'>Select datatable
-                                                        </option>
                                                         {tables.map((item, index) => (
                                                             <option value={item.value}
                                                                     key={index}
