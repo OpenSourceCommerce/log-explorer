@@ -24,7 +24,6 @@ class DashboardPage extends Component {
 
         this.onChangeData = this.onChangeData.bind(this);
         this.onSubmitForm = this.onSubmitForm.bind(this);
-        this.onLayoutChange = this.onLayoutChange.bind(this);
         //this.getWidgetDetail = this.getWidgetDetail.bind(this);
     }
 

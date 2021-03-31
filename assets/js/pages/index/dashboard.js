@@ -139,9 +139,13 @@ export class DashboardPage extends Component {
         const {uuid} = dashboardDetail;
         let widgets = [...dashboardDetail.widgets];
         const rawWidget = widgets.map((item) => {
-            const tableSelected = filters.find(el => el.table === item.table);
-            if (tableSelected && tableSelected.query) {
-                return LogTableActions.getWidget(uuid, item.widget_id, tableSelected.query);
+            if (filters.length === 1 && !filters[0].table && !filters[0].query) {
+                return LogTableActions.getWidget(uuid, item.widget_id);
+            } else {
+                const tableSelected = filters.find(el => el.table === item.table);
+                if (tableSelected && tableSelected.query) {
+                    return LogTableActions.getWidget(uuid, item.widget_id, tableSelected.query);
+                }
             }
         });
         const filterRes = await Promise.all(rawWidget);
@@ -150,6 +154,7 @@ export class DashboardPage extends Component {
             filterRes.forEach((item, index) => {
                 if (item && !item.error) {
                     widgets[index].data = item.data;
+                    widgets[index].duration = 1000;
                 }
             })
         }
@@ -157,7 +162,6 @@ export class DashboardPage extends Component {
             widgets,
         })
     }
-
 
     getRandomColor = () => {
         const letters = '0123456789ABCDEF';
@@ -177,7 +181,7 @@ export class DashboardPage extends Component {
 
             data = widgetRes && widgetRes.length > 0 && widgetRes.reduce((arr, item, index) => {
                 const {error, data} = item;
-                const {id, x, y, width, height, fixed, title, type, widget_id} = widgets[index];
+                const {id, x, y, width, height, fixed, title, type, widget_id, color} = widgets[index];
                 const {minWidth, minHeight} = configs.size[type];
 
                 if (!error) {
@@ -195,13 +199,14 @@ export class DashboardPage extends Component {
                         title,
                         widget_id,
                         type: type.toString(),
-                        color: data.reduce((arr) => {
+                        color: color && color.length > 0 ? color : data.reduce((arr) => {
                             const colorCode = this.getRandomColor();
                             if(!arr.includes(colorCode)) {
                                 arr.push(colorCode);
                             }
                             return arr;
                         }, []),
+                        duration: 1000,
                     });
                 }
                 return arr;
@@ -233,6 +238,7 @@ export class DashboardPage extends Component {
             // in one table user only put one
             const tables = [...preState.tables];
             const filters = [...preState.filters];
+            const widgets = [...preState.dashboardDetail.widgets].map(item => ({ ...item, duration: 0}));
 
             filters[index][name] = value;
 
@@ -244,6 +250,10 @@ export class DashboardPage extends Component {
             return {
                 filters,
                 tables,
+                dashboardDetail: {
+                    ...preState.dashboardDetail,
+                    widgets,
+                },
             }
 
         });
@@ -256,11 +266,22 @@ export class DashboardPage extends Component {
                 const index = tables.findIndex(item => item.value === table);
                 tables[index].isSelected = false;
             }
-            return {
-                filters: [...preState.filters].filter((el) => id !== el.id).map((item, index) => ({...item, id:index})),
-                tables,
+            let filters = [...preState.filters].filter((el) => id !== el.id);
+            if (filters.length === 0) {
+                filters.push({
+                    id: 0
+                })
             }
-        });
+            filters.map((item, index) => ({...item, id:index}));
+            return {
+                filters,
+                tables,
+                dashboardDetail: {
+                    ...preState.dashboardDetail,
+                    widgets: [...preState.dashboardDetail.widgets].map(item => ({ ...item, duration: 0})),
+                }
+            }
+        }, () => console.log(this.state));
     }
 
     stickWidget = async (widgetId, fixed, index) => {
@@ -284,7 +305,7 @@ export class DashboardPage extends Component {
                 this.setState({
                     dashboardDetail: {
                         ...dashboardDetail,
-                        widgets,
+                        widgets: widgets.map(item => ({ ...item, duration: 1000 })),
                     },
                     isLoading: false,
                 });
@@ -331,7 +352,7 @@ export class DashboardPage extends Component {
             this.setState({
                 dashboardDetail: {
                     ...dashboardDetail,
-                    widgets: [...newWidgetPosition]
+                    widgets: [...newWidgetPosition].map(item => ({ ...item, duration: 0}))
                 }
             })
         }
@@ -359,19 +380,19 @@ export class DashboardPage extends Component {
                         <div className="card">
                             <div className="card-body pb-0">
                                 <div className="col-12">
-                                    <div className="row">
-                                        <div className="col-12 col-md-3 mt-2 mt-md-0">
-                                            <p className="mb-2">Add widget</p>
+                                    <div className="d-flex justify-content-between flex-row flex-wrap">
+                                        <div className="col-md-auto col-12"
+                                            style={{minWidth: '300px'}}>
                                             <FormField
                                                 isHiddenLabel={true}
-                                                value={widgetSelected}
+                                                value={widgetSelected || ''}
                                                 fieldName='widgetSelected'
                                                 onChange={(e) => this.onSaveChange(e.target.value)}
                                                 type='select'
                                             >
                                                 <>
                                                     <option value='' className='d-none'>
-                                                        {`${columns.length === 0 ? 'Nothing for select' : 'Select widget add to table'}`}
+                                                        Add widget
                                                     </option>
                                                     {columns.length === 0 && <option value='createNewOne'>
                                                         {'Create new one'}
@@ -383,30 +404,32 @@ export class DashboardPage extends Component {
                                                 </>
                                             </FormField>
                                         </div>
-                                        <div className="input-search col-12 col-md-3 mt-2 mt-md-0">
+                                        <div className="col-md-auto col-12"
+                                            style={{minWidth: '300px'}}>
                                             <FilterDate
-                                                label="Date Range"
                                                 onDateRangeChanged={() => this.onChangeFilter()}
                                             />
                                         </div>
-                                        <div className="col-12 col-md-1 btn-action-group mt-4">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100"
-                                                    disabled={isLoading}
-                                                    onClick={() => this.onChangeFilter()}
-                                            >
-                                                <Icon name="sync" className="mr-2"/>
-                                                Refresh
-                                            </Button>
-                                        </div>
-                                        <div className="col-12 col-md-1 offset-md-4 btn-action-group mt-4">
-                                            <Button className="btn-search mt-0 mt-md-2 float-right"
-                                                    data-toggle="collapse"
-                                                    href="#collapseAdvanceSearch"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapseAdvanceSearch"
-                                            >
-                                                <Icon name="filter"/>
-                                            </Button>
+                                        <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0" style={{paddingRight: '7.5px'}}>
+                                            <div className="mr-2">
+                                                <Button className="btn-search"
+                                                        disabled={isLoading}
+                                                        onClick={() => this.onChangeFilter()}
+                                                >
+                                                    <Icon name="sync"/>
+                                                </Button>
+                                            </div>
+                                            <div>
+                                                <Button className="btn-search"
+                                                        data-toggle="collapse"
+                                                        href="#collapseAdvanceSearch"
+                                                        aria-expanded="false"
+                                                        aria-controls="collapseAdvanceSearch"
+                                                >
+                                                    <Icon name="filter" className="mr-2"/>
+                                                    Filters
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -417,14 +440,13 @@ export class DashboardPage extends Component {
                                          key={filters}>
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
-                                            return (<div className="row ml-0 mt-2" key={index}>
+                                            return (<div className="row ml-0 mt-2" key={query || table}>
                                                 <div className="col-12 col-md-9 d-flex pl-0">
-                                                    {filters.length !== 1 &&
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
                                                     >
-                                                        <Icon name="times" className="align-self-center mr-3 ml-3"/>
-                                                    </Button>}
+                                                        <Icon name="times" className="align-self-center mr-3"/>
+                                                    </Button>
                                                     <FilterText
                                                         className="mb-0"
                                                         placeholder="status = 200 AND url LIKE '%product%'"
@@ -441,8 +463,7 @@ export class DashboardPage extends Component {
                                                     type='select'
                                                 >
                                                     <>
-                                                        <option value='' className='d-none'>Select
-                                                            datatable
+                                                        <option value='' className='d-none'>Select datatable
                                                         </option>
                                                         {tables.map((item, index) => (
                                                             <option value={item.value}
@@ -461,7 +482,8 @@ export class DashboardPage extends Component {
                                             <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => this.setState({
                                                 filters: [ ...filters, {
                                                     id: filters.length,
-                                                }]
+                                                }],
+                                                widgets: [...widgets].map(item => ({ ...item, duration: 0 }))
                                             })}>
                                                 <Icon name="plus-circle"/>
                                             </Button>

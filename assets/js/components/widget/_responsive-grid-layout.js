@@ -71,7 +71,7 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {layouts.map((item, index) => {
-                        let WidgetLayout = ({i, data, type, column, color}) => {
+                        let WidgetLayout = ({i, data, type, column, color, duration}) => {
                             let component;
                             if (i && data) {
                                 switch (type) {
@@ -84,6 +84,7 @@ export class ResponsiveGridLayout extends Component {
                                             height='250'
                                             minHeight='250'
                                             color={color}
+                                            duration={duration}
                                         />;
                                         break;
                                     }

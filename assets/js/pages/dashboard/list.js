@@ -69,9 +69,7 @@ class DashboardList extends Component {
                                             <td>{item.title}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
-                                                <Button onClick={e => {
-                                                    window.location.href = '/dashboard';
-                                                }} className="mr-2" ><Icon name={'eye'}/></Button>
+                                                <Link href={`/dashboard/${item.uuid}`} className="btn btn-primary mr-2" ><Icon name={'eye'}/></Link>
                                                 <Link href={url} className={'btn btn-success mr-2'}><Icon name={'edit'}/></Link>
                                                 <Button onClick={e => this.deleteDashboard(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                             </td>
