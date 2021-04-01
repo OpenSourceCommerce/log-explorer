@@ -24,13 +24,13 @@ interface DatabaseServiceInterface
 
     /**
      * @param string $table
-     * @param array $columns
+     * @param array $data
      * @return bool
      * @throws TableNotExistException
      * @throws \Doctrine\DBAL\Exception
      * @throws ActionDeniedException
      */
-    public function updateTable(string $table, array $columns): bool;
+    public function updateTable(string $table, array $data): bool;
 
     /**
      * @param string $name

@@ -36,6 +36,9 @@ class ColumnType extends AbstractType
                     new NotBlank()
                 ]
             ])
+            ->add('origin', TextType::class, [
+                'required' => false,
+            ])
         ;
 
     }

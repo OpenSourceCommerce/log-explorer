@@ -101,12 +101,14 @@ class DatabaseController extends ApiController
      * @param string $name
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
+     * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
     public function updateTable(
         string $name,
         Request $request,
-        DatabaseServiceInterface $databaseService
+        DatabaseServiceInterface $databaseService,
+        UrlGeneratorInterface $urlGenerator
     ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
@@ -114,7 +116,7 @@ class DatabaseController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $databaseService->updateTable($name, $form->get('columns')->getData());
+                $databaseService->updateTable($name, $form->getData());
             } catch (TableNotExistException $e) {
                 return $this->responseError([
                     'message' => 'Table does not exist'
@@ -126,6 +128,12 @@ class DatabaseController extends ApiController
             } catch (ActionDeniedException $e) {
                 return $this->responseError([
                     'message' => 'Can not update table'
+                ]);
+            }
+            $newName = $form->get('name')->getData();
+            if ($name != $newName) {
+                return $this->responseSuccess([
+                    'redirect' => $urlGenerator->generate('database_update', ['name' => $newName])
                 ]);
             }
             return $this->responseSuccess();

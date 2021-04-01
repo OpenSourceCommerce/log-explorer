@@ -128,25 +128,94 @@ ORDER BY timestamp\n";
         return "ALTER TABLE {$table} DROP COLUMN `{$column}`";
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function updateTable(string $table, array $columns): bool
+    private function makeAlertColumnTypeQuery(string $table, array $column): string
     {
-        if (!$this->connection->tableExists($table)) {
-            throw new TableNotExistException();
+        return "ALTER TABLE {$table} MODIFY COLUMN {$column['origin']} {$column['type']}";
+    }
+
+    private function makeAlertColumnNameQuery(string $table, array $column): string
+    {
+        return "ALTER TABLE {$table} RENAME COLUMN `{$column['origin']}` TO `{$column['name']}`";
+    }
+
+    private function makeAlertTableNameQuery(string $table, string $newTable): string
+    {
+        return "RENAME TABLE {$table} TO {$newTable}";
+    }
+
+    private function updateTableName(string $table, string $newName): bool
+    {
+        $query = $this->makeAlertTableNameQuery($table, $newName);
+        if (!$this->connection->exec($query)) {
+            return false;
         }
-        $existingColumns = $this->connection->getRawColumns($table);
-        $existingColumns = array_column($existingColumns, 'name');
-        $existingColumns = array_flip($existingColumns);
+        return true;
+    }
+
+    private function addNewColumns(string $table, array $existingColumns, array $columns): bool
+    {
         foreach ($columns as $column) {
-            if (isset($existingColumns[$column['name']])) {
+            $realName = empty($column['origin']) ? $column['name'] : $column['origin'];
+            if (isset($existingColumns[$realName])) {
                 continue;
             }
             $query = $this->makeAlertTableQuery($table, $column);
             if (!$this->connection->exec($query)) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    private function changeExistingColumn(string $table, array $existingColumns, array $columns): bool
+    {
+        foreach ($columns as $column) {
+            $realName = empty($column['origin']) ? $column['name'] : $column['origin'];
+            if (!isset($existingColumns[$realName])) {
+                continue;
+            }
+            if ($existingColumns[$realName] != $column['type']) {
+                $query = $this->makeAlertColumnTypeQuery($table, $column);
+                if (!$this->connection->exec($query)) {
+                    return false;
+                }
+            }
+            if ($realName !== $column['name']) {
+                $query = $this->makeAlertColumnNameQuery($table, $column);
+                if (!$this->connection->exec($query)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateTable(string $table, array $data): bool
+    {
+        $columns = $data['columns'];
+        $newTableName = $data['name'];
+        if (!$this->connection->tableExists($table)) {
+            throw new TableNotExistException();
+        }
+        if ($newTableName != $table) {
+            if (!$this->updateTableName($table, $newTableName)) {
+                return false;
+            }
+            $table = $newTableName;
+        }
+        $arr = $this->connection->getRawColumns($table);
+        $existingColumns = [];
+        foreach ($arr as $column) {
+            $existingColumns[$column['name']] = $column['type'];
+        }
+        if (!$this->addNewColumns($table, $existingColumns, $columns)) {
+            return false;
+        }
+        if (!$this->changeExistingColumn($table, $existingColumns, $columns)) {
+            return false;
         }
         return true;
     }
