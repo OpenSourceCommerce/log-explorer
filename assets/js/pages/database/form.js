@@ -120,7 +120,7 @@ class DatabaseForm extends Component {
     }
 
     onSubmit() {
-        let {isNew, originTable, table, ttl, columns} = this.state;
+        let {originTable, table, ttl, columns} = this.state;
         table = $.trim(table);
         ttl = $.trim(ttl);
         const change = [];
