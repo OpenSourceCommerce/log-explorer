@@ -13,6 +13,7 @@ class DatabaseForm extends Component {
 
         this.state = {
             isNew: !window.table,
+            originTable: window.table ? window.table : '',
             table: window.table ? window.table : '',
             columns,
             ttl: '',
@@ -43,6 +44,8 @@ class DatabaseForm extends Component {
                     let column = data[i];
                     column = $.extend(that.getBlankColumn(), column);
                     column.isNew = false;
+                    column.origin = column.name;
+                    column.originType = column.type;
                     columns.push(column);
                 }
 
@@ -62,7 +65,7 @@ class DatabaseForm extends Component {
     }
 
     getBlankColumn() {
-        return {isNew: true, name: '', type: 'String', error: false};
+        return {isNew: true, name: '', origin: '', type: 'String', originType: '', error: false};
     }
 
     onTableChange(e) {
@@ -98,14 +101,29 @@ class DatabaseForm extends Component {
         });
     }
 
-    onSubmit() {
-        this.setState({
-            isLoading: true
+    deleteColumn(key) {
+        let {table, columns} = this.state;
+        Alert.confirm(`Are you sure to delete "${columns[key].origin}" column?`, () => {
+            DatabaseActions.deleteColumn(table, columns[key].origin)
+                .then(res => {
+                    const {error} = res;
+                    if (error !== 0) {
+                        return;
+                    }
+                    Alert.success('Remove successful');
+                    columns.splice(key, 1);
+                    this.setState({
+                        columns
+                    });
+                })
         });
+    }
 
-        let {isNew, table, ttl, columns} = this.state;
+    onSubmit() {
+        let {originTable, table, ttl, columns} = this.state;
         table = $.trim(table);
         ttl = $.trim(ttl);
+        const change = [];
         const validColumns = [];
         let hasErrorBefore = false;
         let hasError = false;
@@ -117,8 +135,11 @@ class DatabaseForm extends Component {
             hasError = true;
         }
 
+        if (table !== originTable) {
+            change.push(`Table from "${originTable}" to "${table}"`);
+        }
         for (const column of columns) {
-            let {isNew, name, type, error} = column;
+            let {isNew, name, origin, type, originType, error} = column;
             column.error = false;
             if (error) {
                 hasErrorBefore = true;
@@ -135,8 +156,18 @@ class DatabaseForm extends Component {
                 continue;
             }
 
+            if (!isNew) {
+                if (name !== origin) {
+                    change.push(`Column from "${origin}" to "${name}"`);
+                }
+                if (type !== originType) {
+                    change.push(`Column "${origin}" from "${originType}" to "${type}"`);
+                }
+            }
+
             validColumns.push({
                 name,
+                origin,
                 type
             });
         }
@@ -157,30 +188,44 @@ class DatabaseForm extends Component {
         }
 
         if (!hasError) {
-            const that = this;
-            DatabaseActions.createOrUpdate(isNew ? '' : table, {
+            const tableData = {
                 name: table,
                 ttl,
                 columns: validColumns
-            })
-                .then(res => {
-                    const {error, redirect} = res;
-                    if (error !== 0) {
-                        return;
-                    }
-
-                    if (redirect) {
-                        window.location.href = redirect;
-                    } else {
-                        Alert.success('Update successful');
-                        that.loadColumns(table);
-                    }
-                }).then(() => {
-                    this.setState({
-                        isLoading: false
-                    });
-                });
+            }
+            if (change.length > 0) {
+                Alert.confirm("Are you sure to change table structure?\n" + change.join("\n"), () => {
+                    this.createOrUpdate(originTable, tableData);
+                })
+            } else {
+                this.createOrUpdate(originTable, tableData);
+            }
         }
+    }
+
+    createOrUpdate(table, data) {
+        const that = this;
+        this.setState({
+            isLoading: true
+        });
+        DatabaseActions.createOrUpdate(table, data)
+            .then(res => {
+                const {error, redirect} = res;
+                if (error !== 0) {
+                    return;
+                }
+
+                if (redirect) {
+                    window.location.href = redirect;
+                } else {
+                    Alert.success('Update successful');
+                    that.loadColumns(table);
+                }
+            }).then(() => {
+            this.setState({
+                isLoading: false
+            });
+        });
     }
 
     render() {
@@ -188,16 +233,17 @@ class DatabaseForm extends Component {
         const readonly = !isNew;
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
+            const disabled = readonly && !item.isNew && item.origin === 'timestamp';
             return <div key={key} className="form-group">
                 <div className="row">
-                    <div className="col-6">
-                        <Input disabled={readonly && !item.isNew} value={item.name}
+                    <div className="col-5">
+                        <Input disabled={disabled} value={item.name}
                             className={item.error ? 'is-invalid' : ''}
                             onChange={e => this.onColumnChange(key, 'name', e)}
                             placeholder="Name"/>
                     </div>
-                    <div className="col-6">
-                        <select disabled={readonly && !item.isNew} className="form-control"
+                    <div className="col-5">
+                        <select disabled={disabled} className="form-control"
                             value={item.type}
                             onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
@@ -205,6 +251,10 @@ class DatabaseForm extends Component {
                             })}
                         </select>
                     </div>
+                    {!disabled && !item.isNew &&
+                    <div className="col">
+                        <a onClick={() => this.deleteColumn(key)} href='#' className="btn btn-danger"><i className="fa fa-trash"></i></a>
+                    </div>}
                 </div>
             </div>;
         });
@@ -224,7 +274,7 @@ class DatabaseForm extends Component {
                         <form role="form">
                             <div className="form-group">
                                 <label>Table name</label>
-                                <Input disabled={readonly}
+                                <Input
                                     className={tableError ? 'is-invalid' : ''}
                                     placeholder="Table name" value={table}
                                     onChange={this.onTableChange}/>
