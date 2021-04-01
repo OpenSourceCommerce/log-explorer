@@ -224,39 +224,6 @@ export class WidgetManagement extends Component {
                 errors: {...fields},
             })
         }
-
-        // if (errors && Object.keys(errors).length > 0) {
-        //     this.setState({
-        //         errors,
-        //     });
-        //     console.log('errors', errors);
-        //     return;
-        // }
-
-        // switch (widgetType) {
-        //     case WIDGET_TYPE.doughnut:
-        //     case WIDGET_TYPE.pie: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2};
-        //         break;
-        //     }
-        //     case WIDGET_TYPE.counterSum: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 1, minW: 3, minH: 1};
-        //         break;
-        //     }
-        //     case WIDGET_TYPE.table: {
-        //         layout = {i: widgetId.toString(), x: 0, y: 0, w: 3, h: 3, minW: 3, minH: 3};
-        //         break;
-        //     }
-        // }
-
-        // let data = {
-        //     title,
-        //     type,
-        //     table,
-        //     column,
-        //     isOrderDesc: order === 'desc',
-        //     size,
-        // }
     }
 
     render() {

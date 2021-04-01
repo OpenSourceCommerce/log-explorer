@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {DoughnutPieChart, WidgetHeader} from "../index";
-import {Responsive, WidthProvider} from "react-grid-layout/index";
+import {Responsive, WidthProvider} from "react-grid-layout";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import '../../../styles/component/_responsive-grid-layout.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
-import LogTableActions from "../../actions/_log-table-actions";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -19,6 +18,7 @@ export class ResponsiveGridLayout extends Component {
         this.state = {
             compactType: "horizontal",
             mounted: false,
+            currentBreakpoint: '',
         };
     }
 
@@ -31,26 +31,33 @@ export class ResponsiveGridLayout extends Component {
     render() {
         const {
             isResizable = true,
-            data,
+            layouts,
             isDraggable = true,
             onLayoutChange,
             removeWidget,
             editWidget,
+            stickWidget,
             ...rest } = this.props;
-        const { mounted, compactType, isLoading } = this.state;
+        const { mounted,
+            compactType,
+            isLoading,
+            currentBreakpoint
+        } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
-        const layout = data && data.length > 0 ? data.map(item => item.layout) : [];
         return (
             <>{isLoading ? <span
                 className="spinner-border spinner-border-sm mr-2"
                 role="status" aria-hidden="true"/> :  <div className="responsive-grid-layout" {...rest}>
-                { data && data.length > 0  && <ResponsiveReactGridLayout
+                { layouts && layouts.length > 0  && <ResponsiveReactGridLayout
                     {...this.props}
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
-                    layout={layout}
-                    onLayoutChange={onLayoutChange}
+                    layouts={{lg: [...layouts]}}
+                    onLayoutChange={(e) => onLayoutChange(e, currentBreakpoint)}
+                    onBreakpointChange={(currentBreakpoint) => this.setState({
+                        currentBreakpoint,
+                    })}
                     // onDrop={onDrop}
                     // WidthProvider option
                     measureBeforeMount={false}
@@ -63,19 +70,21 @@ export class ResponsiveGridLayout extends Component {
                     isResizable={isResizable}
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
-                    {data.map((item) => {
-                        let WidgetLayout = ({layout, data, type, column}) => {
+                    {layouts.map((item, index) => {
+                        let WidgetLayout = ({i, data, type, column, color, duration}) => {
                             let component;
-                            if (layout && data) {
+                            if (i && data) {
                                 switch (type) {
                                     case WIDGET_TYPE.doughnut:
                                     case WIDGET_TYPE.pie: {
                                         component = <DoughnutPieChart
-                                            id={layout.i}
+                                            id={i}
                                             type={type}
                                             data={data}
                                             height='250'
                                             minHeight='250'
+                                            color={color}
+                                            duration={duration}
                                         />;
                                         break;
                                     }
@@ -94,15 +103,17 @@ export class ResponsiveGridLayout extends Component {
                                     }
                                 }
                             } else {
-                                component = <> No data </>;
+                                component = <p className="m-5 text-center"> No data </p>;
                             }
                             return component;
                         }
                         return (
-                            <div key={item.layout.i} data-grid={item.layout} className="widget card">
+                            <div key={item.i} data-grid={item} className="widget card">
                                 <WidgetHeader header={item.title}
+                                              isFixed={item.static}
                                               removeWidget={() => removeWidget(item.widget_id)}
                                               editWidget={() => editWidget(item.widget_id)}
+                                              stickWidget={(isFixed) => stickWidget(item.widget_id, isFixed, index)}
                                 />
                                 <WidgetLayout {...item}/>
                             </div>
@@ -115,8 +126,11 @@ export class ResponsiveGridLayout extends Component {
 }
 
 ResponsiveGridLayout.propTypes = {
-    data: PropTypes.array,
+    layouts: PropTypes.array,
     isResizable: PropTypes.bool,
     isDraggable: PropTypes.bool,
-    removeWidget: PropTypes.func
+    removeWidget: PropTypes.func,
+    editWidget: PropTypes.func,
+    stickWidget: PropTypes.func,
+    onLayoutChange: PropTypes.func
 };

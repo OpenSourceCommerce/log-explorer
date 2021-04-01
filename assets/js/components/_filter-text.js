@@ -47,16 +47,16 @@ export class FilterText extends Component {
     render() {
         const {placeholder, label, ...rest} = this.props;
         const {isInvalid, value} = this.state;
-        let className = 'input-search';
+        let className = `${this.props.className} input-search`;
         if (isInvalid) {
             className += ' is-invalid';
         }
 
         return (
-            <div {...rest}>
+            <>
                 {label &&  <p className="float-left mb-2">{label}</p>}
                 <Input
-                    className={className}
+                    className={`form-group ${className}`}
                     id="filter-text"
                     type="search"
                     name="query"
@@ -70,7 +70,7 @@ export class FilterText extends Component {
                         if (onBlur) onBlur(e);
                     }}
                 />
-            </div>
+            </>
         );
     }
 }

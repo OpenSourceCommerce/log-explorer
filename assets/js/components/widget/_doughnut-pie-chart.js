@@ -14,7 +14,7 @@ export class DoughnutPieChart extends Component {
     }
 
     componentDidMount() {
-        const {data, type = WIDGET_TYPE.doughnut, id = 'new'} = this.props;
+        const {data, type = WIDGET_TYPE.doughnut, id = 'new', color, duration = 1000} = this.props;
 
         if (data && data.length > 0) {
             if (type === WIDGET_TYPE.doughnut || type === WIDGET_TYPE.pie) {
@@ -24,13 +24,7 @@ export class DoughnutPieChart extends Component {
                     datasets: [
                         {
                             data: data.map(item => item.value),
-                            backgroundColor: data.reduce((arr) => {
-                                const colorCode = this.getRandomColor();
-                                if(!arr.includes(colorCode)) {
-                                    arr.push(colorCode);
-                                }
-                                return arr;
-                            }, []),
+                            backgroundColor: color,
                         }
                     ]
                 }
@@ -40,7 +34,10 @@ export class DoughnutPieChart extends Component {
                     legend: {
                         align: 'start',
                         position: 'right',
-                    }
+                    },
+                    animation: {
+                        duration, // general animation time
+                    },
                 }
 
                 const chart = new Chart(doughnutChartCanvas, {
@@ -69,7 +66,7 @@ export class DoughnutPieChart extends Component {
                                 <p>Widget not available</p>
                             }
                         </div> :
-                        <p>No data</p>
+                        <p className="m-5 text-center">No data</p>
                     }
                 </div>
 

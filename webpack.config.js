@@ -96,6 +96,9 @@ Encore
 	.enableVersioning(Encore.isProduction())
 
 // Enables @babel/preset-env polyfills
+  .configureBabel(function(babelConfig) {
+      babelConfig.plugins.push('@babel/plugin-proposal-class-properties');
+  })
 	.configureBabelPresetEnv(config => {
 		config.useBuiltIns = 'usage';
 		config.corejs = 3;
@@ -123,5 +126,5 @@ Encore
 		moment: 'moment',
 		daterangepicker: 'daterangepicker',
 		sparkline: 'Sparkline'
-	}));
+	}))
 module.exports = Encore.getWebpackConfig();

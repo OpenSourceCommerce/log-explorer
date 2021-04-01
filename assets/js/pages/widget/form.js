@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {DoughnutPieChart, WidgetHeader, WidgetManagement} from "../../components";
+import {DoughnutPieChart, WidgetManagement} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "../../components/widget/_counter-sum";
 import {WidgetTable} from "../../components/widget/_widget-table";
@@ -99,10 +99,19 @@ class WidgetPage extends Component {
             column: '',
         }
 
-        this.updateInitialData = this.updateInitialData.bind(this);
+        this.color = SAMPLE_DATA.map(() => this.getRandomColor());
     }
 
-    updateInitialData(initialData) {
+    getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    updateInitialData = (initialData) => {
         this.setState({
             ...initialData,
             type: initialData.type.toString()
@@ -110,8 +119,9 @@ class WidgetPage extends Component {
     }
 
     render() {
-        const WidgetLayout = ({type, title, size, column}) => {
-            const dataWidget = SAMPLE_DATA.slice(0, size)
+        const WidgetLayout = ({type, title, size, column, duration}) => {
+            const dataWidget = SAMPLE_DATA.slice(0, size);
+            const color = this.color.slice(0, size);
             let component;
             switch (type) {
                 case WIDGET_TYPE.doughnut:
@@ -123,6 +133,8 @@ class WidgetPage extends Component {
                         data={dataWidget}
                         height='500'
                         minHeight='500'
+                        duration={duration}
+                        color={color}
                     />;
                     break;
                 }
@@ -161,7 +173,8 @@ class WidgetPage extends Component {
                                 {...this.props}
                                 onUpdateWidget={(name, value) => {
                                     this.setState({
-                                        [name]: value
+                                        [name]: value,
+                                        duration: name === 'type' || name === 'size' ? 1000 : 0,
                                     })
                                 }}
                                 updateInitialData={this.updateInitialData}
