@@ -12,6 +12,7 @@ use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Graph\GraphServiceInterface;
 use App\Services\GraphLine\GraphLineServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
+use App\Validator\Password;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -63,20 +64,19 @@ class DatabaseService implements DatabaseServiceInterface
         if ($this->connection->tableExists($name)) {
             throw new TableExistException();
         }
-        $hasTimestamp = false;
+        $systemColumns = $this->getSystemColumns();
         foreach ($columns as $k => $column) {
-            if ($column['name'] === 'timestamp') {
-                if ($column['type'] !== 'DateTime') {
-                    $columns[$k]['type'] = 'DateTime';
+            if (isset($systemColumns[$column['name']])) {
+                if ($column['type'] != $systemColumns[$column['name']]) {
+                    $column['type'] = $systemColumns[$column['name']];
                 }
-                $hasTimestamp = true;
-                break;
+                unset($systemColumns[$column['name']]);
             }
         }
-        if (!$hasTimestamp) {
+        foreach ($systemColumns as $column => $type) {
             $columns[] = [
-                'name' => 'timestamp',
-                'type' => 'DateTime',
+                'name' => $column,
+                'type' => $type,
             ];
         }
         $query = $this->makeCreateTableQuery($name, $columns, $options);
@@ -107,6 +107,7 @@ class DatabaseService implements DatabaseServiceInterface
             }
             $query .= "`{$column['name']}` {$column['type']}";
         }
+        $query .= ",INDEX _id _id TYPE bloom_filter GRANULARITY 512";
         $query .= ") ENGINE = MergeTree
 PARTITION BY (toYYYYMM(timestamp))
 ORDER BY timestamp\n";
@@ -114,11 +115,10 @@ ORDER BY timestamp\n";
             $query .= 'TTL '.$options['ttl']."\n";
         }
         $query .= 'SETTINGS index_granularity = 8192';
-
         return $query;
     }
 
-    private function makeAlertTableQuery(string $tableName, array $column): string
+    private function makeAlertAddColumnQuery(string $tableName, array $column): string
     {
         return "ALTER TABLE {$tableName} ADD COLUMN `{$column['name']}` {$column['type']}";
     }
@@ -159,7 +159,7 @@ ORDER BY timestamp\n";
             if (isset($existingColumns[$realName])) {
                 continue;
             }
-            $query = $this->makeAlertTableQuery($table, $column);
+            $query = $this->makeAlertAddColumnQuery($table, $column);
             if (!$this->connection->exec($query)) {
                 return false;
             }
@@ -275,5 +275,41 @@ ORDER BY timestamp\n";
             return false;
         }
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function upgradeTable(string $table)
+    {
+        $columns = $this->connection->getRawColumns($table);
+        $missing = $this->getSystemColumns();
+        foreach ($columns as $column) {
+            if (isset($missing[$column['name']])) {
+                if ($missing[$column['name']] != $column['type']) {
+                    throw new \LogicException('Existing "'.$column['name'].'" column but type is not '.$missing[$column['name']]);
+                }
+                unset($missing[$column['name']]);
+            }
+        }
+        foreach ($missing as $column => $type) {
+            $query = $this->makeAlertAddColumnQuery($table, ['name' => $column, 'type' => $type]);
+            $this->connection->exec($query);
+            if ($column == '_id') {
+                $query = "ALTER TABLE {$table} ADD INDEX _id _id TYPE bloom_filter GRANULARITY value 512";
+                $this->connection->exec($query);
+            }
+        }
+    }
+
+    private function getSystemColumns(): array
+    {
+        return ['timestamp' => 'DateTime', '_id' => 'UUID'];
+    }
+
+    public function isSystemColumn(string $column): bool
+    {
+        $columns = $this->getSystemColumns();
+        return isset($columns[$column]);
     }
 }

@@ -53,4 +53,13 @@ interface DatabaseServiceInterface
      * @throws \Doctrine\DBAL\Exception
      */
     public function removeTableColumn(string $table, string $column);
+
+    /**
+     * Upgrade database table
+     * @param string $table
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function upgradeTable(string $table);
+
+    public function isSystemColumn(string $column): bool;
 }
