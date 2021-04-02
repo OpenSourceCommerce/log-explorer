@@ -21,6 +21,11 @@ const Alert = {
         const title = options.title === undefined ? null : options.title;
         defaultOptions = Object.assign(defaultOptions, options);
         toastr[type](message, title, defaultOptions);
+    },
+    confirm(message, onConfirmed) {
+        if (confirm(message)) {
+            onConfirmed();
+        }
     }
 };
 

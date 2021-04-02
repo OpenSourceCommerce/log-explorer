@@ -21,6 +21,11 @@ const DatabaseActions = {
         return request('/api/table/create', {
             method: 'POST', body: JSON.stringify(data)
         });
+    },
+    deleteColumn(table, column) {
+        return request('/api/table/' + table + '/' + column, {
+            method: 'DELETE'
+        });
     }
 };
 

@@ -24,13 +24,13 @@ interface DatabaseServiceInterface
 
     /**
      * @param string $table
-     * @param array $columns
+     * @param array $data
      * @return bool
      * @throws TableNotExistException
      * @throws \Doctrine\DBAL\Exception
      * @throws ActionDeniedException
      */
-    public function updateTable(string $table, array $columns): bool;
+    public function updateTable(string $table, array $data): bool;
 
     /**
      * @param string $name
@@ -45,4 +45,12 @@ interface DatabaseServiceInterface
      * @throws ColumnNotExistException
      */
     public function checkColumnBelongToTable(string $table, ?string $column): bool;
+
+    /**
+     * @param string $table
+     * @param string $column
+     * @throws TableNotExistException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function removeTableColumn(string $table, string $column);
 }
