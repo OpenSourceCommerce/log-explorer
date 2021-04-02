@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CardHeader, CardTool, DropdownItem, JsGridTable, LogViewTableSettingModal, QueryInfo} from '.';
+import {
+    Button,
+    CardTool,
+    DropdownItem, Icon,
+    JsGridTable,
+    LogViewTableSettingModal,
+    QueryInfo
+} from '.';
 import {LogTableActions} from '../actions';
 
 export class LogViewTable extends Component {
@@ -82,17 +89,31 @@ export class LogViewTable extends Component {
                     onSave={this.onTableSettingModalChanged}
                     onHidden={this.hideTableSettingModal}/>
                 <div className="card">
-                    <CardHeader title="Home Page">
-                        <CardTool>
-                            <DropdownItem onClick={this.showTableSettingModal}>
-                                Setting
-                            </DropdownItem>
-                        </CardTool>
-                    </CardHeader>
-                    <div className="card-body pt-0">
-                        <div className={'row mb-3'}>
+                    <div className="card-header">
+                        <h3 className="card-title">
                             <QueryInfo queryInfo={queryInfo} className={'col-12'}/>
+                        </h3>
+
+                        <div className="card-tools">
+                            <CardTool>
+                                <DropdownItem onClick={this.showTableSettingModal}>
+                                    Setting
+                                </DropdownItem>
+                            </CardTool>
+
+                            <Button color="tool"
+                                    data-card-widget="collapse"
+                                    data-toggle="tooltip" title="Collapse">
+                                <Icon className="" name={'minus'}/>
+                            </Button>
+                            <Button color="tool"
+                                    data-card-widget="remove"
+                                    data-toggle="tooltip" title="Remove">
+                                <Icon name={'times'}/>
+                            </Button>
                         </div>
+                    </div>
+                    <div className="card-body pt-0">
                         {fields && fields.length > 0 &&
                         <JsGridTable
                             height='auto'

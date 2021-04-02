@@ -15,6 +15,14 @@ export class QueryInfo extends Component {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
 
+    formatTime(time) {
+        if (time > 1000) {
+            return (time / 1000).toFixed(1) + ' seconds';
+        } else {
+            return time + ' milliseconds';
+        }
+    }
+
     numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -25,7 +33,7 @@ export class QueryInfo extends Component {
 
         return (
             <div className={className}>
-                Return {current} rows of {this.numberWithCommas(total)} rows in {queryTime} milliseconds. Read {this.numberWithCommas(queryReadRows)} rows with {this.formatBytes(queryReadBytes)}, result {this.formatBytes(queryResultBytes)}, used {this.formatBytes(queryMemory)} of memory.
+                {this.numberWithCommas(total)} hits, query time {this.formatTime(queryTime)}.
             </div>
         );
     }
