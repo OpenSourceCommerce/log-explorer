@@ -4,6 +4,7 @@
 namespace App\Services\Log;
 
 
+use App\Helper\StringHelper;
 use App\Services\Clickhouse\Connection;
 
 /**
@@ -57,10 +58,17 @@ class LogService implements LogServiceInterface
         $builder = $this->connection->createQueryBuilder()
             ->insert($table);
 
+        $hasId = false;
         foreach ($data as $column => $value) {
             $builder->setValue($column, ":{$column}")
                 ->setParameter(":{$column}", $value);
-
+            if ($column === '_id') {
+                $hasId = true;
+            }
+        }
+        if (!$hasId) {
+            $builder->setValue('_id', ':_id')
+                ->setParameter('_id', StringHelper::uuid());
         }
 
         $builder->execute();

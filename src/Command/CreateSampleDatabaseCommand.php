@@ -48,6 +48,7 @@ class CreateSampleDatabaseCommand extends Command
                 ['name' => 'body_bytes_sent', 'title' => 'Size', 'type' => 'UInt64'],
                 ['name' => 'referer', 'title' => 'Referer', 'type' => 'String'],
                 ['name' => 'user_agent', 'title' => 'Agent', 'type' => 'String'],
+                ['name' => '_id', 'title' => 'ID', 'type' => 'UUID'],
             ]);
         } catch (TableExistException $e) {
             $io->success("Table exist.");

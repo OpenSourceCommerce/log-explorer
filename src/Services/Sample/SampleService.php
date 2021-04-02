@@ -4,6 +4,7 @@
 namespace App\Services\Sample;
 
 
+use App\Helper\StringHelper;
 use App\Services\Clickhouse\Connection;
 
 class SampleService implements SampleServiceInterface
@@ -34,6 +35,7 @@ class SampleService implements SampleServiceInterface
                 'body_bytes_sent' => random_int(2, 99999999),
                 'referer' => $this->randomUrl(),
                 'user_agent' => $this->randomAgent(),
+                '_id' => StringHelper::uuid(),
             ]);
         }
     }
