@@ -296,7 +296,7 @@ ORDER BY timestamp\n";
             $query = $this->makeAlertAddColumnQuery($table, ['name' => $column, 'type' => $type]);
             $this->connection->exec($query);
             if ($column == '_id') {
-                $query = "ALTER TABLE {$table} ADD INDEX _id _id TYPE bloom_filter GRANULARITY value 512";
+                $query = "ALTER TABLE {$table} ADD INDEX _id _id TYPE bloom_filter GRANULARITY 512";
                 $this->connection->exec($query);
             }
         }

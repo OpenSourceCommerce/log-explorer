@@ -73,7 +73,6 @@ class StreamService implements StreamServiceInterface
      */
     public function getLogsInRange(string $table, array $options = [])
     {
-        $needFlip = false;
         $builder = $this->makeQueryBuilder($table, $options);
         $limit = $options['limit'] ?? 100;
         $timer = $options['timer'] ?? 'timestamp';
@@ -81,6 +80,12 @@ class StreamService implements StreamServiceInterface
         $order = strtoupper($options['order'] ?? 'DESC');
         $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
+
+        $trackId = $options['trackId'] ?? '';
+        $track = '';
+        if ($trackId) {
+            $track = $this->trackIdLog($trackId);
+        }
 
         $builder->select('_id')
             ->orderBy($sort, $order)
@@ -93,36 +98,7 @@ class StreamService implements StreamServiceInterface
             ->orderBy($sort, $order)
             ->where('_id IN ('.$builder->getSQL().')');
 
-//        $builder->select($columns)
-//            ->setMaxResults($limit);
-//        if ($page) {
-//            $total = $options['total'];
-//            if ($order === 'ASC') {
-//                $builder->setFirstResult(($page - 1) * $limit);
-//            } elseif (empty($total)) {
-//                $builder->orderBy($sort, $order);
-//            } else {
-//                $needFlip = true;
-//                $offset = $total - $page * $limit;
-//                if ($offset < 0) {
-//                    $limit += $offset;
-//                    $offset = 0;
-//                }
-//                $builder->setFirstResult($offset)
-//                    ->setMaxResults($limit);
-//            }
-//        }
-        $trackId = $options['trackId'] ?? '';
-        $track = '';
-        if ($trackId) {
-            $track = $this->trackIdLog($trackId);
-        }
-        $data = $this->connection->fetchAll($builder2->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
-//        $data = $this->connection->fetchAllInSingleThread($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
-//        if ($needFlip) {
-//            $data = array_reverse($data);
-//        }
-        return $data;
+        return $this->connection->fetchAll($builder2->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
     }
 
     /**
