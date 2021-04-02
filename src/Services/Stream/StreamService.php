@@ -81,34 +81,47 @@ class StreamService implements StreamServiceInterface
         $order = strtoupper($options['order'] ?? 'DESC');
         $page = $options['page'] ?? 1;
         $columns = $options['columns'] ?? '*';
-        $builder->select($columns)
-            ->setMaxResults($limit);
-        if ($page) {
-            $total = $options['total'];
-            if ($order === 'ASC') {
-                $builder->setFirstResult(($page - 1) * $limit);
-            } elseif (empty($total)) {
-                $builder->orderBy($sort, $order);
-            } else {
-                $needFlip = true;
-                $offset = $total - $page * $limit;
-                if ($offset < 0) {
-                    $limit += $offset;
-                    $offset = 0;
-                }
-                $builder->setFirstResult($offset)
-                    ->setMaxResults($limit);
-            }
-        }
+
+        $builder->select('_id')
+            ->orderBy($sort, $order)
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit);
+
+        $builder2 = $this->connection->createQueryBuilder()
+            ->from($table)
+            ->select($columns)
+            ->orderBy($sort, $order)
+            ->where('_id IN ('.$builder->getSQL().')');
+
+//        $builder->select($columns)
+//            ->setMaxResults($limit);
+//        if ($page) {
+//            $total = $options['total'];
+//            if ($order === 'ASC') {
+//                $builder->setFirstResult(($page - 1) * $limit);
+//            } elseif (empty($total)) {
+//                $builder->orderBy($sort, $order);
+//            } else {
+//                $needFlip = true;
+//                $offset = $total - $page * $limit;
+//                if ($offset < 0) {
+//                    $limit += $offset;
+//                    $offset = 0;
+//                }
+//                $builder->setFirstResult($offset)
+//                    ->setMaxResults($limit);
+//            }
+//        }
         $trackId = $options['trackId'] ?? '';
         $track = '';
         if ($trackId) {
             $track = $this->trackIdLog($trackId);
         }
-        $data = $this->connection->fetchAllInSingleThread($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
-        if ($needFlip) {
-            $data = array_reverse($data);
-        }
+        $data = $this->connection->fetchAll($builder2->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+//        $data = $this->connection->fetchAllInSingleThread($builder->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+//        if ($needFlip) {
+//            $data = array_reverse($data);
+//        }
         return $data;
     }
 
