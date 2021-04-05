@@ -250,9 +250,11 @@ ORDER BY timestamp\n";
         if (empty($column)) {
             return true;
         }
-        $columns = $this->connection->getColumns($table);
-        if (isset($columns[$column])) {
-            return true;
+        $columns = $this->connection->getRawColumns($table);
+        foreach ($columns as $col) {
+            if ($col['name'] == $column) {
+                return true;
+            }
         }
         throw new ColumnNotExistException();
     }
@@ -265,8 +267,15 @@ ORDER BY timestamp\n";
         if (!$this->connection->tableExists($table)) {
             throw new TableNotExistException();
         }
-        $columns = $this->connection->getColumns($table);
-        if (!isset($columns[$column])) {
+        $columns = $this->connection->getRawColumns($table);
+        $exist = false;
+        foreach ($columns as $col) {
+            if ($col['name'] == $column) {
+                $exist = true;
+                break;
+            }
+        }
+        if (!$exist) {
             // not exist or already deleted
             return true;
         }

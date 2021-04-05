@@ -123,15 +123,6 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
-    public function getColumns(string $table)
-    {
-        /** @var EntityManagerInterface $em */
-        return $this->getSchemaManager()->listTableColumns($table);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tableExists(string $table): bool
     {
         $sql = "SELECT COUNT() AS c FROM system.tables WHERE database = '{$this->connection->getDatabase()}' AND engine != 'View' AND name = '{$table}'";

@@ -30,18 +30,10 @@ class LogService implements LogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getColumns(string $table)
-    {
-        return $this->connection->getColumns($table);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getColumnsName(string $table)
     {
-        $columns = $this->getColumns($table);
-        $columns = array_keys($columns);
+        $columns = $this->connection->getRawColumns($table);
+        $columns = array_column($columns, 'name');
 
         foreach ($columns as $index => $column) {
             $columns[$index] = preg_replace('/[\W]/', '', $column);

@@ -13,14 +13,6 @@ use Doctrine\DBAL\Exception;
 interface LogServiceInterface
 {
     /**
-     * Get all columns of the nginx_access table
-     *
-     * @param string $table
-     * @return mixed
-     */
-    public function getColumns(string $table);
-
-    /**
      * Get all column name of the nginx_access table
      *
      * @param string $table
