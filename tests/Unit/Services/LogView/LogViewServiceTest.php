@@ -45,7 +45,7 @@ class LogViewServiceTest extends WebTestCase
         $columnSetting = $this->getLogViewService()->getColumnSetting($logView);
 
         $this->assertIsArray($columnSetting);
-        $this->assertEquals(8, count($columnSetting));
+        $this->assertEquals(9, count($columnSetting));
     }
 
     public function testFindByUuid()
@@ -105,6 +105,6 @@ class LogViewServiceTest extends WebTestCase
         $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
 
         $this->assertIsArray($visibleColumns);
-        $this->assertEquals(8, count($visibleColumns));
+        $this->assertEquals(9, count($visibleColumns));
     }
 }
