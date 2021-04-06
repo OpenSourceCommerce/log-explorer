@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import 'admin-lte/plugins/daterangepicker/daterangepicker.css';
 import 'admin-lte/plugins/daterangepicker/daterangepicker';
 import moment from 'moment';
+import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../utils";
 
 export class FilterDate extends Component {
     constructor(props) {
@@ -30,51 +31,78 @@ export class FilterDate extends Component {
     }
 
     componentDidMount() {
-        const that = this;
+        const { uuid, cname } = this.props;
+        let startDate = moment().subtract(1, 'hour');
+        let endDate = moment();
+        let dateRangeValue = '1 hour';
+
+        const ranges = DATE_RANGE.reduce((obj, item) => ({
+            ...obj,
+            [item.label]: [item.from, item.to],
+        }), {})
+
+        if (cname && uuid) {
+            let data = getDataFromCookies('daterangewidget');
+            if (data) {
+                data = data.split('|');
+                if (data[0] === uuid) {
+                    if (data[1] === 'Custom Range') {
+                        startDate = data[2];
+                        endDate = data[3];
+                    } else {
+                        const dateRange = DATE_RANGE.find((item) => item.label === data[1]);
+                        if (dateRange) {
+                            const { from, to } = dateRange;
+                            startDate = from;
+                            endDate = to
+                        }
+                    }
+                    dateRangeValue = data[1];
+                }
+            }
+        }
         $(() => {
             $('#date-range').daterangepicker(
                 {
-                    ranges: {
-                        '1 hour': [moment().subtract(1, 'hour'), moment()],
-                        '12 hours': [moment().subtract(12, 'hours'), moment()],
-                        '1 day': [moment().subtract(24, 'hours'), moment()],
-                        '7 days': [moment().subtract(7, 'days'), moment()],
-                        Today: [moment(), moment()],
-                        Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
+                    ranges,
                     timePicker: true,
                     timePicker24Hour: true,
                     opens: 'center',
                     autoApply: true,
-                    startDate: moment().subtract(1, 'hour'),
-                    endDate: moment()
+                    startDate,
+                    endDate
                 },
                 (start, end, label) => {
                     switch (label) {
                         case '1 hour':
-                            that.onFilterChanged(60, '', label);
+                            this.onFilterChanged(60, '', label);
                             break;
                         case '12 hours':
-                            that.onFilterChanged(720, '', label);
+                            this.onFilterChanged(720, '', label);
                             break;
                         case '1 day':
-                            that.onFilterChanged(1440, '', label);
+                            this.onFilterChanged(1440, '', label);
                             break;
                         case '7 days':
-                            that.onFilterChanged(10080, '', label);
+                            this.onFilterChanged(10080, '', label);
                             break;
                         case 'Custom Range':
-                            that.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
+                            this.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
                                 start.format('YYYY-MM-DD HH:MM') + ' - ' + end.format('YYYY-MM-DD HH:MM'));
                             break;
                         default:
-                            that.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'), label);
+                            this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'), label);
                             break;
                     }
+                    if (setDataToCookies && uuid && cname) setDataToCookies(cname, `${uuid}|${label}|${start.unix()}|${end.unix()}`, 30);
                 }
             );
+        });
+
+        this.setState({
+            from: startDate.format('YYYY-MM-DD HH:mm:00'),
+            to: endDate.format('YYYY-MM-DD HH:mm:59'),
+            dateRangeValue,
         });
     }
 

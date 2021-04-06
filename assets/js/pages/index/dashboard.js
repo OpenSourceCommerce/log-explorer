@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import LogTableActions from "../../actions/_log-table-actions";
-import {FilterDate, FilterText, ResponsiveGridLayout, Select2} from "../../components";
+import {FilterDate, FilterText, ResponsiveGridLayout} from "../../components";
 import {Button} from "../../components/_button";
 import {Icon} from "../../components/_icon";
 import {DatabaseActions, WidgetActions} from "../../actions";
 import DashboardActions from "../../actions/_dashboard-actions";
-import {WIDGET_TYPE} from "../../utils";
+import {getDataFromCookies, setDataToCookies, WIDGET_TYPE} from "../../utils";
 import {FormField} from "../../components/_form-field";
 
 export class DashboardPage extends Component {
@@ -34,15 +34,27 @@ export class DashboardPage extends Component {
 
             const tableRes = await DatabaseActions.getAllTable();
 
-            let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map((item, index) => ({
-                value: item,
-                label: item,
-                isSelected: index === 0 ? true : false,
-            })) : [];
+            let filters;
 
+            const cData = getDataFromCookies('filters') ? getDataFromCookies('filters').split('|') : '';
+            if (cData && cData[0] === window.uuid) {
+                filters = JSON.parse(cData[1]).map((item, index) => ({ ...item, id: index }))
+            }
+
+            let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map((item, index) => {
+                let isSelected = index === 0;
+                if (filters && filters.length > 0) {
+                    isSelected = filters.find((el) => el.table === item) ? true : false;
+                }
+                return {
+                    value: item,
+                    label: item,
+                    isSelected,
+                }
+            }) : [];
             this.setState({
                 tables,
-                filters: [{
+                filters: filters || [{
                     id: 0,
                     query: '',
                     table: tables[0].value,
@@ -168,6 +180,9 @@ export class DashboardPage extends Component {
         }
         this.setState({
             widgets,
+        }, () => {
+            const cData = filters.map(({query, table}) =>  ({ query, table }));
+            setDataToCookies('filters', `${uuid}|${JSON.stringify(cData)}`, 30);
         })
     }
 
@@ -416,6 +431,8 @@ export class DashboardPage extends Component {
                                         <div className="col-md-auto col-12"
                                             style={{minWidth: '300px'}}>
                                             <FilterDate
+                                                uuid={window.uuid}
+                                                cname='daterangewidget'
                                                 onDateRangeChanged={() => this.onChangeFilter()}
                                             />
                                         </div>
