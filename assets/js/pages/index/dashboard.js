@@ -207,6 +207,19 @@ export class DashboardPage extends Component {
                 const {id, x, y, width, height, fixed, title, type, widget_id, color, w, h} = widgets[index];
                 const {minWidth, minHeight} = configs.size[type];
 
+                let colorForChart;
+                if (color && color.length > 0 && color.length === data.length) {
+                    colorForChart = color;
+                } else if (type.toString() === '4' || type.toString() === '2') {
+                    colorForChart = data.reduce((arr) => {
+                        const colorCode = this.getRandomColor();
+                        if(!arr.includes(colorCode)) {
+                            arr.push(colorCode);
+                        }
+                        return arr;
+                    }, [])
+                }
+
                 if (!error) {
                     arr.push({
                         ...widgets[index],
@@ -222,13 +235,7 @@ export class DashboardPage extends Component {
                         title,
                         widget_id,
                         type: type.toString(),
-                        color: color && color.length > 0 && color.length === data.length ? color : data.reduce((arr) => {
-                            const colorCode = this.getRandomColor();
-                            if(!arr.includes(colorCode)) {
-                                arr.push(colorCode);
-                            }
-                            return arr;
-                        }, []),
+                        color: colorForChart,
                         duration: 1000,
                     });
                 }
