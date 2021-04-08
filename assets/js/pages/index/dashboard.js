@@ -6,23 +6,52 @@ import {Button} from "../../components/_button";
 import {Icon} from "../../components/_icon";
 import {DatabaseActions, WidgetActions} from "../../actions";
 import DashboardActions from "../../actions/_dashboard-actions";
-import {getDataFromCookies, setDataToCookies, WIDGET_TYPE} from "../../utils";
+import {DATE_RANGE, getDataFromCookies, setDataToCookies, WIDGET_TYPE} from "../../utils";
 import {FormField} from "../../components/_form-field";
 
 export class DashboardPage extends Component {
     constructor(props) {
         super(props);
+
+        let filters = [{
+            id: 0,
+            query: '',
+            table: ''
+        }];
+        let dateRange = {
+            from: DATE_RANGE[0].from,
+            to: DATE_RANGE[0].to,
+            label: DATE_RANGE[0].label,
+        };
+
+        const cData = getDataFromCookies(window.uuid) ?
+            getDataFromCookies(window.uuid).split('|') : '';
+        if (cData) {
+            const dateRangeLabel = JSON.parse(cData[0]).label || '';
+            if (dateRangeLabel !== 'Custom Range') {
+                const dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    dateRange = { ...dateRangeValue };
+                }
+            } else {
+                const dateRangeValue = JSON.parse(cData[0]);
+                dateRange.label = dateRangeValue.label;
+                dateRange.from = moment.unix(dateRangeLabel.from);
+                dateRange.to = moment.unix(dateRangeLabel.to);
+            }
+            filters = cData[1] ? JSON.parse(cData[1]).map((item, index) => ({ ...item, id: index })) : filters;
+        } else {
+            this.setDataCookies(filters, {label: dateRange.label});
+        }
+
         this.state = {
             dashboardDetail: {},
             widgetList: [],
             tables: [],
-            filters: [{
-                id: 0,
-                query: '',
-                table: ''
-            }],
+            filters,
             widgetSelected: null,
             isLoading: false,
+            dateRange,
         };
     }
 
@@ -31,20 +60,13 @@ export class DashboardPage extends Component {
             this.setState({
                 isLoading: true,
             })
-
             const tableRes = await DatabaseActions.getAllTable();
-
-            let filters;
-
-            const cData = getDataFromCookies('filters') ? getDataFromCookies('filters').split('|') : '';
-            if (cData && cData[0] === window.uuid) {
-                filters = JSON.parse(cData[1]).map((item, index) => ({ ...item, id: index }))
-            }
+            const { filters } = this.state;
 
             let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map((item, index) => {
                 let isSelected = index === 0;
                 if (filters && filters.length > 0) {
-                    isSelected = filters.find((el) => el.table === item) ? true : false;
+                    isSelected = !!filters.find((el) => el.table === item);
                 }
                 return {
                     value: item,
@@ -52,14 +74,17 @@ export class DashboardPage extends Component {
                     isSelected,
                 }
             }) : [];
+
+            const newFilters = [...filters];
+            if (!newFilters[0].table) {
+                newFilters[0].table = tables[0].value;
+                tables[0].isSelected = true;
+            }
+
             this.setState({
                 tables,
-                filters: filters || [{
-                    id: 0,
-                    query: '',
-                    table: tables[0].value,
-                }],
-            })
+                filters,
+            }, () => this.setDataCookies(newFilters, this.state.dateRange))
 
             await this.loadingData();
         }
@@ -152,7 +177,7 @@ export class DashboardPage extends Component {
     }
 
     applyFilter = async () => {
-        const { filters, dashboardDetail } = this.state;
+        const { filters, dashboardDetail, dateRange } = this.state;
         const {uuid} = dashboardDetail;
         let widgets = [...dashboardDetail.widgets];
         const rawWidget = widgets.map((item) => {
@@ -181,8 +206,7 @@ export class DashboardPage extends Component {
         this.setState({
             widgets,
         }, () => {
-            const cData = filters.map(({query, table}) =>  ({ query, table }));
-            setDataToCookies('filters', `${uuid}|${JSON.stringify(cData)}`, 30);
+            this.setDataCookies(filters, dateRange);
         })
     }
 
@@ -245,12 +269,12 @@ export class DashboardPage extends Component {
         return data;
     }
 
-    onChangeFilter = async () => {
+    onChangeFilter = async (from, to, dateRange) => {
         this.setState({
             isLoading: true,
         })
 
-        const {dashboardDetail} = this.state;
+        const {dashboardDetail, filters} = this.state;
         const {widgets, configs, uuid} = dashboardDetail;
         const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
@@ -259,23 +283,37 @@ export class DashboardPage extends Component {
                 ...dashboardDetail,
                 widgets: [...widgetList],
             },
+            dateRange,
             isLoading: false,
+        }, () => {
+            this.setDataCookies(filters, dateRange);
         })
+    }
+
+    setDataCookies = (filters, dateRange) => {
+        setDataToCookies(window.uuid, `${JSON.stringify(dateRange)}|${JSON.stringify(filters.map(({query, table}) => ({ query, table })))}`, 30);
     }
 
     onQueryTableChange = ({name, value}, index) => {
         this.setState((preState) => {
             // in one table user only put one
-            const tables = [...preState.tables];
+            let tables = [...preState.tables];
             const filters = [...preState.filters];
             const widgets = [...preState.dashboardDetail.widgets].map(item => ({ ...item, duration: 0}));
 
             filters[index][name] = value;
 
             if (name === 'table') {
-                const indexTableSelected = tables.findIndex(item => item.value === value);
-                tables[indexTableSelected].isSelected = !tables[indexTableSelected].isSelected;
+                tables = [...preState.tables].map(item => {
+                    const filter = filters.find(el => el.table === item.value);
+                    return {
+                        ...item,
+                        isSelected: !!filter,
+                    }
+                })
             }
+
+            this.setDataCookies(filters, preState.dateRange);
 
             return {
                 filters,
@@ -285,7 +323,6 @@ export class DashboardPage extends Component {
                     widgets,
                 },
             }
-
         });
     }
 
@@ -300,10 +337,15 @@ export class DashboardPage extends Component {
             if (filters.length === 0) {
                 filters.push({
                     id: 0,
-                    table: tables[0].table,
-                })
+                    query: '',
+                    table: tables[0].value,
+                });
+                tables[0].isSelected = false;
+            } else {
+                filters.map((item, index) => ({...item, id:index}));
             }
-            filters.map((item, index) => ({...item, id:index}));
+
+            this.setDataCookies(filters, this.state.dateRange);
             return {
                 filters,
                 tables,
@@ -312,7 +354,7 @@ export class DashboardPage extends Component {
                     widgets: [...preState.dashboardDetail.widgets].map(item => ({ ...item, duration: 0})),
                 }
             }
-        }, () => console.log(this.state));
+        });
     }
 
     stickWidget = async (widgetId, fixed, index) => {
@@ -397,7 +439,10 @@ export class DashboardPage extends Component {
             widgetSelected,
             tables,
             filters,
+            dateRange
         } = this.state;
+
+        console.log(tables);
 
         const {title, widgets} = dashboardDetail;
 
@@ -438,9 +483,8 @@ export class DashboardPage extends Component {
                                         <div className="col-md-auto col-12"
                                             style={{minWidth: '300px'}}>
                                             <FilterDate
-                                                uuid={window.uuid}
-                                                cname='daterangewidget'
-                                                onDateRangeChanged={() => this.onChangeFilter()}
+                                                dateRange={dateRange}
+                                                onDateRangeChanged={this.onChangeFilter}
                                             />
                                         </div>
                                         <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0" style={{paddingRight: '7.5px'}}>
@@ -473,7 +517,7 @@ export class DashboardPage extends Component {
                                          key={filters}>
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
-                                            return (<div className="row ml-0 mt-2" key={query || table}>
+                                            return (<div className="row ml-0 mt-2" key={`${query}|${table}`}>
                                                 <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
@@ -510,12 +554,20 @@ export class DashboardPage extends Component {
                                     </div>
                                     <div className="d-flex justify-content-end mb-2">
                                         {tables.length > filters.length && <div className="col-6 col-md-1 btn-action-group">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => this.setState({
-                                                filters: [ ...filters, {
-                                                    id: filters.length,
-                                                }],
-                                                widgets: [...widgets].map(item => ({ ...item, duration: 0 }))
-                                            })}>
+                                            <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => {
+                                                const table = tables.filter(item => !item.isSelected)[0].value;
+                                                const index = tables.findIndex(item => item.value === table);
+                                                const newTables = [...tables];
+                                                newTables[index].isSelected = true;
+
+                                                this.setState({
+                                                    filters: [ ...filters, {
+                                                        id: filters.length,
+                                                        table,
+                                                    }],
+                                                    widgets: [...widgets].map(item => ({ ...item, duration: 0 }))
+                                                })
+                                            }}>
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import 'admin-lte/plugins/daterangepicker/daterangepicker.css';
 import 'admin-lte/plugins/daterangepicker/daterangepicker';
 import moment from 'moment';
-import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../utils";
+import {DATE_RANGE} from "../utils";
 
 export class FilterDate extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ export class FilterDate extends Component {
         };
     }
 
-    onFilterChanged(from, to, dateRangeValue) {
+    onFilterChanged(from, to, dateRangeValue, fromUnix, toUnix) {
         const {onDateRangeChanged} = this.props;
         this.setState({
             from,
@@ -26,41 +26,27 @@ export class FilterDate extends Component {
             dateRangeValue
         });
         if (onDateRangeChanged) {
-            onDateRangeChanged(from, to);
+            onDateRangeChanged(from, to, { label: dateRangeValue, from: fromUnix, to: toUnix });
         }
     }
 
     componentDidMount() {
-        const { uuid, cname } = this.props;
+        const { dateRange } = this.props;
         let startDate = moment().subtract(1, 'hour');
         let endDate = moment();
         let dateRangeValue = '1 hour';
+
+        if (dateRange) {
+            startDate = dateRange.from;
+            endDate = dateRange.to;
+            dateRangeValue = dateRange.label;
+        }
 
         const ranges = DATE_RANGE.reduce((obj, item) => ({
             ...obj,
             [item.label]: [item.from, item.to],
         }), {})
 
-        if (cname && uuid) {
-            let data = getDataFromCookies('daterangewidget');
-            if (data) {
-                data = data.split('|');
-                if (data[0] === uuid) {
-                    if (data[1] === 'Custom Range') {
-                        startDate = data[2];
-                        endDate = data[3];
-                    } else {
-                        const dateRange = DATE_RANGE.find((item) => item.label === data[1]);
-                        if (dateRange) {
-                            const { from, to } = dateRange;
-                            startDate = from;
-                            endDate = to
-                        }
-                    }
-                    dateRangeValue = data[1];
-                }
-            }
-        }
         $(() => {
             $('#date-range').daterangepicker(
                 {
@@ -88,13 +74,13 @@ export class FilterDate extends Component {
                             break;
                         case 'Custom Range':
                             this.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
-                                start.format('YYYY-MM-DD HH:MM') + ' - ' + end.format('YYYY-MM-DD HH:MM'));
+                                label, start.unix(), end.unix());
                             break;
                         default:
-                            this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'), label);
+                            this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'),
+                                label, start.unix(), end.unix());
                             break;
                     }
-                    if (setDataToCookies && uuid && cname) setDataToCookies(cname, `${uuid}|${label}|${start.unix()}|${end.unix()}`, 30);
                 }
             );
         });
@@ -107,11 +93,11 @@ export class FilterDate extends Component {
     }
 
     render() {
-        const {onDateRangeChanged, label, ...rest} = this.props;
+        const { label } = this.props;
         const {from, to, dateRangeValue} = this.state;
 
         return (
-            <div {...rest}>
+            <div>
                 <div>
                     <p className="float-left mb-2">{label}</p>
                 </div>
