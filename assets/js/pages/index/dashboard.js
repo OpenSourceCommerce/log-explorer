@@ -36,8 +36,8 @@ export class DashboardPage extends Component {
             } else {
                 const dateRangeValue = JSON.parse(cData[0]);
                 dateRange.label = dateRangeValue.label;
-                dateRange.from = moment.unix(dateRangeLabel.from);
-                dateRange.to = moment.unix(dateRangeLabel.to);
+                dateRange.from = moment.unix(dateRangeValue.from);
+                dateRange.to = moment.unix(dateRangeValue.to);
             }
             filters = cData[1] ? JSON.parse(cData[1]).map((item, index) => ({ ...item, id: index })) : filters;
         } else {
