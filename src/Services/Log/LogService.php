@@ -4,6 +4,7 @@
 namespace App\Services\Log;
 
 
+use App\Helper\StringHelper;
 use App\Services\Clickhouse\Connection;
 
 /**
@@ -29,18 +30,10 @@ class LogService implements LogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getColumns(string $table)
-    {
-        return $this->connection->getColumns($table);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getColumnsName(string $table)
     {
-        $columns = $this->getColumns($table);
-        $columns = array_keys($columns);
+        $columns = $this->connection->getRawColumns($table);
+        $columns = array_column($columns, 'name');
 
         foreach ($columns as $index => $column) {
             $columns[$index] = preg_replace('/[\W]/', '', $column);
@@ -57,10 +50,17 @@ class LogService implements LogServiceInterface
         $builder = $this->connection->createQueryBuilder()
             ->insert($table);
 
+        $hasId = false;
         foreach ($data as $column => $value) {
             $builder->setValue($column, ":{$column}")
                 ->setParameter(":{$column}", $value);
-
+            if ($column === '_id') {
+                $hasId = true;
+            }
+        }
+        if (!$hasId) {
+            $builder->setValue('_id', ':_id')
+                ->setParameter('_id', StringHelper::uuid());
         }
 
         $builder->execute();

@@ -27,7 +27,7 @@ interface LogViewServiceInterface
     /**
      * List all LogView
      *
-     * @return array
+     * @return LogView[]|array
      */
     public function list(): array;
 

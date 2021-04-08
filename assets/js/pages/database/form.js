@@ -233,7 +233,7 @@ class DatabaseForm extends Component {
         const readonly = !isNew;
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
-            const disabled = readonly && !item.isNew && item.origin === 'timestamp';
+            const disabled = readonly && !item.isNew && (item.origin === 'timestamp' || item.origin === '_id');
             return <div key={key} className="form-group">
                 <div className="row">
                     <div className="col-5">

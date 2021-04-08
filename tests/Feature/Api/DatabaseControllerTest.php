@@ -35,7 +35,7 @@ class DatabaseControllerTest extends webTestCase
     {
         $name = 'test_'.time();
         $client = $this->getAdminClient();
-        $this->request($client, '/api/table/create', ['name' => $name, 'columns' => [['name' => 'col1', 'type' => 'String'], ['name' => 'col2', 'type' => 'Int8']]]);
+        $this->request($client, '/api/table/create', ['name' => $name, 'columns' => [['name' => 'col1', 'type' => 'String', 'origin' => ''], ['name' => 'col2', 'type' => 'Int8', 'origin' => '']]]);
         $this->assertApiResponseIsSuccessful($client);
         return $name;
     }
@@ -46,7 +46,7 @@ class DatabaseControllerTest extends webTestCase
     public function testUpdateGraph($name)
     {
         $client = $this->getAdminClient();
-        $this->request($client, '/api/table/'.$name, ['name' => 'test_create', 'columns' => [['name' => 'col1', 'type' => 'String'], ['name' => 'col2', 'type' => 'Int8'], ['name' => 'col3', 'type' => 'String']]], 'PUT');
+        $this->request($client, '/api/table/'.$name, ['name' => 'test_'.time(), 'columns' => [['name' => 'col1', 'type' => 'String', 'origin' => 'col1'], ['name' => 'col22', 'type' => 'UInt8', 'origin' => 'col2'], ['name' => 'col3', 'type' => 'String', 'origin' => '']]], 'PUT');
         $this->assertApiResponseIsSuccessful($client);
     }
 }

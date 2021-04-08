@@ -4,6 +4,8 @@
 namespace App\Helper;
 
 
+use Symfony\Component\Uid\Uuid;
+
 class StringHelper
 {
     /**
@@ -25,5 +27,11 @@ class StringHelper
         }
 
         return $str;
+    }
+
+    public static function uuid(): string
+    {
+        $uuid = Uuid::v4();
+        return $uuid->toRfc4122();
     }
 }

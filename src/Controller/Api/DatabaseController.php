@@ -155,40 +155,10 @@ class DatabaseController extends ApiController
         string $column,
         DatabaseServiceInterface $databaseService
     ): JsonResponse {
-        if ($column === 'timestamp') {
-            return $this->responseError('Can not remove "timestamp" column');
+        if ($databaseService->isSystemColumn($column)) {
+            return $this->responseError('Can not remove application column');
         }
         try {
-            $databaseService->removeTableColumn($table, $column);
-        } catch (TableNotExistException $e) {
-            return $this->responseError('Table does not exist');
-        } catch (DBALException $e) {
-            return $this->responseError('Can not remove column '.$e->getMessage());
-        }
-        return $this->responseSuccess([
-            'message' => 'Delete successful'
-        ]);
-    }
-
-    /**
-     * @Route("/api/table/{table}/{column}", methods = "PUT")
-     * @param string $table
-     * @param string $column
-     * @param Request $request
-     * @param DatabaseServiceInterface $databaseService
-     * @return JsonResponse
-     */
-    public function updateColumn(
-        string $table,
-        string $column,
-        Request $request,
-        DatabaseServiceInterface $databaseService
-    ): JsonResponse {
-        if ($column === 'timestamp') {
-            return $this->responseError('Can not update "timestamp" column');
-        }
-        try {
-
             $databaseService->removeTableColumn($table, $column);
         } catch (TableNotExistException $e) {
             return $this->responseError('Table does not exist');
