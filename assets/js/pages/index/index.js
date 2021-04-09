@@ -106,6 +106,7 @@ class Index extends Component {
                 newDateRange.label = dateRangeValue.label;
                 newDateRange.from = moment.unix(dateRangeValue.from);
                 newDateRange.to = moment.unix(dateRangeValue.to);
+                isDisableLive = true;
             }
         } else {
             this.setDataCookies(uuid, {label: dateRange.label});
