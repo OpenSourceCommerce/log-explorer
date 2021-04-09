@@ -442,8 +442,6 @@ export class DashboardPage extends Component {
             dateRange
         } = this.state;
 
-        console.log(tables);
-
         const {title, widgets} = dashboardDetail;
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
