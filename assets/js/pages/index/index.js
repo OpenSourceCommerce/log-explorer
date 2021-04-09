@@ -8,6 +8,7 @@ import {
 } from '../../components';
 import {Live, LogTableActions, Event, LogViewActions} from '../../actions';
 import '../../../styles/pages/index.scss';
+import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../../utils";
 
 class Index extends Component {
     constructor(props) {
@@ -21,7 +22,12 @@ class Index extends Component {
             interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
-            tableColumnList: []
+            tableColumnList: [],
+            dateRange: {
+                from: DATE_RANGE[0].from,
+                to: DATE_RANGE[0].to,
+                label: DATE_RANGE[0].label,
+            },
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
@@ -52,7 +58,7 @@ class Index extends Component {
         });
     }
 
-    loadLogView() {
+    loadLogView(isLive) {
         LogViewActions.getAll().then(response => {
             const {data, error} = response;
             if (error) {
@@ -86,7 +92,7 @@ class Index extends Component {
             const {logViews} = this.state;
             if (logViews.length > 0) {
                 this.loadData();
-                this.startStreaming();
+                if (isLive) this.startStreaming();
             }
         });
     }
@@ -106,7 +112,41 @@ class Index extends Component {
             }
         });
 
-        this.loadLogView();
+        const { disableLive, dateRange } = this.state;
+
+        let newDateRange = { ...dateRange };
+
+        let isDisableLive = disableLive;
+        const cData = getDataFromCookies(window.uuid) ||  '';
+        let dateRangeValue;
+        if (cData) {
+            const dateRangeLabel = JSON.parse(cData).label || '';
+            if (dateRangeLabel !== 'Custom Range') {
+                dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    newDateRange = { ...dateRangeValue };
+                    isDisableLive = !newDateRange.dateRangeValue;
+                }
+            } else {
+                dateRangeValue = JSON.parse(cData);
+                newDateRange.label = dateRangeValue.label;
+                newDateRange.from = moment.unix(dateRangeValue.from);
+                newDateRange.to = moment.unix(dateRangeValue.to);
+            }
+        } else {
+            this.setDataCookies({label: dateRange.label});
+        }
+
+
+        this.setState({
+            disableLive: isDisableLive,
+            isLive: !isDisableLive,
+            dateRange: {...newDateRange},
+        }, () => this.loadLogView(this.state.isLive))
+    }
+
+    setDataCookies = (dateRange) => {
+        setDataToCookies(window.uuid, `${JSON.stringify(dateRange)}`, 30);
     }
 
     setSelectedTable(selectedTable) {
@@ -128,7 +168,7 @@ class Index extends Component {
         }
     }
 
-    onDateRangeChanged(from, to) {
+    onDateRangeChanged(from, to, dateRange) {
         const {interval, isLive} = this.state;
         if (to) {
             this.setState({
@@ -146,7 +186,11 @@ class Index extends Component {
             }
         }
 
-        Live.refresh();
+        this.setDataCookies(dateRange);
+
+        this.setState({
+            dateRange,
+        }, () => Live.refresh());
     }
 
     render() {
@@ -154,7 +198,8 @@ class Index extends Component {
             isLive,
             disableLive,
             logViews,
-            selectedTable
+            selectedTable,
+            dateRange
         } = this.state;
 
         const uuid = selectedTable ? selectedTable.uuid : null;
@@ -168,6 +213,7 @@ class Index extends Component {
                             data={logViews}
                             selected={selectedTable}
                             onSelected={this.setSelectedTable}
+                            dateRange={dateRange}
                         />
                         <div className="row justify-content-start flex-md-wrap">
                             <div className="col-12">
