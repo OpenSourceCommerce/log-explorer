@@ -58,38 +58,67 @@ class Index extends Component {
         });
     }
 
-    loadLogView(isLive) {
-        LogViewActions.getAll().then(response => {
-            const {data, error} = response;
-            if (error) {
-                return;
-            }
+    loadLogView = async() => {
+        const response = await LogViewActions.getAll();
+        const {data, error} = response;
+        if (error) {
+            return;
+        }
 
-            if (data.length === 0) {
-                window.location.href = '/welcome';
-                return;
-            }
+        if (data.length === 0) {
+            window.location.href = '/welcome';
+            return;
+        }
 
-            let selectedTable = null;
+        let selectedTable = null;
+        let uuid = window.uuid;
 
-            if (window.uuid) {
-                for (const i in data) {
-                    const table = data[i];
-                    if (table.uuid === window.uuid) {
-                        selectedTable = data[i];
-                        break;
-                    }
+        if (window.uuid) {
+            for (const i in data) {
+                const table = data[i];
+                if (table.uuid === window.uuid) {
+                    selectedTable = data[i];
+                    break;
                 }
-            } else if (data.length > 0) {
-                selectedTable = data[0];
             }
+        } else if (data.length > 0) {
+            selectedTable = data[0];
+            uuid = selectedTable.uuid;
+        }
 
-            this.setState({
-                logViews: data,
-                selectedTable
-            });
-        }).then(() => {
-            const {logViews} = this.state;
+        const { disableLive, dateRange } = this.state;
+
+        let newDateRange = { ...dateRange };
+
+        let isDisableLive = disableLive;
+        const cData = getDataFromCookies(uuid) ||  '';
+        let dateRangeValue;
+        if (cData) {
+            const dateRangeLabel = JSON.parse(cData).label || '';
+            if (dateRangeLabel !== 'Custom Range') {
+                dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    newDateRange = { ...dateRangeValue };
+                    isDisableLive = !newDateRange.dateRangeValue;
+                }
+            } else {
+                dateRangeValue = JSON.parse(cData);
+                newDateRange.label = dateRangeValue.label;
+                newDateRange.from = moment.unix(dateRangeValue.from);
+                newDateRange.to = moment.unix(dateRangeValue.to);
+            }
+        } else {
+            this.setDataCookies(uuid, {label: dateRange.label});
+        }
+
+        this.setState({
+            logViews: data,
+            selectedTable,
+            disableLive: isDisableLive,
+            isLive: !isDisableLive,
+            dateRange: {...newDateRange},
+        }, () => {
+            const {logViews, isLive} = this.state;
             if (logViews.length > 0) {
                 this.loadData();
                 if (isLive) this.startStreaming();
@@ -112,41 +141,11 @@ class Index extends Component {
             }
         });
 
-        const { disableLive, dateRange } = this.state;
-
-        let newDateRange = { ...dateRange };
-
-        let isDisableLive = disableLive;
-        const cData = getDataFromCookies(window.uuid) ||  '';
-        let dateRangeValue;
-        if (cData) {
-            const dateRangeLabel = JSON.parse(cData).label || '';
-            if (dateRangeLabel !== 'Custom Range') {
-                dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
-                if (dateRangeValue) {
-                    newDateRange = { ...dateRangeValue };
-                    isDisableLive = !newDateRange.dateRangeValue;
-                }
-            } else {
-                dateRangeValue = JSON.parse(cData);
-                newDateRange.label = dateRangeValue.label;
-                newDateRange.from = moment.unix(dateRangeValue.from);
-                newDateRange.to = moment.unix(dateRangeValue.to);
-            }
-        } else {
-            this.setDataCookies({label: dateRange.label});
-        }
-
-
-        this.setState({
-            disableLive: isDisableLive,
-            isLive: !isDisableLive,
-            dateRange: {...newDateRange},
-        }, () => this.loadLogView(this.state.isLive))
+        this.loadLogView();
     }
 
-    setDataCookies = (dateRange) => {
-        setDataToCookies(window.uuid, `${JSON.stringify(dateRange)}`, 30);
+    setDataCookies = (uuid, dateRange) => {
+        setDataToCookies(uuid, `${JSON.stringify(dateRange)}`, 30);
     }
 
     setSelectedTable(selectedTable) {
@@ -169,7 +168,7 @@ class Index extends Component {
     }
 
     onDateRangeChanged(from, to, dateRange) {
-        const {interval, isLive} = this.state;
+        const {selectedTable, interval, isLive} = this.state;
         if (to) {
             this.setState({
                 // isLive: false,
@@ -186,7 +185,7 @@ class Index extends Component {
             }
         }
 
-        this.setDataCookies(dateRange);
+        this.setDataCookies(selectedTable.uuid, dateRange);
 
         this.setState({
             dateRange,
