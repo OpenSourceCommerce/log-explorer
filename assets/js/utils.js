@@ -33,10 +33,10 @@ export const getDataFromCookies = (cName) => {
 }
 
 export const DATE_RANGE = [
-    { label: '1 hour', from: moment().subtract(1, 'hour'), to: moment()},
-    { label: '12 hours', from: moment().subtract(12, 'hour'), to: moment()},
-    { label: '1 day', from: moment().subtract(24, 'hour'), to: moment()},
-    { label: '7 days', from: moment().subtract(7, 'days'), to: moment()},
+    { label: '1 hour', from: moment().subtract(1, 'hour'), to: moment(), fromValue: 60},
+    { label: '12 hours', from: moment().subtract(12, 'hour'), to: moment(), fromValue: 720},
+    { label: '1 day', from: moment().subtract(24, 'hour'), to: moment(), fromValue: 1440},
+    { label: '7 days', from: moment().subtract(7, 'days'), to: moment(), fromValue: 10080},
     { label: 'Today', from: moment(), to: moment()},
     { label: 'Yesterday', from: moment().subtract(1, 'days'), to: moment().subtract(1, 'days')},
     { label: 'This Month', from: moment().startOf('month'), to: moment().endOf('month')},
