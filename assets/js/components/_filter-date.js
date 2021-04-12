@@ -85,9 +85,18 @@ export class FilterDate extends Component {
             );
         });
 
+        const dateRangePicker = DATE_RANGE.find(item => item.label === dateRangeValue);
+
+        let from = startDate.format('YYYY-MM-DD HH:mm:00');
+        let to = endDate.format('YYYY-MM-DD HH:mm:59');
+        if (dateRangePicker && dateRangePicker.fromValue) {
+            from = dateRangePicker.fromValue;
+            to = '';
+        }
+
         this.setState({
-            from: startDate.format('YYYY-MM-DD HH:mm:00'),
-            to: endDate.format('YYYY-MM-DD HH:mm:59'),
+            from,
+            to,
             dateRangeValue,
         });
     }
