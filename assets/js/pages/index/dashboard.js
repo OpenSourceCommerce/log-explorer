@@ -205,8 +205,6 @@ export class DashboardPage extends Component {
         }
         this.setState({
             widgets,
-        }, () => {
-            this.setDataCookies(filters, dateRange);
         })
     }
 
@@ -274,7 +272,7 @@ export class DashboardPage extends Component {
             isLoading: true,
         })
 
-        const {dashboardDetail, filters} = this.state;
+        const {dashboardDetail} = this.state;
         const {widgets, configs, uuid} = dashboardDetail;
         const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
@@ -286,12 +284,20 @@ export class DashboardPage extends Component {
             dateRange,
             isLoading: false,
         }, () => {
-            this.setDataCookies(filters, dateRange);
+            this.setDataCookies(null, dateRange);
         })
     }
 
     setDataCookies = (filters, dateRange) => {
-        setDataToCookies(window.uuid, `${JSON.stringify(dateRange)}|${JSON.stringify(filters.map(({query, table}) => ({ query, table })))}`, 30);
+        const cData = getDataFromCookies(window.uuid) ?
+            getDataFromCookies(window.uuid).split('|') : '';
+        let filterCookie = filters;
+        let dateRangeCookie = dateRange;
+        if (cData) {
+            filterCookie = filters || JSON.parse(cData[1]);
+            dateRangeCookie = dateRange || JSON.parse(cData[0]);
+        }
+        setDataToCookies(window.uuid, `${JSON.stringify(dateRangeCookie)}|${JSON.stringify(filterCookie.map(({query, table}) => ({ query, table })))}`, 30);
     }
 
     onQueryTableChange = ({name, value}, index) => {
@@ -313,7 +319,7 @@ export class DashboardPage extends Component {
                 })
             }
 
-            this.setDataCookies(filters, preState.dateRange);
+            this.setDataCookies(filters, null);
 
             return {
                 filters,
@@ -345,7 +351,7 @@ export class DashboardPage extends Component {
                 filters.map((item, index) => ({...item, id:index}));
             }
 
-            this.setDataCookies(filters, this.state.dateRange);
+            this.setDataCookies(filters, null);
             return {
                 filters,
                 tables,
