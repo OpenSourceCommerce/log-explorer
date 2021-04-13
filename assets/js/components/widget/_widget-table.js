@@ -26,7 +26,7 @@ export class WidgetTable extends Component {
                             />
                         })}
                     </div>
-                </> : <p> No data display </p>}
+                </> : <p className="d-flex justify-content-center p-3"> No data </p>}
             </>
         );
     }

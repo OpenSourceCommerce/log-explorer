@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import 'admin-lte/plugins/daterangepicker/daterangepicker.css';
 import 'admin-lte/plugins/daterangepicker/daterangepicker';
 import moment from 'moment';
+import {DATE_RANGE} from "../utils";
 
 export class FilterDate extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ export class FilterDate extends Component {
         };
     }
 
-    onFilterChanged(from, to, dateRangeValue) {
+    onFilterChanged(from, to, dateRangeValue, fromUnix, toUnix) {
         const {onDateRangeChanged} = this.props;
         this.setState({
             from,
@@ -25,65 +26,87 @@ export class FilterDate extends Component {
             dateRangeValue
         });
         if (onDateRangeChanged) {
-            onDateRangeChanged(from, to);
+            onDateRangeChanged(from, to, { label: dateRangeValue, from: fromUnix, to: toUnix });
         }
     }
 
     componentDidMount() {
-        const that = this;
+        const { dateRange } = this.props;
+        let startDate = moment().subtract(1, 'hour');
+        let endDate = moment();
+        let dateRangeValue = '1 hour';
+
+        if (dateRange) {
+            startDate = dateRange.from;
+            endDate = dateRange.to;
+            dateRangeValue = dateRange.label;
+        }
+
+        const ranges = DATE_RANGE.reduce((obj, item) => ({
+            ...obj,
+            [item.label]: [item.from, item.to],
+        }), {})
+
         $(() => {
             $('#date-range').daterangepicker(
                 {
-                    ranges: {
-                        '1 hour': [moment().subtract(1, 'hour'), moment()],
-                        '12 hours': [moment().subtract(12, 'hours'), moment()],
-                        '1 day': [moment().subtract(24, 'hours'), moment()],
-                        '7 days': [moment().subtract(7, 'days'), moment()],
-                        Today: [moment(), moment()],
-                        Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
+                    ranges,
                     timePicker: true,
                     timePicker24Hour: true,
                     opens: 'center',
                     autoApply: true,
-                    startDate: moment().subtract(1, 'hour'),
-                    endDate: moment()
+                    startDate,
+                    endDate
                 },
                 (start, end, label) => {
                     switch (label) {
                         case '1 hour':
-                            that.onFilterChanged(60, '', label);
+                            this.onFilterChanged(60, '', label);
                             break;
                         case '12 hours':
-                            that.onFilterChanged(720, '', label);
+                            this.onFilterChanged(720, '', label);
                             break;
                         case '1 day':
-                            that.onFilterChanged(1440, '', label);
+                            this.onFilterChanged(1440, '', label);
                             break;
                         case '7 days':
-                            that.onFilterChanged(10080, '', label);
+                            this.onFilterChanged(10080, '', label);
                             break;
                         case 'Custom Range':
-                            that.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
-                                start.format('YYYY-MM-DD HH:MM') + ' - ' + end.format('YYYY-MM-DD HH:MM'));
+                            this.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
+                                label, start.unix(), end.unix());
                             break;
                         default:
-                            that.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'), label);
+                            this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'),
+                                label, start.unix(), end.unix());
                             break;
                     }
                 }
             );
         });
+
+        const dateRangePicker = DATE_RANGE.find(item => item.label === dateRangeValue);
+
+        let from = startDate.format('YYYY-MM-DD HH:mm:00');
+        let to = endDate.format('YYYY-MM-DD HH:mm:59');
+        if (dateRangePicker && dateRangePicker.fromValue) {
+            from = dateRangePicker.fromValue;
+            to = '';
+        }
+
+        this.setState({
+            from,
+            to,
+            dateRangeValue,
+        });
     }
 
     render() {
-        const {onDateRangeChanged, label, ...rest} = this.props;
+        const { label } = this.props;
         const {from, to, dateRangeValue} = this.state;
 
         return (
-            <div {...rest}>
+            <div>
                 <div>
                     <p className="float-left mb-2">{label}</p>
                 </div>

@@ -8,6 +8,7 @@ export class AdvancedSearch extends React.Component {
     render() {
         const {
             onDateRangeChanged,
+            dateRange,
             ...otherProps
         } = this.props;
         return (
@@ -27,6 +28,7 @@ export class AdvancedSearch extends React.Component {
                             <div className="input-search col-12 col-md-4 mt-2 mt-md-0">
                                 <FilterDate
                                     label="Date Range"
+                                    dateRange={dateRange}
                                     onDateRangeChanged={onDateRangeChanged}
                                 />
                             </div>
@@ -44,5 +46,6 @@ export class AdvancedSearch extends React.Component {
 }
 
 AdvancedSearch.propTypes = {
-    onDateRangeChanged: PropTypes.func
+    onDateRangeChanged: PropTypes.func,
+    dateRange: PropTypes.object
 };

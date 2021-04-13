@@ -8,6 +8,7 @@ import {
 } from '../../components';
 import {Live, LogTableActions, Event, LogViewActions} from '../../actions';
 import '../../../styles/pages/index.scss';
+import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../../utils";
 
 class Index extends Component {
     constructor(props) {
@@ -21,7 +22,12 @@ class Index extends Component {
             interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
-            tableColumnList: []
+            tableColumnList: [],
+            dateRange: {
+                from: DATE_RANGE[0].from,
+                to: DATE_RANGE[0].to,
+                label: DATE_RANGE[0].label,
+            },
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
@@ -52,41 +58,71 @@ class Index extends Component {
         });
     }
 
-    loadLogView() {
-        LogViewActions.getAll().then(response => {
-            const {data, error} = response;
-            if (error) {
-                return;
-            }
+    loadLogView = async() => {
+        const response = await LogViewActions.getAll();
+        const {data, error} = response;
+        if (error) {
+            return;
+        }
 
-            if (data.length === 0) {
-                window.location.href = '/welcome';
-                return;
-            }
+        if (data.length === 0) {
+            window.location.href = '/welcome';
+            return;
+        }
 
-            let selectedTable = null;
+        let selectedTable = null;
+        let uuid = window.uuid;
 
-            if (window.uuid) {
-                for (const i in data) {
-                    const table = data[i];
-                    if (table.uuid === window.uuid) {
-                        selectedTable = data[i];
-                        break;
-                    }
+        if (window.uuid) {
+            for (const i in data) {
+                const table = data[i];
+                if (table.uuid === window.uuid) {
+                    selectedTable = data[i];
+                    break;
                 }
-            } else if (data.length > 0) {
-                selectedTable = data[0];
             }
+        } else if (data.length > 0) {
+            selectedTable = data[0];
+            uuid = selectedTable.uuid;
+        }
 
-            this.setState({
-                logViews: data,
-                selectedTable
-            });
-        }).then(() => {
-            const {logViews} = this.state;
+        const { disableLive, dateRange } = this.state;
+
+        let newDateRange = { ...dateRange };
+
+        let isDisableLive = disableLive;
+        const cData = getDataFromCookies(uuid) ||  '';
+        let dateRangeValue;
+        if (cData) {
+            const dateRangeLabel = JSON.parse(cData).label || '';
+            if (dateRangeLabel !== 'Custom Range') {
+                dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    newDateRange = { ...dateRangeValue };
+                    isDisableLive = !newDateRange.dateRangeValue;
+                }
+            } else {
+                dateRangeValue = JSON.parse(cData);
+                newDateRange.label = dateRangeValue.label;
+                newDateRange.from = moment.unix(dateRangeValue.from);
+                newDateRange.to = moment.unix(dateRangeValue.to);
+                isDisableLive = true;
+            }
+        } else {
+            this.setDataCookies(uuid, {label: dateRange.label});
+        }
+
+        this.setState({
+            logViews: data,
+            selectedTable,
+            disableLive: isDisableLive,
+            isLive: !isDisableLive,
+            dateRange: {...newDateRange},
+        }, () => {
+            const {logViews, isLive} = this.state;
             if (logViews.length > 0) {
                 this.loadData();
-                this.startStreaming();
+                if (isLive) this.startStreaming();
             }
         });
     }
@@ -109,6 +145,10 @@ class Index extends Component {
         this.loadLogView();
     }
 
+    setDataCookies = (uuid, dateRange) => {
+        setDataToCookies(uuid, `${JSON.stringify(dateRange)}`, 30);
+    }
+
     setSelectedTable(selectedTable) {
         this.setState({selectedTable}, () => {
             this.loadData();
@@ -128,8 +168,8 @@ class Index extends Component {
         }
     }
 
-    onDateRangeChanged(from, to) {
-        const {interval, isLive} = this.state;
+    onDateRangeChanged(from, to, dateRange) {
+        const {selectedTable, interval, isLive} = this.state;
         if (to) {
             this.setState({
                 // isLive: false,
@@ -146,7 +186,11 @@ class Index extends Component {
             }
         }
 
-        Live.refresh();
+        this.setDataCookies(selectedTable.uuid, dateRange);
+
+        this.setState({
+            dateRange,
+        }, () => Live.refresh());
     }
 
     render() {
@@ -154,7 +198,8 @@ class Index extends Component {
             isLive,
             disableLive,
             logViews,
-            selectedTable
+            selectedTable,
+            dateRange
         } = this.state;
 
         const uuid = selectedTable ? selectedTable.uuid : null;
@@ -168,6 +213,7 @@ class Index extends Component {
                             data={logViews}
                             selected={selectedTable}
                             onSelected={this.setSelectedTable}
+                            dateRange={dateRange}
                         />
                         <div className="row justify-content-start flex-md-wrap">
                             <div className="col-12">

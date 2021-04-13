@@ -170,11 +170,10 @@ class DashboardPage extends Component {
             logTableDashboard,
         } = this.state;
 
-        const {title = '', description = '', table} = dashboardDetail;
+        const {title = '', description = ''} = dashboardDetail;
 
-        const widgetTable = table ? widgetList.filter(item => item.table === table) : [];
-        const _columns = widgetTable.map((item, key) => <option key={key}
-                                                                value={item.title}>{item.title}</option>);
+        const _columns = widgetList && widgetList.map((item, key) => <option key={key}
+                                                               value={item.title}>{item.title}</option>);
 
         const isEditMode = initialData.title;
 
@@ -196,7 +195,7 @@ class DashboardPage extends Component {
                             <div className="card-body">
                                 <div className={`${isEditMode ? 'row' : ''}`}>
                                     <FormField
-                                        className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
+                                        className={`${isEditMode ? 'col-12 col-md-6' : ''}`}
                                         label='Title'
                                         placeholder='Dashboard title'
                                         fieldName='title'
@@ -206,50 +205,25 @@ class DashboardPage extends Component {
                                         errors={errors}
                                     />
                                     <FormField
-                                        className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
+                                        className={`${isEditMode ? 'col-12 col-md-6' : ''}`}
                                         label='Description'
                                         placeholder='Dashboard description'
                                         fieldName='description'
                                         value={description}
                                         onChange={(e) => this.onChangeData(e.target)}
                                     />
-                                    <FormField
-                                        className={`${isEditMode ? 'col-12 col-md-4' : ''}`}
-                                        label='Datatable'
-                                        value={table}
-                                        fieldName='table'
-                                        onChange={(e) => this.onChangeData(e.target)}
-                                        isMandatory={true}
-                                        type='select'
-                                        errors={errors}
-                                    >
-                                        <>
-                                            <option value=''
-                                                    className='d-none'>{`Select table`}</option>
-                                            {tables.map((item, index) => (
-                                                <option value={item.value}
-                                                        key={index}
-                                                >
-                                                    {item.label}
-                                                </option>))}
-                                        </>
-                                    </FormField>
                                 </div>
                                 <div className="widget form-group">
                                     <label>Widgets</label>
                                     <Select2
                                         id={'widget-selected'}
                                         multiple="multiple"
-                                        disabled={!table}
-                                        data-placeholder={`${table ? 'Select widget' : 'Please select table first'}`}
+                                        data-placeholder='Select widget'
                                         value={widgetSelected && widgetSelected.length > 0 ? widgetSelected.map(item => item.title) : []}
                                         onChange={() => {
                                             const summary = $('#widget-selected').val();
                                             const newWidgetList = summary.reduce((obj, item) => {
-                                                const {dashboardDetail, widgetList} = this.state;
-                                                const {table} = dashboardDetail;
-                                                const widgetTable = table ? widgetList.filter(item => item.table === table) : [];
-                                                const newWidget = [...widgetTable].find(el => el.title === item);
+                                                const newWidget = this.state.widgetList.find(el => el.title === item);
                                                 if (newWidget) {
                                                     obj.push({
                                                         ...newWidget,
