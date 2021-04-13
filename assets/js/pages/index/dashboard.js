@@ -84,7 +84,7 @@ export class DashboardPage extends Component {
             this.setState({
                 tables,
                 filters,
-            }, () => this.setDataCookies(newFilters, this.state.dateRange))
+            }, () => this.setDataCookies(newFilters))
 
             await this.loadingData();
         }
@@ -319,7 +319,7 @@ export class DashboardPage extends Component {
                 })
             }
 
-            this.setDataCookies(filters, null);
+            this.setDataCookies(filters);
 
             return {
                 filters,
@@ -351,7 +351,7 @@ export class DashboardPage extends Component {
                 filters.map((item, index) => ({...item, id:index}));
             }
 
-            this.setDataCookies(filters, null);
+            this.setDataCookies(filters);
             return {
                 filters,
                 tables,
