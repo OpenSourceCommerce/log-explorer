@@ -18,7 +18,6 @@ export class ResponsiveGridLayout extends Component {
         this.state = {
             compactType: "horizontal",
             mounted: false,
-            currentBreakpoint: '',
         };
     }
 
@@ -41,7 +40,6 @@ export class ResponsiveGridLayout extends Component {
         const { mounted,
             compactType,
             isLoading,
-            currentBreakpoint
         } = this.state;
         // min Width :x 356;
         // row Height : 340 / 2;
@@ -54,7 +52,7 @@ export class ResponsiveGridLayout extends Component {
                     rowHeight={155}
                     cols={{lg: 12, md: 9, sm: 6, xs: 3, xxs: 3}}
                     layouts={{lg: [...layouts]}}
-                    onLayoutChange={(e) => onLayoutChange(e, currentBreakpoint)}
+                    onLayoutChange={(e) => onLayoutChange(e)}
                     onBreakpointChange={(currentBreakpoint) => this.setState({
                         currentBreakpoint,
                     })}
