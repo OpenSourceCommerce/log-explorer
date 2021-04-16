@@ -49,7 +49,7 @@ export class DoughnutPieChart extends Component {
                     //'pie', 'doughnut'
                     type: WIDGET_TYPE.doughnut === type ? 'doughnut' : 'pie',
                     data: charData,
-                    options: chartOptions,
+                    options: chartOptions
                 })
             }
         }
