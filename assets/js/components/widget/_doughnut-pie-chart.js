@@ -45,12 +45,11 @@ export class DoughnutPieChart extends Component {
                     },
                 }
 
-                this.chart = new Chart(doughnutChartCanvas, {
+                const chart = new Chart(doughnutChartCanvas, {
                     //'pie', 'doughnut'
                     type: WIDGET_TYPE.doughnut === type ? 'doughnut' : 'pie',
                     data: charData,
                     options: chartOptions,
-                    clicked: false,
                 })
             }
         }
