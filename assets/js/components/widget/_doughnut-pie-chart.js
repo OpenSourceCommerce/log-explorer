@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Chart from 'admin-lte/plugins/chart.js/Chart';
 import PropTypes from 'prop-types';
-import {WIDGET_TYPE} from "../../utils";
+import {saveToClipboard, WIDGET_TYPE} from "../../utils";
 
 export class DoughnutPieChart extends Component {
     getRandomColor() {
@@ -34,17 +34,23 @@ export class DoughnutPieChart extends Component {
                     legend: {
                         align: 'start',
                         position: 'right',
+                        onClick: (e, element) => {
+                            if (e.detail === 2) {
+                                saveToClipboard(element.text, `Copy successful with content ${element.text}`)
+                            }
+                        },
                     },
                     animation: {
                         duration, // general animation time
                     },
                 }
 
-                const chart = new Chart(doughnutChartCanvas, {
+                this.chart = new Chart(doughnutChartCanvas, {
                     //'pie', 'doughnut'
                     type: WIDGET_TYPE.doughnut === type ? 'doughnut' : 'pie',
                     data: charData,
-                    options: chartOptions
+                    options: chartOptions,
+                    clicked: false,
                 })
             }
         }

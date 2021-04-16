@@ -1,15 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {saveToClipboard} from "../../utils";
 
 export class WidgetTable extends Component {
     render() {
         const {data, isDashboardComponent, column} = this.props;
 
-        const Row = ({label, value, isHeader}) => (
+        const Row = ({label, value, isHeader, isDashboardComponent}) => (
             <div
                 className={`${!isHeader ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4`} >
-                <div
-                    className={`label-col col-8 p-0`}>{label || ''}</div>
+                <a
+                    className={`label-col col-8 p-0`} onClick={(event) => {
+                    event.stopPropagation();
+                    // if (event.detail === 2 && isDashboardComponent) {
+                    //     saveToClipboard(label, `Copy successful with content ${label}`)
+                    // }
+                }}>{label || ''}</a>
                 <div
                     className='value-col col-4 text-right pl-0'>{!isHeader ? value : 'Count'}</div>
             </div>
@@ -23,6 +29,7 @@ export class WidgetTable extends Component {
                         {data.map((item, index) => {
                             return <Row {...item}
                                         key={index}
+                                        isDashboardComponent={isDashboardComponent}
                             />
                         })}
                     </div>
