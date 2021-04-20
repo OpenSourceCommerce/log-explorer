@@ -1,5 +1,4 @@
 import moment from "moment";
-import {Alert} from "./actions";
 
 export const PAGE_NAME = {
     dashboard: 'Dashboard',
@@ -43,20 +42,3 @@ export const DATE_RANGE = [
     { label: 'This Month', from: moment().startOf('month'), to: moment().endOf('month')},
     { label: 'Last Month', from:moment().subtract(1, 'month').startOf('month'), to: moment().subtract(1, 'month').endOf('month')},
 ]
-
-export const saveToClipboard = (text, notificationText) => {
-    const dummy = document.createElement("textarea");
-    // to avoid breaking orgain page when copying more words
-    // cant copy when adding below this code
-    // dummy.style.display = 'none'
-    document.body.appendChild(dummy);
-    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
-    dummy.value = text;
-    dummy.select();
-    document.execCommand("copy");
-    document.body.removeChild(dummy);
-
-    if (notificationText) {
-        Alert.success(notificationText);
-    }
-}
