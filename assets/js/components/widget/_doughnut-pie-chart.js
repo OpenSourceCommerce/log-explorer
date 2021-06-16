@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Chart from 'admin-lte/plugins/chart.js/Chart';
 import PropTypes from 'prop-types';
 import {WIDGET_TYPE} from "../../utils";
+import '../../../styles/component/_doughnut-pie-chart.scss';
 
 export class DoughnutPieChart extends Component {
     getRandomColor() {
@@ -13,8 +14,10 @@ export class DoughnutPieChart extends Component {
         return color;
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         const {data, type = WIDGET_TYPE.doughnut, id = 'new', color, duration = 1000} = this.props;
+
+        this.legendId = `[data-results-chart-legends-${id}]`;
 
         if (data && data.length > 0) {
             if (type === WIDGET_TYPE.doughnut || type === WIDGET_TYPE.pie) {
@@ -27,13 +30,28 @@ export class DoughnutPieChart extends Component {
                             backgroundColor: color,
                         }
                     ]
-                }
+                };
+
                 const chartOptions = {
                     maintainAspectRatio: false,
                     responsive: true,
                     legend: {
+                        display: false,
                         align: 'start',
                         position: 'right',
+                    },
+                    legendCallback: (chart) => {
+                        const renderLabels = (chart) => {
+                            const {data} = chart;
+                            return data.datasets[0].data
+                                .map(
+                                    (_, i) => `<li id="legend-${i}-item" class="legend-item" onmousedown="event.stopPropagation();">
+                                            <span class="dot" style="background-color:
+                                             ${data.datasets[0].backgroundColor[i]}"></span>
+                                             <a class="label-legend">${data.labels[i] || ''}</a>
+                                    </li>`).join("");
+                        };
+                        return renderLabels(chart);
                     },
                     animation: {
                         duration, // general animation time
@@ -45,32 +63,42 @@ export class DoughnutPieChart extends Component {
                     type: WIDGET_TYPE.doughnut === type ? 'doughnut' : 'pie',
                     data: charData,
                     options: chartOptions
-                })
+                });
+                $(document).ready(function () {
+                    document.querySelector(`.doughnut-pie-chart-${id} .data-results-chart-legends`).innerHTML = chart.generateLegend();
+                });
             }
         }
     }
 
     render() {
-        const {id = 'new', type, minHeight = '250', height = '250', className, data} = this.props;
+        const {id = 'new', type, minHeight = '200', height = '200', className, data} = this.props;
+
+        const columnCount = data && data.length > 10 ? 2 : 1;
         return (
-            <>
+            <div className="doughnut-pie-chart">
                 <div className="card-body pt-0 pb-2">
                     {data && data.length > 0 ?
-                        <div className={`doughnut-pie-chart ${className || ''}`}>
+                        <div id={`doughnut-pie-chart-${id}`}
+                             className={`doughnut-pie-chart-${id} ${className || ''}`}>
                             {type ?
-                                <canvas id={`chart${id}`}
-                                        min-height={minHeight}
-                                        height={height}
-                                >
-                                </canvas> :
+                                <div className="d-flex flex-row flex-wrap justify-content-start">
+                                    <div className="">
+                                        <canvas id={`chart${id}`}
+                                                min-height={minHeight}
+                                                height={height}
+                                        >
+                                        </canvas>
+                                    </div>
+                                    <ul className="data-results-chart-legends list-unstyled" style={{columnCount,}}/>
+                                </div> :
                                 <p>Widget not available</p>
                             }
                         </div> :
                         <p className="m-5 text-center">No data</p>
                     }
                 </div>
-
-            </>
+            </div>
         )
             ;
     }

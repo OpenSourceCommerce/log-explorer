@@ -81,8 +81,8 @@ export class ResponsiveGridLayout extends Component {
                                             id={i}
                                             type={type}
                                             data={data}
-                                            height='250'
-                                            minHeight='250'
+                                            height='200'
+                                            minHeight='200'
                                             color={color}
                                             duration={duration}
                                         />;
