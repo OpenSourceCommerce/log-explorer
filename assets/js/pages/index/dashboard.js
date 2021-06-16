@@ -392,49 +392,47 @@ export class DashboardPage extends Component {
         }
     }
 
-    onLayoutChange = async (e, currentBreakpoint) => {
-        if (currentBreakpoint === 'lg' || currentBreakpoint === 'md') {
-            const {dashboardDetail} = this.state;
-            const {widgets, id} = dashboardDetail;
-            const keyForCheck = ['x', 'y', 'w', 'h'];
-            const newWidgetPosition = [...widgets].map((item) => {
-                const {widget_id} = item;
-                let isChangePosition = false;
-                const widget = e.find(el => el.i === item.i);
-                Object.keys(item).forEach((key) => {
-                    if (keyForCheck.includes(key) && item[key] !== widget[key]) {
-                        isChangePosition = true;
-                        return;
-                    }
-                })
-                if (isChangePosition) {
-                    const {x, y, w, h} = widget;
-                    DashboardActions.updateWidget(id, widget_id, {
-                        x,
-                        y,
-                        width: w,
-                        height: h,
-                    }).then(res => {
-                        const {error} = res;
-                        if (error) {
-                            this.setState({})
-                        } else {
-                            //Alert.success('Change position success');
-                        }
-                    });
-                }
-                return {
-                    ...item,
-                    ...widget,
-                }
-            });
-            this.setState({
-                dashboardDetail: {
-                    ...dashboardDetail,
-                    widgets: [...newWidgetPosition].map(item => ({ ...item, duration: 0}))
+    onLayoutChange = async (e) => {
+        const {dashboardDetail} = this.state;
+        const {widgets, id} = dashboardDetail;
+        const keyForCheck = ['x', 'y', 'w', 'h'];
+        const newWidgetPosition = [...widgets].map((item) => {
+            const {widget_id} = item;
+            let isChangePosition = false;
+            const widget = e.find(el => el.i === item.i);
+            Object.keys(item).forEach((key) => {
+                if (keyForCheck.includes(key) && item[key] !== widget[key]) {
+                    isChangePosition = true;
+                    return;
                 }
             })
-        }
+            if (isChangePosition) {
+                const {x, y, w, h} = widget;
+                DashboardActions.updateWidget(id, widget_id, {
+                    x,
+                    y,
+                    width: w,
+                    height: h,
+                }).then(res => {
+                    const {error} = res;
+                    if (error) {
+                        this.setState({})
+                    } else {
+                        //Alert.success('Change position success');
+                    }
+                });
+            }
+            return {
+                ...item,
+                ...widget,
+            }
+        });
+        this.setState({
+            dashboardDetail: {
+                ...dashboardDetail,
+                widgets: [...newWidgetPosition].map(item => ({ ...item, duration: 0}))
+            }
+        })
     }
 
     render() {
