@@ -3,12 +3,10 @@
 
 namespace App\Services\Database;
 
-use App\Entity\Dashboard;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\ColumnNotExistException;
 use App\Exceptions\TableExistException;
 use App\Exceptions\TableNotExistException;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 interface DatabaseServiceInterface
 {
@@ -62,4 +60,6 @@ interface DatabaseServiceInterface
     public function upgradeTable(string $table);
 
     public function isSystemColumn(string $column): bool;
+
+    public function syncAllTableToSystem();
 }

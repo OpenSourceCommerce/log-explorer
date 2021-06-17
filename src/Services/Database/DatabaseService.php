@@ -3,7 +3,6 @@
 
 namespace App\Services\Database;
 
-use App\Entity\Dashboard;
 use App\Exceptions\ColumnNotExistException;
 use App\Exceptions\TableExistException;
 use App\Exceptions\TableNotExistException;
@@ -12,8 +11,6 @@ use App\Services\Clickhouse\ConnectionInterface;
 use App\Services\Graph\GraphServiceInterface;
 use App\Services\GraphLine\GraphLineServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
-use App\Validator\Password;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DatabaseService implements DatabaseServiceInterface
@@ -112,7 +109,7 @@ class DatabaseService implements DatabaseServiceInterface
 PARTITION BY (toYYYYMM(timestamp))
 ORDER BY timestamp\n";
         if (!empty($options['ttl'])) {
-            $query .= 'TTL '.$options['ttl']."\n";
+            $query .= 'TTL ' . $options['ttl'] . "\n";
         }
         $query .= 'SETTINGS index_granularity = 8192';
         return $query;
@@ -296,7 +293,7 @@ ORDER BY timestamp\n";
         foreach ($columns as $column) {
             if (isset($missing[$column['name']])) {
                 if ($missing[$column['name']] != $column['type']) {
-                    throw new \LogicException('Existing "'.$column['name'].'" column but type is not '.$missing[$column['name']]);
+                    throw new \LogicException('Existing "' . $column['name'] . '" column but type is not ' . $missing[$column['name']]);
                 }
                 unset($missing[$column['name']]);
             }
@@ -320,5 +317,23 @@ ORDER BY timestamp\n";
     {
         $columns = $this->getSystemColumns();
         return isset($columns[$column]);
+    }
+
+    public function syncAllTableToSystem()
+    {
+        $tables = $this->connection->getTables();
+        foreach ($tables as $table) {
+            $this->syncTable($table);
+        }
+        $this->em->flush();
+    }
+
+    private function syncTable(string $tableName)
+    {
+        $logView = $this->logViewService->findByTable($tableName);
+
+        if (empty($logView)) {
+            $this->setupNewTable($tableName);
+        }
     }
 }

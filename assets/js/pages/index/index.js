@@ -6,7 +6,7 @@ import {
     FlotChart,
     LogViewTable
 } from '../../components';
-import {Live, LogTableActions, Event, LogViewActions} from '../../actions';
+import {Live, LogTableActions, Event, LogViewActions, DatabaseActions, Alert} from '../../actions';
 import '../../../styles/pages/index.scss';
 import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../../utils";
 
@@ -33,6 +33,7 @@ class Index extends Component {
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
         this.setSelectedTable = this.setSelectedTable.bind(this);
+        this.syncAll = this.syncAll.bind(this);
     }
 
     loadData() {
@@ -142,7 +143,18 @@ class Index extends Component {
             }
         });
 
-        this.loadLogView();
+        this.syncAll()
+    }
+
+    syncAll() {
+        const $this = this;
+        DatabaseActions.syncAll().then(response => {
+            const {error} = response;
+            if (error === 0) {
+                $this.loadLogView()
+                Alert.success('Sync successful')
+            }
+        });
     }
 
     setDataCookies = (uuid, dateRange) => {
