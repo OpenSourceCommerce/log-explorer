@@ -24,8 +24,9 @@ class DatabaseController extends ApiController
      * @param LogViewServiceInterface $logViewService
      * @return JsonResponse
      */
-    public function tables(LogViewServiceInterface $logViewService): JsonResponse
+    public function tables(LogViewServiceInterface $logViewService, DatabaseServiceInterface $databaseService): JsonResponse
     {
+        $databaseService->syncAllTableToSystem();
         $list = $logViewService->list();
         $data = [];
         foreach ($list as $logView) {

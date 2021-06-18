@@ -26,6 +26,9 @@ const DatabaseActions = {
         return request('/api/table/' + table + '/' + column, {
             method: 'DELETE'
         });
+    },
+    syncAll() {
+        return request('/database/sync', {method: 'POST'});
     }
 };
 

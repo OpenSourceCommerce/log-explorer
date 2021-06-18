@@ -72,7 +72,7 @@ export class LogViewTable extends Component {
     }
 
     onDataLoaded(res) {
-        const {itemsCount, data, queryInfo} = res;
+        const {itemsCount = 0, data = [], queryInfo = {}} = res;
         queryInfo.total = itemsCount;
         queryInfo.current = data.length;
         this.setState({queryInfo});

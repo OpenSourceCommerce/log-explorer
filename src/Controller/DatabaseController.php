@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\Clickhouse\ClickhouseServiceInterface;
+use App\Services\Database\DatabaseServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,6 +41,20 @@ class DatabaseController extends AbstractController
         return $this->render('database/form.html.twig', [
             'types' => json_encode($types),
             'table' => $name,
+        ]);
+    }
+
+    /**
+     * @Route("/database/sync", name="database_sync", methods = "POST")
+     * @param DatabaseServiceInterface $databaseService
+     * @return Response
+     */
+    public function syncAll(DatabaseServiceInterface $databaseService): Response
+    {
+        $databaseService->syncAllTableToSystem();
+
+        return $this->json([
+            'error' => 0
         ]);
     }
 }
