@@ -125,8 +125,8 @@ class Connection implements ConnectionInterface
      */
     public function tableExists(string $table): bool
     {
-        $sql = "SELECT COUNT() AS c FROM system.tables WHERE database = '{$this->connection->getDatabase()}' AND engine != 'View' AND name = '{$table}'";
-        $c = $this->connection->fetchColumn($sql);
+        $sql = "SELECT COUNT() AS c FROM system.tables WHERE database = ? AND engine != ? AND name = ?";
+        $c = $this->connection->fetchOne($sql, [$this->connection->getDatabase(), 'View', $table]);
         return $c == 1;
     }
 
@@ -135,7 +135,10 @@ class Connection implements ConnectionInterface
      */
     public function getTables(): array
     {
-        return $this->connection->getSchemaManager()->listTableNames();
+        $sql = <<<SQL
+SELECT name FROM system.tables WHERE database = ? AND engine != ?
+SQL;
+        return $this->connection->fetchFirstColumn($sql, [$this->connection->getDatabase(), 'View']);
     }
 
     /**

@@ -190,7 +190,7 @@ class LogViewService implements LogViewServiceInterface
      */
     public function setVisibleColumns(LogView $logView, bool $visible)
     {
-        $columns = ['url'];
+        $columns = ['_id'];
 
         if ($visible) {
             $columns = $this->connection->getRawColumns($logView->getTable());
