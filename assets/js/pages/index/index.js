@@ -152,7 +152,6 @@ class Index extends Component {
             const {error} = response;
             if (error === 0) {
                 $this.loadLogView()
-                Alert.success('Sync successful')
             }
         });
     }

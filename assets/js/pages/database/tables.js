@@ -92,7 +92,6 @@ class DatabaseTables extends Component {
             const {error} = response;
             if (error === 0) {
                 $this.loadData()
-                Alert.success('Sync successful')
             }
         });
     }
