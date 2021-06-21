@@ -83,7 +83,7 @@ class LogViewServiceTest extends WebTestCase
     {
         $logView = $this->getFirst();
         $this->getLogViewService()->setVisibleColumns($logView, false);
-        $this->getLogViewService()->setVisibleColumn($logView, 'url', true);
+        $this->getLogViewService()->setVisibleColumn($logView, '_id', true);
         $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
 
         $this->assertIsArray($visibleColumns);
