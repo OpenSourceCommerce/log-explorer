@@ -28,6 +28,11 @@ class LogViewColumnType extends AbstractType
                 'constraints' => [
                     new NotBlank()
                 ]
+            ])
+            ->add('index', TextType::class, [
+                'constraints' => [
+                    new NotBlank()
+                ]
             ]);
     }
 

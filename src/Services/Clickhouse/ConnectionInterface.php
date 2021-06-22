@@ -89,6 +89,15 @@ interface ConnectionInterface
     public function getRawColumns(string $table): array;
 
     /**
+     * Get a column name of the table
+     *
+     * @param string $table
+     * @param string $column
+     * @return array
+     */
+    public function getRawColumn(string $table, string $column): array;
+
+    /**
      * Check table existing
      *
      * @param string $table

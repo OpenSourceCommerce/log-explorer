@@ -123,6 +123,24 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
+    public function getRawColumn(string $table, string $column): array
+    {
+        $columns = $this->getRawColumns($table);
+
+        $columns = array_filter($columns, function ($item) use ($column) {
+            return $item['name'] == $column;
+        });
+
+        if (empty($columns)) {
+            return [];
+        }
+
+        return array_shift($columns);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function tableExists(string $table): bool
     {
         $sql = "SELECT COUNT() AS c FROM system.tables WHERE database = ? AND engine != ? AND name = ?";
