@@ -10,13 +10,15 @@ if which node > /dev/null
     fi
 
 
-echo "INIT ENV"
-cp .env.dist .env.test.local
-docker-compose exec php bash -c "sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local"
-docker-compose exec php bash -c "sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/test/' .env.test.local"
-docker-compose exec php bash -c "sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local"
-if [ "$NODE_INSTALLED" == "1" ]; then
-    docker-compose exec php bash -c "sed -i 's/APP_WEBPACK_FOLDER=assets/APP_WEBPACK_FOLDER=build/' .env.test.local"
+if [ ! -f .env.test.local ]; then
+    echo "INIT ENV"
+    cp .env.dist .env.test.local
+    docker-compose exec php bash -c "sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local"
+    docker-compose exec php bash -c "sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/test/' .env.test.local"
+    docker-compose exec php bash -c "sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local"
+    if [ "$NODE_INSTALLED" == "1" ]; then
+        docker-compose exec php bash -c "sed -i 's/APP_WEBPACK_FOLDER=assets/APP_WEBPACK_FOLDER=build/' .env.test.local"
+    fi
 fi
 
 echo "CREATE test database"
@@ -26,7 +28,7 @@ echo "COMPOSER INSTALL"
 docker-compose exec php bash -c "composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader"
 
 echo "CLEAR CACHE"
-docker-compose exec php bash -c "php bin/console cache:clear --env=\"test\""
+#docker-compose exec php bash -c "php bin/console cache:clear --env=\"test\""
 
 echo "MIGRATION"
 docker-compose exec php bash -c "php bin/console doctrine:migrations:migrate --no-interaction --env=\"test\""
