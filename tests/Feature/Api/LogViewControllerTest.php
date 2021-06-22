@@ -33,7 +33,7 @@ class LogViewControllerTest extends webTestCase
     {
         $client = $this->getUserClient();
         $logView = $this->getDefaultLogView();
-        $this->request($client, '/api/logview/'.$logView->getUuid().'/setting/columns', ['column' => 'status', 'visible' => 1], 'PUT');
+        $this->request($client, '/api/logview/'.$logView->getUuid().'/setting/columns', ['column' => 'status', 'visible' => 1, 'index' => 1], 'PUT');
         $this->assertApiResponseIsSuccessful($client);
     }
 

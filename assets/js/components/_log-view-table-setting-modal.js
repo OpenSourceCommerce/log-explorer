@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Checkbox, Modal, Button, Colors, Size} from '.';
 import {LogViewActions} from '../actions';
-import GridLayout, {Responsive, WidthProvider} from 'react-grid-layout';
-
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+import GridLayout from 'react-grid-layout';
 
 export class LogViewTableSettingModal extends Component {
     constructor(props) {
