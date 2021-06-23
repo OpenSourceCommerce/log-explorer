@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ControlSidebar, Link } from '.';
+import '../../styles/component/_log_detail_sidebar.scss';
 
 export class LogDetailSidebar extends Component {
     copyToClipboard(e, type) {
