@@ -69,6 +69,10 @@ class StreamController extends ApiController
         if (!empty($pageSize = $request->query->get('pageSize'))) {
             $options['limit'] = intval($pageSize);
         }
+        if (!empty($sortField = $request->query->get('sortField'))) {
+            $options['sort'] = $sortField;
+            $options['order'] = $request->query->get('sortOrder', 'asc');
+        }
         return $options;
     }
 

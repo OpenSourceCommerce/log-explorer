@@ -45,7 +45,8 @@ export class JsGridTable extends Component {
             autoload = true,
             paging = true,
             fields = [],
-            onDataLoaded = false
+            onDataLoaded = false,
+            sorting = false
         } = this.props;
         const that = this;
         const uuid = logview ? logview.uuid : null;
@@ -55,7 +56,7 @@ export class JsGridTable extends Component {
             $('#jsGrid1').jsGrid({
                 height,
                 width,
-
+                sorting,
                 autoload,
                 paging,
                 pageSize,
