@@ -5,3 +5,13 @@
   left: 50%;
   margin-right: -50%;
 }
+
+.sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused, .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) {
+  .brand-link {
+    .brand-image {
+      float:none;
+      margin-left: -1rem;
+      transform: scale(0.6);
+    }
+  }
+}
