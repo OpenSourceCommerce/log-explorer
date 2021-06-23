@@ -43,7 +43,6 @@
         "files": [
             "config/packages/doctrine.yaml",
             "config/packages/prod/doctrine.yaml",
-            "config/packages/test/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
         ]
