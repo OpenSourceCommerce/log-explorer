@@ -13,8 +13,8 @@ use App\Services\Mailer\MailerServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 
@@ -30,7 +30,7 @@ class UserService implements UserServiceInterface
     private $urlGenerator;
     /** @var MailerServiceInterface */
     private $mailerService;
-    /** @var UserPasswordEncoderInterface */
+    /** @var UserPasswordHasherInterface */
     private $passwordEncoder;
     /**
      * @var ParameterBagInterface
@@ -41,7 +41,7 @@ class UserService implements UserServiceInterface
      * UserService constructor.
      * @param EntityManagerInterface $em
      * @param UserTokenServiceInterface $userTokenService
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordEncoder
      * @param EventDispatcherInterface $dispatcher
      * @param UrlGeneratorInterface $urlGenerator
      * @param MailerServiceInterface $mailerService
@@ -50,7 +50,7 @@ class UserService implements UserServiceInterface
     public function __construct(
         EntityManagerInterface $em,
         UserTokenServiceInterface $userTokenService,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         EventDispatcherInterface $dispatcher,
         UrlGeneratorInterface $urlGenerator,
         MailerServiceInterface $mailerService,
@@ -156,7 +156,7 @@ class UserService implements UserServiceInterface
     public function setUserPassword(User $user, string $password)
     {
         $user->setPassword(
-            $this->passwordEncoder->encodePassword(
+            $this->passwordEncoder->hashPassword(
                 $user,
                 $password
             )
