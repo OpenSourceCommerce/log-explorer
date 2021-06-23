@@ -4,257 +4,257 @@
       "js": [
         "/assets/1.2ab0b88f.js",
         "/assets/3.34ee1439.js",
-        "/assets/app.c3bc5b1c.js"
+        "/assets/app.0d8c4972.js"
       ],
       "css": [
-        "/assets/3.30af6823.css",
-        "/assets/app.e2d683ce.css"
+        "/assets/3.c1602e50.css",
+        "/assets/app.8fac1b96.css"
       ]
     },
     "page_index": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_index.7cbab929.js"
+        "/assets/page_index.98c3b364.js"
       ],
       "css": [
-        "/assets/page_index.a66110b5.css"
+        "/assets/page_index.f8102b54.css"
       ]
     },
     "database_tables": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/database_tables.618a941d.js"
+        "/assets/database_tables.d7e17ec4.js"
       ],
       "css": [
-        "/assets/database_tables.32e12b0d.css"
+        "/assets/database_tables.f735aeb3.css"
       ]
     },
     "database_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/database_form.6b7531b2.js"
+        "/assets/database_form.ee1c1902.js"
       ],
       "css": [
-        "/assets/database_form.32e12b0d.css"
+        "/assets/database_form.f735aeb3.css"
       ]
     },
     "graph_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/graph_form.bb02eee2.js"
+        "/assets/graph_form.2c697076.js"
       ],
       "css": [
-        "/assets/graph_form.32e12b0d.css"
+        "/assets/graph_form.f735aeb3.css"
       ]
     },
     "graph_list": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/graph_list.8bcddee7.js"
+        "/assets/graph_list.6a2e1caf.js"
       ],
       "css": [
-        "/assets/graph_list.32e12b0d.css"
+        "/assets/graph_list.f735aeb3.css"
       ]
     },
     "logview_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/logview_form.9db10f83.js"
+        "/assets/logview_form.30e66a55.js"
       ],
       "css": [
-        "/assets/logview_form.32e12b0d.css"
+        "/assets/logview_form.f735aeb3.css"
       ]
     },
     "user_list": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_list.af10dd57.js"
+        "/assets/user_list.6f6c77f3.js"
       ],
       "css": [
-        "/assets/user_list.32e12b0d.css"
+        "/assets/user_list.f735aeb3.css"
       ]
     },
     "user_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_form.f25b9c38.js"
+        "/assets/user_form.64c39b8c.js"
       ],
       "css": [
-        "/assets/user_form.32e12b0d.css"
+        "/assets/user_form.f735aeb3.css"
       ]
     },
     "user_confirmation": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_confirmation.e2378e59.js"
+        "/assets/user_confirmation.7342380b.js"
       ],
       "css": [
-        "/assets/user_confirmation.32e12b0d.css"
+        "/assets/user_confirmation.f735aeb3.css"
       ]
     },
     "user_profile": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_profile.4e9e2647.js"
+        "/assets/user_profile.b2260cd1.js"
       ],
       "css": [
-        "/assets/user_profile.32e12b0d.css"
+        "/assets/user_profile.f735aeb3.css"
       ]
     },
     "navbar": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/navbar.cfa4452b.js"
+        "/assets/navbar.a2e9d6de.js"
       ],
       "css": [
-        "/assets/navbar.32e12b0d.css"
+        "/assets/navbar.f735aeb3.css"
       ]
     },
     "sidebar": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/sidebar.3a61e9fa.js"
+        "/assets/sidebar.f9be326a.js"
       ],
       "css": [
-        "/assets/sidebar.32e12b0d.css"
+        "/assets/sidebar.f735aeb3.css"
       ]
     },
     "js_grid": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/js_grid.8529fbcb.js"
+        "/assets/js_grid.750a0d71.js"
       ],
       "css": [
-        "/assets/js_grid.8cd31416.css"
+        "/assets/js_grid.01caec70.css"
       ]
     },
     "flot_chart": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/flot_chart.5fdd9431.js"
+        "/assets/flot_chart.27ab2e9f.js"
       ],
       "css": [
-        "/assets/flot_chart.9e2e0643.css"
+        "/assets/flot_chart.069cd308.css"
       ]
     },
     "content-header": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/content-header.6708e28d.js"
+        "/assets/content-header.ff7e1838.js"
       ]
     },
     "welcome-page": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/welcome-page.77027643.js"
+        "/assets/welcome-page.ff67f17d.js"
       ],
       "css": [
-        "/assets/welcome-page.9b9b4e15.css"
+        "/assets/welcome-page.6536428f.css"
       ]
     },
     "page_login": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_login.9bcdd0a1.js"
+        "/assets/page_login.2dbeab93.js"
       ],
       "css": [
-        "/assets/page_login.32e12b0d.css"
+        "/assets/page_login.f735aeb3.css"
       ]
     },
     "page_forgot": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_forgot.2c745047.js"
+        "/assets/page_forgot.d8cc50d6.js"
       ],
       "css": [
-        "/assets/page_forgot.32e12b0d.css"
+        "/assets/page_forgot.f735aeb3.css"
       ]
     },
     "page_reset": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_reset.7c46cd5c.js"
+        "/assets/page_reset.f16ddf85.js"
       ],
       "css": [
-        "/assets/page_reset.32e12b0d.css"
+        "/assets/page_reset.f735aeb3.css"
       ]
     },
     "page_change_password": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_change_password.6ebccb5b.js"
+        "/assets/page_change_password.35b6c17b.js"
       ],
       "css": [
-        "/assets/page_change_password.32e12b0d.css"
+        "/assets/page_change_password.f735aeb3.css"
       ]
     },
     "dashboard_list": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard_list.f83c86a1.js"
+        "/assets/dashboard_list.775ccac9.js"
       ],
       "css": [
-        "/assets/dashboard_list.32e12b0d.css"
+        "/assets/dashboard_list.f735aeb3.css"
       ]
     },
     "dashboard_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard_form.9557af72.js"
+        "/assets/dashboard_form.265b44be.js"
       ],
       "css": [
-        "/assets/dashboard_form.32e12b0d.css"
+        "/assets/dashboard_form.f735aeb3.css"
       ]
     },
     "widget_list": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/widget_list.29fcc1e5.js"
+        "/assets/widget_list.334e1cd9.js"
       ],
       "css": [
-        "/assets/widget_list.32e12b0d.css"
+        "/assets/widget_list.f735aeb3.css"
       ]
     },
     "widget_form": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/widget_form.f0a77b5c.js"
+        "/assets/widget_form.333bcd51.js"
       ],
       "css": [
-        "/assets/widget_form.32e12b0d.css"
+        "/assets/widget_form.f735aeb3.css"
       ]
     },
     "dashboard-page": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard-page.a314d7b3.js"
+        "/assets/dashboard-page.919dac9d.js"
       ],
       "css": [
-        "/assets/dashboard-page.32e12b0d.css"
+        "/assets/dashboard-page.f735aeb3.css"
       ]
     }
   }
