@@ -100,7 +100,7 @@ class Index extends Component {
                 dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
                 if (dateRangeValue) {
                     newDateRange = { ...dateRangeValue };
-                    isDisableLive = !newDateRange.dateRangeValue;
+                    isDisableLive = !Number.isInteger(newDateRange.fromValue);
                 }
             } else {
                 dateRangeValue = JSON.parse(cData);
