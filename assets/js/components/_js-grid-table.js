@@ -90,7 +90,7 @@ export class JsGridTable extends Component {
 
                 onDataLoaded: function (args) {
                     $("#jsGrid1 th").css('white-space', 'nowrap').each(function (index) {
-                        var currentWidth = $(this).width();
+                        var currentWidth = parseInt($(this).width());
                         var maxLength = $(this).text().length;
 
                         $("#jsGrid1 tr").each(function (idx) {
@@ -99,8 +99,8 @@ export class JsGridTable extends Component {
                         maxLength = maxLength * 10;
 
                         var $with = 'auto';
-                        if (maxLength < currentWidth) {
-                            $with = currentWidth.toString() + "px";
+                        if (maxLength < currentWidth || maxLength < 120) {
+                            $with = maxLength.toString() + "px";
                         }
                         $(this).css("width", $with);
                         $("#jsGrid1 tr").each(function (i) {
