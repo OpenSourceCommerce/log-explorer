@@ -31,11 +31,7 @@ export class Sidebar extends Component {
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
                 <Link className="brand-link" href={'/'}>
                     <Image src={Logo} alt="AdminLTE Logo"
-                        className="brand-image img-circle elevation-3"
-                        style={{opacity: '.8'}}/>
-                    <Text className="brand-text font-weight-light">
-                        Scale.sc
-                    </Text>
+                        className="brand-image"/>
                 </Link>
 
                 <div className="sidebar">

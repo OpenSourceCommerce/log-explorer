@@ -123,9 +123,10 @@ export class FlotChart extends Component {
     }
 
     render() {
+        const { className } = this.props;
         return (
-            <div className="card">
-                <div className="card-header pb-0">
+            <div className={`${className} card`}>
+                <div className="card-header pb-0 pt-1">
                     <h3 className="card-title">
                         <i className="far fa-chart-bar" />
                         Interactive Area Chart

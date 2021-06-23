@@ -54,7 +54,7 @@ export class FilterText extends Component {
 
         return (
             <>
-                {label &&  <p className="float-left mb-2">{label}</p>}
+                {label &&  <p className="float-left mb-1">{label}</p>}
                 <Input
                     className={`form-group ${className}`}
                     id="filter-text"
