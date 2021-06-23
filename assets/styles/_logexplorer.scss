@@ -15,3 +15,9 @@
     }
   }
 }
+
+.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+  .brand-image {
+    transition: transform 0.4s ease-in-out 0s;
+  }
+}
