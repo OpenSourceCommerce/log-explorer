@@ -98,19 +98,40 @@ class LogViewService implements LogViewServiceInterface
      */
     public function getColumnSetting(LogView $logView)
     {
-        $columns = $this->connection->getRawColumns($logView->getTable());
-        $visible = $logView->getLogViewColumns();
-        $visible = array_flip($visible);
+        $columns = $logViewColumns = $logView->getLogViewColumns();
+        $isArrayString = false;
+
+        if (empty($columns) || !is_array($columns[0])) {
+            $isArrayString = true;
+            $columns = $this->connection->getRawColumns($logView->getTable());
+        }
+
         $response = [];
 
-        foreach ($columns as $column) {
+        foreach ($columns as $index => $column) {
+            $visible = true;
+
+            if ($isArrayString) {
+                if (!in_array($column['name'], $logViewColumns) && !empty($logViewColumns)) {
+                    $visible = false;
+                }
+            } else {
+                $visible = $column['visible'];
+                $index = $column['index'];
+            }
+
             $response[] = [
                 'name' => $column['name'],
                 'title' => ColumnHelper::titleFromName($column['name']),
                 'type' => 'String',
-                'visible' => (empty($visible) || isset($visible[$column['name']])),
+                'visible' => $visible ? 1 : 0,
+                'index' => $index,
             ];
         }
+
+        usort($response, function ($a, $b) {
+            return ($a['index'] < $b['index']) ? -1 : 1;
+        });
 
         return $response;
     }
@@ -128,20 +149,29 @@ class LogViewService implements LogViewServiceInterface
      */
     public function getVisibleColumns(LogView $logView): array
     {
-        $columns = $this->connection->getRawColumns($logView->getTable());
-        $visible = $logView->getLogViewColumns();
-        $visible = array_flip($visible);
+        $columns = $logView->getLogViewColumns();
+        $isArrayString = false;
+
+        if (empty($columns) || !is_array($columns[0])) {
+            $isArrayString = true;
+            $columns = $this->connection->getRawColumns($logView->getTable());
+        }
+
         $response = [];
 
         foreach ($columns as $column) {
-            if (empty($visible) || isset($visible[$column['name']])) {
-                $response[] = [
-                    'name' => $column['name'],
-                    'title' => ColumnHelper::titleFromName($column['name']),
-                    'type' => 'String',
-                    'visible' => true,
-                ];
+            if ($isArrayString && !in_array($column['name'], $logView->getLogViewColumns())) {
+                $visible = false;
+            } else {
+                $visible = $column['visible'];
             }
+
+            $response[] = [
+                'name' => $column['name'],
+                'title' => ColumnHelper::titleFromName($column['name']),
+                'type' => 'String',
+                'visible' => $visible ? 1 : 0,
+            ];
         }
 
         return $response;
@@ -158,31 +188,21 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function setVisibleColumn(LogView $logView, string $column, bool $visible)
+    public function setVisibleColumn(LogView $logView, string $columnName, bool $visible, int $index)
     {
-        $changed = false;
-        $columns = $logView->getLogViewColumns();
-        if ($visible) {
-            if (!in_array($column, $columns)) {
-                $columns[] = $column;
-                $changed = true;
+        $columns = $this->getColumnSetting($logView);
+
+        $columns = array_map(function ($column) use ($columnName, $visible, $index) {
+            if ($column['name'] == $columnName) {
+                $column['visible'] = $visible ? 1 : 0;
+                $column['index'] = $index;
             }
-        } else {
-            if (empty($columns)) {
-                $columns = $this->connection->getRawColumns($logView->getTable());
-                $columns = array_column($columns, 'name');
-            }
-            $key = array_search($column, $columns);
-            if ($key !== false) {
-                unset($columns[$key]);
-                $columns = array_values($columns);
-                $changed = true;
-            }
-        }
-        if ($changed) {
-            $logView->setLogViewColumn($columns);
-            $this->save($logView);
-        }
+
+            return $column;
+        }, $columns);
+
+        $logView->setLogViewColumn($columns);
+        $this->save($logView);
     }
 
     /**

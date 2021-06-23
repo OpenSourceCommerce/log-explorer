@@ -35,7 +35,7 @@ class StreamController extends ApiController
         if (is_null($logView)) {
             $logView = $logViewService->getDefault();
         }
-        $columns = $logViewService->getVisibleColumns($logView);
+        $columns = $logViewService->getColumnSetting($logView);
         return $this->responseSuccess([
             'data' => $columns
         ]);
@@ -92,9 +92,15 @@ class StreamController extends ApiController
 
         }
         $options = $this->getFilter($request);
-        $columns = $logView->getLogViewColumns();
+        $columns = $logViewService->getColumnSetting($logView);
         if (!empty($columns)) {
-            $options['columns'] = $columns;
+            $columnNameArray = [];
+            foreach ($columns as $column){
+                if($column['visible']){
+                    $columnNameArray[] = $column['name'];
+                }
+            }
+            $options['columns'] = $columnNameArray;
         }
         try {
             $trackId = StringHelper::random();
