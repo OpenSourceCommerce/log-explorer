@@ -10,7 +10,6 @@ export class LogViewTableSettingModal extends Component {
         this.state = {
             selectedTable: null,
             tableColumnList: [],
-            mounted: false
         };
 
         this.onShow = this.onShow.bind(this);
@@ -19,7 +18,7 @@ export class LogViewTableSettingModal extends Component {
     }
 
     componentDidMount() {
-        this.setState({mounted: true})
+        this.setState({tableColumnList: []})
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -27,6 +26,7 @@ export class LogViewTableSettingModal extends Component {
         const {show} = this.props;
 
         if (show && show !== prevShow) {
+            this.setState({tableColumnList: []})
             this.onShow();
         }
     }
@@ -34,7 +34,6 @@ export class LogViewTableSettingModal extends Component {
     onShow() {
         const {selectedTable} = this.props;
         const that = this;
-        that.setState({tableColumnList: []});
 
         return LogViewActions.getColumnSetting(selectedTable.uuid).then(response => {
             const {data, error} = response;
@@ -87,8 +86,8 @@ export class LogViewTableSettingModal extends Component {
             {i: 'a', x: 0, y: 0, w: 1, h: 1},
             {i: 'b', x: 1, y: 0, w: 1, h: 1},
         ];
-        const {show, onHidden, onSave, showSaveButton = true} = this.props;
-        const {tableColumnList, mounted} = this.state;
+        const {show, onHidden, onSave} = this.props;
+        const {tableColumnList} = this.state;
 
         return (
             <Modal title={'Table Setting'}
