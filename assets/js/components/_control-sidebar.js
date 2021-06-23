@@ -9,8 +9,7 @@ export class ControlSidebar extends Component {
         event.preventDefault();
 
         $(() => {
-            const $ControlSidebar = new ControlSidebar_($('.control-sidebar'), {});
-            $ControlSidebar.collapse();
+            $('.control-sidebar').ControlSidebar('hide');
         });
     }
 
@@ -32,13 +31,10 @@ export class ControlSidebar extends Component {
         }
 
         $(() => {
-            const $ControlSidebar = new ControlSidebar_($('.control-sidebar'), {});
-            $ControlSidebar._init();
-
             if (visible) {
-                $ControlSidebar.show();
+                $('.control-sidebar').ControlSidebar('show');
             } else {
-                $ControlSidebar.collapse();
+                $('.control-sidebar').ControlSidebar('hide');
             }
         });
 
