@@ -2,20 +2,20 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/assets/1.74dbfc66.js",
-        "/assets/3.2612393e.js",
+        "/assets/1.fcc4c07c.js",
+        "/assets/3.34ee1439.js",
         "/assets/app.c3bc5b1c.js"
       ],
       "css": [
-        "/assets/3.2cc84dae.css",
+        "/assets/3.30af6823.css",
         "/assets/app.e2d683ce.css"
       ]
     },
     "page_index": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/page_index.9e68af52.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/page_index.e4387b3e.js"
       ],
       "css": [
         "/assets/page_index.a66110b5.css"
@@ -24,8 +24,8 @@
     "database_tables": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/database_tables.cea77714.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/database_tables.220b072a.js"
       ],
       "css": [
         "/assets/database_tables.32e12b0d.css"
@@ -34,8 +34,8 @@
     "database_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/database_form.52ed95f0.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/database_form.b84c8886.js"
       ],
       "css": [
         "/assets/database_form.32e12b0d.css"
@@ -44,8 +44,8 @@
     "graph_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/graph_form.23333507.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/graph_form.c1906e5e.js"
       ],
       "css": [
         "/assets/graph_form.32e12b0d.css"
@@ -54,8 +54,8 @@
     "graph_list": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/graph_list.c8a91499.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/graph_list.b8567ced.js"
       ],
       "css": [
         "/assets/graph_list.32e12b0d.css"
@@ -64,8 +64,8 @@
     "logview_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/logview_form.1f38ff47.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/logview_form.0858f709.js"
       ],
       "css": [
         "/assets/logview_form.32e12b0d.css"
@@ -74,8 +74,8 @@
     "user_list": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/user_list.7c5c4a1e.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/user_list.181a92ac.js"
       ],
       "css": [
         "/assets/user_list.32e12b0d.css"
@@ -84,8 +84,8 @@
     "user_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/user_form.fb95e79a.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/user_form.337da5aa.js"
       ],
       "css": [
         "/assets/user_form.32e12b0d.css"
@@ -94,8 +94,8 @@
     "user_confirmation": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/user_confirmation.c2b4d113.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/user_confirmation.f7199a49.js"
       ],
       "css": [
         "/assets/user_confirmation.32e12b0d.css"
@@ -104,8 +104,8 @@
     "user_profile": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/user_profile.b087f0b9.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/user_profile.aad40c4c.js"
       ],
       "css": [
         "/assets/user_profile.32e12b0d.css"
@@ -114,8 +114,8 @@
     "navbar": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/navbar.e36dbb17.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/navbar.a0bbe708.js"
       ],
       "css": [
         "/assets/navbar.32e12b0d.css"
@@ -124,8 +124,8 @@
     "sidebar": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/sidebar.f274c408.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/sidebar.81f9cc42.js"
       ],
       "css": [
         "/assets/sidebar.32e12b0d.css"
@@ -134,8 +134,8 @@
     "js_grid": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/js_grid.ae63ea9e.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/js_grid.a5170bca.js"
       ],
       "css": [
         "/assets/js_grid.8cd31416.css"
@@ -144,8 +144,8 @@
     "flot_chart": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/flot_chart.e948a330.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/flot_chart.edf935bc.js"
       ],
       "css": [
         "/assets/flot_chart.9e2e0643.css"
@@ -160,8 +160,8 @@
     "welcome-page": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/welcome-page.b4339f0b.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/welcome-page.673db3b7.js"
       ],
       "css": [
         "/assets/welcome-page.9b9b4e15.css"
@@ -170,8 +170,8 @@
     "page_login": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/page_login.2fe4d4c8.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/page_login.37a02d82.js"
       ],
       "css": [
         "/assets/page_login.32e12b0d.css"
@@ -180,8 +180,8 @@
     "page_forgot": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/page_forgot.6ded7c3b.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/page_forgot.e2c928ef.js"
       ],
       "css": [
         "/assets/page_forgot.32e12b0d.css"
@@ -190,8 +190,8 @@
     "page_reset": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/page_reset.0e173eb7.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/page_reset.769b5a76.js"
       ],
       "css": [
         "/assets/page_reset.32e12b0d.css"
@@ -200,8 +200,8 @@
     "page_change_password": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/page_change_password.9614895e.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/page_change_password.29934f26.js"
       ],
       "css": [
         "/assets/page_change_password.32e12b0d.css"
@@ -210,8 +210,8 @@
     "dashboard_list": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/dashboard_list.8666ba5c.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/dashboard_list.871aa61d.js"
       ],
       "css": [
         "/assets/dashboard_list.32e12b0d.css"
@@ -220,8 +220,8 @@
     "dashboard_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/dashboard_form.81af61e3.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/dashboard_form.5546d35e.js"
       ],
       "css": [
         "/assets/dashboard_form.32e12b0d.css"
@@ -230,8 +230,8 @@
     "widget_list": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/widget_list.cc1394a7.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/widget_list.3c1b9a2e.js"
       ],
       "css": [
         "/assets/widget_list.32e12b0d.css"
@@ -240,8 +240,8 @@
     "widget_form": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/widget_form.e137e096.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/widget_form.4817df29.js"
       ],
       "css": [
         "/assets/widget_form.32e12b0d.css"
@@ -250,8 +250,8 @@
     "dashboard-page": {
       "js": [
         "/assets/0.e665c24c.js",
-        "/assets/1.74dbfc66.js",
-        "/assets/dashboard-page.eb866429.js"
+        "/assets/1.fcc4c07c.js",
+        "/assets/dashboard-page.a2c17b5a.js"
       ],
       "css": [
         "/assets/dashboard-page.32e12b0d.css"
