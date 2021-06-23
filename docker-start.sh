@@ -10,6 +10,7 @@ if [ ! -f .env ]; then
 fi
 
 echo "INSTALLING COMPOSER DEPENDENCIES..."
+docker-compose exec -T php bash -c '/usr/local/bin/composer self-update'
 docker-compose exec -T php bash -c '/usr/local/bin/composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader'
 
 echo "EXECUTING DB MIGRATIONS..."

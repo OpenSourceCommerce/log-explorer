@@ -120,6 +120,7 @@ export class LogViewTable extends Component {
                             logview={selectedTable}
                             fields={fields}
                             pageSize={100}
+                            sorting={true}
                             onDataLoaded={this.onDataLoaded}
                         />}
                     </div>
