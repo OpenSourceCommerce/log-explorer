@@ -45,7 +45,8 @@ export class JsGridTable extends Component {
             autoload = true,
             paging = true,
             fields = [],
-            onDataLoaded = false
+            onDataLoaded = false,
+            sorting = false
         } = this.props;
         const that = this;
         const uuid = logview ? logview.uuid : null;
@@ -55,7 +56,7 @@ export class JsGridTable extends Component {
             $('#jsGrid1').jsGrid({
                 height,
                 width,
-
+                sorting,
                 autoload,
                 paging,
                 pageSize,
@@ -85,7 +86,28 @@ export class JsGridTable extends Component {
                     that.setState({selectedItem: item});
                 },
 
-                fields
+                fields,
+
+                onDataLoaded: function (args) {
+                    $("#jsGrid1 th").css('white-space', 'nowrap').each(function (index) {
+                        var currentWidth = parseInt($(this).width());
+                        var maxLength = $(this).text().length;
+
+                        $("#jsGrid1 tr").each(function (idx) {
+                            maxLength = $(this).find("td").eq(index).text().length > maxLength ? $(this).find("td").eq(index).text().length : maxLength;
+                        });
+                        maxLength = maxLength * 10;
+
+                        var $with = 'auto';
+                        if (maxLength < currentWidth || maxLength < 120) {
+                            $with = maxLength.toString() + "px";
+                        }
+                        $(this).css("width", $with);
+                        $("#jsGrid1 tr").each(function (i) {
+                            $(this).find("td").eq(index).css("width", $with);
+                        });
+                    });
+                },
             });
 
             if (liveRefresh) {
@@ -99,16 +121,17 @@ export class JsGridTable extends Component {
     render() {
         const {selectedItem, pageIndex, itemsCount} = this.state;
 
-        const { pageSize } = this.props;
+        const {pageSize} = this.props;
 
         let maxPageNumber = 0;
 
         if (itemsCount && itemsCount > 0) {
             maxPageNumber = Math.floor(itemsCount / pageSize);
-            if ( itemsCount % pageSize > 0 ) {
+            if (itemsCount % pageSize > 0) {
                 maxPageNumber++;
             }
-        };
+        }
+        ;
 
         const gotoPages = (pageIndex) => {
             this.setState({
@@ -146,7 +169,7 @@ export class JsGridTable extends Component {
                                type="number"
                                min="1"
                                max={maxPageNumber}
-                               value={pageIndex+''}
+                               value={pageIndex + ''}
                                onChange={(e) => {
                                    let newIndex = e.target.value;
                                    if (parseInt(newIndex) > maxPageNumber) {
@@ -155,7 +178,7 @@ export class JsGridTable extends Component {
                                    gotoPages(newIndex);
                                }}
                         ></Input>
-                        <p className="total-page m-0 p-2">/   {maxPageNumber} </p>
+                        <p className="total-page m-0 p-2">/ {maxPageNumber} </p>
                         <Button className="border-0 p-button"
                                 disabled={pageIndex === maxPageNumber}
                                 onClick={() => gotoPages(pageIndex + 1)}

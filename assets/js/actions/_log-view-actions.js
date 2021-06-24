@@ -19,7 +19,7 @@ const LogViewActions = {
         return request(url, {method: 'GET'});
     },
 
-    updateColumnSetting(uuid, column, visible) {
+    updateColumnSetting(uuid, column, visible, index) {
         if (!uuid) {
             return;
         }
@@ -28,25 +28,13 @@ const LogViewActions = {
 
         const body = JSON.stringify({
             column,
-            visible: visible ? 1 : 0
+            visible: visible ? 1 : 0,
+            index
         });
 
         return request(url, {method: 'PUT', body});
     },
 
-    updateAllColumnsSetting(uuid, visible) {
-        if (!uuid) {
-            return;
-        }
-
-        const url = `/api/logview/${uuid}/setting/all-columns`;
-
-        const body = JSON.stringify({
-            visible: visible ? 1 : 0
-        });
-
-        return request(url, {method: 'PUT', body});
-    },
     setSummary(uuid, data) {
         return request('/api/logview/' + uuid + '/summary', {method: 'PUT', body: JSON.stringify(data)});
     },

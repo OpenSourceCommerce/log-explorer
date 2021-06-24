@@ -1,4 +1,5 @@
 .dashboard-page {
+  font-size: 85%;
   .card {
     .card-header {
       border-bottom: none;
@@ -14,8 +15,21 @@
       }
     }
   }
+  .advanced-search {
+    .input-search {
+      margin-bottom: 0;
+    }
+  }
   .spinner {
     right: 45%;
     top: 40%;
+  }
+  .float-chart {
+    .switcher label {
+      margin-bottom: 0;
+    }
+    .card-header>.card-tools [data-card-widget=collapse] {
+      display: none;
+    }
   }
 }

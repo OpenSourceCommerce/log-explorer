@@ -71,10 +71,6 @@ class LogViewServiceTest extends WebTestCase
         $logView = $this->getFirst();
         $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
 
-        $visibleColumns = array_filter($visibleColumns, function ($column) {
-            return !empty($column['visible']);
-        });
-
         $this->assertIsArray($visibleColumns);
         $this->assertGreaterThanOrEqual(1, count($visibleColumns));
     }
@@ -82,29 +78,27 @@ class LogViewServiceTest extends WebTestCase
     public function testSetVisibleColumn()
     {
         $logView = $this->getFirst();
-        $this->getLogViewService()->setVisibleColumns($logView, false);
-        $this->getLogViewService()->setVisibleColumn($logView, '_id', true);
-        $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
+        $columns = $this->getLogViewService()->getColumnSetting($logView);
+        $totalVisible = 0;
+
+        foreach ($columns as $index => $column) {
+            $visible = true;
+            $totalVisible++;
+
+            if ($index % 2 === 0) {
+                $visible = false;
+                $totalVisible--;
+            }
+
+            $this->getLogViewService()->setVisibleColumn($logView, $column['name'], $visible, $index + 1);
+        }
+
+        $columns = $this->getLogViewService()->getColumnSetting($logView);
+        $visibleColumns = array_filter($columns, function ($column) {
+            return !empty($column['visible']);
+        });
 
         $this->assertIsArray($visibleColumns);
-        $this->assertEquals(1, count($visibleColumns));
-    }
-
-    public function testSetVisibleColumns()
-    {
-        $logView = $this->getFirst();
-        //Set visible only url column
-        $this->getLogViewService()->setVisibleColumns($logView, false);
-        $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
-
-        $this->assertIsArray($visibleColumns);
-        $this->assertEquals(1, count($visibleColumns));
-
-        //Set visible all columns
-        $this->getLogViewService()->setVisibleColumns($logView, true);
-        $visibleColumns = $this->getLogViewService()->getVisibleColumns($logView);
-
-        $this->assertIsArray($visibleColumns);
-        $this->assertEquals(9, count($visibleColumns));
+        $this->assertEquals($totalVisible, count($visibleColumns));
     }
 }

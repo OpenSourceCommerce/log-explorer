@@ -100,7 +100,7 @@ class Index extends Component {
                 dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
                 if (dateRangeValue) {
                     newDateRange = { ...dateRangeValue };
-                    isDisableLive = !newDateRange.dateRangeValue;
+                    isDisableLive = !Number.isInteger(newDateRange.fromValue);
                 }
             } else {
                 dateRangeValue = JSON.parse(cData);
@@ -226,12 +226,13 @@ class Index extends Component {
                             onSelected={this.setSelectedTable}
                             dateRange={dateRange}
                         />
-                        <div className="row justify-content-start flex-md-wrap">
+                        <div className="float-chart row justify-content-start flex-md-wrap">
                             <div className="col-12">
                                 <FlotChart isLive={isLive}
                                     uuid={uuid}
                                     handleRealTimeClicked={this.handleRealTimeClicked}
                                     disableLive={disableLive}
+                                    className="mb-2"
                                 />
                             </div>
                             <div className="col-12 card-columns">

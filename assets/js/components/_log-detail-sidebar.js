@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ControlSidebar, Link } from '.';
+import '../../styles/component/_log_detail_sidebar.scss';
 
 export class LogDetailSidebar extends Component {
     copyToClipboard(e, type) {
@@ -67,7 +68,7 @@ export class LogDetailSidebar extends Component {
 
         return (
             <ControlSidebar
-                className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'} w-25`}
+                className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
                 title={'Detail'}
                 visible={true}
                 {...this.props}

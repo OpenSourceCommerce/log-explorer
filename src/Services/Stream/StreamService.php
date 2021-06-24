@@ -96,6 +96,7 @@ class StreamService implements StreamServiceInterface
             ->from($table)
             ->select($columns)
             ->setMaxResults($limit)
+            ->orderBy($sort, $order)
             ->where('_id IN ('.$builder->getSQL().')');
 
         return $this->connection->fetchAll($builder2->getSQL().' FORMAT JSON '.$track, $builder->getParameters());

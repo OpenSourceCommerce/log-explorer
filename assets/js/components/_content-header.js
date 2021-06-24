@@ -13,7 +13,7 @@ class ContentHeader extends Component {
         }
 
         return (
-            <div className="content-header p-0 pt-3">
+            <div className="content-header p-0 pt-1">
                 <div className="container-fluid d-none">
                     <div className="row mb-2">
                         <div className="col-sm-6">

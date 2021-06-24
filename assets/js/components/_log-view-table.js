@@ -89,7 +89,7 @@ export class LogViewTable extends Component {
                     onSave={this.onTableSettingModalChanged}
                     onHidden={this.hideTableSettingModal}/>
                 <div className="card">
-                    <div className="card-header">
+                    <div className="card-header pt-1 pb-0">
                         <h3 className="card-title">
                             <QueryInfo queryInfo={queryInfo} className={'col-12'}/>
                         </h3>
@@ -120,6 +120,7 @@ export class LogViewTable extends Component {
                             logview={selectedTable}
                             fields={fields}
                             pageSize={100}
+                            sorting={true}
                             onDataLoaded={this.onDataLoaded}
                         />}
                     </div>
