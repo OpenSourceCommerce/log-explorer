@@ -31,6 +31,7 @@
         "symfony/process": "5.3.*",
         "symfony/property-access": "5.3.*",
         "symfony/property-info": "5.3.*",
+        "symfony/runtime": "5.3.*",
         "symfony/security-bundle": "5.3.*",
         "symfony/serializer": "5.3.*",
         "symfony/string": "5.3.*",
