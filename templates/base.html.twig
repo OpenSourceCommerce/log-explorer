@@ -8,6 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ encore_entry_link_tags('app') }}
     {% block stylesheets %}{% endblock %}
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('navbar') }}
+    {{ encore_entry_script_tags('sidebar') }}
+    {% block javascripts %}{% endblock %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed sidebar-collapse">
 <div class="wrapper">
@@ -41,10 +45,5 @@
     <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-
-{{ encore_entry_script_tags('app') }}
-{{ encore_entry_script_tags('navbar') }}
-{{ encore_entry_script_tags('sidebar') }}
-{% block javascripts %}{% endblock %}
 </body>
 </html>

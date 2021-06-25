@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use JsonSerializable;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @UniqueEntity(fields={"email"}, message="Email is already taken")
  * @ORM\Table(name="users")
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable, EquatableInterface
 {
     /**
      * @ORM\Id
@@ -313,5 +314,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     public function eraseCredentials()
     {
 
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof User) {
+            return false;
+        }
+        if ($this->getIsActive() != $user->getIsActive()) {
+            return false;
+        }
+        return true;
     }
 }

@@ -1,4 +1,7 @@
 {
+    "brick/math": {
+        "version": "0.9.2"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99"
     },
@@ -33,12 +36,12 @@
         "version": "v0.5.3"
     },
     "doctrine/doctrine-bundle": {
-        "version": "2.0",
+        "version": "2.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.0",
-            "ref": "368794356c1fb634e58b38ad2addb36933f2e73e"
+            "version": "2.4",
+            "ref": "dda18c8830b143bc31c0e0457fb13b9029614d76"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -61,12 +64,12 @@
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
-        "version": "2.2",
+        "version": "3.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.2",
-            "ref": "baaa439e3e3179e69e3da84b671f0a3e4a2f56ad"
+            "version": "3.1",
+            "ref": "ee609429c9ee23e22d6fa5728211768f51ed2818"
         },
         "files": [
             "config/packages/doctrine_migrations.yaml",
@@ -102,6 +105,15 @@
     },
     "friendsofdoctrine/dbal-clickhouse": {
         "version": "v1.5.3"
+    },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.5"
+    },
+    "laminas/laminas-code": {
+        "version": "3.4.1"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.1"
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"
@@ -141,6 +153,12 @@
     },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "ramsey/collection": {
+        "version": "1.1.3"
+    },
+    "ramsey/uuid": {
+        "version": "4.1.1"
     },
     "ramsey/uuid-doctrine": {
         "version": "1.3",
@@ -188,12 +206,12 @@
         "version": "v5.1.5"
     },
     "symfony/console": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "c6d02bdfba9da13c22157520e32a602dbee8a75c"
+            "version": "5.3",
+            "ref": "da0c8be8157600ad34f10ff0c9cc91232522e047"
         },
         "files": [
             "bin/console"
@@ -208,7 +226,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.1",
-            "ref": "f8863cbad2f2e58c4b65fa1eac892ab189971bea"
+            "ref": "0ce7a032d344fb7b661cd25d31914cd703ad445b"
         },
         "files": [
             "config/packages/dev/debug.yaml"
@@ -266,19 +284,18 @@
         "version": "v5.1.5"
     },
     "symfony/framework-bundle": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "5f0d0fd82ffa3580fe0ce8e3b2d18506ebf37a0e"
+            "version": "5.3",
+            "ref": "772b77cfb5017644547ef7f9364c54e4eb9a6c61"
         },
         "files": [
             "config/packages/cache.yaml",
             "config/packages/framework.yaml",
-            "config/packages/test/framework.yaml",
             "config/preload.php",
-            "config/routes/dev/framework.yaml",
+            "config/routes/framework.yaml",
             "config/services.yaml",
             "public/index.php",
             "src/Controller/.gitignore",
@@ -328,12 +345,12 @@
         "version": "v5.1.5"
     },
     "symfony/monolog-bundle": {
-        "version": "3.3",
+        "version": "3.7",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "3.3",
-            "ref": "d7249f7d560f6736115eee1851d02a65826f0a56"
+            "version": "3.7",
+            "ref": "329f6a5ef2e7aa033f802be833ef8d1268dd0848"
         },
         "files": [
             "config/packages/dev/monolog.yaml",
@@ -364,12 +381,12 @@
         "version": "v5.3.0"
     },
     "symfony/phpunit-bridge": {
-        "version": "4.3",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "4.3",
-            "ref": "6d0e35f749d5f4bfe1f011762875275cd3f9874f"
+            "version": "5.3",
+            "ref": "0a3b084605bd384975df457a20e9f41ca09fd4ed"
         },
         "files": [
             ".env.test",
@@ -418,26 +435,28 @@
         "version": "v5.1.5"
     },
     "symfony/routing": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "b4f3e7c95e38b606eef467e8a42a8408fc460c43"
+            "version": "5.3",
+            "ref": "2d706bd8c6a9e6730343bb22092dabba1f42f4f3"
         },
         "files": [
-            "config/packages/prod/routing.yaml",
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
     },
+    "symfony/runtime": {
+        "version": "v5.3.2"
+    },
     "symfony/security-bundle": {
-        "version": "5.1",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "0a4bae19389d3b9cba1ca0102e3b2bccea724603"
+            "version": "5.3",
+            "ref": "8b35bfc00a7716db4ca5a764a4b338476ca3a704"
         },
         "files": [
             "config/packages/security.yaml"
@@ -488,12 +507,12 @@
         "version": "v1.0.6"
     },
     "symfony/translation": {
-        "version": "3.3",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "3.3",
-            "ref": "2ad9d2545bce8ca1a863e50e92141f0b9d87ffcd"
+            "version": "5.3",
+            "ref": "da64f5a2b6d96f5dc24914517c0350a5f91dee43"
         },
         "files": [
             "config/packages/translation.yaml",
@@ -507,15 +526,14 @@
         "version": "v5.1.5"
     },
     "symfony/twig-bundle": {
-        "version": "5.0",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.0",
-            "ref": "fab9149bbaa4d5eca054ed93f9e1b66cc500895d"
+            "version": "5.3",
+            "ref": "b416645602504d22d15912e0918001e6d71bb9fa"
         },
         "files": [
-            "config/packages/test/twig.yaml",
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
@@ -563,12 +581,12 @@
         ]
     },
     "symfony/webpack-encore-bundle": {
-        "version": "1.6",
+        "version": "1.9",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.6",
-            "ref": "f362ed8e8aa99a8cb216e6bdb2ac833dfb7643dd"
+            "version": "1.9",
+            "ref": "9399a0bfc6ee7a0c019f952bca46d6a6045dd451"
         },
         "files": [
             "assets/app.js",

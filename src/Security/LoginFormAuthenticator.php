@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
@@ -22,6 +22,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -35,7 +36,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
 
     private $entityManager;
-    private $router;
+    private $urlGenerator;
     private $csrfTokenManager;
     private $passwordEncoder;
     /**
@@ -45,14 +46,14 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        RouterInterface $router,
+        UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager,
         UserPasswordHasherInterface $passwordEncoder,
         EventDispatcherInterface $dispatcher
     )
     {
         $this->entityManager = $entityManager;
-        $this->router = $router;
+        $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
         $this->dispatcher = $dispatcher;
@@ -65,11 +66,19 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
+        $remember = new RememberMeBadge();
+        if ($request->request->has('_remember_me') && $request->request->getBoolean('_remember_me')) {
+            $remember->enable();
+        } else {
+            $remember->disable();
+        }
+
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->get('_token')),
+                $remember,
             ]
         );
     }
@@ -77,14 +86,14 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     private function shouldRedirectTo($url): bool
     {
         // set context with GET method of the previous ajax call
-        $context = $this->router->getContext();
+        $context = $this->urlGenerator->getContext();
         $currentMethod = $context->getMethod();
         $context->setMethod('GET');
         $uri = parse_url($url)['path'];
         if (substr($uri, 5) === '/api/') {
             return false;
         }
-        $routeName = $this->router->match($uri)['_route'];
+        $routeName = $this->urlGenerator->match($uri)['_route'];
         // set back original http method
         $context->setMethod($currentMethod);
         return !in_array($routeName, [
@@ -98,18 +107,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        /** @var User $user */
-        $user = $token->getUser();
-        if (!$user->getIsConfirmed()) {
-            $event = new UnactivatedUserEvent($user);
-            $this->dispatcher->dispatch($event, UnactivatedUserEvent::UNACTIVATED_USER_LOGIN);
-            throw new CustomUserMessageAuthenticationException('Your account does not completed activation, please recheck your email to activate first.');
-        }
-
-        if (!$user->getIsActive()) {
-            throw new CustomUserMessageAuthenticationException('Your account was be disabled, please contact administrator for more detail.');
-        }
-
         $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
         if ($targetPath && $this->shouldRedirectTo($targetPath)) {
             return new JsonResponse(['error' => 0, 'redirect' => $targetPath]);
@@ -141,6 +138,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     protected function getLoginUrl(Request $request): string
     {
-        return $this->router->generate(self::LOGIN_ROUTE);
+        return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }
