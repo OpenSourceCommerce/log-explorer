@@ -11,7 +11,7 @@ fi
 
 echo "INSTALLING COMPOSER DEPENDENCIES..."
 docker-compose exec -T php bash -c '/usr/local/bin/composer self-update'
-docker-compose exec -T php bash -c '/usr/local/bin/composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader'
+docker-compose exec -T php bash -c '/usr/local/bin/composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader'
 
 echo "EXECUTING DB MIGRATIONS..."
 docker-compose exec -T php bash -c 'php bin/console doctrine:migrations:migrate --no-interaction'
