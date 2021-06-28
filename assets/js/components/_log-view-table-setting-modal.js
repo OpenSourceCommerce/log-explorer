@@ -7,18 +7,32 @@ import GridLayout from 'react-grid-layout';
 export class LogViewTableSettingModal extends Component {
     constructor(props) {
         super(props);
+
+        const layout = this.generateLayout()
+
         this.state = {
             selectedTable: null,
             tableColumnList: [],
+            layout,
+            width: 300,
+            height: 38,
         };
 
+        this.modalRef = React.createRef()
         this.onShow = this.onShow.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onHidden = this.onHidden.bind(this);
+        this.generateLayout = this.generateLayout.bind(this);
+        this.generateWidth = this.generateWidth.bind(this);
+        this.generateHeight = this.generateHeight.bind(this);
     }
 
     componentDidMount() {
         this.setState({tableColumnList: []})
+
+        $(window).resize(() => {
+            this.generateWidth()
+        });
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -42,7 +56,9 @@ export class LogViewTableSettingModal extends Component {
                 return;
             }
 
-            that.setState({tableColumnList: data});
+            that.setState({tableColumnList: data}, () => {
+                that.generateWidth()
+            });
         });
     }
 
@@ -71,36 +87,99 @@ export class LogViewTableSettingModal extends Component {
         });
     }
 
-    onHidden(){
+    onHidden() {
         const {onHidden} = this.props;
 
         this.setState({tableColumnList: []})
 
-        if(typeof onHidden === 'function'){
+        if (typeof onHidden === 'function') {
             onHidden();
         }
     }
 
-    render() {
-        const layout = [
-            {i: 'a', x: 0, y: 0, w: 1, h: 1},
-            {i: 'b', x: 1, y: 0, w: 1, h: 1},
-        ];
-        const {show, onHidden, onSave} = this.props;
+    generateLayout() {
+        if (typeof this.state === 'undefined') {
+            return [];
+        }
+
         const {tableColumnList} = this.state;
+
+        if (typeof tableColumnList === 'undefined') {
+            return [];
+        }
+
+        return tableColumnList.map((column, index) => {
+            const x = item.visible ? 0 : 1;
+            let y = parseInt(item.index) + 1
+
+            return {
+                x: x,
+                y: y,
+                w: 1,
+                h: 1,
+                isResizable: false,
+                i: index.toString()
+            }
+        })
+    }
+
+    generateWidth() {
+        const $this = this
+
+        $(() => {
+            let width = $('#table-setting').find('.modal-body').width();
+            setTimeout(() => {
+                width = $('#table-setting').find('.modal-body').width();
+
+                $this.setState({width}, () => {
+                    $this.generateHeight()
+                })
+            }, 200)
+        })
+    }
+
+    generateHeight() {
+        const $this = this
+        const {tableColumnList} = this.state
+
+        $(() => {
+            setTimeout(() => {
+                let defaultHeight = 38;
+                let line = 1;
+                let modalWidth = $('#table-setting').find('.modal-body').width();
+                let columnWidth = (parseInt(modalWidth) - 40) / 2
+
+                tableColumnList.map((column, index) => {
+                    const itemWidth = (column.name.length * 10) + 20
+
+                    if (itemWidth > columnWidth) {
+                        line = (itemWidth / columnWidth) + (itemWidth % columnWidth > 0 ? 1 : 0);
+                        defaultHeight = 30
+                    }
+                })
+                const height = line * defaultHeight;
+                $this.setState({height})
+
+            }, 500)
+        })
+    }
+
+    render() {
+        const {show, onHidden, onSave} = this.props;
+        const {tableColumnList, layout, width, height} = this.state;
 
         return (
             <Modal title={'Table Setting'}
                    id={'table-setting'}
-                   size={Size.medium}
+                   size={Size.large}
                    saveButtonTitle={'Save'}
                    show={show}
                    saveButtonAction={onSave}
                    showSaveButton={false}
                    onHidden={onHidden}>
-                <div className={'row'}>
+                <div ref={this.modalRef} className={'row'}>
                     {tableColumnList && tableColumnList.length > 0 &&
-                    <GridLayout className="col-12" layout={layout}
+                    <GridLayout className="col-12 grid-layout-el" layout={layout}
                                 onDragStop={(layout) => {
                                     layout.map((item, index) => {
                                         if (item.y > 0) {
@@ -109,21 +188,24 @@ export class LogViewTableSettingModal extends Component {
                                     })
                                 }}
                                 useCSSTransforms={true}
-                                width={300}
-                                cols={2} rowHeight={38}>
+                                width={width}
+                                cols={2}
+                                rowHeight={height}
+                    >
                         <div key='viewable' className="viewable text-center"
-                        data-grid={{x: 0, y: 0, w: 1, h: 1, static: true}}>
+                             data-grid={{x: 0, y: 0, w: 1, h: 1, static: true}}>
                             Viewable Columns
                         </div>
                         <div key='available' className="available text-center"
-                        data-grid={{x: 1, y: 0, w: 1, h: 1, static: true}}>
+                             data-grid={{x: 1, y: 0, w: 1, h: 1, static: true}}>
                             Available Columns
                         </div>
-                        {tableColumnList.map((item, row) => {
+                        {tableColumnList.map((item, index) => {
                             const x = item.visible ? 0 : 1;
                             let y = parseInt(item.index) + 1
                             return <div key={item.name}
                                         className="btn btn-default"
+                                        style={{wordBreak: 'break-all'}}
                                         data-grid={{
                                             x: x,
                                             y: y,
