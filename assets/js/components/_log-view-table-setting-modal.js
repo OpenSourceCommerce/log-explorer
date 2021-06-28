@@ -18,7 +18,6 @@ export class LogViewTableSettingModal extends Component {
             height: 38,
         };
 
-        this.modalRef = React.createRef()
         this.onShow = this.onShow.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onHidden = this.onHidden.bind(this);
@@ -108,9 +107,9 @@ export class LogViewTableSettingModal extends Component {
             return [];
         }
 
-        return tableColumnList.map((column, index) => {
-            const x = item.visible ? 0 : 1;
-            let y = parseInt(item.index) + 1
+        return tableColumnList.map((column) => {
+            const x = column.visible ? 0 : 1;
+            let y = parseInt(column.index) + 1
 
             return {
                 x: x,
@@ -118,7 +117,7 @@ export class LogViewTableSettingModal extends Component {
                 w: 1,
                 h: 1,
                 isResizable: false,
-                i: index.toString()
+                i: column.name
             }
         })
     }
@@ -149,7 +148,7 @@ export class LogViewTableSettingModal extends Component {
                 let modalWidth = $('#table-setting').find('.modal-body').width();
                 let columnWidth = (parseInt(modalWidth) - 40) / 2
 
-                tableColumnList.map((column, index) => {
+                tableColumnList.map((column) => {
                     const itemWidth = (column.name.length * 10) + 20
 
                     if (itemWidth > columnWidth) {
@@ -177,7 +176,7 @@ export class LogViewTableSettingModal extends Component {
                    saveButtonAction={onSave}
                    showSaveButton={false}
                    onHidden={onHidden}>
-                <div ref={this.modalRef} className={'row'}>
+                <div className={'row'}>
                     {tableColumnList && tableColumnList.length > 0 &&
                     <GridLayout className="col-12 grid-layout-el" layout={layout}
                                 onDragStop={(layout) => {
@@ -200,7 +199,7 @@ export class LogViewTableSettingModal extends Component {
                              data-grid={{x: 1, y: 0, w: 1, h: 1, static: true}}>
                             Available Columns
                         </div>
-                        {tableColumnList.map((item, index) => {
+                        {tableColumnList.map((item) => {
                             const x = item.visible ? 0 : 1;
                             let y = parseInt(item.index) + 1
                             return <div key={item.name}
