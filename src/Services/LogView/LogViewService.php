@@ -98,12 +98,18 @@ class LogViewService implements LogViewServiceInterface
      */
     public function getColumnSetting(LogView $logView)
     {
+        $rawColumns = $this->connection->getRawColumns($logView->getTable());
         $columns = $logViewColumns = $logView->getLogViewColumns();
         $isArrayString = false;
 
-        if (empty($columns) || !is_array($columns[0])) {
-            $isArrayString = true;
-            $columns = $this->connection->getRawColumns($logView->getTable());
+        $rawColumnNames = array_column($rawColumns, 'name');
+        $logViewColumnNames = array_column($logViewColumns, 'name');
+
+        $diff = array_merge(array_diff($logViewColumnNames, $rawColumnNames), array_diff($rawColumnNames, $logViewColumnNames));
+
+        if (empty($columns) || !is_array($columns[0]) || !empty($diff)) {
+            $isArrayString = empty($diff);
+            $columns = $rawColumns;
         }
 
         $response = [];
@@ -116,8 +122,18 @@ class LogViewService implements LogViewServiceInterface
                     $visible = false;
                 }
             } else {
-                $visible = $column['visible'];
-                $index = $column['index'];
+                $logViewColumn = array_filter($logViewColumns, function ($item) use ($column) {
+                    return $item['name'] == $column['name'];
+                });
+
+                if (!empty($logViewColumn)) {
+                    $logViewColumn = array_shift($logViewColumn);
+                    $visible = $logViewColumn['visible'];
+                    $index = $logViewColumn['index'];
+                } else {
+                    $visible = $column['visible'] ?? (!in_array($column['name'], $diff) || empty($logViewColumns));
+                    $index = $column['index'] ?? $index;
+                }
             }
 
             $response[] = [
