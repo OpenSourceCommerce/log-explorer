@@ -29,7 +29,12 @@ const DatabaseActions = {
     },
     syncAll() {
         return request('/database/sync', {method: 'POST'});
-    }
+    },
+    deleteTable(table) {
+        return request('/api/table/' + table, {
+            method: 'DELETE'
+        });
+    },
 };
 
 export default DatabaseActions;
