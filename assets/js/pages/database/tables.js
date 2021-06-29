@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Button, Spinner, Size, Modal} from '../../components';
+import {CardHeader, Table, Link, Button, Spinner} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
 
 class DatabaseTables extends Component {
@@ -10,16 +10,12 @@ class DatabaseTables extends Component {
             tables: [],
             currentTable: '',
             columns: [],
-            isLoading: false,
-            showDeleteModal: false,
+            isLoading: false
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.gotoUpdate = this.gotoUpdate.bind(this);
         this.gotoLogView = this.gotoLogView.bind(this);
         this.syncAll = this.syncAll.bind(this);
-        this.deleteTable = this.deleteTable.bind(this);
-        this.showDeleteConfirmationModal = this.showDeleteConfirmationModal.bind(this);
-        this.onDeleteConfirmationModalHidden = this.onDeleteConfirmationModalHidden.bind(this);
     }
 
     loadData() {
@@ -100,45 +96,8 @@ class DatabaseTables extends Component {
         });
     }
 
-    showDeleteConfirmationModal() {
-        const showDeleteModal = true;
-
-        this.setState({showDeleteModal})
-    }
-
-    deleteTable() {
-        const that = this
-        let {currentTable} = this.state;
-
-        if (!currentTable) {
-            return;
-        }
-
-        DatabaseActions.deleteTable(currentTable)
-            .then(res => {
-                const {error} = res;
-                if (error !== 0) {
-                    return;
-                }
-
-                const columns = [];
-                currentTable = '';
-
-                Alert.success('Remove successful');
-                that.setState({currentTable, columns})
-                that.onDeleteConfirmationModalHidden();
-                that.syncAll();
-            })
-    }
-
-    onDeleteConfirmationModalHidden() {
-        const showDeleteModal = false;
-
-        this.setState({showDeleteModal})
-    }
-
     render() {
-        const {tables, currentTable, columns, isLoading, showDeleteModal} = this.state;
+        const {tables, currentTable, columns, isLoading} = this.state;
 
         let url = '';
         if (currentTable !== '') {
@@ -147,23 +106,6 @@ class DatabaseTables extends Component {
 
         return (
             <div className="database container-fluid">
-                <Modal
-                    size={Size.medium}
-                    id={'delete-table'}
-                    title={`Deleting table \"${currentTable}\"`}
-                    showCloseButton={true}
-                    closeButtonTitle='Abort'
-                    showSaveButton={true}
-                    saveButtonTitle='OK'
-                    saveButtonColor='danger'
-                    saveButtonAction={this.deleteTable}
-                    show={showDeleteModal}
-                    onHidden={this.onDeleteConfirmationModalHidden}
-                >
-                    <p className={'text-danger'}>
-                        Be careful - this will also delete the table in clickhouse database!
-                    </p>
-                </Modal>
                 <div className="card">
                     <CardHeader title="Table view" showCollapseButton={false}
                                 showRemoveButton={false}/>
@@ -185,19 +127,12 @@ class DatabaseTables extends Component {
                                 <Button disabled={url === ''} onClick={this.gotoLogView}
                                         className="btn btn-primary mr-md-2 mb-2">Log view
                                     setting</Button>
-                                <Button onClick={this.syncAll}
-                                        className={'btn btn-success mr-md-2 mb-2'}>Sync
-                                    tables</Button>
+                                <Button onClick={this.syncAll} className={'btn btn-success mr-md-2 mb-2'}>Sync tables</Button>
                                 <div className="ml-auto ml-md-0">
                                     <Link href="/table/create"
                                           className="btn btn-success mr-2 text-nowrap">Create
                                         table</Link>
                                 </div>
-                                <Button disabled={url === ''}
-                                        onClick={this.showDeleteConfirmationModal}
-                                        className="btn btn-danger mr-md-2 mb-2">
-                                    Delete
-                                </Button>
                             </div>
                         </div>
                         <div className="row">

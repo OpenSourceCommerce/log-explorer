@@ -22,7 +22,6 @@ class DatabaseController extends ApiController
     /**
      * @Route("/api/table", methods = "GET")
      * @param LogViewServiceInterface $logViewService
-     * @param DatabaseServiceInterface $databaseService
      * @return JsonResponse
      */
     public function tables(LogViewServiceInterface $logViewService, DatabaseServiceInterface $databaseService): JsonResponse
@@ -69,8 +68,7 @@ class DatabaseController extends ApiController
         Request $request,
         DatabaseServiceInterface $databaseService,
         UrlGeneratorInterface $urlGenerator
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);
@@ -112,8 +110,7 @@ class DatabaseController extends ApiController
         Request $request,
         DatabaseServiceInterface $databaseService,
         UrlGeneratorInterface $urlGenerator
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(TableType::class);
         $form->submit($data);
@@ -158,8 +155,7 @@ class DatabaseController extends ApiController
         string $table,
         string $column,
         DatabaseServiceInterface $databaseService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         if ($databaseService->isSystemColumn($column)) {
             return $this->responseError('Can not remove application column');
         }
@@ -168,30 +164,7 @@ class DatabaseController extends ApiController
         } catch (TableNotExistException $e) {
             return $this->responseError('Table does not exist');
         } catch (DBALException $e) {
-            return $this->responseError('Can not remove column ' . $e->getMessage());
-        }
-        return $this->responseSuccess([
-            'message' => 'Delete successful'
-        ]);
-    }
-
-    /**
-     * @Route("/api/table/{table}", methods = "DELETE")
-     * @param string $table
-     * @param DatabaseServiceInterface $databaseService
-     * @return JsonResponse
-     */
-    public function removeTable(
-        string $table,
-        DatabaseServiceInterface $databaseService
-    ): JsonResponse
-    {
-        try {
-            $databaseService->dropTableIfExist($table);
-        } catch (TableNotExistException $e) {
-            return $this->responseError('Table does not exist');
-        } catch (DBALException $e) {
-            return $this->responseError('Can not remove table ' . $e->getMessage());
+            return $this->responseError('Can not remove column '.$e->getMessage());
         }
         return $this->responseSuccess([
             'message' => 'Delete successful'
