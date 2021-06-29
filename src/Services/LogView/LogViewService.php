@@ -96,7 +96,7 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function getColumnSetting(LogView $logView)
+    public function getColumnSetting(LogView $logView): array
     {
         $rawColumns = $this->connection->getRawColumns($logView->getTable());
         $columns = $logViewColumns = $logView->getLogViewColumns();
@@ -107,8 +107,11 @@ class LogViewService implements LogViewServiceInterface
 
         $diff = array_merge(array_diff($logViewColumnNames, $rawColumnNames), array_diff($rawColumnNames, $logViewColumnNames));
 
+        if (!empty($columns) && !is_array($columns[0])) {
+            $isArrayString = true;
+        }
+
         if (empty($columns) || !is_array($columns[0]) || !empty($diff)) {
-            $isArrayString = empty($diff);
             $columns = $rawColumns;
         }
 
@@ -116,6 +119,7 @@ class LogViewService implements LogViewServiceInterface
 
         foreach ($columns as $index => $column) {
             $visible = true;
+            $width = '';
 
             if ($isArrayString) {
                 if (!in_array($column['name'], $logViewColumns) && !empty($logViewColumns)) {
@@ -130,11 +134,15 @@ class LogViewService implements LogViewServiceInterface
                     $logViewColumn = array_shift($logViewColumn);
                     $visible = $logViewColumn['visible'];
                     $index = $logViewColumn['index'];
+                    $width = $logViewColumn['width'] ?? '';
                 } else {
                     $visible = $column['visible'] ?? (!in_array($column['name'], $diff) || empty($logViewColumns));
                     $index = $column['index'] ?? $index;
+                    $width = $column['width'] ?? '';
                 }
             }
+
+            $width = preg_replace('/\D/', '', $width);
 
             $response[] = [
                 'name' => $column['name'],
@@ -142,6 +150,7 @@ class LogViewService implements LogViewServiceInterface
                 'type' => 'String',
                 'visible' => $visible ? 1 : 0,
                 'index' => $index,
+                'width' => $width,
             ];
         }
 
@@ -204,14 +213,18 @@ class LogViewService implements LogViewServiceInterface
     /**
      * @inheritDoc
      */
-    public function setVisibleColumn(LogView $logView, string $columnName, bool $visible, int $index)
+    public function setVisibleColumn(LogView $logView, string $columnName, bool $visible, int $index, ?string $width = '')
     {
         $columns = $this->getColumnSetting($logView);
 
-        $columns = array_map(function ($column) use ($columnName, $visible, $index) {
+        $columns = array_map(function ($column) use ($columnName, $visible, $index, $width) {
             if ($column['name'] == $columnName) {
                 $column['visible'] = $visible ? 1 : 0;
                 $column['index'] = $index;
+
+                if ($width !== 'no-update') {
+                    $column['width'] = $width;
+                }
             }
 
             return $column;

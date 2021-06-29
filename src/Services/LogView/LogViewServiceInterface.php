@@ -37,7 +37,7 @@ interface LogViewServiceInterface
      * @param LogView $logView
      * @return array
      */
-    public function getColumnSetting(LogView $logView);
+    public function getColumnSetting(LogView $logView): array;
 
     /**
      * Find Log View by uuid
@@ -72,8 +72,9 @@ interface LogViewServiceInterface
      * @param string $columnName
      * @param bool $visible
      * @param int $index
+     * @param string|null $width
      */
-    public function setVisibleColumn(LogView $logView, string $columnName, bool $visible, int $index);
+    public function setVisibleColumn(LogView $logView, string $columnName, bool $visible, int $index, ?string $width = '');
 
     /**
      * @param LogView $logView

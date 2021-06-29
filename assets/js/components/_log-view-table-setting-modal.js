@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Checkbox, Modal, Button, Colors, Size} from '.';
 import {LogViewActions} from '../actions';
 import GridLayout from 'react-grid-layout';
+import {Input} from "./_input";
 
 export class LogViewTableSettingModal extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ export class LogViewTableSettingModal extends Component {
         this.generateLayout = this.generateLayout.bind(this);
         this.generateWidth = this.generateWidth.bind(this);
         this.generateHeight = this.generateHeight.bind(this);
+        this.onChangeColumnWidth = this.onChangeColumnWidth.bind(this);
     }
 
     componentDidMount() {
@@ -61,7 +63,7 @@ export class LogViewTableSettingModal extends Component {
         });
     }
 
-    onChange(name, visible, index, update = false) {
+    onChange(name, visible, index, update = false, width = '') {
         if (!name) {
             return;
         }
@@ -69,7 +71,7 @@ export class LogViewTableSettingModal extends Component {
         const that = this;
         const {onSave, selectedTable} = this.props;
 
-        LogViewActions.updateColumnSetting(selectedTable.uuid, name, visible, index).then(response => {
+        LogViewActions.updateColumnSetting(selectedTable.uuid, name, visible, index, width).then(response => {
             const {data, error} = response;
 
             if (error) {
@@ -77,6 +79,9 @@ export class LogViewTableSettingModal extends Component {
             }
 
             if (update) {
+                const columnSaving = undefined
+                this.setState({columnSaving})
+
                 that.onShow().then(() => {
                     if (typeof onSave === 'function') {
                         onSave(data);
@@ -143,7 +148,7 @@ export class LogViewTableSettingModal extends Component {
 
         $(() => {
             setTimeout(() => {
-                let defaultHeight = 38;
+                let defaultHeight = 50;
                 let line = 1;
                 let modalWidth = $('#table-setting').find('.modal-body').width();
                 let columnWidth = (parseInt(modalWidth) - 40) / 2
@@ -153,7 +158,7 @@ export class LogViewTableSettingModal extends Component {
 
                     if (itemWidth > columnWidth) {
                         line = (itemWidth / columnWidth) + (itemWidth % columnWidth > 0 ? 1 : 0);
-                        defaultHeight = 30
+                        defaultHeight = 50
                     }
                 })
                 const height = line * defaultHeight;
@@ -161,6 +166,30 @@ export class LogViewTableSettingModal extends Component {
 
             }, 500)
         })
+    }
+
+    onChangeColumnWidth(e) {
+        const that = this
+        let {columnSaving, tableColumnList} = this.state
+
+        if (columnSaving) {
+            clearTimeout(columnSaving)
+        }
+
+        const width = e.target.value;
+        const {name, x, y, key} = e.target.dataset
+
+        tableColumnList[key].width = width
+
+        columnSaving = setTimeout(() => {
+            if (!name || isNaN(x) || isNaN(y)) {
+                return;
+            }
+
+            that.onChange(name, x !== 1, y, true, width)
+        }, 500);
+
+        this.setState({columnSaving, tableColumnList})
     }
 
     render() {
@@ -182,7 +211,7 @@ export class LogViewTableSettingModal extends Component {
                                 onDragStop={(layout) => {
                                     layout.map((item, index) => {
                                         if (item.y > 0) {
-                                            this.onChange(item.i, item.x !== 1, item.y, index === (layout.length - 1))
+                                            this.onChange(item.i, item.x !== 1, item.y, index === (layout.length - 1), 'no-update')
                                         }
                                     })
                                 }}
@@ -199,7 +228,7 @@ export class LogViewTableSettingModal extends Component {
                              data-grid={{x: 1, y: 0, w: 1, h: 1, static: true}}>
                             Available Columns
                         </div>
-                        {tableColumnList.map((item) => {
+                        {tableColumnList.map((item, index) => {
                             const x = item.visible ? 0 : 1;
                             let y = parseInt(item.index) + 1
                             return <div key={item.name}
@@ -212,7 +241,24 @@ export class LogViewTableSettingModal extends Component {
                                             h: 1,
                                             isResizable: false
                                         }}>
-                                {item.title}
+                                <div className="row">
+                                    <div className="col-8">
+                                        {item.title}
+                                    </div>
+                                    <div className="col-4">
+                                        <Input type='text'
+                                               onClick={(e) => {
+                                                   e.stopPropagation()
+                                               }}
+                                               data-key={index}
+                                               data-name={item.name}
+                                               data-x={x}
+                                               data-y={y - 1}
+                                               placeholder='Column Width'
+                                               value={item.width}
+                                               onChange={this.onChangeColumnWidth}/>
+                                    </div>
+                                </div>
                             </div>;
                         })}
                     </GridLayout>}

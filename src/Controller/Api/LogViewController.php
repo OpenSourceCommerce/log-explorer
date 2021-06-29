@@ -94,7 +94,8 @@ class LogViewController extends ApiController
             $column = $form->get('column')->getData();
             $visible = $form->get('visible')->getData();
             $index = $form->get('index')->getData();
-            $logViewService->setVisibleColumn($logView, $column, $visible == 1, $index);
+            $width = $form->get('width')->getData();
+            $logViewService->setVisibleColumn($logView, $column, $visible == 1, $index, $width);
             return $this->responseSuccess();
         }
 
