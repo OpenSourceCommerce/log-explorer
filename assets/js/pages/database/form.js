@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Input, Button, Spinner} from '../../components';
+import {Input, Button, Spinner, Modal, Size} from '../../components';
 import {Alert, DatabaseActions} from '../../actions';
 
 class DatabaseForm extends Component {
@@ -19,12 +19,15 @@ class DatabaseForm extends Component {
             ttl: '',
             tableError: false,
             noColumnError: false,
-            isLoading: false
+            isLoading: false,
+            deletingColumn: null,
         };
         this.onTableChange = this.onTableChange.bind(this);
         this.addMoreColumn = this.addMoreColumn.bind(this);
         this.onTTLChange = this.onTTLChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.showDeleteConfirmationModal = this.showDeleteConfirmationModal.bind(this);
+        this.deleteColumn = this.deleteColumn.bind(this);
     }
 
     loadColumns(table) {
@@ -101,22 +104,31 @@ class DatabaseForm extends Component {
         });
     }
 
-    deleteColumn(key) {
-        let {table, columns} = this.state;
-        Alert.confirm(`Are you sure to delete "${columns[key].origin}" column?`, () => {
-            DatabaseActions.deleteColumn(table, columns[key].origin)
-                .then(res => {
-                    const {error} = res;
-                    if (error !== 0) {
-                        return;
-                    }
-                    Alert.success('Remove successful');
-                    columns.splice(key, 1);
-                    this.setState({
-                        columns
-                    });
-                })
-        });
+    deleteColumn() {
+        let {table, deletingColumn, columns} = this.state;
+
+        if (!deletingColumn) {
+            return;
+        }
+
+        DatabaseActions.deleteColumn(table, deletingColumn.origin)
+            .then(res => {
+                const {error} = res;
+                if (error !== 0) {
+                    return;
+                }
+                Alert.success('Remove successful');
+                const key = columns.findIndex((el) => el.origin === deletingColumn.origin)
+                columns.splice(key, 1);
+                this.setState({
+                    columns,
+                    deletingColumn: null
+                });
+            })
+    }
+
+    showDeleteConfirmationModal(deletingColumn) {
+        this.setState({deletingColumn})
     }
 
     onSubmit() {
@@ -229,7 +241,16 @@ class DatabaseForm extends Component {
     }
 
     render() {
-        const {isNew, table, ttl, columns, tableError, noColumnError, isLoading} = this.state;
+        const {
+            isNew,
+            table,
+            ttl,
+            columns,
+            tableError,
+            noColumnError,
+            isLoading,
+            deletingColumn
+        } = this.state;
         const readonly = !isNew;
         const types = window.clickhouseTypes;
         const _columns = columns.map((item, key) => {
@@ -238,14 +259,14 @@ class DatabaseForm extends Component {
                 <div className="row">
                     <div className="col-5">
                         <Input disabled={disabled} value={item.name}
-                            className={item.error ? 'is-invalid' : ''}
-                            onChange={e => this.onColumnChange(key, 'name', e)}
-                            placeholder="Name"/>
+                               className={item.error ? 'is-invalid' : ''}
+                               onChange={e => this.onColumnChange(key, 'name', e)}
+                               placeholder="Name"/>
                     </div>
                     <div className="col-5">
                         <select disabled={disabled} className="form-control"
-                            value={item.type}
-                            onChange={e => this.onColumnChange(key, 'type', e)}>
+                                value={item.type}
+                                onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
                                 return <option key={k} value={type}>{type}</option>;
                             })}
@@ -253,7 +274,8 @@ class DatabaseForm extends Component {
                     </div>
                     {!disabled && !item.isNew &&
                     <div className="col">
-                        <a onClick={() => this.deleteColumn(key)} href='#' className="btn btn-danger"><i className="fa fa-trash"></i></a>
+                        <a onClick={() => this.showDeleteConfirmationModal(item)} href='#'
+                           className="btn btn-danger"><i className="fa fa-trash"></i></a>
                     </div>}
                 </div>
             </div>;
@@ -261,11 +283,27 @@ class DatabaseForm extends Component {
 
         return (
             <div className="database container-fluid">
+                <Modal
+                    size={Size.medium}
+                    id={'delete-column'}
+                    title={`Deleting column \"${deletingColumn?.origin}\"`}
+                    showCloseButton={true}
+                    closeButtonTitle='Abort'
+                    showSaveButton={true}
+                    saveButtonTitle='OK'
+                    saveButtonColor='danger'
+                    saveButtonAction={this.deleteColumn}
+                    show={deletingColumn != null}
+                >
+                    <p className={'text-danger'}>
+                        Be careful - this will also delete the column in clickhouse table!
+                    </p>
+                </Modal>
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{isNew ? 'Create new table' : 'Update table'}</h3>
                         <Button className="float-right" color={'success'}
-                            onClick={this.onSubmit} isLoading={isLoading}>
+                                onClick={this.onSubmit} isLoading={isLoading}>
                             {isNew ? 'Create table' : 'Update table'}
                         </Button>
 
@@ -282,7 +320,9 @@ class DatabaseForm extends Component {
                             {isNew &&
                             <div className="form-group">
                                 <label>Table TTL</label>
-                                <Input disabled={readonly} placeholder="timestamp + toIntervalMonth(100)" value={ttl} onChange={this.onTTLChange}/>
+                                <Input disabled={readonly}
+                                       placeholder="timestamp + toIntervalMonth(100)" value={ttl}
+                                       onChange={this.onTTLChange}/>
                             </div>}
                             <div className="form-group">
                                 <label htmlFor="exampleInputPassword1">Column</label>
@@ -312,6 +352,7 @@ class DatabaseForm extends Component {
             </div>
         );
     }
+
 }
 
 ReactDOM.render(<DatabaseForm/>, document.querySelector('#root'));
