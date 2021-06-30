@@ -19,7 +19,7 @@ const LogViewActions = {
         return request(url, {method: 'GET'});
     },
 
-    updateColumnSetting(uuid, column, visible, index) {
+    updateColumnSetting(uuid, column, visible, index, width = '') {
         if (!uuid) {
             return;
         }
@@ -29,7 +29,8 @@ const LogViewActions = {
         const body = JSON.stringify({
             column,
             visible: visible ? 1 : 0,
-            index
+            index,
+            width,
         });
 
         return request(url, {method: 'PUT', body});

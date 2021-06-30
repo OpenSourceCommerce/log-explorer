@@ -294,6 +294,9 @@ class DatabaseForm extends Component {
                     saveButtonColor='danger'
                     saveButtonAction={this.deleteColumn}
                     show={deletingColumn != null}
+                    onHidden={() => {
+                        this.setState({deletingColumn: null})
+                    }}
                 >
                     <p className={'text-danger'}>
                         Be careful - this will also delete the column in clickhouse table!

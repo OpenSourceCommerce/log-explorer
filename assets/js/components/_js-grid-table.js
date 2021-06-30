@@ -87,27 +87,6 @@ export class JsGridTable extends Component {
                 },
 
                 fields,
-
-                onDataLoaded: function (args) {
-                    $("#jsGrid1 th").css('white-space', 'nowrap').each(function (index) {
-                        var currentWidth = parseInt($(this).width());
-                        var maxLength = $(this).text().length;
-
-                        $("#jsGrid1 tr").each(function (idx) {
-                            maxLength = $(this).find("td").eq(index).text().length > maxLength ? $(this).find("td").eq(index).text().length : maxLength;
-                        });
-                        maxLength = maxLength * 10;
-
-                        var $with = 'auto';
-                        if (maxLength < currentWidth || maxLength < 120) {
-                            $with = maxLength.toString() + "px";
-                        }
-                        $(this).css("width", $with);
-                        $("#jsGrid1 tr").each(function (i) {
-                            $(this).find("td").eq(index).css("width", $with);
-                        });
-                    });
-                },
             });
 
             if (liveRefresh) {
