@@ -37,6 +37,24 @@ Options:
       --user                 Create normal user, default is ADMIN
   -h, --help                 Display this help message
 ```
+## Create new table by console.
+
+Example
+
+`php bin/console app:createtable apache_access -f status:Int16 -f method:String -f size:Int16 -f referer:String -f createdAt:DateTime --ttl='timestamp:3:MONTH'`
+
+Usage:
+```
+app:createtable [options] [--] []
+
+Arguments:
+name Table name
+
+Options:
+-f, --fields=FIELDS Table column. status:Int16 (multiple values allowed)
+-t, --ttl[=TTL] Time to life {column_name}:{interval}:{type}
+Ex: timestamp:3:month -> "TTL timestamp + INTERVAL 3 MONTH"
+```
 
 ## Sample data
 - Command to create sample table `nginx_access`

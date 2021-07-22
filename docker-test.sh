@@ -25,7 +25,8 @@ echo "CREATE test database"
 docker-compose exec mysql bash -c "mysql -uroot -proot -e \"CREATE DATABASE IF NOT EXISTS test;GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%';\""
 
 echo "COMPOSER INSTALL"
-docker-compose exec php bash -c "composer install --no-plugins --no-scripts --no-interaction --prefer-dist --optimize-autoloader"
+docker-compose exec php bash -c "composer self-update"
+docker-compose exec php bash -c "composer install --no-interaction --prefer-dist --optimize-autoloader"
 
 echo "CLEAR CACHE"
 docker-compose exec php bash -c "php bin/console cache:clear --env=\"test\""
