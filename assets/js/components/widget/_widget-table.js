@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import '../../../styles/component/_widget-table.scss';
 
 export class WidgetTable extends Component {
     render() {
@@ -7,7 +8,7 @@ export class WidgetTable extends Component {
 
         const Row = ({label, value, isHeader}) => (
             <div
-                className={`${!isHeader ? 'border-top' : ''} row widget-table-row pt-2 pb-2 mr-4 ml-4`} >
+                className={`${!isHeader ? 'border-top widget-table-row' : 'widget-table-header'} row pt-2 pb-2 mr-4 ml-4`} >
                 <a
                     className={`label-col col-8 p-0`} onMouseDown={(event) => {
                     event.stopPropagation();
@@ -19,16 +20,16 @@ export class WidgetTable extends Component {
 
         return (
             <>
-                {data && data.length > 0 ? <>
+                {data && data.length > 0 ? <div className="overflow-auto">
                     {(isDashboardComponent) && <Row label={column ||  '<Select column name>'} isHeader={isDashboardComponent}/>}
-                    <div className="widget-table">
+                    <div className="widget-table-content">
                         {data.map((item, index) => {
                             return <Row {...item}
                                         key={index}
                             />
                         })}
                     </div>
-                </> : <p className="d-flex justify-content-center p-3"> No data </p>}
+                </div> : <p className="d-flex justify-content-center p-3"> No data </p>}
             </>
         );
     }

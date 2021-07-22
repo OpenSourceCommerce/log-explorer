@@ -1,0 +1,17 @@
+.widget-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: white;
+}
+.widget-table-row, .widget-table-header {
+  a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      overflow: auto;
+      white-space: normal;
+    }
+  }
+}
