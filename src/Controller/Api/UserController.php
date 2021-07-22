@@ -57,6 +57,7 @@ class UserController extends ApiController
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userService->createUser($form->getData());
+            $this->addFlash('success', 'New user has been created.');
             return $this->responseSuccess([
                 'redirect' => $urlGenerator->generate('user_update', ['id' => $user->getId()]),
                 'id' => $user->getId(),
