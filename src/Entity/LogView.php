@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LogViewRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -54,11 +56,17 @@ class LogView implements \JsonSerializable
      */
     private $graph;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LogViewQuery::class, mappedBy="logView", orphanRemoval=true)
+     */
+    private $queries;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
         $this->summary = [];
         $this->logViewColumns = [];
+        $this->queries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +155,36 @@ class LogView implements \JsonSerializable
     public function setLogViewColumn(?array $logViewColumn): self
     {
         $this->logViewColumns = $logViewColumn;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LogViewQuery[]
+     */
+    public function getQueries(): Collection
+    {
+        return $this->queries;
+    }
+
+    public function addQuery(LogViewQuery $query): self
+    {
+        if (!$this->queries->contains($query)) {
+            $this->queries[] = $query;
+            $query->setLogView($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuery(LogViewQuery $query): self
+    {
+        if ($this->queries->removeElement($query)) {
+            // set the owning side to null (unless already changed)
+            if ($query->getLogView() === $this) {
+                $query->setLogView(null);
+            }
+        }
 
         return $this;
     }

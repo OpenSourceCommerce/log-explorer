@@ -14,11 +14,9 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fields: [],
             logViews: [],
-            isRetrieveAllData: false,
-            isLive: true,
-            disableLive: false,
+            isLive: false,
+            disableLive: true,
             interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
@@ -43,20 +41,8 @@ class Index extends Component {
             return;
         }
 
-        LogTableActions.getColumns(selectedTable.uuid).then(response => {
-            const {data, error} = response;
-            if (error) {
-                return;
-            }
-
-            this.setState({
-                fields: data,
-                isRetrieveAllData: true
-            });
-        }).then(() => {
-            Live.refresh();
-            window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
-        });
+        Live.refresh();
+        window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
     }
 
     loadLogView = async() => {
@@ -87,37 +73,39 @@ class Index extends Component {
             uuid = selectedTable.uuid;
         }
 
-        const { disableLive, dateRange } = this.state;
+        let {isLive, disableLive, dateRange } = this.state;
 
         let newDateRange = { ...dateRange };
 
         let isDisableLive = disableLive;
-        const cData = getDataFromCookies(uuid) ||  '';
+        const cData = getDataFromCookies(uuid) ||  '{}';
         let dateRangeValue;
-        if (cData) {
-            const dateRangeLabel = JSON.parse(cData).label || '';
+        if (cData !== '{}') {
+            const cDataObject = JSON.parse(cData);
+            const dateRangeLabel = cDataObject.label || '';
             if (dateRangeLabel !== 'Custom Range') {
                 dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
                 if (dateRangeValue) {
                     newDateRange = { ...dateRangeValue };
                     isDisableLive = !Number.isInteger(newDateRange.fromValue);
+                    isLive = cDataObject.isLive == 1;
                 }
             } else {
-                dateRangeValue = JSON.parse(cData);
-                newDateRange.label = dateRangeValue.label;
-                newDateRange.from = moment.unix(dateRangeValue.from);
-                newDateRange.to = moment.unix(dateRangeValue.to);
+                newDateRange.label = cDataObject.label;
+                newDateRange.from = moment.unix(cDataObject.from);
+                newDateRange.to = moment.unix(cDataObject.to);
                 isDisableLive = true;
+                isLive = false;
             }
         } else {
-            this.setDataCookies(uuid, {label: dateRange.label});
+            this.setDataCookies(uuid, {label: dateRange.label, isLive: (isLive ? 1 : 0)});
         }
 
         this.setState({
             logViews: data,
             selectedTable,
             disableLive: isDisableLive,
-            isLive: !isDisableLive,
+            isLive: isLive,
             dateRange: {...newDateRange},
         }, () => {
             const {logViews, isLive} = this.state;
@@ -167,7 +155,7 @@ class Index extends Component {
     }
 
     handleRealTimeClicked(event) {
-        const {interval} = this.state;
+        const {interval, selectedTable} = this.state;
         const {checked} = event.target;
         this.setState({
             isLive: checked
@@ -177,6 +165,9 @@ class Index extends Component {
         } else {
             Live.pause();
         }
+        const cData = JSON.parse(getDataFromCookies(uuid) ||  '{}');
+        cData.isLive = checked ? 1 : 0;
+        this.setDataCookies(selectedTable.uuid, cData);
     }
 
     onDateRangeChanged(from, to, dateRange) {
@@ -186,6 +177,7 @@ class Index extends Component {
                 // isLive: false,
                 disableLive: true
             });
+            dateRange.isLive = 0;
             Live.pause();
         } else if (!to) {
             this.setState({
@@ -195,6 +187,7 @@ class Index extends Component {
             if (isLive) {
                 Live.start(interval);
             }
+            dateRange.isLive = isLive ? 1 : 0;
         }
 
         this.setDataCookies(selectedTable.uuid, dateRange);

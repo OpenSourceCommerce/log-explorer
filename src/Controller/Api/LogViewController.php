@@ -71,6 +71,19 @@ class LogViewController extends ApiController
             'graph' => $graph,
             'summary' => $logView->getSummary(),
             'columns' => $columns,
+            'queries' => $logView->getQueries(),
+        ]);
+    }
+
+    /**
+     * @Route("/api/logview/{uuid}/queries", name="logview_queries", methods={"GET"})
+     * @param LogView $logView
+     * @return JsonResponse
+     */
+    public function queries(LogView $logView): JsonResponse
+    {
+        return $this->responseSuccess([
+            'queries' => $logView->getQueries(),
         ]);
     }
 

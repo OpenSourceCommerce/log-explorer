@@ -39,6 +39,9 @@ const LogTableActions = {
     },
     getWidget(uuid, widgetId, filterQuery) {
         return request(`/api/stream/widget/${uuid}/${widgetId}?${new URLSearchParams(this.getOptions({}, filterQuery))}`);
+    },
+    getQueries(uuid) {
+        return request('/api/stream/' + uuid + '/queries');
     }
 };
 
