@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Icon, Button} from '../../components';
-import {UserActions} from '../../actions';
+import {CardHeader, Table, Link, Icon, Button, Modal, Colors, Size} from '../../components';
+import {Alert, UserActions} from '../../actions';
 
 class UserList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             users: [],
-            isLoading: false
+            isLoading: false,
+            newUser: null,
+            deleteUser: null,
         };
         this.onChangeStatus = this.onChangeStatus.bind(this);
         this.onDelete = this.onDelete.bind(this);
@@ -35,6 +37,17 @@ class UserList extends Component {
 
     componentDidMount() {
         this.loadData();
+        const newUser = localStorage.getItem('newUser') && JSON.parse(localStorage.getItem('newUser')).email ? JSON.parse(localStorage.getItem('newUser')).email : null;
+        if (newUser) {
+            this.setState({
+                newUser,
+            }, () => {
+                setTimeout(() => {
+                    localStorage.removeItem('newUser');
+                    this.setState({newUser: null});
+                }, 5000)
+            })
+        }
     }
 
     onChangeStatus(key) {
@@ -63,32 +76,55 @@ class UserList extends Component {
             });
     }
 
-    onDelete(key) {
-        const {users} = this.state;
-        const that = this;
-        that.setState({
-            isLoading: true
-        });
-        UserActions.delete(users[key].id)
-            .then(res => {
-                const {error} = res;
-                if (error) {
-                    return;
-                }
-
-                users.splice(key, 1);
-                that.setState({
-                    users
-                });
-            }).finally(() => {
-                that.setState({
-                    isLoading: false
-                });
-            });
+    onDelete = (key) => {
+        if (key !== 0 ) {
+            this.setState({
+                deleteUser: key
+            })
+            return;
+        }
+        Alert.error('Can not delete your account by yourself')
     }
 
+    deleteConfirmModal = (users, deleteUser) => (
+        <Modal
+            id='delete-user'
+            title='Confirm Delete'
+            children={`Are you sure you want to delete account ${users[deleteUser]?.email} ?`}
+            saveButtonTitle='Delete'
+            closeButtonTitle='Cancel'
+            show={!!deleteUser}
+            saveButtonColor={Colors.red}
+            size={Size.medium}
+            showSaveButton={true}
+            saveButtonAction={() => {
+                this.setState({
+                    isLoading: true
+                });
+                UserActions.delete(users[deleteUser].id).then(res => {
+                    const {error} = res;
+                    if (error) {
+                        Alert.success('Delete successful');
+                        return;
+                    }
+
+                    users.splice(deleteUser, 1);
+                    this.setState({
+                        users,
+                    });
+                    Alert.success('Delete successful');
+                }).finally(() => {
+                    this.setState({
+                        isLoading: false,
+                        deleteUser: false,
+                    });
+                });
+            }}
+        />
+    )
+
     render() {
-        const {users} = this.state;
+        const {users, newUser, deleteUser} = this.state;
 
         const _users = users.map((user, key) => {
             return <tr key={key}>
@@ -110,6 +146,11 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
+                {this.deleteConfirmModal(users, deleteUser)}
+                {newUser && (
+                    <div className="alert alert-success" role="alert">
+                        {`The account ${newUser} has been created.`}
+                    </div>)}
                 <div className="card">
                     <CardHeader title="User management" showCollapseButton={false} showRemoveButton={false}>
                         <Link className={'btn btn-success'} href={'/user/create'}>Create user</Link>
