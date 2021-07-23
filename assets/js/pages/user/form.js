@@ -110,8 +110,7 @@ class UserForm extends Component {
                 }
 
                 if (redirect) {
-                    localStorage.setItem('newUser', JSON.stringify({email}));
-                    window.location.href = '/user';
+                    window.location.href = redirect;
                 } else {
                     Alert.success('Update successful');
                 }
