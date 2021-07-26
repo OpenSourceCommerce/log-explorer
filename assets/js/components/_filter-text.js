@@ -111,7 +111,7 @@ export class FilterText extends Component {
                             if (onBlur) onBlur(e);
                         }}
                     />
-                    <div className='input-group-append'>
+                    {queries && <div className='input-group-append'>
                         <Link className="btn btn-info" data-toggle="dropdown">
                             <Icon name="chevron-down"/>
                         </Link>
@@ -135,13 +135,13 @@ export class FilterText extends Component {
                                 </div>
                             })}
                         </div>
-                    </div>
-                    <div className='input-group-append'>
+                    </div>}
+                    {queries && <div className='input-group-append'>
                         <Button
                             className='btn-success'
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
                         >Save</Button>
-                    </div>
+                    </div>}
                 </div>
             </>
         );
