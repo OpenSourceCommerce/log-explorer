@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Input, Link, NavDivider, NavNotificationItem, Text} from '.';
+import {Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
-import {Dropdown} from "../../../public/build/theme/js/build/js/AdminLTE";
 
 export class FilterText extends Component {
     constructor(props) {
