@@ -22,8 +22,8 @@ export class Sidebar extends Component {
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
-                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
-                {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}
+                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards',
+                    navChild: {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}},
             ];
         }
 
@@ -49,14 +49,23 @@ export class Sidebar extends Component {
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview"
                             role="menu" data-accordion="false">
                             {navList.map((item, index) => {
-                                const {href, type, iconName, label} = item;
-                                return (<li className="nav-item" key={index}>
-                                    <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
-                                        <Icon name={iconName} type={type}
-                                            className="nav-icon"/>
-                                        <p>{label}</p>
-                                    </Link>
-                                </li>
+                                const {href, type, iconName, label, navChild} = item;
+                                return (<>
+                                        <li className="nav-item" key={index}>
+                                            <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
+                                                <Icon name={iconName} type={type}
+                                                      className="nav-icon"/>
+                                                <p>{label}</p>
+                                            </Link>
+                                        </li>
+                                        {navChild && (
+                                            <ul className="nav-sidebar pl-4">
+                                                <Link href={`/${navChild.href}`} className={`nav-link ${navChild.href === featureName[1] ? 'active' : ''}`}>
+                                                    <p>{navChild.label}</p>
+                                                </Link>
+                                            </ul>
+                                        )}
+                                    </>
                                 );
                             })}
                         </ul>
