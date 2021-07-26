@@ -13,5 +13,5 @@ class Password extends Constraint
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
      */
-    public $message = 'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.';
+    public $message = 'Minimum eight characters, at least one special character.';
 }
