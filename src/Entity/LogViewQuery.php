@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="logview_queries")
  * @ORM\HasLifecycleCallbacks
  */
-class LogViewQuery
+class LogViewQuery implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -96,7 +96,7 @@ class LogViewQuery
      */
     public function setCreatedAt(): self
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -111,8 +111,20 @@ class LogViewQuery
      */
     public function setUpdatedAt(): self
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'query' => $this->getQuery(),
+        ];
     }
 }

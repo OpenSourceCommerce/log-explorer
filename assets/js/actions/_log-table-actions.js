@@ -41,7 +41,15 @@ const LogTableActions = {
         return request(`/api/stream/widget/${uuid}/${widgetId}?${new URLSearchParams(this.getOptions({}, filterQuery))}`);
     },
     getQueries(uuid) {
-        return request('/api/stream/' + uuid + '/queries');
+        return request('/api/logview/' + uuid + '/queries');
+    },
+    saveQueries(uuid, data, id = '') {
+        const body = JSON.stringify(data);
+        if (id) {
+            return request('/api/logview/queries/' + id, {method: 'PUT', body});
+        } else {
+            return request('/api/logview/' + uuid + '/queries', {method: 'POST', body});
+        }
     }
 };
 
