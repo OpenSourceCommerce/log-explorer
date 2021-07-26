@@ -66,7 +66,7 @@ class SecurityController extends ApiController
         if (empty($forgot)) {
             throw new TokenNotFoundException();
         }
-        if (!$userTokenService->isInvalid($forgot)) {
+        if ($userTokenService->isInvalid($forgot)) {
             throw new TokenExpiredException();
         }
         $form = $this->createForm(ResetPasswordFormType::class);
