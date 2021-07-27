@@ -13,6 +13,7 @@ export class Modal extends Component {
             size = Size.large,
             showCloseButton = true,
             closeButtonTitle = 'Close',
+            closeButtonAction,
             showSaveButton,
             saveButtonAction,
             saveButtonTitle = 'Save Changes',
@@ -64,7 +65,7 @@ export class Modal extends Component {
                             {children}
                         </div>
                         <div className="modal-footer justify-content-between">
-                            {showCloseButton && <Button type="button" className="btn btn-default"
+                            {showCloseButton && <Button type="button" className="btn btn-default" onClick={closeButtonAction}
                                 data-dismiss="modal">{closeButtonTitle}
                             </Button>}
                             {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
@@ -85,6 +86,7 @@ Modal.propTypes = {
     showCloseButton: PropTypes.bool,
     showSaveButton: PropTypes.bool,
     closeButtonTitle: PropTypes.string,
+    closeButtonAction: PropTypes.func,
     saveButtonAction: PropTypes.func,
     saveButtonTitle: PropTypes.string,
     saveButtonColor: PropTypes.string,
