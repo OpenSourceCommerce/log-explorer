@@ -104,6 +104,9 @@ export class WidgetManagement extends Component {
 
     async onChangeData({name, value}, isUpdateWidget) {
         const mandatoryField = ['title', 'type', 'table', 'order']
+        const {widgetDetail} = this.state
+        let currentValue = widgetDetail.column
+
         if (name) {
             const {errors} = this.state;
 
@@ -131,6 +134,25 @@ export class WidgetManagement extends Component {
                         [name]: true,
                     }
                 }
+            }
+
+            if(name == 'column'){
+                console.log(currentValue)
+                if(!currentValue){
+                    currentValue = []
+                    currentValue.push(value)
+                }else{
+                    const index = currentValue.indexOf(value)
+
+                    if(index >= 0){
+                        currentValue.splice(index, 1)
+                    }else{
+                        currentValue.push(value)
+                    }
+                }
+
+                value = currentValue
+                console.log(value, currentValue)
             }
 
             this.setState((preState) => ({
@@ -300,6 +322,7 @@ export class WidgetManagement extends Component {
                                     type='select'
                                     errors={errors}
                                     disabled={!table}
+                                    multiple={type == WIDGET_TYPE.table}
                                 >
                                     {this.generateOption(columns, 'column')}
                                 </FormField>}
