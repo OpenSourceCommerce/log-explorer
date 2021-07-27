@@ -242,11 +242,12 @@ export class LogViewTableSettingModal extends Component {
                                             isResizable: false
                                         }}>
                                 <div className="row">
-                                    <div className="col-8">
+                                    <div className="col-8 d-flex justify-content-center align-items-center">
                                         {item.title}
                                     </div>
-                                    <div className="col-4">
+                                    <div className="col-4 pl-0 pr-0">
                                         <Input type='text'
+                                               className="pl-2 pr-2"
                                                onClick={(e) => {
                                                    e.stopPropagation()
                                                }}
