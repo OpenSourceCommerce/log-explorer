@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, Colors, Input, Icon} from '../../components';
-import {UserActions, ValidatorHelper} from '../../actions';
+import {UserActions, ValidatorHelper, Alert} from '../../actions';
 import PropTypes from 'prop-types';
 // Import {ToastrHelper, Password} from '../../components';
 // import {Response, ValidatorHelper} from '../..';
@@ -32,6 +32,7 @@ export class ResetPasswordForm extends Component {
 
         UserActions.setPassword(password, token).then(response => {
             if (response.error === 0) {
+                Alert.success('Your password has been updated successfully.')
                 setTimeout(() => {
                     window.location.href = response.redirect;
                 }, 3000);
@@ -121,7 +122,7 @@ export class ResetPasswordForm extends Component {
                             </div>
                         </div>
                     </div>
-                    <small className="form-text text-muted">Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.</small>
+                    <small className="form-text text-muted">Minimum eight characters, at least one special character.</small>
                 </div>
                 <div className="form-group">
                     <div className="input-group mb-3">

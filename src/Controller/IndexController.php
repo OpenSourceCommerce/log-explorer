@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Dashboard;
 use App\Entity\LogView;
+use App\Services\Dashboard\DashboardServiceInterface;
 use App\Services\LogView\LogViewServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,15 @@ class IndexController extends AbstractController
     /**
      * @Route("/", priority=10, name="welcome")
      * @param LogViewServiceInterface $logViewService
+     * @param DashboardServiceInterface $dashboardService
      * @return Response
      */
-    public function welcome(LogViewServiceInterface $logViewService): Response
+    public function welcome(LogViewServiceInterface $logViewService, DashboardServiceInterface $dashboardService): Response
     {
+        $dashboard = $dashboardService->getDefaultDashboard();
+        if ($dashboard && $dashboard->getDashboardWidgets()->count() > 0) {
+            return $this->redirectToRoute('dashboard', ['uuid' => $dashboard->getUuid()]);
+        }
         $logView = $logViewService->getDefault();
         if ($logView) {
             return $this->redirectToRoute('index', ['uuid' => $logView->getUuid()]);
