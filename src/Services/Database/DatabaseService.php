@@ -146,6 +146,7 @@ ORDER BY timestamp\n";
         if (!$this->connection->exec($query)) {
             return false;
         }
+        $this->logViewService->updateTableName($table, $newName);
         return true;
     }
 
