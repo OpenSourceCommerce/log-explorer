@@ -10,7 +10,7 @@ class UserList extends Component {
             users: [],
             isLoading: false,
             newUser: null,
-            deleteUser: null,
+            userSelected: null,
         };
         this.onChangeStatus = this.onChangeStatus.bind(this);
         this.onDelete = this.onDelete.bind(this);
@@ -79,7 +79,7 @@ class UserList extends Component {
     onDelete = (key) => {
         if (key !== 0 ) {
             this.setState({
-                deleteUser: key
+                userSelected: key
             })
             return;
         }
@@ -97,6 +97,11 @@ class UserList extends Component {
             saveButtonColor={Colors.red}
             size={Size.medium}
             showSaveButton={true}
+            closeButtonAction={() => {
+                this.setState({
+                    userSelected: false,
+                })
+            }}
             saveButtonAction={() => {
                 this.setState({
                     isLoading: true
@@ -104,7 +109,7 @@ class UserList extends Component {
                 UserActions.delete(users[deleteUser].id).then(res => {
                     const {error} = res;
                     if (error) {
-                        Alert.success('Delete successful');
+                        Alert.error('You cant this account');
                         return;
                     }
 
@@ -116,7 +121,7 @@ class UserList extends Component {
                 }).finally(() => {
                     this.setState({
                         isLoading: false,
-                        deleteUser: false,
+                        userSelected: false,
                     });
                 });
             }}
@@ -124,7 +129,7 @@ class UserList extends Component {
     )
 
     render() {
-        const {users, newUser, deleteUser} = this.state;
+        const {users, newUser, userSelected} = this.state;
 
         const _users = users.map((user, key) => {
             return <tr key={key}>
@@ -146,7 +151,7 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
-                {this.deleteConfirmModal(users, deleteUser)}
+                { this.deleteConfirmModal(users, userSelected)}
                 {newUser && (
                     <div className="alert alert-success" role="alert">
                         {`The account ${newUser} has been created.`}
