@@ -61,11 +61,14 @@ class UserList extends Component {
         UserActions.setStatus(user.id, {is_active: newStatus})
             .then(res => {
                 const {error} = res;
+                const strMessage = newStatus ? 'Enable' : 'Disable';
                 if (error) {
+                    Alert.error(`You cant ${strMessage} this user`);
                     return;
                 }
 
                 users[key].is_active = newStatus;
+                Alert.success(`${strMessage} successful`);
                 that.setState({
                     users
                 });
