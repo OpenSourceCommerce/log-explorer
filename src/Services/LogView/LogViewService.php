@@ -250,4 +250,14 @@ class LogViewService implements LogViewServiceInterface
         $logView->setLogViewColumn($columns);
         $this->save($logView);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateTableName(string $table, string $newName)
+    {
+        $logView = $this->findByTable($table);
+        $logView->setTable($newName);
+        $this->save($logView);
+    }
 }

@@ -81,4 +81,10 @@ interface LogViewServiceInterface
      * @param bool $visible
      */
     public function setVisibleColumns(LogView $logView, bool $visible);
+
+    /**
+     * @param string $table
+     * @param string $newName
+     */
+    public function updateTableName(string $table, string $newName);
 }
