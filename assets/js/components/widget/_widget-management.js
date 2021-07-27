@@ -103,7 +103,6 @@ export class WidgetManagement extends Component {
     }
 
     async onChangeData({name, value}, isUpdateWidget) {
-        value = value.trim()
         const mandatoryField = ['title', 'type', 'table', 'order']
         const {widgetDetail} = this.state
 
@@ -141,6 +140,8 @@ export class WidgetManagement extends Component {
             }
 
             if (name == 'column' && widgetDetail.type == WIDGET_TYPE.table) {
+                value = value.trim()
+
                 let currentValue = widgetDetail.column
 
                 if (typeof currentValue === 'string') {
