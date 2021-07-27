@@ -205,28 +205,24 @@ export class WidgetManagement extends Component {
             }
         });
 
-        try {
-            const resp = await WidgetActions.createOrUpdate(id, data);
+        const resp = await WidgetActions.createOrUpdate(id, data);
 
-            if (resp && !resp.error) {
-                Alert.success(`${id ? 'Update' : 'Add new' } successful`);
-                if (resp.redirect) {
-                    window.location.href = resp.redirect;
-                    return;
-                } else {
-                    this.setState({
-                        initialData: {...widgetDetail},
-                    })
-                }
+        if (resp && !resp.error) {
+            Alert.success(`${id ? 'Update' : 'Add new' } successful`);
+            if (resp.redirect) {
+                window.location.href = resp.redirect;
                 return;
             } else {
-                const {fields} = resp;
                 this.setState({
-                    errors: {...fields},
+                    initialData: {...widgetDetail},
                 })
             }
-        } catch (e) {
-            Alert.error(e || 'Cant save new information');
+            return;
+        } else {
+            const {fields} = resp;
+            this.setState({
+                errors: {...fields},
+            })
         }
     }
 
@@ -333,15 +329,15 @@ export class WidgetManagement extends Component {
                                         {this.generateOption(null, 'size')}
                                     </FormField>}
                                 </div>
-                                <FormField
-                                    label='Filter'
-                                    value={query}
-                                    placeholder="status = 200 AND url LIKE '%product%'"
-                                    fieldName='query'
-                                    onChange={(e) => this.onChangeData(e.target)}
-                                    isMandatory={false}
-                                    errors={errors}
-                                />
+                                <div className='form-field form-group'>
+                                    <label>Filter</label>
+                                    <FilterText
+                                        fieldName='query'
+                                        value={query}
+                                        placeholder="status = 200 AND url LIKE '%product%'"
+                                        onBlur={(e) => this.onChangeData(e.target)}
+                                    />
+                                </div>
                                 <div className="row">
                                     <div className="col-12 col-md-6 btn-action-group">
                                         <Button className="btn-search w-100 mt-0 mt-md-2"

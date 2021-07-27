@@ -213,7 +213,7 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
         return $this->query;
     }
 
-    public function setQuery(string $query): self
+    public function setQuery(?string $query): self
     {
         $this->query = $query;
 

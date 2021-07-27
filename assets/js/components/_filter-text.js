@@ -1,19 +1,25 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Input} from '.';
+import {Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
+import {Button} from "./_button";
 
 export class FilterText extends Component {
     constructor(props) {
         super(props);
 
-        const {value} = this.props;
+        let {value} = this.props;
+        if (!value) {
+            value = '';
+        }
         this.state = {
             isInvalid: false,
             value,
+            query: null,
         };
         this.onKeyUp = this.onKeyUp.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.onSaveClicked = this.onSaveClicked.bind(this);
     }
 
     componentDidMount() {
@@ -44,8 +50,41 @@ export class FilterText extends Component {
         }
     }
 
+    setQuery(query) {
+        this.setState({
+            value: query.query,
+            query: query
+        }, () => {
+            Live.refresh();
+        })
+    }
+
+    onSaveClicked(item = false) {
+        let {query, value} = this.state;
+        const {queries, onSaveClicked} = this.props;
+
+        if (item) {
+            onSaveClicked(item);
+            return;
+        }
+
+        if (query) {
+            if (query.query === $.trim(value)) {
+                return;
+            }
+        }
+
+        query = {
+            query: value,
+            name: query.name,
+            id: null
+        }
+
+        onSaveClicked(query);
+    }
+
     render() {
-        const {placeholder, label, ...rest} = this.props;
+        const {placeholder, label, queries, ...rest} = this.props;
         const {isInvalid, value} = this.state;
         let className = `${this.props.className} input-search`;
         if (isInvalid) {
@@ -55,21 +94,58 @@ export class FilterText extends Component {
         return (
             <>
                 {label &&  <p className="float-left mb-1">{label}</p>}
-                <Input
-                    className={`form-group ${className}`}
-                    id="filter-text"
-                    type="search"
-                    name="query"
-                    value={value}
-                    placeholder={placeholder}
-                    aria-label="Search"
-                    onKeyUp={this.onKeyUp}
-                    onChange={this.handleChange}
-                    onBlur={(e) => {
-                        const {onBlur} = this.props;
-                        if (onBlur) onBlur(e);
-                    }}
-                />
+                <div className='input-group'>
+                    <Input
+                        className={`form-group ${className}`}
+                        id="filter-text"
+                        type="search"
+                        name="query"
+                        value={value}
+                        placeholder={placeholder}
+                        aria-label="Search"
+                        onKeyUp={this.onKeyUp}
+                        onChange={this.handleChange}
+                        onBlur={(e) => {
+                            const {onBlur} = this.props;
+                            if (onBlur) onBlur(e);
+                        }}
+                    />
+                    {queries && <div className='input-group-append'>
+                        <Link className="btn btn-info" data-toggle="dropdown">
+                            <Icon name="chevron-down"/>
+                        </Link>
+                        <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                            {queries.length === 0 && <>
+                                <Link className="dropdown-item dropdown-footer">
+                                    No item saved
+                                </Link>
+                            </>}
+                            {queries.map((query, key) => {
+                                return <div key={key}>
+                                    <div onClick={(e) => {e.preventDefault();this.setQuery(query)}}
+                                        className="dropdown-item dropdown-footer"
+                                    >
+                                        <Link>{query.name}</Link>
+                                        <Link className={'float-right'} onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            this.onSaveClicked(query)
+                                        }}>
+                                            <i className={'fa fa-edit'}></i>
+                                        </Link>
+                                    </div>
+                                    <NavDivider/>
+                                </div>
+                            })}
+                        </div>
+                    </div>}
+                    {queries && <div className='input-group-append'>
+                        <Button
+                            className='btn-success'
+                            onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
+                        >Save</Button>
+                    </div>}
+                </div>
             </>
         );
     }
@@ -78,5 +154,7 @@ export class FilterText extends Component {
 FilterText.propTypes = {
     className: PropTypes.string,
     label: PropTypes.string,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    onSaveClicked: PropTypes.func,
+    queries: PropTypes.array
 };

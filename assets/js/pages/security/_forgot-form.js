@@ -27,9 +27,18 @@ export class ForgotForm extends Component {
         UserActions.forgot(this.state.email).then(response => {
             if (response.error === 0) {
                 this.reset();
+                this.setState({
+                    message: {
+                        type: 'success',
+                        message: 'We have sent you an email to reset your password. Please follow the instruction to reset your password!'
+                    }
+                });
             } else {
                 this.setState({
-                    emailError: response.fields.email
+                    message: {
+                        type: 'danger',
+                        message: response.fields.email
+                    }
                 });
             }
         });
@@ -38,18 +47,19 @@ export class ForgotForm extends Component {
     reset() {
         this.setState({
             email: '',
-            emailError: ''
         });
         $('#email').focus();
     }
 
     render() {
+        const {message, email} = this.state
+
         return (
             <form onSubmit={this.handleSubmit}>
-                {this.state.emailError &&
-                <div className="alert alert-danger">
+                {message &&
+                <div className={`alert alert-${message.type}`}>
                     <div className="alert-message">
-                        {this.state.emailError}
+                        {message.message}
                     </div>
                 </div>
                 }
@@ -57,7 +67,7 @@ export class ForgotForm extends Component {
                     <Input type="email"
                         id="email"
                         name="email"
-                        value={this.state.email}
+                        value={email}
                         onChange={this.handleChange}
                         required="required"
                         autoFocus={true}

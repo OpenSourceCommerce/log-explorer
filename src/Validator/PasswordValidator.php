@@ -13,9 +13,9 @@ class PasswordValidator extends ConstraintValidator
         $lowercase = preg_match('@[a-z]@', $value);
         $number = preg_match('@[0-9]@', $value);
         $specialCharacter = preg_match('@[^\w]@', $value);
-        $minimumEightCharacters = (strlen($value) >= 8) ?? false;
+        $minimumEightCharacters = (strlen(trim($value)) >= 8) ?? false;
 
-        if ($uppercase && $lowercase && $number && $specialCharacter && $minimumEightCharacters) {
+        if (($uppercase || $lowercase || $number) && $specialCharacter && $minimumEightCharacters) {
             return;
         }
 

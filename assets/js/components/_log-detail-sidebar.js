@@ -4,6 +4,10 @@ import { ControlSidebar, Link } from '.';
 import '../../styles/component/_log_detail_sidebar.scss';
 
 export class LogDetailSidebar extends Component {
+    constructor(props) {
+        super(props);
+        this.wrapperRef = React.createRef();
+    }
     copyToClipboard(e, type) {
         e.preventDefault();
         const {item} = this.props;
@@ -48,6 +52,20 @@ export class LogDetailSidebar extends Component {
         el.remove();
     }
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside,  false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside, false);
+    }
+
+    handleClickOutside = (event) => {
+        if (!this.wrapperRef.current.contains(event.target)) {
+            this.props.onCloseLogDetailSideBar();
+        }
+    }
+
     render() {
         const {item} = this.props;
 
@@ -67,32 +85,34 @@ export class LogDetailSidebar extends Component {
         });
 
         return (
-            <ControlSidebar
-                className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
-                title={'Detail'}
-                visible={true}
-                {...this.props}
-                headerActions={
-                    <>
-                        <Link onClick={e => this.copyToClipboard(e, 'csv')}
-                              className={'dropdown-item'} href={'#'}>Copy as CSV</Link>
-                        <Link onClick={e => this.copyToClipboard(e, 'json')}
-                              className={'dropdown-item'} href={'#'}>Copy as JSON</Link>
-                    </>
-                }
-            >
-                <ul className="p-0">
-                    {dataDisplay.map((item, index) => (
-                        <div
-                            key={index}>
-                            <h5>{item.label}</h5>
-                            <p>
-                                {item.value || 'No data'}
-                            </p>
-                        </div>
-                    ))}
-                </ul>
-            </ControlSidebar>
+            <div ref={this.wrapperRef}>
+                <ControlSidebar
+                    className={`log-detail-sidebar overflow-auto ${item ? 'open' : 'close'}`}
+                    title={'Detail'}
+                    visible={true}
+                    {...this.props}
+                    headerActions={
+                        <>
+                            <Link onClick={e => this.copyToClipboard(e, 'csv')}
+                                  className={'dropdown-item'} href={'#'}>Copy as CSV</Link>
+                            <Link onClick={e => this.copyToClipboard(e, 'json')}
+                                  className={'dropdown-item'} href={'#'}>Copy as JSON</Link>
+                        </>
+                    }
+                >
+                    <ul className="p-0">
+                        {dataDisplay.map((item, index) => (
+                            <div
+                                key={index}>
+                                <h5>{item.label}</h5>
+                                <p>
+                                    {item.value || 'No data'}
+                                </p>
+                            </div>
+                        ))}
+                    </ul>
+                </ControlSidebar>
+            </div>
         );
     }
 }
