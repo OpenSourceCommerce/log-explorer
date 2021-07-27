@@ -4,21 +4,21 @@ import {
     AdvancedSearch,
     Summary,
     FlotChart,
-    LogViewTable
+    LogViewTable, Size
 } from '../../components';
 import {Live, LogTableActions, Event, LogViewActions, DatabaseActions, Alert} from '../../actions';
 import '../../../styles/pages/index.scss';
 import {DATE_RANGE, getDataFromCookies, setDataToCookies} from "../../utils";
+import {Modal} from "../../components/_modal";
+import {Input} from "../../components/_input";
 
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fields: [],
             logViews: [],
-            isRetrieveAllData: false,
-            isLive: true,
-            disableLive: false,
+            isLive: false,
+            disableLive: true,
             interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
@@ -28,35 +28,44 @@ class Index extends Component {
                 to: DATE_RANGE[0].to,
                 label: DATE_RANGE[0].label,
             },
+            queries: [],
+            showQueryModal: false,
+            queryModalQuery: {},
         };
 
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
         this.setSelectedTable = this.setSelectedTable.bind(this);
         this.syncAll = this.syncAll.bind(this);
+        this.onSubmitQuery = this.onSubmitQuery.bind(this);
+        this.onQuerySave = this.onQuerySave.bind(this);
+        this.onQueryModelChange = this.onQueryModelChange.bind(this);
     }
 
     loadData() {
-        const {selectedTable} = this.state;
+        const {selectedTable, queries} = this.state;
 
         if (!selectedTable) {
             return;
         }
 
-        LogTableActions.getColumns(selectedTable.uuid).then(response => {
-            const {data, error} = response;
-            if (error) {
-                return;
-            }
+        const that = this;
 
-            this.setState({
-                fields: data,
-                isRetrieveAllData: true
-            });
-        }).then(() => {
-            Live.refresh();
-            window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
-        });
+        if (queries[selectedTable.uuid] === undefined) {
+            LogTableActions.getQueries(selectedTable.uuid)
+                .then(res => {
+                    const {error, data} = res;
+                    if (error === 0) {
+                        queries[selectedTable.uuid] = data;
+                        that.setState({
+                            queries: queries
+                        })
+                    }
+                });
+        }
+
+        Live.refresh();
+        window.history.pushState('logview', selectedTable.name, '/log-view/' + selectedTable.uuid);
     }
 
     loadLogView = async() => {
@@ -87,37 +96,39 @@ class Index extends Component {
             uuid = selectedTable.uuid;
         }
 
-        const { disableLive, dateRange } = this.state;
+        let {isLive, disableLive, dateRange } = this.state;
 
         let newDateRange = { ...dateRange };
 
         let isDisableLive = disableLive;
-        const cData = getDataFromCookies(uuid) ||  '';
+        const cData = getDataFromCookies(uuid) ||  '{}';
         let dateRangeValue;
-        if (cData) {
-            const dateRangeLabel = JSON.parse(cData).label || '';
+        if (cData !== '{}') {
+            const cDataObject = JSON.parse(cData);
+            const dateRangeLabel = cDataObject.label || '';
             if (dateRangeLabel !== 'Custom Range') {
                 dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
                 if (dateRangeValue) {
                     newDateRange = { ...dateRangeValue };
                     isDisableLive = !Number.isInteger(newDateRange.fromValue);
+                    isLive = cDataObject.isLive == 1;
                 }
             } else {
-                dateRangeValue = JSON.parse(cData);
-                newDateRange.label = dateRangeValue.label;
-                newDateRange.from = moment.unix(dateRangeValue.from);
-                newDateRange.to = moment.unix(dateRangeValue.to);
+                newDateRange.label = cDataObject.label;
+                newDateRange.from = moment.unix(cDataObject.from);
+                newDateRange.to = moment.unix(cDataObject.to);
                 isDisableLive = true;
+                isLive = false;
             }
         } else {
-            this.setDataCookies(uuid, {label: dateRange.label});
+            this.setDataCookies(uuid, {label: dateRange.label, isLive: (isLive ? 1 : 0)});
         }
 
         this.setState({
             logViews: data,
             selectedTable,
             disableLive: isDisableLive,
-            isLive: !isDisableLive,
+            isLive: isLive,
             dateRange: {...newDateRange},
         }, () => {
             const {logViews, isLive} = this.state;
@@ -167,7 +178,7 @@ class Index extends Component {
     }
 
     handleRealTimeClicked(event) {
-        const {interval} = this.state;
+        const {interval, selectedTable} = this.state;
         const {checked} = event.target;
         this.setState({
             isLive: checked
@@ -177,6 +188,9 @@ class Index extends Component {
         } else {
             Live.pause();
         }
+        const cData = JSON.parse(getDataFromCookies(uuid) ||  '{}');
+        cData.isLive = checked ? 1 : 0;
+        this.setDataCookies(selectedTable.uuid, cData);
     }
 
     onDateRangeChanged(from, to, dateRange) {
@@ -186,6 +200,7 @@ class Index extends Component {
                 // isLive: false,
                 disableLive: true
             });
+            dateRange.isLive = 0;
             Live.pause();
         } else if (!to) {
             this.setState({
@@ -195,6 +210,7 @@ class Index extends Component {
             if (isLive) {
                 Live.start(interval);
             }
+            dateRange.isLive = isLive ? 1 : 0;
         }
 
         this.setDataCookies(selectedTable.uuid, dateRange);
@@ -204,16 +220,65 @@ class Index extends Component {
         }, () => Live.refresh());
     }
 
+    onSubmitQuery(query) {
+        this.setState({
+            showQueryModal: true,
+            queryModalQuery: query
+        })
+    }
+
+    onQuerySave() {
+        const that = this;
+        let {queryModalQuery, selectedTable, queries} = this.state;
+        LogTableActions.saveQueries(selectedTable.uuid, queryModalQuery, queryModalQuery.id)
+            .then(res => {
+                const {error, query} = res;
+                if (error === 0) {
+                    if (queryModalQuery.id) {
+                        Alert.success('Update successful');
+                        let selectedQueries = queries[selectedTable.uuid];
+                        for (let i = 0; i < selectedQueries.length; i++) {
+                            if (selectedQueries[i].id === query.id) {
+                                queries[selectedTable.uuid][i] = query;
+                                break;
+                            }
+                        }
+                    } else {
+                        Alert.success('Create successful');
+                        queries[selectedTable.uuid].push(query);
+                    }
+                    that.setState({
+                        queryModalQuery: {},
+                        showQueryModal: false,
+                        queries: queries
+                    })
+                }
+            })
+    }
+
+    onQueryModelChange(e) {
+        let {queryModalQuery} = this.state;
+        queryModalQuery[e.target.name] = e.target.value;
+        this.setState({queryModalQuery});
+    }
+
     render() {
         const {
             isLive,
             disableLive,
             logViews,
             selectedTable,
-            dateRange
+            dateRange,
+            queries,
+            showQueryModal,
+            queryModalQuery
         } = this.state;
 
         const uuid = selectedTable ? selectedTable.uuid : null;
+
+        const selectedQueries = queries[uuid] || [];
+
+        const {query, name} = queryModalQuery;
 
         return (
             <div className="dashboard-page container-fluid">
@@ -225,6 +290,8 @@ class Index extends Component {
                             selected={selectedTable}
                             onSelected={this.setSelectedTable}
                             dateRange={dateRange}
+                            queries={selectedQueries}
+                            onSaveClicked={this.onSubmitQuery}
                         />
                         <div className="float-chart row justify-content-start flex-md-wrap">
                             <div className="col-12">
@@ -241,6 +308,32 @@ class Index extends Component {
 
                             <LogViewTable selectedTable={selectedTable}/>
                         </div>
+                        <Modal title={'Query'}
+                               id={'query'}
+                               size={Size.large}
+                               saveButtonTitle={'Save'}
+                               showSaveButton={true}
+                               show={showQueryModal}
+                               saveButtonAction={this.onQuerySave}
+                               >
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <Input
+                                        name='name'
+                                        placeholder='Query name'
+                                        defaultValue={name}
+                                        onChange={this.onQueryModelChange}
+                                    />
+                                </div>
+                                <div className='col-12 mt-3'>
+                                    <Input
+                                        name='query'
+                                        defaultValue={query}
+                                        onChange={this.onQueryModelChange}
+                                    />
+                                </div>
+                            </div>
+                        </Modal>
                     </>
                 ) : (
                     <div className="spinner text-center position-absolute">

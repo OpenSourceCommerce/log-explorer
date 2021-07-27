@@ -24,11 +24,12 @@ export class JsGridTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {logview, fields} = this.props;
+        const {logview, fields, updated} = this.props;
         const prevLogview = prevProps.logview;
         const prevFields = prevProps.fields;
+        const prevUpdated = prevProps.updated;
 
-        if (logview !== prevLogview || fields !== prevFields) {
+        if (updated && prevUpdated === false) {
             this.loadData();
         }
     }

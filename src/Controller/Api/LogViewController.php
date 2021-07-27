@@ -5,10 +5,13 @@ namespace App\Controller\Api;
 
 
 use App\Entity\LogView;
+use App\Entity\LogViewQuery;
 use App\Form\LogViewColumnType;
+use App\Form\LogViewQueryType;
 use App\Services\Clickhouse\Connection;
 use App\Services\LogView\LogViewServiceInterface;
 use App\Form\ColumnsType;
+use App\Services\LogViewQuery\LogViewQueryServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,7 +74,66 @@ class LogViewController extends ApiController
             'graph' => $graph,
             'summary' => $logView->getSummary(),
             'columns' => $columns,
+            'queries' => $logView->getQueries(),
         ]);
+    }
+
+    /**
+     * @Route("/api/logview/{uuid}/queries", name="logview_queries", methods={"GET"})
+     * @param LogView $logView
+     * @return JsonResponse
+     */
+    public function queries(LogView $logView): JsonResponse
+    {
+        return $this->responseSuccess([
+            'data' => $logView->getQueries()->toArray(),
+        ]);
+    }
+
+    /**
+     * @Route("/api/logview/{uuid}/queries", methods={"POST"})
+     * @param LogView $logView
+     * @param Request $request
+     * @param LogViewQueryServiceInterface $logViewQueryService
+     * @return JsonResponse
+     */
+    public function createQuery(LogView $logView, Request $request, LogViewQueryServiceInterface $logViewQueryService): JsonResponse
+    {
+        $data = $request->request->all();
+        $form = $this->createForm(LogViewQueryType::class);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $query = $logViewQueryService->create($logView, $form->getData());
+            return $this->responseSuccess([
+                'query' => $query
+            ]);
+        }
+
+        return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/logview/queries/{id}", methods={"PUT"})
+     * @param LogViewQuery $query
+     * @param Request $request
+     * @param LogViewQueryServiceInterface $logViewQueryService
+     * @return JsonResponse
+     */
+    public function updateQuery(LogViewQuery $query, Request $request, LogViewQueryServiceInterface $logViewQueryService): JsonResponse
+    {
+        $data = $request->request->all();
+        $form = $this->createForm(LogViewQueryType::class, $query);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $query = $logViewQueryService->update($form->getData());
+            return $this->responseSuccess([
+                'query' => $query
+            ]);
+        }
+
+        return $this->responseFormError($form);
     }
 
     /**
