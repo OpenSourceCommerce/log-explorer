@@ -137,7 +137,7 @@ export class WidgetManagement extends Component {
                 }
             }
 
-            if(name == 'column'){
+            if(name == 'column' && widgetDetail.type == WIDGET_TYPE.table){
                 if(!currentValue){
                     currentValue = []
                     currentValue.push(value)
