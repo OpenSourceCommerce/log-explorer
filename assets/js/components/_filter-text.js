@@ -76,7 +76,7 @@ export class FilterText extends Component {
 
         query = {
             query: value,
-            name: query.name,
+            name: '',
             id: null
         }
 
