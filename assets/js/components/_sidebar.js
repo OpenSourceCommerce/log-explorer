@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 export class Sidebar extends Component {
     render() {
         const {username, userimage, role} = this.props;
-        const featureName = window.location.pathname.split('/');
+        const pathName = window.location.pathname.split('/');
+        const featureName = pathName[1] === 'dashboard' ? window.location.pathname.trim().substring(1) : pathName[1];
         let navList;
         if (role === 'guest') {
             navList = [];
@@ -23,7 +24,7 @@ export class Sidebar extends Component {
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
                 {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards',
-                    navChild: {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}},
+                    navChild: [{href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}]},
             ];
         }
 
@@ -50,19 +51,30 @@ export class Sidebar extends Component {
                             role="menu" data-accordion="false">
                             {navList.map((item, index) => {
                                 const {href, type, iconName, label, navChild} = item;
-                                return (<>
+                                console.log('href', href);
+                                return (
+                                    <>
                                         <li className="nav-item" key={index}>
-                                            <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
+                                            <Link href={`/${href}`} className={`nav-link ${href === featureName ? 'active' : ''}`}>
                                                 <Icon name={iconName} type={type}
                                                       className="nav-icon"/>
                                                 <p>{label}</p>
                                             </Link>
                                         </li>
-                                        {navChild && (
-                                            <ul className="nav-sidebar pl-4">
-                                                <Link href={`/${navChild.href}`} className={`nav-link ${navChild.href === featureName[1] ? 'active' : ''}`}>
-                                                    <p>{navChild.label}</p>
-                                                </Link>
+                                        {navChild && navChild.length > 0 && (
+                                            <ul className="nav-sidebar">
+                                                {navChild.map((item, index) => {
+                                                    const {href, type, iconName, label} = item;
+                                                    return(
+                                                        <li className="nav-item" key={index}>
+                                                            <Link href={`/${href}`} className={`nav-link ${href === featureName ? 'active' : ''}`}>
+                                                                <Icon name={iconName} type={type}
+                                                                      className="nav-icon mr-1"/>
+                                                                <p>{label}</p>
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                })}
                                             </ul>
                                         )}
                                     </>
