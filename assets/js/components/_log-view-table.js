@@ -16,7 +16,8 @@ export class LogViewTable extends Component {
         this.state = {
             showTableSettingModal: false,
             fields: [],
-            queryInfo: {}
+            queryInfo: {},
+            updated: false
         };
 
         this.showTableSettingModal = this.showTableSettingModal.bind(this);
@@ -52,7 +53,8 @@ export class LogViewTable extends Component {
             }
 
             this.setState({
-                fields: data
+                fields: data,
+                updated: true
             });
         });
     }
@@ -75,12 +77,12 @@ export class LogViewTable extends Component {
         const {itemsCount = 0, data = [], queryInfo = {}} = res;
         queryInfo.total = itemsCount;
         queryInfo.current = data.length;
-        this.setState({queryInfo});
+        this.setState({queryInfo, updated: false});
     }
 
     render() {
         const {selectedTable} = this.props;
-        const {fields, showTableSettingModal, queryInfo} = this.state;
+        const {fields, showTableSettingModal, queryInfo, updated} = this.state;
 
         return (
             (fields && fields.length > 0 && <div className="col-12 col-md-auto">
@@ -119,6 +121,7 @@ export class LogViewTable extends Component {
                             height='auto'
                             logview={selectedTable}
                             fields={fields}
+                            updated={updated}
                             pageSize={100}
                             sorting={true}
                             onDataLoaded={this.onDataLoaded}
