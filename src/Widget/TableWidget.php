@@ -48,12 +48,13 @@ class TableWidget extends WidgetAbstract
     public function getQueryBuilder(): QueryBuilder
     {
         $builder = $this->createQueryBuilder()
-            ->select($this->attributes->getColumn().' AS label')
+            ->select($this->attributes->getColumn())
             ->addSelect('COUNT() AS value')
             ->from($this->attributes->getTable())
             ->groupBy($this->attributes->getColumn())
             ->orderBy('value', $this->attributes->isOrderDesc() ? 'DESC' : 'ASC')
             ;
+
         if ($this->attributes->getSize()) {
             $builder->setMaxResults($this->attributes->getSize());
         }

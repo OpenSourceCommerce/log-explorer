@@ -6,22 +6,68 @@ export class WidgetTable extends Component {
     render() {
         const {data, isDashboardComponent, column} = this.props;
 
-        const Row = ({label, value, isHeader}) => (
-            <div
-                className={`${!isHeader ? 'border-top widget-table-row' : 'widget-table-header'} row pt-2 pb-2 mr-4 ml-4`} >
-                <a
-                    className={`label-col col-8 p-0`} onMouseDown={(event) => {
-                    event.stopPropagation();
-                }}>{label || ''}</a>
+        const Row = ({label, value, isHeader, ...children}) => {
+            if (isHeader) {
+                let labels = label
+
+                if (typeof label === 'string') {
+                    labels = label.split(',')
+                }
+
+                return (
+                    <div
+                        className="widget-table-header row pt-2 pb-2 mr-4 ml-4">
+                        {labels && labels.map((item, key) => {
+                            return (
+
+                                <a key={key}
+                                   className={`label-col col p-0`}
+                                   onMouseDown={(event) => {
+                                       event.stopPropagation();
+                                   }}>
+                                    {item || ''}
+                                </a>
+
+                            )
+                        })}
+                        <div
+                            className='value-col col-4 col-md-2 text-right pl-0'>
+                            Count
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
                 <div
-                    className='value-col col-4 text-right pl-0'>{!isHeader ? value : 'Count'}</div>
-            </div>
-        )
+                    className="border-top widget-table-row row pt-2 pb-2 mr-4 ml-4">
+                    {children && Object.keys(children).map((item, key) => {
+                        return (
+                            <a key={key}
+                               className={`label-col col p-0`} onMouseDown={(event) => {
+                                event.stopPropagation();
+                            }}>
+                                {children[item] || ''}
+                            </a>
+                        )
+                    })}
+
+                    {label && <a className={`label-col col p-0`} onMouseDown={(event) => {
+                        event.stopPropagation();
+                    }}>
+                        {label}
+                    </a>}
+                    <div
+                        className='value-col col-4 col-md-2 text-right pl-0'>{value}</div>
+                </div>
+            )
+        }
 
         return (
             <>
                 {data && data.length > 0 ? <div className="overflow-auto">
-                    {(isDashboardComponent) && <Row label={column ||  '<Select column name>'} isHeader={isDashboardComponent}/>}
+                    {(isDashboardComponent) &&
+                    <Row label={column || '<Select column name>'} isHeader={isDashboardComponent}/>}
                     <div className="widget-table-content">
                         {data.map((item, index) => {
                             return <Row {...item}

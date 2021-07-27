@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Constant\WidgetConstant;
 use App\Repository\WidgetRepository;
 use App\Widget\WidgetAttributesInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -171,13 +172,19 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
      */
     public function jsonSerialize()
     {
+        $columns = $this->getColumn();
+
+        if($this->getType() == WidgetConstant::TYPE_TABLE){
+            $columns = explode(',', $columns);
+        }
+
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'type' => $this->getType(),
             'table' => $this->getTable(),
-            'column' => $this->getColumn(),
-            'query' => $this->getQuery(),
+            'column' => $columns,
+            'query' => $this->getQuery() ?: '',
             'order_desc' => $this->isOrderDesc(),
             'size' => $this->getSize(),
             'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
