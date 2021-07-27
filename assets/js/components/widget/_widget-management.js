@@ -23,7 +23,7 @@ export class WidgetManagement extends Component {
             size: '5',
             table: '',
             title: '',
-            type: '4'
+            type: '4',
         }
         this.state = {
             errors: {},
@@ -103,6 +103,7 @@ export class WidgetManagement extends Component {
     }
 
     async onChangeData({name, value}, isUpdateWidget) {
+        value = value.trim()
         const mandatoryField = ['title', 'type', 'table', 'order']
         const {widgetDetail} = this.state
         let currentValue = widgetDetail.column
@@ -137,7 +138,6 @@ export class WidgetManagement extends Component {
             }
 
             if(name == 'column'){
-                console.log(currentValue)
                 if(!currentValue){
                     currentValue = []
                     currentValue.push(value)
@@ -152,7 +152,6 @@ export class WidgetManagement extends Component {
                 }
 
                 value = currentValue
-                console.log(value, currentValue)
             }
 
             this.setState((preState) => ({
@@ -220,6 +219,10 @@ export class WidgetManagement extends Component {
             }
 
             if (value) {
+                if(key === 'column' && Array.isArray(value)){
+                    value = value.join(',')
+                }
+
                 data = {
                     ...data,
                     [key]: value,
@@ -313,19 +316,24 @@ export class WidgetManagement extends Component {
                                 >
                                     {this.generateOption(tables, 'table')}
                                 </FormField>
-                                {!isCounterSumType && <FormField
-                                    label='Column'
-                                    value={column}
-                                    fieldName='column'
-                                    onChange={(e) => this.onChangeData(e.target, true)}
-                                    isMandatory={false}
-                                    type='select'
-                                    errors={errors}
-                                    disabled={!table}
-                                    multiple={type == WIDGET_TYPE.table}
-                                >
-                                    {this.generateOption(columns, 'column')}
-                                </FormField>}
+                                {!isCounterSumType && <>
+                                    <FormField
+                                        label='Column'
+                                        value={column}
+                                        fieldName='column'
+                                        onChange={(e) => this.onChangeData(e.target, true)}
+                                        isMandatory={false}
+                                        type='select'
+                                        errors={errors}
+                                        disabled={!table}
+                                        multiple={type == WIDGET_TYPE.table}
+                                    >
+                                        {this.generateOption(columns, 'column')}
+                                    </FormField>
+                                    {type == WIDGET_TYPE.table && <span className="text-sm">
+                                        * Can select multiple columns
+                                    </span>}
+                                </>}
                                 <div className="row">
                                     <FormField
                                         className={`col-12 ${!isCounterSumType && 'col-md-6'}`}
@@ -365,7 +373,7 @@ export class WidgetManagement extends Component {
                                     <div className="col-12 col-md-6 btn-action-group">
                                         <Button className="btn-search w-100 mt-0 mt-md-2"
                                                 onClick={() => this.onSubmit()}
-                                                disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
+                                                // disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
                                         >
                                             {`${id ? 'Update' : 'Add new'}`}
                                         </Button>

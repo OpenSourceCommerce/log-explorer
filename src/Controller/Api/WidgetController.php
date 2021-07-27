@@ -73,14 +73,21 @@ class WidgetController extends ApiController
                     return $this->responseError('Column is required');
                 }
                 try {
-                    $databaseService->checkColumnBelongToTable($widget->getTable(), $widget->getColumn());
+                    $columns = explode(',', $widget->getColumn());
+
+                    foreach ($columns as $column) {
+                        $databaseService->checkColumnBelongToTable($widget->getTable(), $column);
+                    }
+
+                    $columns = array_unique($columns);
+                    $widget->setColumn(implode(',', $columns));
                 } catch (TableNotExistException $e) {
                     return $this->responseError('Table does not exist');
                 } catch (ColumnNotExistException $e) {
                     return $this->responseError('Column does not exist');
                 }
             }
-            $widget = $widgetService->createWidget($form->getData());
+            $widget = $widgetService->createWidget($widget);
 
             return $this->responseSuccess([
                 'redirect' => $urlGenerator->generate('widget_edit', ['id' => $widget->getId()]),
@@ -111,12 +118,20 @@ class WidgetController extends ApiController
         if ($form->isSubmitted() && $form->isValid()) {
             $widget = $form->getData();
             try {
-                $databaseService->checkColumnBelongToTable($widget->getTable(), $widget->getColumn());
+                $columns = explode(',', $widget->getColumn());
+
+                foreach ($columns as $column) {
+                    $databaseService->checkColumnBelongToTable($widget->getTable(), trim($column));
+                }
+
+                $columns = array_unique($columns);
+                $widget->setColumn(implode(',', $columns));
             } catch (TableNotExistException $e) {
                 return $this->responseError('Table does not exist');
             } catch (ColumnNotExistException $e) {
                 return $this->responseError('Column does not exist');
             }
+
             $widgetService->updateWidget($widget);
 
             return $this->responseSuccess();
