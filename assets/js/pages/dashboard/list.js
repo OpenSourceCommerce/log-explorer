@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Alert, DashboardActions, WidgetActions} from "../../actions";
+import {Alert, DashboardActions} from "../../actions";
 import {Button, CardHeader, Colors, Icon, Link, Modal, Size, Table} from "../../components";
 
 class DashboardList extends Component {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Alert, UserActions, WidgetActions} from "../../actions";
+import {Alert, WidgetActions} from "../../actions";
 import {Button, CardHeader, Colors, Icon, Link, Modal, Size, Table} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 
