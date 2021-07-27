@@ -22,8 +22,8 @@ export class Sidebar extends Component {
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
-                {href: 'dashboard/list', type: 'solid', iconName: 'users', label: 'Dashboards'},
-                {href: 'widget', type: 'solid', iconName: 'users', label: 'Widgets'}
+                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
+                {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}
             ];
         }
 
