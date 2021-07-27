@@ -47,13 +47,11 @@ class TableWidget extends WidgetAbstract
      */
     public function getQueryBuilder(): QueryBuilder
     {
-        $columns = explode(',', $this->attributes->getColumn());
-
         $builder = $this->createQueryBuilder()
-            ->select(...$columns)
+            ->select($this->attributes->getColumn())
             ->addSelect('COUNT() AS value')
             ->from($this->attributes->getTable())
-            ->groupBy(...$columns)
+            ->groupBy($this->attributes->getColumn())
             ->orderBy('value', $this->attributes->isOrderDesc() ? 'DESC' : 'ASC')
             ;
 
