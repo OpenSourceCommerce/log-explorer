@@ -205,11 +205,11 @@ class DatabaseForm extends Component {
                 ttl,
                 columns: validColumns
             }
-            if (change.length > 0) {
+            if (originTable && change.length > 0) {
                 Alert.confirm("Are you sure to change table structure?\n" + change.join("\n"), () => {
                     this.createOrUpdate(originTable, tableData);
                 })
-            } else {
+            } else if (!originTable)  {
                 this.createOrUpdate(originTable, tableData);
             }
         }
@@ -228,6 +228,7 @@ class DatabaseForm extends Component {
                 }
 
                 if (redirect) {
+                    Alert.success('Create successful');
                     window.location.href = redirect;
                 } else {
                     Alert.success('Update successful');
