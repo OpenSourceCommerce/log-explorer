@@ -74,6 +74,9 @@ class WidgetController extends ApiController
                 }
                 try {
                     $columns = explode(',', $widget->getColumn());
+                    $columns = array_filter($columns, function ($column) {
+                        return !empty($column);
+                    });
 
                     foreach ($columns as $column) {
                         $databaseService->checkColumnBelongToTable($widget->getTable(), $column);
@@ -119,6 +122,10 @@ class WidgetController extends ApiController
             $widget = $form->getData();
             try {
                 $columns = explode(',', $widget->getColumn());
+
+                $columns = array_filter($columns, function ($column) {
+                    return !empty($column);
+                });
 
                 foreach ($columns as $column) {
                     $databaseService->checkColumnBelongToTable($widget->getTable(), trim($column));
