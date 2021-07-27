@@ -106,7 +106,6 @@ export class WidgetManagement extends Component {
         value = value.trim()
         const mandatoryField = ['title', 'type', 'table', 'order']
         const {widgetDetail} = this.state
-        let currentValue = widgetDetail.column
 
         if (name) {
             const {errors} = this.state;
@@ -118,7 +117,11 @@ export class WidgetManagement extends Component {
                     label: item.name
                 })) : [];
 
-                this.setState({columns});
+                let newWidgetDetail = {...widgetDetail, column: ''}
+
+                this.setState({columns, widgetDetail: {
+                    ...newWidgetDetail
+                    }});
             }
 
             let newErrorArray = {...errors};
@@ -137,16 +140,22 @@ export class WidgetManagement extends Component {
                 }
             }
 
-            if(name == 'column' && widgetDetail.type == WIDGET_TYPE.table){
-                if(!currentValue){
+            if (name == 'column' && widgetDetail.type == WIDGET_TYPE.table) {
+                let currentValue = widgetDetail.column
+
+                if (typeof currentValue === 'string') {
+                    currentValue = currentValue.split(',')
+                }
+
+                if (!currentValue) {
                     currentValue = []
                     currentValue.push(value)
-                }else{
+                } else {
                     const index = currentValue.indexOf(value)
 
-                    if(index >= 0){
+                    if (index >= 0) {
                         currentValue.splice(index, 1)
-                    }else{
+                    } else {
                         currentValue.push(value)
                     }
                 }
@@ -207,7 +216,7 @@ export class WidgetManagement extends Component {
     async onSubmit() {
         // let layout;
         const {widgetDetail} = this.state;
-        const { order, id} = widgetDetail;
+        const {order, id} = widgetDetail;
 
         let data;
         Object.entries(widgetDetail).forEach(([key, value]) => {
@@ -219,7 +228,7 @@ export class WidgetManagement extends Component {
             }
 
             if (value) {
-                if(key === 'column' && Array.isArray(value)){
+                if (key === 'column' && Array.isArray(value)) {
                     value = value.join(',')
                 }
 
@@ -233,7 +242,7 @@ export class WidgetManagement extends Component {
         const resp = await WidgetActions.createOrUpdate(id, data);
 
         if (resp && !resp.error) {
-            Alert.success(`${id ? 'Update' : 'Add new' } successful`);
+            Alert.success(`${id ? 'Update' : 'Add new'} successful`);
             if (resp.redirect) {
                 window.location.href = resp.redirect;
                 return;
@@ -281,7 +290,8 @@ export class WidgetManagement extends Component {
                         className="spinner-border spinner-border-sm mr-2"
                         role="status" aria-hidden="true"></span> :
                     <div className="card">
-                        <div className="card-header pr-3 pl-3">{id ? 'Update setting' : 'Setting'}</div>
+                        <div
+                            className="card-header pr-3 pl-3">{id ? 'Update setting' : 'Setting'}</div>
                         <div className="card-body pr-2 pl-2">
                             <div className="col-12">
                                 <FormField
@@ -373,7 +383,7 @@ export class WidgetManagement extends Component {
                                     <div className="col-12 col-md-6 btn-action-group">
                                         <Button className="btn-search w-100 mt-0 mt-md-2"
                                                 onClick={() => this.onSubmit()}
-                                                // disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
+                                            // disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
                                         >
                                             {`${id ? 'Update' : 'Add new'}`}
                                         </Button>

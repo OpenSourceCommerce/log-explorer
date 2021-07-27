@@ -20,5 +20,4 @@ export class CounterSum extends Component {
 CounterSum.propTypes = {
     className: PropTypes.string,
     label: PropTypes.string,
-    data: PropTypes.number
 };
