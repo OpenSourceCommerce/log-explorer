@@ -7,8 +7,7 @@ import PropTypes from 'prop-types';
 export class Sidebar extends Component {
     render() {
         const {username, userimage, role} = this.props;
-        const pathName = window.location.pathname.split('/');
-        const featureName = pathName[1] === 'dashboard' ? window.location.pathname.trim().substring(1) : pathName[1];
+        const featureName = window.location.pathname.split('/');
         let navList;
         if (role === 'guest') {
             navList = [];
@@ -23,8 +22,8 @@ export class Sidebar extends Component {
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
-                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards',
-                    navChild: [{href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}]},
+                {href: 'dashboard/list', type: 'solid', iconName: 'users', label: 'Dashboards'},
+                {href: 'widget', type: 'solid', iconName: 'users', label: 'Widgets'}
             ];
         }
 
@@ -50,34 +49,14 @@ export class Sidebar extends Component {
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview"
                             role="menu" data-accordion="false">
                             {navList.map((item, index) => {
-                                const {href, type, iconName, label, navChild} = item;
-                                console.log('href', href);
-                                return (
-                                    <>
-                                        <li className="nav-item" key={index}>
-                                            <Link href={`/${href}`} className={`nav-link ${href === featureName ? 'active' : ''}`}>
-                                                <Icon name={iconName} type={type}
-                                                      className="nav-icon"/>
-                                                <p>{label}</p>
-                                            </Link>
-                                        </li>
-                                        {navChild && navChild.length > 0 && (
-                                            <ul className="nav-sidebar">
-                                                {navChild.map((item, index) => {
-                                                    const {href, type, iconName, label} = item;
-                                                    return(
-                                                        <li className="nav-item" key={index}>
-                                                            <Link href={`/${href}`} className={`nav-link ${href === featureName ? 'active' : ''}`}>
-                                                                <Icon name={iconName} type={type}
-                                                                      className="nav-icon mr-1"/>
-                                                                <p>{label}</p>
-                                                            </Link>
-                                                        </li>
-                                                    )
-                                                })}
-                                            </ul>
-                                        )}
-                                    </>
+                                const {href, type, iconName, label} = item;
+                                return (<li className="nav-item" key={index}>
+                                    <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
+                                        <Icon name={iconName} type={type}
+                                            className="nav-icon"/>
+                                        <p>{label}</p>
+                                    </Link>
+                                </li>
                                 );
                             })}
                         </ul>
