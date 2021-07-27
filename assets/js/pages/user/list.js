@@ -80,7 +80,7 @@ class UserList extends Component {
     }
 
     onDelete = (key) => {
-        if (key !== 0 ) {
+        if (key !== 0) {
             this.setState({
                 userSelected: key
             })
@@ -112,7 +112,7 @@ class UserList extends Component {
                 UserActions.delete(users[deleteUser].id).then(res => {
                     const {error} = res;
                     if (error) {
-                        Alert.error('You cant this account');
+                        Alert.error('You cant delete this account');
                         return;
                     }
 

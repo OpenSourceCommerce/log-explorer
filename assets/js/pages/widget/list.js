@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Alert, WidgetActions} from "../../actions";
-import {Button, CardHeader, Icon, Link, Table, ResponsiveGridLayout} from "../../components";
+import {Alert, UserActions, WidgetActions} from "../../actions";
+import {Button, CardHeader, Colors, Icon, Link, Modal, Size, Table} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 
 const WIDGET = {
@@ -15,7 +15,8 @@ class WidgetList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            widgets: []
+            widgets: [],
+            widgetSelected: null,
         };
     }
 
@@ -35,26 +36,59 @@ class WidgetList extends Component {
     }
 
     deleteWidget(key) {
-        const {widgets} = this.state;
-        const that = this;
-        WidgetActions.deleteWidget(widgets[key].id)
-            .then(res => {
-                const {error} = res;
-                if (error) {
-                    return;
-                }
-
-                widgets.splice(key, 1);
-                that.setState({widgets});
-                Alert.success('Delete successful');
-            });
+        this.setState({
+            widgetSelected: key,
+        })
     }
 
+    deleteConfirmModal = (widgets, widgetSelected) => (
+        <Modal
+            id='delete-widget'
+            title='Confirm Delete'
+            children={`Are you sure you want to delete widget ${widgets[widgetSelected]?.title} ?`}
+            saveButtonTitle='Delete'
+            closeButtonTitle='Cancel'
+            show={widgetSelected || widgetSelected === 0}
+            saveButtonColor={Colors.red}
+            size={Size.medium}
+            showSaveButton={true}
+            closeButtonAction={() => {
+                this.setState({
+                    widgetSelected: false,
+                })
+            }}
+            saveButtonAction={() => {
+                try {
+                    WidgetActions.deleteWidget(widgets[widgetSelected].id)
+                        .then(res => {
+                            const {error} = res;
+                            if (error) {
+                                Alert.error('You cant delete this widget');
+                                return;
+                            }
+
+                            widgets.splice(widgetSelected, 1);
+                            this.setState({widgets}, () => {
+                                Alert.success('Delete successful');
+                            });
+                        })
+                } catch (e) {
+                    Alert.error(e);
+                } finally {
+                    this.setState({
+                        widgetSelected: null,
+                    })
+                };
+            }}
+        />
+    )
+
     render() {
-        const {widgets} = this.state;
+        const {widgets, widgetSelected} = this.state;
 
         return (
-            <div className="database">
+            <div className="widget-list">
+                {this.deleteConfirmModal(widgets, widgetSelected)}
                 <div className="card">
                     <CardHeader title="Widget list" showCollapseButton={false} showRemoveButton={false}>
                         <Link href={'/widget/create'} className={'btn btn-success'}>Create widget</Link>
