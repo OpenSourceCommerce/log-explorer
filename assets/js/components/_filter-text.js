@@ -76,7 +76,7 @@ export class FilterText extends Component {
 
         query = {
             query: value,
-            name: '',
+            name: query.name,
             id: null
         }
 
@@ -122,11 +122,15 @@ export class FilterText extends Component {
                             </>}
                             {queries.map((query, key) => {
                                 return <div key={key}>
-                                    <div
+                                    <div onClick={(e) => {e.preventDefault();this.setQuery(query)}}
                                         className="dropdown-item dropdown-footer"
                                     >
-                                        <Link onClick={(e) => {e.preventDefault();this.setQuery(query)}}>{query.name}</Link>
-                                        <Link className={'float-right'} onClick={(e) => {e.preventDefault();this.onSaveClicked(query)}}>
+                                        <Link>{query.name}</Link>
+                                        <Link className={'float-right'} onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            this.onSaveClicked(query)
+                                        }}>
                                             <i className={'fa fa-edit'}></i>
                                         </Link>
                                     </div>
