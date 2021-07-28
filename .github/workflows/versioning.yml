@@ -1,0 +1,43 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: LogExplorer versioning
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Create .env
+        run: cp .env.dist .env
+      - name: Install NPM
+        run: npm i
+      - name: Build NPM
+        run: npm run build
+      - name: Versioning
+        run: |
+          version=`grep -oP "app.version:\ '(.*)'" config/services.yaml | grep -oP "'(.*)'" | cut -d "'" -f 2`
+          IFS='.' read -r -a array <<< "$version"
+          new_version=${array[0]}.${array[1]}.$((array[2] + 1))
+          sed -i -E "s/app.version:(\s+)'(.*)'/app.version:\ '$new_version'/g" config/services.yaml
+      - name: Push back to github
+        run: |
+          git config --global user.name 'Github action'
+          git add public/assets
+          git commit -am "Versioning"
+          git push
