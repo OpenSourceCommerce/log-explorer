@@ -56,7 +56,7 @@ jobs:
         run: |
           cp .env.dist .env.test.local
           sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local
-          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/root@127.0.0.1\/test/' .env.test.local
+          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env.test.local
           sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env.test.local
           sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local
           cp .env.test.local .env
