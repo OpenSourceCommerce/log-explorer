@@ -4,7 +4,7 @@
 name: Testing
 
 on:
-  push:
+  create:
   pull_request:
     branches: [ master ]
 
