@@ -1,4 +1,4 @@
-# Log Explorer ![Testing](https://github.com/phucnh-nfq/log-explorer/actions/workflows/test.yml/badge.svg)
+# Log Explorer ![Testing](https://github.com/OpenSourceCommerce/log-explorer/actions/workflows/test.yml/badge.svg)
 
 ## Requirements
 - Docker
