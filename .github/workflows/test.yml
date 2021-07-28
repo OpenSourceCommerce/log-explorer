@@ -1,0 +1,81 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Testing
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP with composer v2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2, phpunit:9.5
+          coverage: xdebug
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Shutdown Ubuntu MySQL (SUDO)
+        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+#          host port: 3800 # Optional, default value is 3306. The port of host
+#          container port: 3307 # Optional, default value is 3306. The port of container
+          character set server: 'utf8mb4' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8mb4_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
+          mysql database: 'test' # Optional, default value is "test". The specified database which will be create
+#          mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: 'dev' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: 'dev'
+      - name: ClickHouse install
+        run: |
+            sudo apt-get update -y
+            sudo apt -y install apt-transport-https ca-certificates dirmngr
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E0C56BD4
+            echo "deb https://repo.clickhouse.tech/deb/stable/ main/" | sudo tee /etc/apt/sources.list.d/clickhouse.list
+            sudo apt-get update -y
+            sudo apt-get install -y clickhouse-server clickhouse-client
+            sudo service clickhouse-server start
+      - name: Create .env
+        run: |
+          cp .env.dist .env.test.local
+          sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local
+          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env.test.local
+          sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env.test.local
+          sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local
+          cp .env.test.local .env
+      - name: Install NPM
+        run: npm i
+      - name: Build NPM
+        run: npm run build
+      - name: Run composer
+        run: |
+          composer self-update
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+      - name: Migration
+        run: bin/console doctrine:migrations:migrate --no-interaction --env="test"
+      - name: Fixtures
+        run: bin/console doctrine:fixtures:load -n --env="test"
+      - name: Create sample database
+        run: bin/console app:createsampledatabase --env="test"
+      - name: Create sample data
+        run: bin/console app:createsampledata 300 --env="test"
+      - name: Run test
+        run: php bin/phpunit
