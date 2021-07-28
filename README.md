@@ -1,4 +1,4 @@
-# Log Explorer [![Build Status](https://travis-ci.com/OpenSourceCommerce/log-explorer.svg?token=b4Vs4GEa4QpNyA5RsA6U&branch=master)](https://travis-ci.com/OpenSourceCommerce/log-explorer)
+# Log Explorer ![Testing](https://github.com/phucnh-nfq/log-explorer/actions/workflows/test.yml/badge.svg)
 
 ## Requirements
 - Docker
