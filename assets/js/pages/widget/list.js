@@ -61,7 +61,7 @@ class WidgetList extends Component {
                                 .then(res => {
                                     const {error} = res;
                                     if (error) {
-                                        Alert.error('You cant delete this widget');
+                                        Alert.error('You can not delete this widget');
                                         return;
                                     }
 

@@ -53,7 +53,7 @@ class DashboardList extends Component {
                                 .then(res => {
                                     const {error} = res;
                                     if (error) {
-                                        Alert.success('You cant deleted this dashboard');
+                                        Alert.success('You can not delete this dashboard');
                                         return;
                                     }
 

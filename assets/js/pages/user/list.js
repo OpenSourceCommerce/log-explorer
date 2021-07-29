@@ -63,7 +63,7 @@ class UserList extends Component {
                 const {error} = res;
                 const strMessage = newStatus ? 'Enable' : 'Disable';
                 if (error) {
-                    Alert.error(`You cant ${strMessage} this user`);
+                    Alert.error(`You can not ${strMessage} this user`);
                     return;
                 }
 
@@ -112,7 +112,7 @@ class UserList extends Component {
                 UserActions.delete(users[deleteUser].id).then(res => {
                     const {error} = res;
                     if (error) {
-                        Alert.error('You cant delete this account');
+                        Alert.error('You can not delete this account');
                         return;
                     }
 
