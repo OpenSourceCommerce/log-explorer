@@ -50,6 +50,7 @@ class WidgetList extends Component {
                     data={widgets}
                     indexSelected={widgetSelected}
                     objectName="widget"
+                    displayField="title"
                     closeButtonAction={() => {
                         this.setState({
                             widgetSelected: false,
