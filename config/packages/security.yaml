@@ -50,7 +50,7 @@ security:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/profile, roles: ROLE_USER }
         - { path: ^/log-view, roles: ROLE_USER }
-        - { path: ^/api/*, roles: ROLE_USER }
+        - { path: ^/api/(table|widget|stream|dashboard|logview), roles: ROLE_USER }
         - { path: ^/database/sync$, roles: ROLE_USER }
         - { path: ^/logout, roles: ROLE_USER }
         - { path: ^/dashboard/*, roles: ROLE_USER }

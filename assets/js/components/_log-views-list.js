@@ -45,10 +45,13 @@ export class LogViewList extends Component {
                             </a>
                         );
                     })}
-                    <div className="dropdown-divider"></div>
-                    <a className="dropdown-item"
+                    {isUser() || <>
+                        <div className="dropdown-divider"></div>
+                        <a className="dropdown-item"
                         href="/table/create"
-                    >Create new one</a>
+                        >Create new one</a>
+                    </>
+                    }
                 </div>
             </div>
         );
