@@ -42,6 +42,7 @@ class DashboardList extends Component {
                     data={dashboards}
                     indexSelected={dashboardSelected}
                     objectName="dashboard"
+                    displayField="title"
                     closeButtonAction={() => {
                         this.setState({
                             dashboardSelected: false,
