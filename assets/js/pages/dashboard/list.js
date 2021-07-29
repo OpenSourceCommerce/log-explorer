@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Alert, DashboardActions} from "../../actions";
-import {Button, CardHeader, Colors, Icon, Link, Modal, Size, Table} from "../../components";
+import {Button, CardHeader, Icon, Link, Table, DeleteModal} from "../../components";
 
 class DashboardList extends Component {
     constructor(props) {
@@ -33,54 +33,44 @@ class DashboardList extends Component {
         })
     }
 
-    deleteConfirmModal = (dashboards, dashboardSelected) => (
-        <Modal
-            id='delete-dashboard'
-            title='Confirm Delete'
-            children={`Are you sure you want to delete dashboard ${dashboards[dashboardSelected]?.title} ?`}
-            saveButtonTitle='Delete'
-            closeButtonTitle='Cancel'
-            show={dashboardSelected || dashboardSelected === 0}
-            saveButtonColor={Colors.red}
-            size={Size.medium}
-            showSaveButton={true}
-            closeButtonAction={() => {
-                this.setState({
-                    dashboardSelected: false,
-                })
-            }}
-            saveButtonAction={() => {
-                try {
-                    DashboardActions.deleteDashboard(dashboards[dashboardSelected].id)
-                        .then(res => {
-                            const {error} = res;
-                            if (error) {
-                                Alert.success('You cant deleted this dashboard');
-                                return;
-                            }
-
-                            dashboards.splice(dashboardSelected, 1);
-                            this.setState({dashboards}, () => {
-                                Alert.success('Delete successful');
-                            });
-                        });
-                } catch (e) {
-                    Alert.error(e);
-                } finally {
-                    this.setState({
-                        dashboardSelected: null,
-                    })
-                };
-            }}
-        />
-    )
-
     render() {
         const {dashboards, dashboardSelected} = this.state;
 
         return (
             <div className="database">
-                {this.deleteConfirmModal(dashboards, dashboardSelected)}
+                <DeleteModal
+                    data={dashboards}
+                    indexSelected={dashboardSelected}
+                    objectName="widget"
+                    closeButtonAction={() => {
+                        this.setState({
+                            dashboardSelected: false,
+                        })
+                    }}
+                    saveButtonAction={() => {
+                        try {
+                            DashboardActions.deleteDashboard(dashboards[dashboardSelected].id)
+                                .then(res => {
+                                    const {error} = res;
+                                    if (error) {
+                                        Alert.success('You cant deleted this dashboard');
+                                        return;
+                                    }
+
+                                    dashboards.splice(dashboardSelected, 1);
+                                    this.setState({dashboards}, () => {
+                                        Alert.success('Delete successful');
+                                    });
+                                });
+                        } catch (e) {
+                            Alert.error(e);
+                        } finally {
+                            this.setState({
+                                dashboardSelected: null,
+                            })
+                        };
+                    }}
+                />
                 <div className="card">
                     <CardHeader title="Dashboard list" showCollapseButton={false} showRemoveButton={false}>
                         <Link href={'/dashboard/create'} className={'btn btn-success'}>Create dashboard</Link>
