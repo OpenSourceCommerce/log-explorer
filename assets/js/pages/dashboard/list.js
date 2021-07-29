@@ -41,7 +41,7 @@ class DashboardList extends Component {
                 <DeleteModal
                     data={dashboards}
                     indexSelected={dashboardSelected}
-                    objectName="widget"
+                    objectName="dashboard"
                     closeButtonAction={() => {
                         this.setState({
                             dashboardSelected: false,
