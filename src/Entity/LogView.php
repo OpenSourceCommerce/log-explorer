@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LogViewRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -162,8 +163,13 @@ class LogView implements \JsonSerializable
     /**
      * @return Collection|LogViewQuery[]
      */
-    public function getQueries(): Collection
+    public function getQueries(?User $user = null): Collection
     {
+        if ($user) {
+            $criteria = Criteria::create();
+            $criteria->where(Criteria::expr()->eq('user', $user));
+            return $this->queries->matching($criteria);
+        }
         return $this->queries;
     }
 

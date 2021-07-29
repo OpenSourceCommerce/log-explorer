@@ -26,6 +26,12 @@ class LogViewQuery implements \JsonSerializable
     private $logView;
 
     /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="logViewQueries")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    /**
      * @ORM\Column(type="string", length=512)
      */
     private $query;
@@ -126,5 +132,17 @@ class LogViewQuery implements \JsonSerializable
             'name' => $this->getName(),
             'query' => $this->getQuery(),
         ];
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }

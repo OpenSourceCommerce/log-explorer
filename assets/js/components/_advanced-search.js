@@ -11,6 +11,7 @@ export class AdvancedSearch extends React.Component {
             dateRange,
             queries,
             onSaveClicked,
+            onDeleteCLicked,
             ...otherProps
         } = this.props;
         return (
@@ -27,6 +28,7 @@ export class AdvancedSearch extends React.Component {
                                     placeholder="status = 200 AND url LIKE '%product%'"
                                     queries={queries}
                                     onSaveClicked={onSaveClicked}
+                                    onDeleteCLicked={onDeleteCLicked}
                                 />
                             </div>
                             <div className="input-search col-5 col-md-4">
@@ -52,6 +54,7 @@ export class AdvancedSearch extends React.Component {
 AdvancedSearch.propTypes = {
     onDateRangeChanged: PropTypes.func,
     onSaveClicked: PropTypes.func,
+    onDeleteCLicked: PropTypes.func,
     dateRange: PropTypes.object,
     queries: PropTypes.array,
 };

@@ -78,9 +78,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      */
     private $userTokens;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LogViewQuery::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $logViewQueries;
+
     public function __construct()
     {
         $this->userTokens = new ArrayCollection();
+        $this->logViewQueries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -328,5 +334,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return Collection|LogViewQuery[]
+     */
+    public function getLogViewQueries(): Collection
+    {
+        return $this->logViewQueries;
+    }
+
+    public function addLogViewQuery(LogViewQuery $logViewQuery): self
+    {
+        if (!$this->logViewQueries->contains($logViewQuery)) {
+            $this->logViewQueries[] = $logViewQuery;
+            $logViewQuery->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLogViewQuery(LogViewQuery $logViewQuery): self
+    {
+        if ($this->logViewQueries->removeElement($logViewQuery)) {
+            // set the owning side to null (unless already changed)
+            if ($logViewQuery->getUser() === $this) {
+                $logViewQuery->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

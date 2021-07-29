@@ -40,6 +40,7 @@ class Index extends Component {
         this.onSubmitQuery = this.onSubmitQuery.bind(this);
         this.onQuerySave = this.onQuerySave.bind(this);
         this.onQueryModelChange = this.onQueryModelChange.bind(this);
+        this.onDeleteQuery = this.onDeleteQuery.bind(this);
     }
 
     loadData() {
@@ -256,6 +257,29 @@ class Index extends Component {
             })
     }
 
+    onDeleteQuery(query) {
+        const that = this;
+        let {selectedTable, queries} = this.state;
+        LogTableActions.deleteQueries(query.id)
+            .then(res => {
+                const {error} = res;
+                if (error === 0) {
+                    Alert.success('Delete successful');
+                    let selectedQueries = queries[selectedTable.uuid];
+                    for (let i = 0; i < selectedQueries.length; i++) {
+                        if (selectedQueries[i].id === query.id) {
+                            queries[selectedTable.uuid].splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    that.setState({
+                        queries: queries
+                    })
+                }
+            })
+    }
+
     onQueryModelChange(e) {
         let {queryModalQuery} = this.state;
         queryModalQuery[e.target.name] = e.target.value;
@@ -292,6 +316,7 @@ class Index extends Component {
                             dateRange={dateRange}
                             queries={selectedQueries}
                             onSaveClicked={this.onSubmitQuery}
+                            onDeleteCLicked={this.onDeleteQuery}
                         />
                         <div className="float-chart row justify-content-start flex-md-wrap">
                             <div className="col-12">
