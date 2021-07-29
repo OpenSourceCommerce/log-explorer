@@ -46,3 +46,4 @@ export const {ResponsiveGridLayout} = require('./widget/_responsive-grid-layout'
 export const {WidgetManagement} = require('./widget/_widget-management');
 export const {WidgetHeader} = require('./widget/_widget-header');
 export const {FormField} = require('./_form-field');
+export const {DeleteModal} = require('./_delete-modal');
