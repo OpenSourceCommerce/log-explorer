@@ -12,14 +12,15 @@ export class DeleteModal extends Component {
             indexSelected,
             objectName,
             saveButtonAction,
-            closeButtonAction
+            closeButtonAction,
+            displayField
         } = this.props;
 
         return (
             <Modal
                 id={`delete-${objectName}`}
                 title='Confirm Delete'
-                children={`Are you sure you want to delete ${objectName} ${data[indexSelected]?.title} ?`}
+                children={`Are you sure you want to delete ${objectName} ${data[indexSelected]?.[displayField]} ?`}
                 saveButtonTitle='Delete'
                 closeButtonTitle='Cancel'
                 show={indexSelected || indexSelected === 0}
