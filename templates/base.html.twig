@@ -8,6 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ encore_entry_link_tags('app') }}
     {% block stylesheets %}{% endblock %}
+    <script>
+        function isUser() {
+            {% if app.user.isAdmin() %}
+            return false;
+            {% else %}
+            return true;
+            {% endif %}
+        }
+    </script>
     {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('navbar') }}
     {{ encore_entry_script_tags('sidebar') }}

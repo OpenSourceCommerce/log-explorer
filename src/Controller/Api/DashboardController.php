@@ -4,6 +4,7 @@
 namespace App\Controller\Api;
 
 
+use App\Constant\VoterConstant;
 use App\Entity\Dashboard;
 use App\Entity\Widget;
 use App\Form\DashboardType;
@@ -63,6 +64,7 @@ class DashboardController extends ApiController
         WidgetServiceInterface $widgetService,
         UrlGeneratorInterface $urlGenerator): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::CREATE, new Dashboard());
         $data = $request->request->all();
         $form = $this->createForm(DashboardType::class);
         $form->submit($data);
@@ -91,6 +93,7 @@ class DashboardController extends ApiController
      */
     public function update(Dashboard $dashboard, Request $request, DashboardServiceInterface $dashboardService, WidgetServiceInterface $widgetService): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::EDIT, $dashboard);
         $data = $request->request->all();
         $form = $this->createForm(DashboardType::class, $dashboard);
         $form->submit($data);
@@ -114,6 +117,7 @@ class DashboardController extends ApiController
      */
     public function delete(Dashboard $dashboard, DashboardServiceInterface $dashboardService): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::DELETE, $dashboard);
         $dashboardService->delete($dashboard);
         return $this->responseSuccess();
     }
@@ -129,6 +133,7 @@ class DashboardController extends ApiController
      */
     public function addWidget(Dashboard $dashboard, Widget $widget, Request $request, DashboardServiceInterface $dashboardService): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::EDIT, $dashboard);
         foreach ($widget->getDashboardWidgets() as $dashboardWidget) {
             if ($dashboardWidget->getDashboard()->getId() === $dashboard->getId()) {
                 return $this->responseSuccess();
@@ -159,6 +164,7 @@ class DashboardController extends ApiController
      */
     public function updateWidget(Dashboard $dashboard, Widget $widget, Request $request, DashboardServiceInterface $dashboardService): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::EDIT, $dashboard);
         $dashboardWidget = $dashboardService->findDashboardWidget($dashboard, $widget);
         if (empty($dashboardWidget)) {
             return $this->responseError('Invalid data');
@@ -187,6 +193,7 @@ class DashboardController extends ApiController
      */
     public function removeDashboardWidget(Dashboard $dashboard, Widget $widget, DashboardServiceInterface $dashboardService): JsonResponse
     {
+        $this->denyAccessUnlessGranted(VoterConstant::EDIT, $dashboard);
         $dashboardService->removeWidget($dashboard, $widget);
         return $this->responseSuccess();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constant\VoterConstant;
 use App\Entity\Dashboard;
 use App\Services\Dashboard\DashboardServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +39,7 @@ class DashboardController extends AbstractController
      */
     public function create(): Response
     {
+        $this->denyAccessUnlessGranted(VoterConstant::CREATE, new Dashboard());
         return $this->render('dashboard/form.html.twig');
     }
 
@@ -48,6 +50,7 @@ class DashboardController extends AbstractController
      */
     public function edit(Dashboard $dashboard): Response
     {
+        $this->denyAccessUnlessGranted(VoterConstant::EDIT, $dashboard);
         return $this->render('dashboard/form.html.twig', [
             'dashboard' => $dashboard,
         ]);
