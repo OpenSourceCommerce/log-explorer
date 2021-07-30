@@ -15,7 +15,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_index.6452ee5a.js"
+        "/assets/page_index.bf425a66.js"
       ],
       "css": [
         "/assets/page_index.b4a11d9d.css"
@@ -25,7 +25,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/database_tables.0fb8614b.js"
+        "/assets/database_tables.6a61349c.js"
       ],
       "css": [
         "/assets/database_tables.9d6b9b59.css"
@@ -35,7 +35,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/database_form.0ef55993.js"
+        "/assets/database_form.9f991ea0.js"
       ],
       "css": [
         "/assets/database_form.9d6b9b59.css"
@@ -45,7 +45,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/graph_form.dd14f5b7.js"
+        "/assets/graph_form.cfdd25f5.js"
       ],
       "css": [
         "/assets/graph_form.9d6b9b59.css"
@@ -55,7 +55,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/graph_list.7b9397e9.js"
+        "/assets/graph_list.41884b1d.js"
       ],
       "css": [
         "/assets/graph_list.9d6b9b59.css"
@@ -65,7 +65,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/logview_form.620c0430.js"
+        "/assets/logview_form.c98e6073.js"
       ],
       "css": [
         "/assets/logview_form.9d6b9b59.css"
@@ -75,7 +75,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_list.699e31ea.js"
+        "/assets/user_list.68132a5c.js"
       ],
       "css": [
         "/assets/user_list.9d6b9b59.css"
@@ -85,7 +85,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_form.e997289a.js"
+        "/assets/user_form.9f5c35dd.js"
       ],
       "css": [
         "/assets/user_form.9d6b9b59.css"
@@ -95,7 +95,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_confirmation.3b4ea927.js"
+        "/assets/user_confirmation.fa540852.js"
       ],
       "css": [
         "/assets/user_confirmation.9d6b9b59.css"
@@ -105,7 +105,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/user_profile.4695baaf.js"
+        "/assets/user_profile.2166bb25.js"
       ],
       "css": [
         "/assets/user_profile.9d6b9b59.css"
@@ -115,7 +115,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/navbar.02a02794.js"
+        "/assets/navbar.935d580f.js"
       ],
       "css": [
         "/assets/navbar.9d6b9b59.css"
@@ -125,7 +125,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/sidebar.52466b0f.js"
+        "/assets/sidebar.8b0ea6eb.js"
       ],
       "css": [
         "/assets/sidebar.9d6b9b59.css"
@@ -135,17 +135,17 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/js_grid.5eefaa37.js"
+        "/assets/js_grid.c4f0532d.js"
       ],
       "css": [
-        "/assets/js_grid.d03657fb.css"
+        "/assets/js_grid.d586553e.css"
       ]
     },
     "flot_chart": {
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/flot_chart.2edc1331.js"
+        "/assets/flot_chart.a883911b.js"
       ],
       "css": [
         "/assets/flot_chart.9c6eecc5.css"
@@ -161,7 +161,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/welcome-page.84c1a0e1.js"
+        "/assets/welcome-page.b3f3dfa5.js"
       ],
       "css": [
         "/assets/welcome-page.b500a9e6.css"
@@ -171,7 +171,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_login.49ebdff8.js"
+        "/assets/page_login.ad7942c8.js"
       ],
       "css": [
         "/assets/page_login.9d6b9b59.css"
@@ -181,7 +181,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_forgot.00c85ae4.js"
+        "/assets/page_forgot.9573d9c8.js"
       ],
       "css": [
         "/assets/page_forgot.9d6b9b59.css"
@@ -191,7 +191,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_reset.646a4a76.js"
+        "/assets/page_reset.04aba0e0.js"
       ],
       "css": [
         "/assets/page_reset.9d6b9b59.css"
@@ -201,7 +201,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/page_change_password.092670b2.js"
+        "/assets/page_change_password.b597e616.js"
       ],
       "css": [
         "/assets/page_change_password.9d6b9b59.css"
@@ -211,7 +211,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard_list.418a7b2d.js"
+        "/assets/dashboard_list.221f513d.js"
       ],
       "css": [
         "/assets/dashboard_list.9d6b9b59.css"
@@ -221,7 +221,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard_form.1a61919d.js"
+        "/assets/dashboard_form.9b8944e0.js"
       ],
       "css": [
         "/assets/dashboard_form.9d6b9b59.css"
@@ -231,7 +231,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/widget_list.e9f05983.js"
+        "/assets/widget_list.f34d4258.js"
       ],
       "css": [
         "/assets/widget_list.9d6b9b59.css"
@@ -241,7 +241,7 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/widget_form.0fe1922c.js"
+        "/assets/widget_form.9d47c01e.js"
       ],
       "css": [
         "/assets/widget_form.9d6b9b59.css"
@@ -251,10 +251,30 @@
       "js": [
         "/assets/0.e665c24c.js",
         "/assets/1.2ab0b88f.js",
-        "/assets/dashboard-page.940ab144.js"
+        "/assets/dashboard-page.7adacaa3.js"
       ],
       "css": [
         "/assets/dashboard-page.9d6b9b59.css"
+      ]
+    },
+    "alerts_list": {
+      "js": [
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/alerts_list.33903afc.js"
+      ],
+      "css": [
+        "/assets/alerts_list.9d6b9b59.css"
+      ]
+    },
+    "alerts_form": {
+      "js": [
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/alerts_form.77bdbcde.js"
+      ],
+      "css": [
+        "/assets/alerts_form.9d6b9b59.css"
       ]
     }
   }
