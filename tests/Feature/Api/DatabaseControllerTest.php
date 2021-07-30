@@ -12,8 +12,7 @@ class DatabaseControllerTest extends webTestCase
         $client = $this->getUserClient();
         $client->request('GET', '/api/table');
         $this->assertResponseIsSuccessful();
-        $data = $this->getApiResponse($client);
-        $this->assertEquals(ErrorCodeConstant::ERROR_PERMISSION_DENIED, $data['error']);
+        $this->assertApiResponseIsSuccessful($client);
     }
 
     public function testGetTable()

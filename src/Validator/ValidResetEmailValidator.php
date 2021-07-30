@@ -45,7 +45,7 @@ class ValidResetEmailValidator extends ConstraintValidator
         }
 
         if (!$user->getIsConfirmed()) {
-            $event = new UnactivatedUserEvent($user->getUserTokens()->first());
+            $event = new UnactivatedUserEvent($user);
             $this->dispatcher->dispatch($event, UnactivatedUserEvent::UNACTIVATED_USER_FORGOT);
             $this->context->buildViolation($constraint->confirm)
                 ->addViolation();

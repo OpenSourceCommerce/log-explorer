@@ -14,7 +14,7 @@ export class WidgetHeader extends Component {
         return (
             <div className="card-header pb-0 pt-2 pl-3 pr-2 font-weight-bold border-bottom-0">
                 <div className="float-left">{`${header || '< Input Header >'}`}</div>
-                <div className="dropdown float-right dropleft"
+                {isUser() || <div className="dropdown float-right dropleft"
                      href="#"
                 >
                     <div className=" pr-2 pl-2"
@@ -32,7 +32,7 @@ export class WidgetHeader extends Component {
                         <a className="dropdown-item" href="#" onClick={() => editWidget()}>Edit</a>
                         <a className="dropdown-item" href="#" onClick={() => removeWidget()}>Remove</a>
                     </div>
-                </div>
+                </div>}
             </div>
         );
     }

@@ -456,10 +456,10 @@ export class DashboardPage extends Component {
                     <h3 className="col-12">{title}</h3>
                     <div className="filter col-12">
                         <div className="card">
-                            <div className="card-body pb-0">
+                            <div className="card-body">
                                 <div className="col-12">
                                     <div className="d-flex justify-content-between flex-row flex-wrap">
-                                        <div className="col-md-auto col-12"
+                                        {isUser() || <div className="col-md-auto col-12"
                                             style={{minWidth: '300px'}}>
                                             <FormField
                                                 isHiddenLabel={true}
@@ -467,6 +467,7 @@ export class DashboardPage extends Component {
                                                 fieldName='widgetSelected'
                                                 onChange={(e) => this.onSaveChange(e.target.value)}
                                                 type='select'
+                                                className='mb-0'
                                             >
                                                 <>
                                                     <option value='' className='d-none'>
@@ -481,7 +482,7 @@ export class DashboardPage extends Component {
                                                         </option>))}
                                                 </>
                                             </FormField>
-                                        </div>
+                                        </div>}
                                         <div className="col-md-auto col-12"
                                             style={{minWidth: '300px'}}>
                                             <FilterDate
@@ -592,8 +593,8 @@ export class DashboardPage extends Component {
                         <div key={widgets}>
                             <ResponsiveGridLayout
                                 layouts={widgets}
-                                isResizable={true}
-                                isDraggable={true}
+                                isResizable={!isUser()}
+                                isDraggable={!isUser()}
                                 removeWidget={(id) => this.removeWidget(id)}
                                 stickWidget={this.stickWidget}
                                 editWidget={(id) => {
