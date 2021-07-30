@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import {Button, CardHeader, Icon, Link} from "../../components";
+import {Button, CardHeader, Icon, Link, Modal, Size} from "../../components";
 import {Alert, AlertActions, GraphActions} from "../../actions";
 import {Table} from "../../components/_table";
 
@@ -8,19 +8,22 @@ class AlertList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: [],
+            deletingAlert: null,
         };
 
         this.getData = this.getData.bind(this)
         this.updateStatus = this.updateStatus.bind(this)
+        this.deleteAlert = this.deleteAlert.bind(this)
     }
 
     getData() {
         AlertActions.listAlert().then((response) => {
             const {error, data} = response
+            const deletingAlert = null
 
             if (error === 0) {
-                this.setState({data})
+                this.setState({data, deletingAlert})
             }
         })
     }
@@ -29,23 +32,24 @@ class AlertList extends Component {
         this.getData()
     }
 
-    deleteAlert(key) {
-        const {data} = this.state;
-        const that = this;
+    deleteAlert() {
+        const $this = this;
+        const {deletingAlert} = this.state;
 
-        Alert.confirm("Do you want to delete this alert?", () => {
-            AlertActions.deleteAlert(data[key].id)
-                .then(res => {
-                    const {error} = res;
-                    if (error) {
-                        return;
-                    }
+        if (!deletingAlert) {
+            return;
+        }
 
-                    data.splice(key, 1);
-                    that.setState({data});
-                    Alert.success('Delete successful');
-                });
-        })
+        AlertActions.deleteAlert(deletingAlert.id)
+            .then(res => {
+                const {error} = res;
+                if (error) {
+                    return;
+                }
+
+                $this.getData()
+                Alert.success('Delete successful');
+            });
     }
 
     updateStatus(event) {
@@ -58,10 +62,29 @@ class AlertList extends Component {
     }
 
     render() {
-        const {data} = this.state
+        const {data, deletingAlert} = this.state
 
         return (
             <>
+                <Modal
+                    size={Size.medium}
+                    id={'delete-alert'}
+                    title={`Deleting Alert`}
+                    showCloseButton={true}
+                    closeButtonTitle='Abort'
+                    showSaveButton={true}
+                    saveButtonTitle='OK'
+                    saveButtonColor='danger'
+                    saveButtonAction={this.deleteAlert}
+                    show={deletingAlert != null}
+                    onHidden={() => {
+                        this.setState({deletingAlert: null})
+                    }}
+                >
+                    <p className="text-danger">
+                        Do you want to delete this alert "{deletingAlert?.title}"?
+                    </p>
+                </Modal>
                 <div className="card">
                     <CardHeader title="Alert List" showCollapseButton={false}
                                 showRemoveButton={false}>
@@ -108,9 +131,10 @@ class AlertList extends Component {
                                                   className={'btn btn-success btn-sm mr-3'}>
                                                 <Icon name={'edit'}/>
                                             </Link>
-                                            <Button onClick={e => this.deleteAlert(key)}
-                                                    className="btn-sm"
-                                                    color={'danger'}>
+                                            <Button
+                                                onClick={e => this.setState({deletingAlert: item})}
+                                                className="btn-sm"
+                                                color={'danger'}>
                                                 <Icon name={'trash'}/>
                                             </Button>
                                         </td>
