@@ -41,7 +41,6 @@ class AlertsRunCommand extends Command
         }
 
         $total = 0;
-        $page = 1;
 
         do {
             $alerts = $this->alertService->findAvailableAlerts($limit);
@@ -52,10 +51,8 @@ class AlertsRunCommand extends Command
                 $total++;
                 $io->note("{$alert->getTitle()} has been executed");
             }
-            $page ++;
         } while (!empty($alerts));
 
-        $io->success("{$page} alerts have been done!!");
         $io->success("{$total} alerts have been done!!");
 
         return Command::SUCCESS;
