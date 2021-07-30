@@ -102,7 +102,7 @@ class Index extends Component {
             logViews: data,
             selectedTable,
             disableLive,
-            isLive: isLive,
+            isLive,
             dateRange,
         }, () => {
             const {logViews, isLive} = this.state;
@@ -195,7 +195,7 @@ class Index extends Component {
             dateRange
         }, () => {
             this.loadData();
-            if (isLive) this.startStreaming();
+            if (!isLive) Live.pause();
         });
     }
 
