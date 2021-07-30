@@ -23,7 +23,8 @@ export class Sidebar extends Component {
                 {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
                 {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
                 {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
-                {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'}
+                {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'},
+                {href: 'alert', type: 'solid', iconName: 'exclamation-triangle', label: 'Alerts'},
             ];
         }
 

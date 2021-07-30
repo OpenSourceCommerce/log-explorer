@@ -72,6 +72,8 @@ Encore
 	.addEntry('widget_list', './assets/js/pages/widget/list.js')
 	.addEntry('widget_form', './assets/js/pages/widget/form.js')
   .addEntry('dashboard-page', './assets/js/pages/index/dashboard.js')
+  .addEntry('alerts_list', './assets/js/pages/alerts/list.js')
+  .addEntry('alerts_form', './assets/js/pages/alerts/form.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
 

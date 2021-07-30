@@ -13,6 +13,8 @@ parameters:
     mailer.transport: '%env(MAILER_TRANSPORT)%'
     app.secret: '%kernel.secret%'
     app.clickhouse.max_threads: '%env(int:DATABASE_THREADS)%'
+    app.alert.regular_interval.default: '1'
+    app.alert.regular_interval: '%env(int:default:app.alert.regular_interval.default:ALERT_REGULAR_INTERVAL)%'
 
 services:
     # default configuration for services in *this* file
