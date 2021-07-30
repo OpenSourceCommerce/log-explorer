@@ -196,6 +196,7 @@ class Index extends Component {
         }, () => {
             this.loadData();
             if (!isLive) Live.pause();
+            else if (isLive) this.startStreaming();
         });
     }
 
