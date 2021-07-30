@@ -17,8 +17,8 @@ class Index extends Component {
         super(props);
         this.state = {
             logViews: [],
-            isLive: false,
-            disableLive: true,
+            isLive: true,
+            disableLive: false,
             interval: 5000,
             showTableSettingModal: false,
             selectedTable: null,
@@ -41,6 +41,7 @@ class Index extends Component {
         this.onQuerySave = this.onQuerySave.bind(this);
         this.onQueryModelChange = this.onQueryModelChange.bind(this);
         this.onDeleteQuery = this.onDeleteQuery.bind(this);
+        this.hideQueryModal = this.hideQueryModal.bind(this);
     }
 
     loadData() {
@@ -231,6 +232,21 @@ class Index extends Component {
     onQuerySave() {
         const that = this;
         let {queryModalQuery, selectedTable, queries} = this.state;
+        if ($.trim(queryModalQuery.name) == '') {
+            Alert.error('Query name should not be blank');
+            queryModalQuery.nameClass = 'is-invalid';
+            that.setState({queryModalQuery});
+            return;
+        }
+        queryModalQuery.nameClass = '';
+        if ($.trim(queryModalQuery.name) == '' || $.trim(queryModalQuery.query) == '') {
+            Alert.error('Query should not be blank');
+            queryModalQuery.queryClass = 'is-invalid';
+            that.setState({queryModalQuery});
+            return;
+        }
+        queryModalQuery.queryClass = '';
+        that.setState({queryModalQuery});
         LogTableActions.saveQueries(selectedTable.uuid, queryModalQuery, queryModalQuery.id)
             .then(res => {
                 const {error, query} = res;
@@ -274,7 +290,8 @@ class Index extends Component {
                     }
 
                     that.setState({
-                        queries: queries
+                        queries: queries,
+                        showQueryModal: false
                     })
                 }
             })
@@ -283,7 +300,14 @@ class Index extends Component {
     onQueryModelChange(e) {
         let {queryModalQuery} = this.state;
         queryModalQuery[e.target.name] = e.target.value;
+        queryModalQuery[e.target.name + 'Class'] = e.target.value == '' ? 'is-invalid' : '';
         this.setState({queryModalQuery});
+    }
+
+    hideQueryModal() {
+        this.setState({
+            showQueryModal: false
+        })
     }
 
     render() {
@@ -302,7 +326,7 @@ class Index extends Component {
 
         const selectedQueries = queries[uuid] || [];
 
-        const {query, name} = queryModalQuery;
+        const {query, name, nameClass = '', queryClass = ''} = queryModalQuery;
 
         return (
             <div className="dashboard-page container-fluid">
@@ -340,13 +364,15 @@ class Index extends Component {
                                showSaveButton={true}
                                show={showQueryModal}
                                saveButtonAction={this.onQuerySave}
+                               closeButtonAction={this.hideQueryModal}
                                >
-                            <div className='row'>
+                            {showQueryModal && <div className='row'>
                                 <div className='col-12'>
                                     <Input
                                         name='name'
                                         placeholder='Query name'
                                         defaultValue={name}
+                                        className={nameClass}
                                         onChange={this.onQueryModelChange}
                                     />
                                 </div>
@@ -354,10 +380,11 @@ class Index extends Component {
                                     <Input
                                         name='query'
                                         defaultValue={query}
+                                        className={queryClass}
                                         onChange={this.onQueryModelChange}
                                     />
                                 </div>
-                            </div>
+                            </div>}
                         </Modal>
                     </>
                 ) : (
