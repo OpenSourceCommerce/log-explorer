@@ -98,40 +98,14 @@ class Index extends Component {
             uuid = selectedTable.uuid;
         }
 
-        let {isLive, disableLive, dateRange } = this.state;
-
-        let newDateRange = { ...dateRange };
-
-        let isDisableLive = disableLive;
-        const cData = getDataFromCookies(uuid) ||  '{}';
-        let dateRangeValue;
-        if (cData !== '{}') {
-            const cDataObject = JSON.parse(cData);
-            const dateRangeLabel = cDataObject.label || '';
-            if (dateRangeLabel !== 'Custom Range') {
-                dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
-                if (dateRangeValue) {
-                    newDateRange = { ...dateRangeValue };
-                    isDisableLive = !Number.isInteger(newDateRange.fromValue);
-                    isLive = cDataObject.isLive == 1;
-                }
-            } else {
-                newDateRange.label = cDataObject.label;
-                newDateRange.from = moment.unix(cDataObject.from);
-                newDateRange.to = moment.unix(cDataObject.to);
-                isDisableLive = true;
-                isLive = false;
-            }
-        } else {
-            this.setDataCookies(uuid, {label: dateRange.label, isLive: (isLive ? 1 : 0)});
-        }
+        const {isLive, disableLive, dateRange } = this.getFilterForTable(uuid);
 
         this.setState({
             logViews: data,
             selectedTable,
-            disableLive: isDisableLive,
-            isLive: isLive,
-            dateRange: {...newDateRange},
+            disableLive,
+            isLive,
+            dateRange,
         }, () => {
             const {logViews, isLive} = this.state;
             if (logViews.length > 0) {
@@ -169,13 +143,62 @@ class Index extends Component {
         });
     }
 
+    getFilterForTable = (uuid) => {
+        const cData = getDataFromCookies(uuid) ||  '{}';
+        let newDateRange = {};
+        let disableLive = '';
+        let isLive = '';
+        let dateRangeLabel = '';
+        if (cData !== '{}') {
+            const cDataObject = JSON.parse(cData);
+            dateRangeLabel = cDataObject.label || '';
+            if (dateRangeLabel !== 'Custom Range') {
+                const dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    newDateRange = { ...dateRangeValue };
+                    disableLive = !Number.isInteger(newDateRange.fromValue);
+                    isLive = cDataObject.isLive == 1;
+                }
+            } else {
+                newDateRange.label = cDataObject.label;
+                newDateRange.from = moment.unix(cDataObject.from);
+                newDateRange.to = moment.unix(cDataObject.to);
+                disableLive = true;
+                isLive = false;
+            }
+        } else {
+            newDateRange = {
+                from: DATE_RANGE[0].from,
+                to: DATE_RANGE[0].to,
+                label: DATE_RANGE[0].label,
+            };
+            disableLive = false;
+            isLive = true;
+            this.setDataCookies(uuid, {label: DATE_RANGE[0].label, isLive: 1});
+        }
+        return {
+            dateRange: { ...newDateRange },
+            isLive,
+            disableLive,
+        }
+    }
+
     setDataCookies = (uuid, dateRange) => {
         setDataToCookies(uuid, `${JSON.stringify(dateRange)}`, 30);
     }
 
     setSelectedTable(selectedTable) {
-        this.setState({selectedTable}, () => {
+        const {isLive, disableLive, dateRange } = this.getFilterForTable(selectedTable.uuid);
+
+        this.setState({
+            selectedTable,
+            isLive,
+            disableLive,
+            dateRange
+        }, () => {
             this.loadData();
+            if (!isLive) Live.pause();
+            else if (isLive) this.startStreaming();
         });
     }
 
@@ -333,6 +356,7 @@ class Index extends Component {
                 {logViews && logViews.length > 0 ? (
                     <>
                         <AdvancedSearch
+                            key={selectedTable.uuid}
                             onDateRangeChanged={this.onDateRangeChanged}
                             data={logViews}
                             selected={selectedTable}
