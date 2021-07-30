@@ -96,4 +96,13 @@ class MailerService implements MailerServiceInterface
         return $this->send('reset_password', 'Reset your password', $to,
             $data);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function sendAlertEmail($subject, $to, array $data)
+    {
+        return $this->send('alert', $subject, $to,
+            $data);
+    }
 }

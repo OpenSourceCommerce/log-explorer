@@ -43,4 +43,12 @@ interface MailerServiceInterface
      * @return mixed
      */
     public function sendResetPasswordEmail($to, array $data);
+
+    /**
+     * @param $subject
+     * @param $to
+     * @param array $data
+     * @return mixed
+     */
+    public function sendAlertEmail($subject, $to, array $data);
 }

@@ -16,6 +16,8 @@ export class FilterDate extends Component {
             // Default select option
             dateRangeValue: '1 hour'
         };
+
+        this.initDate = this.initDate.bind(this)
     }
 
     onFilterChanged(from, to, dateRangeValue, fromUnix, toUnix) {
@@ -31,6 +33,10 @@ export class FilterDate extends Component {
     }
 
     componentDidMount() {
+        this.initDate()
+    }
+
+    initDate(){
         const { dateRange } = this.props;
         let startDate = moment().subtract(1, 'hour');
         let endDate = moment();
