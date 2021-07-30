@@ -88,7 +88,7 @@ class AlertService implements AlertServiceInterface
     /**
      * @inheritDoc
      */
-    public function findAvailableAlerts(int $limit = 20)
+    public function findAvailableAlerts(?int $limit)
     {
         return $this->getRepository()->findAvailableAlerts($limit);
     }

@@ -34,7 +34,7 @@ interface AlertServiceInterface
     /**
      * @return mixed
      */
-    public function findAvailableAlerts(int $limit = 20);
+    public function findAvailableAlerts(?int $limit);
 
     /**
      * @param Alert $alert

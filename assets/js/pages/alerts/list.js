@@ -128,8 +128,18 @@ class AlertList extends Component {
                                         </td>
                                         <td>
                                             <Link href={`/alert/${item.id}`}
-                                                  className={'btn btn-success btn-sm mr-3'}>
+                                                  className={'btn btn-success btn-sm mr-2'}>
                                                 <Icon name={'edit'}/>
+                                            </Link>
+                                            <Link
+                                                onClick={this.updateStatus}
+                                                className={`btn btn-sm mr-2 ${(item.isActive === '1'? 'btn-primary' : 'btn-warning')}`}
+                                                data-id={item.id}>
+                                                {(item.isActive === '1') ?
+                                                    <Icon data-id={item.id}
+                                                          name='check-circle'/> :
+                                                    <Icon data-id={item.id}
+                                                          name='times-circle'/>}
                                             </Link>
                                             <Button
                                                 onClick={e => this.setState({deletingAlert: item})}

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class AlertsRunCommand extends Command
 {
     protected static $defaultName = 'app:alerts:run';
-    protected static $defaultDescription = 'Execute Alerts. Ex: php bin/console app:alerts:run --limit=10';
+    protected static $defaultDescription = 'Execute Alerts. Ex: php bin/console app:alerts:run';
     /**
      * @var AlertServiceInterface
      */
@@ -22,7 +22,7 @@ class AlertsRunCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit num of queries will be executed per time');
+        $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit num of queries will be executed per time. Default: 5');
     }
 
     public function __construct(string $name = null, AlertServiceInterface $alertService)
@@ -37,17 +37,26 @@ class AlertsRunCommand extends Command
         $limit = $input->getOption('limit');
 
         if (empty($limit)) {
-            $limit = 20;
+            $limit = 5;
         }
 
-        $alerts = $this->alertService->findAvailableAlerts($limit);
+        $total = 0;
+        $page = 1;
 
-        /** @var Alert $alert */
-        foreach ($alerts as $alert) {
-            $this->alertService->execute($alert);
-        }
+        do {
+            $alerts = $this->alertService->findAvailableAlerts($limit);
 
-        $io->success(count($alerts) . " alerts have been executed successfully!!");
+            /** @var Alert $alert */
+            foreach ($alerts as $alert) {
+                $this->alertService->execute($alert);
+                $total++;
+                $io->note("{$alert->getTitle()} has been executed");
+            }
+            $page ++;
+        } while (!empty($alerts));
+
+        $io->success("{$page} alerts have been done!!");
+        $io->success("{$total} alerts have been done!!");
 
         return Command::SUCCESS;
     }

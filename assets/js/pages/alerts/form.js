@@ -9,7 +9,7 @@ class AlertFormPage extends Component {
         return (
             <>
                 <div className="card">
-                    <CardHeader title="Create new Alert" showCollapseButton={false}
+                    <CardHeader title={alertId? 'Update Alert' : 'Create new Alert'} showCollapseButton={false}
                                 showRemoveButton={false}>
                     </CardHeader>
                     <div className="card-body">

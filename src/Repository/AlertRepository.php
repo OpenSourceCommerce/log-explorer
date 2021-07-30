@@ -24,7 +24,7 @@ class AlertRepository extends ServiceEntityRepository
     /**
      * @return Alert[] Returns an array of Alert objects
      */
-    public function findAvailableAlerts($limit = 20): array
+    public function findAvailableAlerts(?int $limit): array
     {
         $builder = $this->createQueryBuilder('a');
         $now = date('Y-m-d H:i:s');
@@ -36,8 +36,11 @@ class AlertRepository extends ServiceEntityRepository
                 $builder->expr()->lte('a.nextRunAt', ':now')
             ))
             ->setParameter('now', $now)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults($limit);
+            ->orderBy('a.id', 'ASC');
+
+        if (!empty($limit)) {
+            $query = $query->setMaxResults($limit);
+        }
 
         return $query->getQuery()
             ->getResult();
