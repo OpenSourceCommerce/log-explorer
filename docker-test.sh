@@ -28,8 +28,8 @@ echo "COMPOSER INSTALL"
 docker-compose exec php bash -c "composer self-update"
 docker-compose exec php bash -c "composer install --no-interaction --prefer-dist --optimize-autoloader"
 
-echo "CLEAR CACHE"
-docker-compose exec php bash -c "php bin/console cache:clear --env=\"test\""
+#echo "CLEAR CACHE"
+#docker-compose exec php bash -c "php bin/console cache:clear --env=\"test\""
 
 echo "MIGRATION"
 docker-compose exec php bash -c "php bin/console doctrine:migrations:migrate --no-interaction --env=\"test\""
