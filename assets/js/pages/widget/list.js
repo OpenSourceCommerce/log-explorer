@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Alert, WidgetActions} from "../../actions";
-import {Button, CardHeader, Icon, Link, Table, ResponsiveGridLayout} from "../../components";
+import {Button, CardHeader, Icon, Link, Table, DeleteModal} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 
 const WIDGET = {
@@ -15,7 +15,8 @@ class WidgetList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            widgets: []
+            widgets: [],
+            widgetSelected: null,
         };
     }
 
@@ -35,26 +36,50 @@ class WidgetList extends Component {
     }
 
     deleteWidget(key) {
-        const {widgets} = this.state;
-        const that = this;
-        WidgetActions.deleteWidget(widgets[key].id)
-            .then(res => {
-                const {error} = res;
-                if (error) {
-                    return;
-                }
-
-                widgets.splice(key, 1);
-                that.setState({widgets});
-                Alert.success('Delete successful');
-            });
+        this.setState({
+            widgetSelected: key,
+        })
     }
 
     render() {
-        const {widgets} = this.state;
+        const {widgets, widgetSelected} = this.state;
 
         return (
-            <div className="database">
+            <div className="widget-list">
+                <DeleteModal
+                    data={widgets}
+                    indexSelected={widgetSelected}
+                    objectName="widget"
+                    displayField="title"
+                    closeButtonAction={() => {
+                        this.setState({
+                            widgetSelected: false,
+                        })
+                    }}
+                    saveButtonAction={() => {
+                        try {
+                            WidgetActions.deleteWidget(widgets[widgetSelected].id)
+                                .then(res => {
+                                    const {error} = res;
+                                    if (error) {
+                                        Alert.error('You can not delete this widget');
+                                        return;
+                                    }
+
+                                    widgets.splice(widgetSelected, 1);
+                                    this.setState({widgets}, () => {
+                                        Alert.success('Delete successful');
+                                    });
+                                })
+                        } catch (e) {
+                            Alert.error(e);
+                        } finally {
+                            this.setState({
+                                widgetSelected: null,
+                            })
+                        };
+                    }}
+                />
                 <div className="card">
                     <CardHeader title="Widget list" showCollapseButton={false} showRemoveButton={false}>
                         <Link href={'/widget/create'} className={'btn btn-success'}>Create widget</Link>

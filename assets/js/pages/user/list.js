@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Icon, Button, Modal, Colors, Size} from '../../components';
+import {CardHeader, Table, Link, Icon, Button, DeleteModal} from '../../components';
 import {Alert, UserActions} from '../../actions';
 
 class UserList extends Component {
@@ -63,7 +63,7 @@ class UserList extends Component {
                 const {error} = res;
                 const strMessage = newStatus ? 'Enable' : 'Disable';
                 if (error) {
-                    Alert.error(`You cant ${strMessage} this user`);
+                    Alert.error(`You can not ${strMessage} this user`);
                     return;
                 }
 
@@ -80,7 +80,7 @@ class UserList extends Component {
     }
 
     onDelete = (key) => {
-        if (key !== 0 ) {
+        if (key !== 0) {
             this.setState({
                 userSelected: key
             })
@@ -88,48 +88,6 @@ class UserList extends Component {
         }
         Alert.error('Can not delete your account by yourself')
     }
-
-    deleteConfirmModal = (users, deleteUser) => (
-        <Modal
-            id='delete-user'
-            title='Confirm Delete'
-            children={`Are you sure you want to delete account ${users[deleteUser]?.email} ?`}
-            saveButtonTitle='Delete'
-            closeButtonTitle='Cancel'
-            show={!!deleteUser}
-            saveButtonColor={Colors.red}
-            size={Size.medium}
-            showSaveButton={true}
-            closeButtonAction={() => {
-                this.setState({
-                    userSelected: false,
-                })
-            }}
-            saveButtonAction={() => {
-                this.setState({
-                    isLoading: true
-                });
-                UserActions.delete(users[deleteUser].id).then(res => {
-                    const {error} = res;
-                    if (error) {
-                        Alert.error('You cant this account');
-                        return;
-                    }
-
-                    users.splice(deleteUser, 1);
-                    this.setState({
-                        users,
-                    });
-                    Alert.success('Delete successful');
-                }).finally(() => {
-                    this.setState({
-                        isLoading: false,
-                        userSelected: false,
-                    });
-                });
-            }}
-        />
-    )
 
     render() {
         const {users, newUser, userSelected} = this.state;
@@ -154,7 +112,40 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
-                { this.deleteConfirmModal(users, userSelected)}
+                <DeleteModal
+                    data={users}
+                    indexSelected={userSelected}
+                    objectName="user1"
+                    displayField="email"
+                    closeButtonAction={() => {
+                        this.setState({
+                            userSelected: false,
+                        })
+                    }}
+                    saveButtonAction={() => {
+                        this.setState({
+                            isLoading: true
+                        });
+                        UserActions.delete(users[userSelected].id).then(res => {
+                            const {error} = res;
+                            if (error) {
+                                Alert.error('You can not delete this account');
+                                return;
+                            }
+
+                            users.splice(userSelected, 1);
+                            this.setState({
+                                users,
+                            });
+                            Alert.success('Delete successful');
+                        }).finally(() => {
+                            this.setState({
+                                isLoading: false,
+                                userSelected: false,
+                            });
+                        });
+                    }}
+                />
                 {newUser && (
                     <div className="alert alert-success" role="alert">
                         {`The account ${newUser} has been created.`}
