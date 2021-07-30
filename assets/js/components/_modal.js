@@ -56,7 +56,7 @@ export class Modal extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h4 className="modal-title">{title}</h4>
-                            <Button type="button" className="close" data-dismiss="modal"
+                            <Button type="button" className="close" data-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </Button>

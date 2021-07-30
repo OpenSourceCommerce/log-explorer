@@ -50,7 +50,10 @@ const LogTableActions = {
         } else {
             return request('/api/logview/' + uuid + '/queries', {method: 'POST', body});
         }
-    }
+    },
+    deleteQueries(id) {
+        return request('/api/logview/queries/' + id, {method: 'DELETE'});
+    },
 };
 
 export default LogTableActions;

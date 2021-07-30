@@ -86,7 +86,7 @@ class LogViewController extends ApiController
     public function queries(LogView $logView): JsonResponse
     {
         return $this->responseSuccess([
-            'data' => $logView->getQueries()->toArray(),
+            'data' => $logView->getQueries($this->getUser())->toArray(),
         ]);
     }
 
@@ -104,7 +104,7 @@ class LogViewController extends ApiController
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $query = $logViewQueryService->create($logView, $form->getData());
+            $query = $logViewQueryService->create($logView, $form->getData(), $this->getUser());
             return $this->responseSuccess([
                 'query' => $query
             ]);
@@ -122,6 +122,9 @@ class LogViewController extends ApiController
      */
     public function updateQuery(LogViewQuery $query, Request $request, LogViewQueryServiceInterface $logViewQueryService): JsonResponse
     {
+        if ($query->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
         $data = $request->request->all();
         $form = $this->createForm(LogViewQueryType::class, $query);
         $form->submit($data);
@@ -134,6 +137,22 @@ class LogViewController extends ApiController
         }
 
         return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/logview/queries/{id}", methods={"DELETE"})
+     * @param LogViewQuery $query
+     * @param Request $request
+     * @param LogViewQueryServiceInterface $logViewQueryService
+     * @return JsonResponse
+     */
+    public function deleteQuery(LogViewQuery $query, Request $request, LogViewQueryServiceInterface $logViewQueryService): JsonResponse
+    {
+        if ($query->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+        $logViewQueryService->delete($query);
+        return $this->responseSuccess();
     }
 
     /**

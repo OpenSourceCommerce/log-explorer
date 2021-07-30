@@ -15,7 +15,9 @@ class LogViewQueryType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-
+                'constraints' => [
+                    new NotBlank()
+                ]
             ])
             ->add('query', TextType::class, [
                 'constraints' => [

@@ -84,7 +84,7 @@ export class FilterText extends Component {
     }
 
     render() {
-        const {placeholder, label, queries, ...rest} = this.props;
+        const {placeholder, label, queries, onDeleteCLicked, ...rest} = this.props;
         const {isInvalid, value} = this.state;
         let className = `${this.props.className} input-search`;
         if (isInvalid) {
@@ -126,6 +126,13 @@ export class FilterText extends Component {
                                         className="dropdown-item dropdown-footer"
                                     >
                                         <Link>{query.name}</Link>
+                                        <Link className={'float-right ml-2'} onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onDeleteCLicked(query)
+                                        }}>
+                                            <i className={'fa fa-trash'}></i>
+                                        </Link>
                                         <Link className={'float-right'} onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
@@ -156,5 +163,6 @@ FilterText.propTypes = {
     label: PropTypes.string,
     placeholder: PropTypes.string,
     onSaveClicked: PropTypes.func,
+    onDeleteCLicked: PropTypes.func,
     queries: PropTypes.array
 };

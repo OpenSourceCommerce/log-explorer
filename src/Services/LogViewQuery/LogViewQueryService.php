@@ -6,6 +6,7 @@ namespace App\Services\LogViewQuery;
 
 use App\Entity\LogView;
 use App\Entity\LogViewQuery;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LogViewQueryService implements LogViewQueryServiceInterface
@@ -27,9 +28,10 @@ class LogViewQueryService implements LogViewQueryServiceInterface
     /**
      * @inheritDoc
      */
-    public function create(LogView $logView, LogViewQuery $query): LogViewQuery
+    public function create(LogView $logView, LogViewQuery $query, User $user): LogViewQuery
     {
         $query->setLogView($logView);
+        $query->setUser($user);
 
         $this->em->persist($query);
         $this->em->flush();
@@ -46,5 +48,14 @@ class LogViewQueryService implements LogViewQueryServiceInterface
         $this->em->flush();
 
         return $query;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(LogViewQuery $query)
+    {
+        $this->em->remove($query);
+        $this->em->flush();
     }
 }
