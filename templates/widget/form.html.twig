@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Widget{% endblock %}
+{% block title %}{% if widget is defined %} Update {% else %} Create {% endif %}widget{% endblock %}
 
 {% block stylesheets %}
     {{ encore_entry_link_tags('widget_form') }}

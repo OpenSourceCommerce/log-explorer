@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}{% if user is defined %} Update {% else %} Create {% endif %} user{% endblock %}
 
 {% block stylesheets %}
     {{ encore_entry_link_tags('user_form') }}
