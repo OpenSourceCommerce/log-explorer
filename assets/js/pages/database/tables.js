@@ -160,9 +160,7 @@ class DatabaseTables extends Component {
                     show={showDeleteModal}
                     onHidden={this.onDeleteConfirmationModalHidden}
                 >
-                    <p className={'text-danger'}>
-                        Be careful - this will also delete the table in clickhouse database!
-                    </p>
+                    Be careful - this will also delete the table in clickhouse database!
                 </Modal>
                 <div className="card">
                     <CardHeader title="Table view" showCollapseButton={false}
