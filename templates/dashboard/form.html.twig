@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{% if dashboard is defined %}Update{% else %}Create{% endif %} dashboard{% endblock %}
 
 {% block stylesheets %}
     {{ encore_entry_link_tags('dashboard_form') }}

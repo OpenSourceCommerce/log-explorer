@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create table{% endblock %}
+{% block title %}{% if table is defined %}Update{% else %}Create{% endif %} table{% endblock %}
 
 {% block stylesheets %}
     {{ encore_entry_link_tags('database_form') }}

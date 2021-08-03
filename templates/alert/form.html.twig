@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Alerts{% endblock %}
+{% block title %}{% if alert is defined %}Update{% else %}Create{% endif %} alert{% endblock %}
 
 {% block stylesheets %}
     {{ encore_entry_link_tags('alerts_form') }}
