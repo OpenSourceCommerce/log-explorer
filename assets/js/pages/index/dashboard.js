@@ -56,37 +56,18 @@ export class DashboardPage extends Component {
     }
 
     async componentDidMount() {
-        if (window.uuid) {
-            this.setState({
-                isLoading: true,
-            })
-            const tableRes = await DatabaseActions.getAllTable();
-            const { filters } = this.state;
+        await this.loadingData();
 
-            let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map((item, index) => {
-                let isSelected = index === 0;
-                if (filters && filters.length > 0) {
-                    isSelected = !!filters.find((el) => el.table === item);
-                }
-                return {
-                    value: item,
-                    label: item,
-                    isSelected,
-                }
-            }) : [];
+        const { filters, tables } = this.state;
 
+        if (tables && tables.length > 0) {
             const newFilters = [...filters];
+
             if (!newFilters[0].table) {
                 newFilters[0].table = tables[0].value;
-                tables[0].isSelected = true;
             }
 
-            this.setState({
-                tables,
-                filters,
-            }, () => this.setDataCookies(newFilters))
-
-            await this.loadingData();
+            this.setDataCookies(newFilters);
         }
     }
 
@@ -94,6 +75,8 @@ export class DashboardPage extends Component {
         this.setState({
             isLoading: true,
         })
+
+        const { filters } = this.state;
 
         const uuid = window.uuid;
 
@@ -106,9 +89,24 @@ export class DashboardPage extends Component {
 
         let dashboardDetail = {};
 
+        let tables = [];
+
         if (dashboardRes && !dashboardRes.error) {
 
             const {widgets, data, configs} = dashboardRes;
+
+            tables = widgets && widgets.length > 0 ? widgets.map((item, index) => {
+                let isSelected = index === 0;
+                if (filters && filters.length > 0) {
+                    isSelected = !!filters.find((el) => el.table === item.table);
+                }
+                return {
+                    value: item.table,
+                    label: item.table,
+                    isSelected,
+                }
+            }).filter(item => item.value != '') : [];
+
 
             const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
 
@@ -123,6 +121,7 @@ export class DashboardPage extends Component {
             dashboardDetail,
             widgetList,
             isLoading: false,
+            tables
         });
     }
 
@@ -556,7 +555,7 @@ export class DashboardPage extends Component {
                                         })}
                                     </div>
                                     <div className="d-flex justify-content-end mb-2">
-                                        {tables.length > filters.length && <div className="col-6 col-md-1 btn-action-group">
+                                        {tables && tables.length > 0 && tables.length > filters.length && <div className="col-6 col-md-1 btn-action-group">
                                             <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => {
                                                 const table = tables.filter(item => !item.isSelected)[0].value;
                                                 const index = tables.findIndex(item => item.value === table);
