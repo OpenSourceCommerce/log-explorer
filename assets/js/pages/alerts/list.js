@@ -81,9 +81,7 @@ class AlertList extends Component {
                         this.setState({deletingAlert: null})
                     }}
                 >
-                    <p className="text-danger">
-                        Do you want to delete this alert "{deletingAlert?.title}"?
-                    </p>
+                    Do you want to delete this alert "{deletingAlert?.title}"?
                 </Modal>
                 <div className="card">
                     <CardHeader title="Alert List" showCollapseButton={false}
