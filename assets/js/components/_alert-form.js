@@ -123,7 +123,8 @@ export class AlertForm extends Component {
             this.setState({isLoading})
 
             if (response.error === 1) {
-                this.setState({errors: response.fields})
+                data['time_range'] = time_range
+                this.setState({errors: response.fields, data})
             } else {
                 if (response.redirect) {
                     window.location.href = response.redirect
