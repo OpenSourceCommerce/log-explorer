@@ -115,7 +115,7 @@ class UserList extends Component {
                 <DeleteModal
                     data={users}
                     indexSelected={userSelected}
-                    objectName="user1"
+                    objectName="user"
                     displayField="email"
                     closeButtonAction={() => {
                         this.setState({
