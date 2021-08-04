@@ -183,8 +183,8 @@ class Index extends Component {
         }
     }
 
-    setDataCookies = (uuid, dateRange) => {
-        setDataToCookies(uuid, `${JSON.stringify(dateRange)}`, 30);
+    setDataCookies = (uuid, cData) => {
+        setDataToCookies(uuid, `${JSON.stringify(cData)}`, 30);
     }
 
     setSelectedTable(selectedTable) {
@@ -213,7 +213,7 @@ class Index extends Component {
         } else {
             Live.pause();
         }
-        const cData = JSON.parse(getDataFromCookies(uuid) ||  '{}');
+        const cData = JSON.parse(getDataFromCookies(selectedTable.uuid) ||  '{}');
         cData.isLive = checked ? 1 : 0;
         this.setDataCookies(selectedTable.uuid, cData);
     }
