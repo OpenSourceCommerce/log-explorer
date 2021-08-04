@@ -84,7 +84,7 @@ jobs:
       - name: Symfony
         run: |
           curl -sS https://get.symfony.com/cli/installer | bash
-          /usr/local/bin/symfony server:start -d
+          /home/runner/.symfony/bin/symfony server:start -d
 #      - name: Run test
 #        run: php bin/phpunit
       - name: Cypress test
