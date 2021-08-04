@@ -81,6 +81,10 @@ jobs:
         run: bin/console app:createsampledatabase --env="test"
       - name: Create sample data
         run: bin/console app:createsampledata 300 --env="test"
+      - name: Symfony
+        run: curl -sS https://get.symfony.com/cli/installer | bash
+      - name: Start symfony
+        run: symfony server:start -d
 #      - name: Run test
 #        run: php bin/phpunit
       - name: Cypress test
