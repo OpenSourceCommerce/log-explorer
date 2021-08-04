@@ -5,7 +5,7 @@ name: Testing
 
 on:
   push:
-    branches: [ master, feature/LE-194 ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -67,8 +67,8 @@ jobs:
           cp .env.test.local .env
       - name: Install NPM
         run: npm i
-#      - name: Build NPM
-#        run: npm run build
+      - name: Build NPM
+        run: npm run build
       - name: Run composer
         run: |
           composer self-update
@@ -83,7 +83,7 @@ jobs:
         run: bin/console app:createsampledata 300 --env="test"
 #      - name: Run test
 #        run: php bin/phpunit
-      - name: Symfony start
+      - name: Symfony start server
         run: |
           curl -sS https://get.symfony.com/cli/installer | bash
           /home/runner/.symfony/bin/symfony server:start -d
