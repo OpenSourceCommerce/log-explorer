@@ -81,7 +81,7 @@ jobs:
         run: bin/console app:createsampledatabase --env="test"
       - name: Create sample data
         run: bin/console app:createsampledata 300 --env="test"
-      - name: Symfony
+      - name: Symfony start
         run: |
           curl -sS https://get.symfony.com/cli/installer | bash
           /home/runner/.symfony/bin/symfony server:start -d
