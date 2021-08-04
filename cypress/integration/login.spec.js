@@ -13,10 +13,11 @@ context('Login', () => {
             .should('have.text', 'Invalid credentials.');
     })
     it('Login with valid account', () => {
+        let myConfig = Cypress.config()
         cy.get('input[name=email]').type('admin1@test.com');
         cy.get('input[name=password]').type('123456');
         cy.get('button[type=submit]').click()
         cy.url()
-            .should('contain', 'http://localhost/dashboard');
+            .should('contain', myConfig.baseUrl + '/log-view');
     })
 })
