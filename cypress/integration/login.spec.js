@@ -2,14 +2,21 @@
 
 context('Login', () => {
     beforeEach(() => {
-        cy.visit('http://localhost/login')
+        cy.visit('/login')
     })
     // https://on.cypress.io/wait
     it('Login with fake account', () => {
         cy.get('input[name=email]').type('test-no-user@test.com');
         cy.get('input[name=password]').type('Qwewsdsfsf32312312');
         cy.get('button[type=submit]').click()
-            .next()
-            .should('have.text', '');
+        cy.get('div.alert-message')
+            .should('have.text', 'Invalid credentials.');
+    })
+    it('Login with valid account', () => {
+        cy.get('input[name=email]').type('admin1@test.com');
+        cy.get('input[name=password]').type('123456');
+        cy.get('button[type=submit]').click()
+        cy.url()
+            .should('contain', 'http://localhost/dashboard');
     })
 })
