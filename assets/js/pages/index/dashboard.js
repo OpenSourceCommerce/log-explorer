@@ -95,17 +95,25 @@ export class DashboardPage extends Component {
 
             const {widgets, data, configs} = dashboardRes;
 
-            tables = widgets && widgets.length > 0 ? widgets.map((item, index) => {
-                let isSelected = index === 0;
-                if (filters && filters.length > 0) {
-                    isSelected = !!filters.find((el) => el.table === item.table);
+            tables = widgets && widgets.length > 0 ? widgets.reduce((result, item, index) => {
+                if (item.table != '') {
+                    if (result.length === 0 || !result.find(e => e.value === item.table)) {
+                        let isSelected = index === 0;
+                        if (filters && filters.length > 0) {
+                            isSelected = !!filters.find((el) => el.table === item.table);
+                        }
+                        result = [
+                            ...result,
+                            {
+                                value: item.table,
+                                label: item.table,
+                                isSelected,
+                            }
+                        ]
+                    }
                 }
-                return {
-                    value: item.table,
-                    label: item.table,
-                    isSelected,
-                }
-            }).filter(item => item.value != '') : [];
+                return result;
+            }, []) : [];
 
 
             const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
