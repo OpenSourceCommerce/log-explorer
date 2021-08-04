@@ -67,8 +67,8 @@ jobs:
           cp .env.test.local .env
       - name: Install NPM
         run: npm i
-      - name: Build NPM
-        run: npm run build
+#      - name: Build NPM
+#        run: npm run build
       - name: Run composer
         run: |
           composer self-update
@@ -81,11 +81,17 @@ jobs:
         run: bin/console app:createsampledatabase --env="test"
       - name: Create sample data
         run: bin/console app:createsampledata 300 --env="test"
+#      - name: Run test
+#        run: php bin/phpunit
       - name: Symfony start
         run: |
           curl -sS https://get.symfony.com/cli/installer | bash
           /home/runner/.symfony/bin/symfony server:start -d
-#      - name: Run test
-#        run: php bin/phpunit
+      - name: Create cypress .env
+        run: |
+          cp .env.dist .env
+          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env
+          sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env
+          sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env
       - name: Cypress test
-        run: ./node_modules/.bin/cypress run
+        run: CYPRESS_BASE_URL=http://localhost:8000 ./node_modules/.bin/cypress run
