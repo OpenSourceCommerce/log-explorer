@@ -34,4 +34,20 @@ class ExportRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+     /**
+      * @return Export[] Returns an array of Export objects
+      */
+    public function findNotProcessed(int $limit = 1): array
+    {
+        $date = new \DateTime();
+
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.expiredAt <= :date')
+            ->setParameter('date', $date)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

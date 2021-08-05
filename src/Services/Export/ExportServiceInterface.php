@@ -19,9 +19,10 @@ interface ExportServiceInterface
     public function findAll();
 
     /**
-     * @return Export
+     * @param int|null $limit
+     * @return array
      */
-    public function findNotProcessed(): Export;
+    public function findNotProcessed(?int $limit = 1): array;
 
     /**
      * @param string $filename

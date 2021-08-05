@@ -34,6 +34,7 @@ class LogviewExportDataCommand extends Command
 
     protected function configure(): void
     {
+        $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit num of exports to process per time. Default: 1');
     }
 
     public function __construct(string $name = null, ExportServiceInterface $exportService, StreamServiceInterface $streamService, ParameterBagInterface $parameterBag)
@@ -51,21 +52,32 @@ class LogviewExportDataCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $limit = $input->getOption('limit');
 
-        $export = $this->exportService->findNotProcessed();
-        $options = $this->filter($export->getFilter());
-        $data = $this->streamService->getLogsInRange($export->getTable(), $options);
-        $filename = $this->generateExportFilename($export);
-        $path = $this->exportService->export($filename, $export->getFormat(), $data);
+        if (empty($limit)) {
+            $limit = 1;
+        }
 
-        if (!empty($path)) {
-            $finishedDate = new DateTime();
-            $expiryDate = new DateTime($this->parameterBag->get('app.logview.export_expiry'));
-            $export->setFinishedAt($finishedDate);
-            $export->setExpiredAt($expiryDate);
-            $export->setPath($path);
+        $exports = $this->exportService->findNotProcessed($limit);
 
-            $this->exportService->createOrUpdate($export);
+        if (!empty($exports)) {
+            /** @var Export $export */
+            foreach ($exports as $export) {
+                $options = $this->filter($export->getFilter());
+                $data = $this->streamService->getLogsInRange($export->getTable(), $options);
+                $filename = $this->generateExportFilename($export);
+                $path = $this->exportService->export($filename, $export->getFormat(), $data);
+
+                if (!empty($path)) {
+                    $finishedDate = new DateTime();
+                    $expiryDate = new DateTime($this->parameterBag->get('app.logview.export_expiry'));
+                    $export->setFinishedAt($finishedDate);
+                    $export->setExpiredAt($expiryDate);
+                    $export->setPath($path);
+
+                    $this->exportService->createOrUpdate($export);
+                }
+            }
         }
 
         $io->success('Done!!!');
@@ -114,6 +126,6 @@ class LogviewExportDataCommand extends Command
     private function generateExportFilename(Export $export): string
     {
         $date = new DateTime();
-        return "{$export->getTable()}_{$date->format('Y-m-d_H-i-s')}.{$export->getFormat()}";
+        return uniqid("{$export->getTable()}_{$date->format('Y-m-d_H-i-s')}-") . "." . $export->getFormat();
     }
 }

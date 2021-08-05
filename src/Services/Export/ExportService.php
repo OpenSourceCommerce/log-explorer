@@ -63,9 +63,9 @@ class ExportService implements ExportServiceInterface
     /**
      * @inheritDoc
      */
-    public function findNotProcessed(): Export
+    public function findNotProcessed(?int $limit = 1): array
     {
-        return $this->getRepository()->findOneBy(['finishedAt' => null]);
+        return $this->getRepository()->findBy(['finishedAt' => null], ['id' => 'asc'], $limit);
     }
 
     /**
@@ -88,11 +88,11 @@ class ExportService implements ExportServiceInterface
         return $this->parameterBag->get('app.logview.export_directory');
     }
 
-    private function getOutputDirectory(): string
+    private function getOutputDirectory(string $path): string
     {
         $outputPath = $this->getOutputPath();
         $rootDirectory = $this->parameterBag->get('app.root_directory');
-        $outputDirectory = "{$rootDirectory}/public{$outputPath}";
+        $outputDirectory = "{$rootDirectory}/public{$outputPath}/{$path}";
 
         if (!$this->filesystem->exists($outputDirectory)) {
             $this->filesystem->mkdir($outputDirectory);
@@ -106,7 +106,8 @@ class ExportService implements ExportServiceInterface
      */
     public function exportCsv(string $filename, array $data): ?string
     {
-        $fullPath = "{$this->getOutputDirectory()}/{$filename}";
+        $subDirectory = $this->generateSubDirectory($filename);
+        $fullPath = "{$this->getOutputDirectory($subDirectory)}/{$filename}";
         $this->deleteExistingFile($fullPath);
         $file = fopen($fullPath, 'w');
 
@@ -116,7 +117,7 @@ class ExportService implements ExportServiceInterface
             fputcsv($file, $row);
         }
 
-        return "{$this->getOutputPath()}/{$filename}";
+        return "{$this->getOutputPath()}/{$subDirectory}/{$filename}";
     }
 
     /**
@@ -124,13 +125,14 @@ class ExportService implements ExportServiceInterface
      */
     public function exportJson(string $filename, array $data): ?string
     {
-        $fullPath = "{$this->getOutputDirectory()}/{$filename}";
+        $subDirectory = $this->generateSubDirectory($filename);
+        $fullPath = "{$this->getOutputDirectory($subDirectory)}/{$filename}";
         $this->deleteExistingFile($fullPath);
         $file = fopen($fullPath, 'w');
 
         fputs($file, json_encode($data));
 
-        return "{$this->getOutputPath()}/{$filename}";
+        return "{$this->getOutputPath()}/{$subDirectory}/{$filename}";
     }
 
     private function deleteExistingFile($fullPath)
@@ -162,5 +164,11 @@ class ExportService implements ExportServiceInterface
 
         $this->em->remove($export);
         $this->em->flush();
+    }
+
+    private function generateSubDirectory(string $filename): string
+    {
+        $subDirectory = md5(uniqid($filename));
+        return substr($subDirectory, 0, 2) . '/' . substr($subDirectory, 2, 2);
     }
 }
