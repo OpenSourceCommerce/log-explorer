@@ -19,19 +19,22 @@ class ExportRepository extends ServiceEntityRepository
         parent::__construct($registry, Export::class);
     }
 
-     /**
-      * @return Export[] Returns an array of Export objects
-      */
+    /**
+     * @return Export[] Returns an array of Export objects
+     */
     public function findExpiredExports(int $limit = 20): array
     {
         $date = new \DateTime();
 
-        return $this->createQueryBuilder('e')
+        $query = $this->createQueryBuilder('e')
             ->andWhere('e.expiredAt <= :date')
-            ->setParameter('date', $date)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->setParameter('date', $date);
+
+        if ($limit > 0) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->getQuery()
+            ->getResult();
     }
 }
