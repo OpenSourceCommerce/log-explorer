@@ -74,6 +74,7 @@ Encore
   .addEntry('dashboard-page', './assets/js/pages/index/dashboard.js')
   .addEntry('alerts_list', './assets/js/pages/alerts/list.js')
   .addEntry('alerts_form', './assets/js/pages/alerts/form.js')
+  .addEntry('export_list', './assets/js/pages/export/list.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
 

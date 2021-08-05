@@ -25,6 +25,7 @@ export class Sidebar extends Component {
                 {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
                 {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'},
                 {href: 'alert', type: 'solid', iconName: 'exclamation-triangle', label: 'Alerts'},
+                {href: 'export', type: 'solid', iconName: 'download', label: 'Exports'},
             ];
         }
 

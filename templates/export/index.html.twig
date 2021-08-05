@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exports{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('export_list') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('export_list') }}
+{% endblock %}
+

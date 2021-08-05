@@ -65,7 +65,7 @@ class StreamService implements StreamServiceInterface
      */
     public function trackIdLog(string $trackId): string
     {
-        return '/*LE-TRACK-ID-'.$trackId.'*/';
+        return '/*LE-TRACK-ID-' . $trackId . '*/';
     }
 
     /**
@@ -88,18 +88,22 @@ class StreamService implements StreamServiceInterface
         }
 
         $builder->select('_id')
-            ->orderBy($sort, $order)
-            ->setMaxResults($limit)
-            ->setFirstResult(($page - 1) * $limit);
+            ->orderBy($sort, $order);
 
         $builder2 = $this->connection->createQueryBuilder()
             ->from($table)
             ->select($columns)
-            ->setMaxResults($limit)
-            ->orderBy($sort, $order)
-            ->where('_id IN ('.$builder->getSQL().')');
+            ->orderBy($sort, $order);
 
-        return $this->connection->fetchAll($builder2->getSQL().' FORMAT JSON '.$track, $builder->getParameters());
+        if ($limit > 0) {
+            $builder = $builder->setMaxResults($limit)
+                ->setFirstResult(($page - 1) * $limit);
+            $builder2 = $builder2->setMaxResults($limit);
+        }
+
+        $builder2->where('_id IN (' . $builder->getSQL() . ')');
+
+        return $this->connection->fetchAll($builder2->getSQL() . ' FORMAT JSON ' . $track, $builder->getParameters());
     }
 
     /**
@@ -120,7 +124,7 @@ class StreamService implements StreamServiceInterface
     {
         $builder = $this->makeQueryBuilder($table, $options);
         $builder->addSelect($column, "COUNT({$column}) AS c")
-                ->addGroupBy($column);
+            ->addGroupBy($column);
         $ret = $builder->execute()
             ->fetchAll();
         $summary = [];

@@ -8,12 +8,14 @@ import {
     LogViewTableSettingModal,
     QueryInfo
 } from '.';
-import {LogTableActions} from '../actions';
+import {LogTableActions, ExportActions, Alert} from '../actions';
+import {LogViewExportModal} from "./_log-view-export-modal";
 
 export class LogViewTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showExportModal: false,
             showTableSettingModal: false,
             fields: [],
             queryInfo: {},
@@ -24,6 +26,8 @@ export class LogViewTable extends Component {
         this.hideTableSettingModal = this.hideTableSettingModal.bind(this);
         this.onTableSettingModalChanged = this.onTableSettingModalChanged.bind(this);
         this.onDataLoaded = this.onDataLoaded.bind(this);
+        this.showExportModal = this.showExportModal.bind(this);
+        this.exportData = this.exportData.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -80,16 +84,45 @@ export class LogViewTable extends Component {
         this.setState({queryInfo, updated: false});
     }
 
+    showExportModal(event) {
+        event.preventDefault();
+        this.setState({showExportModal: true});
+    }
+
+    exportData(format) {
+        const {selectedTable} = this.props;
+        const filter = LogTableActions.getOptions({})
+
+        ExportActions.exportData(selectedTable.table, format, filter).then((response) => {
+            const {error, redirect} = response
+
+            if (error === 0) {
+                const showExportModal = false
+                this.setState({showExportModal})
+                Alert.success('Your request are being in progress. <br>' +
+                    'Please visit <a href="' + redirect + '">Export Page</a> to download.')
+
+                if (redirect) {
+                    setTimeout(() => {
+                        window.location.href = redirect
+                    }, 1000)
+                }
+            }
+        });
+    }
+
     render() {
         const {selectedTable} = this.props;
-        const {fields, showTableSettingModal, queryInfo, updated} = this.state;
+        const {fields, showTableSettingModal, queryInfo, updated, showExportModal} = this.state;
 
         return (
             (fields && fields.length > 0 && <div className="col-12 col-md-auto">
                 <LogViewTableSettingModal show={showTableSettingModal}
-                    selectedTable={selectedTable}
-                    onSave={this.onTableSettingModalChanged}
-                    onHidden={this.hideTableSettingModal}/>
+                                          selectedTable={selectedTable}
+                                          onSave={this.onTableSettingModalChanged}
+                                          onHidden={this.hideTableSettingModal}/>
+                <LogViewExportModal show={showExportModal}
+                                    onSelected={this.exportData}/>
                 <div className="card">
                     <div className="card-header pt-1 pb-0">
                         <h3 className="card-title">
@@ -100,6 +133,9 @@ export class LogViewTable extends Component {
                             <CardTool>
                                 <DropdownItem onClick={this.showTableSettingModal}>
                                     Setting
+                                </DropdownItem>
+                                <DropdownItem onClick={this.showExportModal}>
+                                    Export
                                 </DropdownItem>
                             </CardTool>
 

@@ -160,3 +160,4 @@ Options:
 ## Documentation
 
 #### [Api Documentation](/docs/api/README.md)
+#### [Command Documentation](/docs/command/README.md)
