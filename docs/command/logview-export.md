@@ -10,6 +10,17 @@ LOGVIEW_EXPORT_EXPIRY="+7 days"
 
 ## Export data
 `php bin/console logview:export-data`
+```shell
+Description:
+  Export Logview Data
+
+Usage:
+  logview:export-data [options]
+
+Options:
+  -l, --limit[=LIMIT]   Limit num of exports to process per time. Default: 1
+  -h, --help            Display help for the given command. When no command is given display help for the list command
+```
 
 ## Cleanup expired exports
 `php bin/console logview:export-cleanup`
