@@ -98,8 +98,8 @@ class LogviewExportDataCommand extends Command
             $options['to'] = $to;
         }
 
-        if (!empty($filterQuery = $filter['filter'])) {
-            $options['filter'] = $filterQuery;
+        if (!empty($filter['filter'])) {
+            $options['filter'] = $filter['filter'];
         } else {
             $options['filter'] = false;
         }
