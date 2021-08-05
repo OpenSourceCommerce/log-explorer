@@ -83,10 +83,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      */
     private $logViewQueries;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Export::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $exports;
+
     public function __construct()
     {
         $this->userTokens = new ArrayCollection();
         $this->logViewQueries = new ArrayCollection();
+        $this->exports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -360,6 +366,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
             // set the owning side to null (unless already changed)
             if ($logViewQuery->getUser() === $this) {
                 $logViewQuery->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Export[]
+     */
+    public function getExports(): Collection
+    {
+        return $this->exports;
+    }
+
+    public function addExport(Export $export): self
+    {
+        if (!$this->exports->contains($export)) {
+            $this->exports[] = $export;
+            $export->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExport(Export $export): self
+    {
+        if ($this->exports->removeElement($export)) {
+            // set the owning side to null (unless already changed)
+            if ($export->getUser() === $this) {
+                $export->setUser(null);
             }
         }
 
