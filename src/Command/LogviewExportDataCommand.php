@@ -93,8 +93,8 @@ class LogviewExportDataCommand extends Command
             $options['from'] = new DateTime('- 1 hour');
         }
 
-        if (!empty($to = $filter['to'])) {
-            $to = new DateTime($to);
+        if (!empty($filter['to'])) {
+            $to = new DateTime($filter['to']);
             $options['to'] = $to;
         }
 
