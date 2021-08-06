@@ -244,7 +244,7 @@ class Alert implements \JsonSerializable
             'interval_time' => (string)$this->getIntervalTime(),
             'email' => $this->getEmail(),
             'subject' => $this->getSubject(),
-            'isActive' => (string)$this->getIsActive(),
+            'isActive' => $this->getIsActive() ? '1' : '0',
         ];
     }
 

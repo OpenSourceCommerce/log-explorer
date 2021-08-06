@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Alert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -60,7 +61,12 @@ class AlertType extends AbstractType
                     new NotBlank()
                 ]
             ])
-            ->add('isActive', CheckboxType::class);
+            ->add('isActive', ChoiceType::class, [
+                'choices' => [
+                    'Inactive' => '0',
+                    'Active' => '1',
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
