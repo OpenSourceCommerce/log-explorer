@@ -4,6 +4,7 @@
 namespace App\Controller\Api;
 
 
+use App\Entity\Dashboard;
 use App\Entity\Widget;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
@@ -12,6 +13,7 @@ use App\Exceptions\NoDataException;
 use App\Exceptions\TableNotExistException;
 use App\Form\WidgetType;
 use App\Services\Database\DatabaseServiceInterface;
+use App\Services\Stream\StreamServiceInterface;
 use App\Services\Widget\WidgetServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,8 +60,9 @@ class WidgetController extends ApiController
         Request $request,
         DatabaseServiceInterface $databaseService,
         WidgetServiceInterface $widgetService,
-        UrlGeneratorInterface $urlGenerator): JsonResponse
-    {
+        UrlGeneratorInterface $urlGenerator,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(WidgetType::class);
         $form->submit($data);
@@ -84,10 +87,18 @@ class WidgetController extends ApiController
 
                     $columns = array_unique($columns);
                     $widget->setColumn(implode(',', $columns));
+
+                    if ($widget->getQuery()) {
+                        $streamService->getWidgetData(new Dashboard(), $define, [
+                            'filter' => '1 <> 1 and ' . $widget->getQuery(),
+                        ]);
+                    }
                 } catch (TableNotExistException $e) {
                     return $this->responseError('Table does not exist');
                 } catch (ColumnNotExistException $e) {
                     return $this->responseError('Column does not exist');
+                } catch (\Exception $e) {
+                    return $this->responseError('Filter is not a valid SQL query');
                 }
             }
             $widget = $widgetService->createWidget($widget);
@@ -106,14 +117,16 @@ class WidgetController extends ApiController
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @param WidgetServiceInterface $widgetService
+     * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
     public function update(
         Widget $widget,
         Request $request,
         DatabaseServiceInterface $databaseService,
-        WidgetServiceInterface $widgetService): JsonResponse
-    {
+        WidgetServiceInterface $widgetService,
+        StreamServiceInterface $streamService
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(WidgetType::class, $widget);
         $form->submit($data);
@@ -133,10 +146,19 @@ class WidgetController extends ApiController
 
                 $columns = array_unique($columns);
                 $widget->setColumn(implode(',', $columns));
+
+                if ($widget->getQuery()) {
+                    $define = $widgetService->getWidgetInterface($widget);
+                    $streamService->getWidgetData(new Dashboard(), $define, [
+                        'filter' => '1 <> 1 and ' . $widget->getQuery(),
+                    ]);
+                }
             } catch (TableNotExistException $e) {
                 return $this->responseError('Table does not exist');
             } catch (ColumnNotExistException $e) {
                 return $this->responseError('Column does not exist');
+            } catch (\Exception $e) {
+                return $this->responseError('Filter is not a valid SQL query');
             }
 
             $widgetService->updateWidget($widget);
