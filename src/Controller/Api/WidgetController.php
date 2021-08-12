@@ -88,7 +88,12 @@ class WidgetController extends ApiController
                     $columns = array_unique($columns);
                     $widget->setColumn(implode(',', $columns));
 
-                    $streamService->getWidgetData(new Dashboard(), $define, ['filter' => $widget->getQuery()]);
+                    if ($widget->getQuery()) {
+                        $streamService->getWidgetData(new Dashboard(), $define, [
+                            'filter' => $widget->getQuery(),
+                            'from' => new \DateTime('-10 minutes'),
+                        ]);
+                    }
                 } catch (TableNotExistException $e) {
                     return $this->responseError('Table does not exist');
                 } catch (ColumnNotExistException $e) {
@@ -142,8 +147,13 @@ class WidgetController extends ApiController
                 $columns = array_unique($columns);
                 $widget->setColumn(implode(',', $columns));
 
-                $define = $widgetService->getWidgetInterface($widget);
-                $streamService->getWidgetData(new Dashboard(), $define, ['filter' => $widget->getQuery()]);
+                if ($widget->getQuery()) {
+                    $define = $widgetService->getWidgetInterface($widget);
+                    $streamService->getWidgetData(new Dashboard(), $define, [
+                        'filter' => $widget->getQuery(),
+                        'from' => new \DateTime('-10 minutes'),
+                    ]);
+                }
             } catch (TableNotExistException $e) {
                 return $this->responseError('Table does not exist');
             } catch (ColumnNotExistException $e) {
