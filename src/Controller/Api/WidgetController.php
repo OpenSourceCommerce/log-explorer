@@ -90,8 +90,7 @@ class WidgetController extends ApiController
 
                     if ($widget->getQuery()) {
                         $streamService->getWidgetData(new Dashboard(), $define, [
-                            'filter' => $widget->getQuery(),
-                            'from' => new \DateTime('-10 minutes'),
+                            'filter' => $widget->getQuery() . ' and 1 <> 1',
                         ]);
                     }
                 } catch (TableNotExistException $e) {
@@ -118,6 +117,7 @@ class WidgetController extends ApiController
      * @param Request $request
      * @param DatabaseServiceInterface $databaseService
      * @param WidgetServiceInterface $widgetService
+     * @param StreamServiceInterface $streamService
      * @return JsonResponse
      */
     public function update(
@@ -150,8 +150,7 @@ class WidgetController extends ApiController
                 if ($widget->getQuery()) {
                     $define = $widgetService->getWidgetInterface($widget);
                     $streamService->getWidgetData(new Dashboard(), $define, [
-                        'filter' => $widget->getQuery(),
-                        'from' => new \DateTime('-10 minutes'),
+                        'filter' => $widget->getQuery() . ' and 1 <> 1',
                     ]);
                 }
             } catch (TableNotExistException $e) {
