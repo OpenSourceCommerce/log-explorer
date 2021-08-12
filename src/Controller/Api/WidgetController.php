@@ -90,7 +90,7 @@ class WidgetController extends ApiController
 
                     if ($widget->getQuery()) {
                         $streamService->getWidgetData(new Dashboard(), $define, [
-                            'filter' => $widget->getQuery() . ' and 1 <> 1',
+                            'filter' => '1 <> 1 and ' . $widget->getQuery(),
                         ]);
                     }
                 } catch (TableNotExistException $e) {
@@ -150,7 +150,7 @@ class WidgetController extends ApiController
                 if ($widget->getQuery()) {
                     $define = $widgetService->getWidgetInterface($widget);
                     $streamService->getWidgetData(new Dashboard(), $define, [
-                        'filter' => $widget->getQuery() . ' and 1 <> 1',
+                        'filter' => '1 <> 1 and ' . $widget->getQuery(),
                     ]);
                 }
             } catch (TableNotExistException $e) {
