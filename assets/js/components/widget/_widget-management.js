@@ -116,7 +116,13 @@ export class WidgetManagement extends Component {
                     label: item.name
                 })) : [];
 
-                let newWidgetDetail = {...widgetDetail, column: ''}
+                let column = ''
+
+                if(widgetDetail.type == WIDGET_TYPE.table){
+                    column = []
+                }
+
+                let newWidgetDetail = {...widgetDetail, column}
 
                 this.setState({columns, widgetDetail: {
                     ...newWidgetDetail
