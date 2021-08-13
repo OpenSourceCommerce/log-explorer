@@ -5,7 +5,7 @@ name: Testing
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, feature/LE-194-2 ]
   pull_request:
     branches: [ master ]
 
@@ -95,3 +95,11 @@ jobs:
           sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env
       - name: Cypress test
         run: CYPRESS_BASE_URL=http://localhost:8000 ./node_modules/.bin/cypress run
+      - name: Upload test failed
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: Cypress
+          path: |
+            cypress\screenshots
+            cypress\videos
