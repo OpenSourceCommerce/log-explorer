@@ -5,7 +5,7 @@ name: Testing
 
 on:
   push:
-    branches: [ master, feature/LE-194-2 ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
