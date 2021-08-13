@@ -18,6 +18,6 @@ context('Login', () => {
         cy.get('input[name=password]').type('123456');
         cy.get('button[type=submit]').click()
         cy.url()
-            .should('contain', myConfig.baseUrl + '/log-view');
+            .should('contain', myConfig.baseUrl + '/wrong-here');
     })
 })
