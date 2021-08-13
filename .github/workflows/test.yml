@@ -101,5 +101,5 @@ jobs:
         with:
           name: Cypress
           path: |
-            cypress\screenshots
-            cypress\videos
+            cypress/screenshots
+            cypress/videos
