@@ -1,11 +1,10 @@
 <?php
 
 
-namespace App\Services\LogViewQuery;
+namespace App\Services\WidgetQuery;
 
 
-use App\Entity\LogView;
-use App\Entity\LogViewQuery;
+use App\Entity\WidgetQuery;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -17,7 +16,7 @@ class WidgetQueryService implements WidgetQueryServiceInterface
     private $em;
 
     /**
-     * LogViewQueryService constructor.
+     * WidgetQueryService constructor.
      * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em)
@@ -28,9 +27,8 @@ class WidgetQueryService implements WidgetQueryServiceInterface
     /**
      * @inheritDoc
      */
-    public function create(LogView $logView, LogViewQuery $query, User $user): LogViewQuery
+    public function create(WidgetQuery $query, User $user): WidgetQuery
     {
-        $query->setLogView($logView);
         $query->setUser($user);
 
         $this->em->persist($query);
@@ -42,7 +40,7 @@ class WidgetQueryService implements WidgetQueryServiceInterface
     /**
      * @inheritDoc
      */
-    public function update(LogViewQuery $query): LogViewQuery
+    public function update(WidgetQuery $query): WidgetQuery
     {
         $this->em->persist($query);
         $this->em->flush();
@@ -53,7 +51,7 @@ class WidgetQueryService implements WidgetQueryServiceInterface
     /**
      * @inheritDoc
      */
-    public function delete(LogViewQuery $query)
+    public function delete(WidgetQuery $query)
     {
         $this->em->remove($query);
         $this->em->flush();
