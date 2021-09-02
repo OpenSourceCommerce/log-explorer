@@ -16,7 +16,21 @@ const WidgetActions = {
     },
     listWidget() {
         return request('/api/widget');
-    }
+    },
+    getQueries() {
+        return request('/api/widget/queries/list');
+    },
+    saveQueries(id, data) {
+        const body = JSON.stringify(data);
+        if (id) {
+            return request('/api/widget/queries/' + id, {method: 'PUT', body});
+        } else {
+            return request('/api/widget/queries', {method: 'POST', body});
+        }
+    },
+    deleteQueries(id) {
+        return request('/api/widget/queries/' + id, {method: 'DELETE'});
+    },
 };
 
 export default WidgetActions;

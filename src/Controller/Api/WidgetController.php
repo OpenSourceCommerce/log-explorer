@@ -5,16 +5,20 @@ namespace App\Controller\Api;
 
 
 use App\Entity\Dashboard;
+use App\Entity\User;
 use App\Entity\Widget;
+use App\Entity\WidgetQuery;
 use App\Exceptions\ActionDeniedException;
 use App\Exceptions\BadSqlException;
 use App\Exceptions\ColumnNotExistException;
 use App\Exceptions\NoDataException;
 use App\Exceptions\TableNotExistException;
+use App\Form\WidgetQueryType;
 use App\Form\WidgetType;
 use App\Services\Database\DatabaseServiceInterface;
 use App\Services\Stream\StreamServiceInterface;
 use App\Services\Widget\WidgetServiceInterface;
+use App\Services\WidgetQuery\WidgetQueryServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -177,6 +181,82 @@ class WidgetController extends ApiController
     public function delete(Widget $widget, WidgetServiceInterface $widgetService): JsonResponse
     {
         $widgetService->delete($widget);
+        return $this->responseSuccess();
+    }
+
+    /**
+     * @Route("/api/widget/queries/list", name="widget_queries", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function queries(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        return $this->responseSuccess([
+            'data' => $user->getWidgetQueries()->toArray(),
+        ]);
+    }
+
+    /**
+     * @Route("/api/widget/queries", methods={"POST"})
+     * @param Request $request
+     * @param WidgetQueryServiceInterface $widgetQueryService
+     * @return JsonResponse
+     */
+    public function createQuery(Request $request, WidgetQueryServiceInterface $widgetQueryService): JsonResponse
+    {
+        $data = $request->request->all();
+        $form = $this->createForm(WidgetQueryType::class);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $query = $widgetQueryService->create($form->getData(), $this->getUser());
+            return $this->responseSuccess([
+                'query' => $query
+            ]);
+        }
+
+        return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/widget/queries/{id}", methods={"PUT"})
+     * @param WidgetQuery $query
+     * @param Request $request
+     * @param WidgetQueryServiceInterface $widgetQueryService
+     * @return JsonResponse
+     */
+    public function updateQuery(WidgetQuery $query, Request $request, WidgetQueryServiceInterface $widgetQueryService): JsonResponse
+    {
+        if ($query->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+        $data = $request->request->all();
+        $form = $this->createForm(WidgetQueryType::class, $query);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $query = $widgetQueryService->update($form->getData());
+            return $this->responseSuccess([
+                'query' => $query
+            ]);
+        }
+
+        return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/widget/queries/{id}", methods={"DELETE"})
+     * @param WidgetQuery $query
+     * @param WidgetQueryServiceInterface $widgetQueryService
+     * @return JsonResponse
+     */
+    public function deleteQuery(WidgetQuery $query, WidgetQueryServiceInterface $widgetQueryService): JsonResponse
+    {
+        if ($query->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+        $widgetQueryService->delete($query);
         return $this->responseSuccess();
     }
 }

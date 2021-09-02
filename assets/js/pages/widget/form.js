@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {DoughnutPieChart, WidgetManagement} from "../../components";
+import {DoughnutPieChart, Size, WidgetManagement} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "../../components/widget/_counter-sum";
 import {WidgetTable} from "../../components/widget/_widget-table";
+import {Alert, WidgetActions} from "../../actions";
+import {Input} from "../../components/_input";
+import {Modal} from "../../components/_modal";
 
 const SAMPLE_DATA = [
     {
@@ -97,9 +100,21 @@ class WidgetPage extends Component {
             title: '',
             size: '',
             column: '',
+            showQueryModal: false,
+            queryModalQuery: {}
         }
 
         this.color = SAMPLE_DATA.map(() => this.getRandomColor());
+        this.onSubmitQuery = this.onSubmitQuery.bind(this)
+        this.onQuerySave = this.onQuerySave.bind(this)
+        this.onDeleteQuery = this.onDeleteQuery.bind(this)
+        this.onQueryModelChange = this.onQueryModelChange.bind(this)
+        this.hideQueryModal = this.hideQueryModal.bind(this)
+        this.loadQueries = this.loadQueries.bind(this)
+    }
+
+    componentDidMount() {
+        this.loadQueries()
     }
 
     getRandomColor() {
@@ -115,6 +130,88 @@ class WidgetPage extends Component {
         this.setState({
             ...initialData,
             type: initialData.type.toString()
+        })
+    }
+
+    onSubmitQuery(query) {
+        this.setState({
+            showQueryModal: true,
+            queryModalQuery: query
+        })
+    }
+
+    loadQueries() {
+        const that = this;
+
+        WidgetActions.getQueries()
+            .then(res => {
+                const {error, data} = res;
+                if (error === 0) {
+                    that.setState({
+                        queries: data
+                    })
+                }
+            });
+    }
+
+    onQuerySave() {
+        const that = this;
+        let {queryModalQuery} = this.state;
+        if ($.trim(queryModalQuery.name) === '') {
+            Alert.error('Query name should not be blank');
+            queryModalQuery.nameClass = 'is-invalid';
+            that.setState({queryModalQuery});
+            return;
+        }
+        queryModalQuery.nameClass = '';
+        if ($.trim(queryModalQuery.name) === '' || $.trim(queryModalQuery.query) === '') {
+            Alert.error('Query should not be blank');
+            queryModalQuery.queryClass = 'is-invalid';
+            that.setState({queryModalQuery});
+            return;
+        }
+        queryModalQuery.queryClass = '';
+        that.setState({queryModalQuery});
+
+        WidgetActions.saveQueries(queryModalQuery.id, queryModalQuery)
+            .then(res => {
+                const {error} = res;
+                if (error === 0) {
+                    this.loadQueries()
+
+                    that.setState({
+                        queryModalQuery: {},
+                        showQueryModal: false,
+                    })
+                }
+            })
+    }
+
+    onDeleteQuery(query) {
+        const that = this;
+        WidgetActions.deleteQueries(query.id)
+            .then(res => {
+                const {error} = res;
+                if (error === 0) {
+                    this.loadQueries()
+
+                    that.setState({
+                        showQueryModal: false
+                    })
+                }
+            })
+    }
+
+    onQueryModelChange(e) {
+        let {queryModalQuery} = this.state;
+        queryModalQuery[e.target.name] = e.target.value;
+        queryModalQuery[e.target.name + 'Class'] = e.target.value === '' ? 'is-invalid' : '';
+        this.setState({queryModalQuery});
+    }
+
+    hideQueryModal() {
+        this.setState({
+            showQueryModal: false
         })
     }
 
@@ -159,7 +256,9 @@ class WidgetPage extends Component {
             return component;
         }
 
-        const { type } = this.state;
+        const {type, showQueryModal, queryModalQuery, queries} = this.state;
+
+        const {query, name, nameClass = '', queryClass = ''} = queryModalQuery;
 
         return (
             <div className="row">
@@ -168,6 +267,35 @@ class WidgetPage extends Component {
                         className="spinner-border spinner-border-sm mr-2"
                         role="status" aria-hidden="true"></span> :
                     <>
+                        <Modal title={'Query'}
+                               id={'query'}
+                               size={Size.large}
+                               saveButtonTitle={'Save'}
+                               showSaveButton={true}
+                               show={showQueryModal}
+                               saveButtonAction={this.onQuerySave}
+                               closeButtonAction={this.hideQueryModal}
+                        >
+                            {showQueryModal && <div className='row'>
+                                <div className='col-12'>
+                                    <Input
+                                        name='name'
+                                        placeholder='Query name'
+                                        defaultValue={name}
+                                        className={nameClass}
+                                        onChange={this.onQueryModelChange}
+                                    />
+                                </div>
+                                <div className='col-12 mt-3'>
+                                    <Input
+                                        name='query'
+                                        defaultValue={query}
+                                        className={queryClass}
+                                        onChange={this.onQueryModelChange}
+                                    />
+                                </div>
+                            </div>}
+                        </Modal>
                         <div className=" col-12 col-md-4">
                             <WidgetManagement
                                 {...this.props}
@@ -178,9 +306,14 @@ class WidgetPage extends Component {
                                     })
                                 }}
                                 updateInitialData={this.updateInitialData}
-                                updateLoading={(value) => {this.setState({
-                                    isLoading: value,
-                                })}}
+                                updateLoading={(value) => {
+                                    this.setState({
+                                        isLoading: value,
+                                    })
+                                }}
+                                queries={queries}
+                                onSaveClicked={this.onSubmitQuery}
+                                onDeleteCLicked={this.onDeleteQuery}
                             />
                         </div>
                         {type && <div className="widget col-12 col-md-8">

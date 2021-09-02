@@ -118,15 +118,17 @@ export class WidgetManagement extends Component {
 
                 let column = ''
 
-                if(widgetDetail.type == WIDGET_TYPE.table){
+                if (widgetDetail.type == WIDGET_TYPE.table) {
                     column = []
                 }
 
                 let newWidgetDetail = {...widgetDetail, column}
 
-                this.setState({columns, widgetDetail: {
-                    ...newWidgetDetail
-                    }});
+                this.setState({
+                    columns, widgetDetail: {
+                        ...newWidgetDetail
+                    }
+                });
             }
 
             let newErrorArray = {...errors};
@@ -274,8 +276,14 @@ export class WidgetManagement extends Component {
             tables,
             columns,
             errors,
-            isLoading
+            isLoading,
         } = this.state;
+
+        const {
+            onSaveClicked,
+            onDeleteCLicked,
+            queries
+        } = this.props
 
         const {
             title,
@@ -382,6 +390,9 @@ export class WidgetManagement extends Component {
                                     <FilterText
                                         fieldName='query'
                                         value={query}
+                                        queries={queries}
+                                        onSaveClicked={onSaveClicked}
+                                        onDeleteCLicked={onDeleteCLicked}
                                         placeholder="status = 200 AND url LIKE '%product%'"
                                         onBlur={(e) => this.onChangeData(e.target)}
                                     />
