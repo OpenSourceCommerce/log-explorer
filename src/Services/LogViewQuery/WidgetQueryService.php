@@ -9,7 +9,7 @@ use App\Entity\LogViewQuery;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class LogViewQueryService implements LogViewQueryServiceInterface
+class WidgetQueryService implements WidgetQueryServiceInterface
 {
     /**
      * @var EntityManagerInterface

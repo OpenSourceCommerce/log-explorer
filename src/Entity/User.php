@@ -88,11 +88,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      */
     private $exports;
 
+    /**
+     * @ORM\OneToMany(targetEntity=WidgetQuery::class, mappedBy="user")
+     */
+    private $widgetQueries;
+
     public function __construct()
     {
         $this->userTokens = new ArrayCollection();
         $this->logViewQueries = new ArrayCollection();
         $this->exports = new ArrayCollection();
+        $this->widgetQueries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -396,6 +402,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
             // set the owning side to null (unless already changed)
             if ($export->getUser() === $this) {
                 $export->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|WidgetQuery[]
+     */
+    public function getWidgetQueries(): Collection
+    {
+        return $this->widgetQueries;
+    }
+
+    public function addWidgetQuery(WidgetQuery $widgetQuery): self
+    {
+        if (!$this->widgetQueries->contains($widgetQuery)) {
+            $this->widgetQueries[] = $widgetQuery;
+            $widgetQuery->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWidgetQuery(WidgetQuery $widgetQuery): self
+    {
+        if ($this->widgetQueries->removeElement($widgetQuery)) {
+            // set the owning side to null (unless already changed)
+            if ($widgetQuery->getUser() === $this) {
+                $widgetQuery->setUser(null);
             }
         }
 
