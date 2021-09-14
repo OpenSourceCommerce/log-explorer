@@ -192,6 +192,7 @@ class Export implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id' => $this->getId(),
             'table' => $this->getTable(),
             'isFinished' => !empty($this->getFinishedAt()),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),

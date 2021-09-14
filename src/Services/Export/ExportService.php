@@ -155,11 +155,13 @@ class ExportService implements ExportServiceInterface
      */
     public function removeExport(Export $export)
     {
-        $rootDirectory = $this->parameterBag->get('app.root_directory');
-        $fullPath = "{$rootDirectory}/public{$export->getPath()}";
+        if (!empty($export->getPath())) {
+            $rootDirectory = $this->parameterBag->get('app.root_directory');
+            $fullPath = "{$rootDirectory}/public{$export->getPath()}";
 
-        if ($this->filesystem->exists($fullPath)) {
-            $this->filesystem->remove($fullPath);
+            if ($this->filesystem->exists($fullPath)) {
+                $this->filesystem->remove($fullPath);
+            }
         }
 
         $this->em->remove($export);
@@ -170,5 +172,31 @@ class ExportService implements ExportServiceInterface
     {
         $subDirectory = md5(uniqid($filename));
         return substr($subDirectory, 0, 2) . '/' . substr($subDirectory, 2, 2);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById($id)
+    {
+        return $this->getRepository()->find($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findExports(int $limit = 20)
+    {
+        return $this->getRepository()->findExports($limit);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeExports(array $exports = [])
+    {
+        foreach ($exports as $export) {
+            $this->removeExport($export);
+        }
     }
 }

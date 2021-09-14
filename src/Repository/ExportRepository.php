@@ -37,4 +37,19 @@ class ExportRepository extends ServiceEntityRepository
         return $query->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Export[] Returns an array of Export objects
+     */
+    public function findExports(int $limit = 20): array
+    {
+        $query = $this->createQueryBuilder('e');
+
+        if ($limit > 0) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->getQuery()
+            ->getResult();
+    }
 }

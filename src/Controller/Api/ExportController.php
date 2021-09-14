@@ -31,8 +31,11 @@ class ExportController extends ApiController
     /**
      * @Route ("/api/export", methods={"POST"})
      */
-    public function create(Request $request, ExportServiceInterface $exportService, UrlGeneratorInterface $urlGenerator): JsonResponse
-    {
+    public function create(
+        Request $request,
+        ExportServiceInterface $exportService,
+        UrlGeneratorInterface $urlGenerator
+    ): JsonResponse {
         $data = $request->request->all();
         $form = $this->createForm(ExportType::class);
         $form->submit($data);
@@ -50,5 +53,20 @@ class ExportController extends ApiController
         }
 
         return $this->responseFormError($form);
+    }
+
+    /**
+     * @Route("/api/export/{id}", methods={"DELETE"})
+     */
+    public function delete(
+        Export $export,
+        ExportServiceInterface $exportService,
+        UrlGeneratorInterface $urlGenerator
+    ): JsonResponse {
+        $exportService->removeExport($export);
+
+        return $this->responseSuccess([
+            'redirect' => $urlGenerator->generate('export')
+        ]);
     }
 }

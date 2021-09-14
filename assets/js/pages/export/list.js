@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import {Button, CardHeader, Icon, Link, Modal, Size} from "../../components";
-import {Alert, ExportActions, GraphActions} from "../../actions";
+import {CardHeader, Colors, Icon, Link, Modal, Size} from "../../components";
+import {ExportActions} from "../../actions";
 import {Table} from "../../components/_table";
 
 class ExportList extends Component {
@@ -9,9 +9,12 @@ class ExportList extends Component {
         super(props);
         this.state = {
             data: [],
+            selectedExportId: null
         };
 
         this.getData = this.getData.bind(this)
+        this.deleteExport = this.deleteExport.bind(this)
+        this.showConfirmDeleteModal = this.showConfirmDeleteModal.bind(this)
     }
 
     getData() {
@@ -28,11 +31,47 @@ class ExportList extends Component {
         this.getData()
     }
 
+    showConfirmDeleteModal(e) {
+        const {id} = e.target.dataset
+        this.setState({selectedExportId: id})
+    }
+
+    deleteExport() {
+        const that = this
+        const {selectedExportId} = this.state
+
+        if (!selectedExportId) {
+            return
+        }
+
+        ExportActions.deleteExport(selectedExportId).then(() => {
+            that.getData()
+            that.setState({selectedExportId: null})
+        })
+    }
+
     render() {
-        const {data} = this.state
+        const {data, selectedExportId} = this.state
 
         return (
             <>
+                <Modal
+                    id="delete-export"
+                    title='Confirm Delete'
+                    children={`Are you sure you want to delete this export?`}
+                    saveButtonTitle='Delete'
+                    showSaveButton={true}
+                    size={Size.medium}
+                    closeButtonTitle='Cancel'
+                    saveButtonColor={Colors.red}
+                    show={!!selectedExportId}
+                    closeButtonAction={() => {
+                        this.setState({
+                            selectedExportId: null,
+                        })
+                    }}
+                    saveButtonAction={this.deleteExport}
+                />
                 <div className="card">
                     <CardHeader title="Export List" showCollapseButton={false}
                                 showRemoveButton={false}>
@@ -46,7 +85,7 @@ class ExportList extends Component {
                                 <th>Created At</th>
                                 <th>Is Finished</th>
                                 <th>Expired At</th>
-                                <th>Download</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -72,12 +111,18 @@ class ExportList extends Component {
                                         <td>
                                             {item.isFinished ?
                                                 <Link href={item.path} target="_blank"
+                                                      className="mr-4"
+                                                      title="Download"
                                                       download={item.filename}>
-                                                    <Icon className="text-primary"
-                                                          name='download'/>
-                                                </Link> :
-                                                <Icon className="text-secondary"
-                                                      name='minus'/>}
+                                                    <Icon className="text-primary" name='download'/>
+                                                </Link> : ''}
+
+                                            <Icon onClick={this.showConfirmDeleteModal}
+                                                  data-id={item.id}
+                                                  className="text-danger"
+                                                  title="Delete"
+                                                  style={{cursor: "pointer"}}
+                                                  name='trash'/>
                                         </td>
                                     </tr>
                                 )

@@ -11,6 +11,9 @@ const ExportActions = {
     },
     listExport() {
         return request('/api/export');
+    },
+    deleteExport(id) {
+        return request('/api/export/' + id, {method: 'DELETE'});
     }
 };
 

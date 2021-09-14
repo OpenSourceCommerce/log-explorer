@@ -56,4 +56,22 @@ interface ExportServiceInterface
      * @return mixed
      */
     public function removeExport(Export $export);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findById($id);
+
+    /**
+     * @param int $limit
+     * @return mixed
+     */
+    public function findExports(int $limit = 20);
+
+    /**
+     * @param Export[] $exports
+     * @return mixed
+     */
+    public function removeExports(array $exports = []);
 }
