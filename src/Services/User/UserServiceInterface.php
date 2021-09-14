@@ -81,4 +81,10 @@ interface UserServiceInterface
      * @return mixed
      */
     public function sendInvitationEmail(UserToken $token);
+
+    /**
+     * @param $id
+     * @return User|null
+     */
+    public function find($id): ?User;
 }

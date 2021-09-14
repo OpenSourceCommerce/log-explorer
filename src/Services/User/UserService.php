@@ -253,4 +253,12 @@ class UserService implements UserServiceInterface
         $this->em->remove($user);
         $this->em->flush();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function find($id): ?User
+    {
+        return $this->getRepository()->find($id);
+    }
 }
