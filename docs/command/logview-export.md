@@ -36,3 +36,26 @@ Options:
   -l, --limit           Limit exports to delete. 0 is unlimited. Default: 0
   -h, --help            Display help for the given command. When no command is given display help for the list command
 ```
+
+## Delete Exports
+`php bin/console logview:export-delete`
+
+```shell
+Description:
+  Delete the logview export.
+
+Usage:
+  logview:export-delete [options]
+
+Options:
+  -i, --id=ID           Id of the export
+  -u, --user=USER       User's ID or Email. Delete all the exports of an user
+      --all             Delete all the exports
+  -h, --help            Display help for the given command. When no command is given display help for the list command
+  -q, --quiet           Do not output any message
+```
+
+**Ex**:
+- `php bin/console logview:export-delete --id=10`
+- `php bin/console logview:export-delete --user=user@example.com`
+- `php bin/console logview:export-delete --all`
