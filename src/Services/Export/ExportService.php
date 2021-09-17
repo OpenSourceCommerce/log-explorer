@@ -85,7 +85,7 @@ class ExportService implements ExportServiceInterface
         $from = $filter['from'];
         /** @var DateTime $to */
         $to = $filter['to'];
-        $interval = $this->parameterBag->get('app.logview.export_max_range');
+        $interval = intval($this->parameterBag->get('app.logview.export_max_range'));
         $range = $interval * 3600 - 1;
         while (true) {
             $option = $filter;
