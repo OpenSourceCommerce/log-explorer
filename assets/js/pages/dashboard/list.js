@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Alert, DashboardActions} from "../../actions";
-import {Button, CardHeader, Icon, Link, Table, DeleteModal} from "../../components";
-import {ExportImport} from "../../components/_export_import";
+import {Button, CardHeader, Icon, Link, Table, DeleteModal, ExportImport} from "../../components";
 
 class DashboardList extends Component {
     constructor(props) {
