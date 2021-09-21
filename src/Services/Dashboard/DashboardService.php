@@ -176,4 +176,20 @@ class DashboardService implements DashboardServiceInterface
     {
         return $this->getRepository()->findOneBy([]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllByIds(array $ids): array
+    {
+        return $this->getRepository()->findBy(['id' => $ids]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAll(): array
+    {
+        return $this->getRepository()->findAll();
+    }
 }

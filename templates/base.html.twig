@@ -40,6 +40,18 @@
         {% include "partials/content_header.html.twig" %}
         <!-- /.content-header -->
 
+        {% if app.session.flashbag.peekAll|length > 0 %}
+            <div class="content pt-3">
+            {% for type, messages in app.session.flashbag.all %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type ? type : '' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            </div>
+        {% endif %}
+
         <!-- Main content -->
         <section class="content">
         {% block body %}{% endblock %}

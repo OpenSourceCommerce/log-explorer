@@ -105,4 +105,12 @@ class WidgetService implements WidgetServiceInterface
     {
         return $this->getRepository()->getAllByIds($ids);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAll(): array
+    {
+        return $this->getRepository()->findAll();
+    }
 }

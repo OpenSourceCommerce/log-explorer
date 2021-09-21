@@ -69,4 +69,15 @@ interface DashboardServiceInterface
      *
      */
     public function getDefaultDashboard(): ?Dashboard;
+
+    /**
+     * @param array $ids
+     * @return Dashboard[]|array
+     */
+    public function getAllByIds(array $ids): array;
+
+    /**
+     * @return Dashboard[]|array
+     */
+    public function getAll(): array;
 }
