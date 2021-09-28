@@ -4,9 +4,9 @@ import '../../../styles/component/_widget-table.scss';
 
 export class WidgetTable extends Component {
     render() {
-        const {data, isDashboardComponent, column} = this.props;
+        const {data, isDashboardComponent, column, onLabelClicked} = this.props;
 
-        const Row = ({label, value, isHeader, ...children}) => {
+        const Row = ({label, value, isHeader, onLabelClicked, ...children}) => {
             if (isHeader) {
                 let labels = label
 
@@ -44,17 +44,25 @@ export class WidgetTable extends Component {
                     {children && Object.keys(children).map((item, key) => {
                         return (
                             <a key={key}
-                               className={`label-col col p-0`} onMouseDown={(event) => {
-                                event.stopPropagation();
-                            }}>
+                               className={`label-col col p-0`}
+                               onMouseDown={(event) => {
+                                   event.stopPropagation();
+                               }}
+                               onClick={() => {
+                                   onLabelClicked(children[item])
+                               }}>
                                 {children[item] || ''}
                             </a>
                         )
                     })}
 
-                    {label && <a className={`label-col col p-0`} onMouseDown={(event) => {
-                        event.stopPropagation();
-                    }}>
+                    {label && <a className={`label-col col p-0`}
+                                 onMouseDown={(event) => {
+                                     event.stopPropagation();
+                                 }}
+                                 onClick={() => {
+                                     onLabelClicked(label)
+                                 }}>
                         {label}
                     </a>}
                     <div
@@ -72,6 +80,7 @@ export class WidgetTable extends Component {
                         {data.map((item, index) => {
                             return <Row {...item}
                                         key={index}
+                                        onLabelClicked={onLabelClicked}
                             />
                         })}
                     </div>
@@ -84,5 +93,6 @@ export class WidgetTable extends Component {
 WidgetTable.propTypes = {
     data: PropTypes.array,
     widgetHeader: PropTypes.string,
-    isDashboardComponent: PropTypes.bool
+    isDashboardComponent: PropTypes.bool,
+    onLabelClicked: PropTypes.func
 };
