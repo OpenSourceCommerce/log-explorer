@@ -11,7 +11,7 @@ import {WidgetTable} from "./_widget-table";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export class ResponsiveGridLayout extends Component {
+export class  ResponsiveGridLayout extends Component {
     constructor(props) {
         super(props);
 
@@ -117,7 +117,7 @@ export class ResponsiveGridLayout extends Component {
                                               stickWidget={(isFixed) => stickWidget(item.widget_id, isFixed, index)}
                                 />
                                 <WidgetLayout {...item} onLabelClicked={(value, column, table) => {
-                                    if(value && value.length > 0 && column && table) onWidgetClicked(value, column, table);
+                                    if(value && column && table) onWidgetClicked(value, column, table);
                                 }}/>
                             </div>
                         )

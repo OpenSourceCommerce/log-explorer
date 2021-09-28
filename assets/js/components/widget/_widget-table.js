@@ -31,7 +31,7 @@ export class WidgetTable extends Component {
                             )
                         })}
                         <div
-                            className='value-col col-4 col-md-2 text-right pl-0'>
+                            className='value-col col-4 col-md-2 text-right pl-0 text-nowrap'>
                             Count
                         </div>
                     </div>
