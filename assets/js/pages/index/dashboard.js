@@ -353,7 +353,7 @@ export class DashboardPage extends Component {
     }
 
     onWidgetClicked = (value, column, table) => {
-        let queryStr = `${column} LIKE '%${value}%'`
+        let queryStr = `${column} = '${value}'`
         let isQueryChange = false
 
         if (/^\d+$/.test(value)) {
