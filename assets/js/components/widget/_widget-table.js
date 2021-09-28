@@ -49,7 +49,7 @@ export class WidgetTable extends Component {
                                    event.stopPropagation();
                                }}
                                onClick={() => {
-                                   onLabelClicked(children[item])
+                                   onLabelClicked(children[item], item)
                                }}>
                                 {children[item] || ''}
                             </a>
@@ -61,7 +61,7 @@ export class WidgetTable extends Component {
                                      event.stopPropagation();
                                  }}
                                  onClick={() => {
-                                     onLabelClicked(label)
+                                     onLabelClicked(label, column)
                                  }}>
                         {label}
                     </a>}

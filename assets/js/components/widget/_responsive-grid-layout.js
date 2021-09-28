@@ -99,7 +99,7 @@ export class  ResponsiveGridLayout extends Component {
                                             column={column}
                                             data={data}
                                             isDashboardComponent={true}
-                                            onLabelClicked={(value) => onLabelClicked(value, column, table)}
+                                            onLabelClicked={(value, tableColumn) => onLabelClicked(value, tableColumn, table)}
                                         />
                                     }
                                 }
