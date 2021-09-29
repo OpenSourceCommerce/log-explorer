@@ -531,9 +531,9 @@ export class DashboardPage extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <div className="col-12">
-                                    <div className="d-flex justify-content-between flex-row flex-wrap">
-                                        {isUser() || <div className="col-md-auto col-12"
-                                            style={{minWidth: '300px'}}>
+                                    <div className="row justify-content-between flex-row flex-wrap">
+                                        {isUser() || <div className="col-md-3 col-12"
+                                            style={{minWidth: '250px'}}>
                                             <FormField
                                                 isHiddenLabel={true}
                                                 value={widgetSelected || ''}
@@ -556,8 +556,8 @@ export class DashboardPage extends Component {
                                                 </>
                                             </FormField>
                                         </div>}
-                                        <div className="col-md-auto col-12"
-                                            style={{minWidth: '300px'}}>
+                                        <div className="col-md-3 col-12 mt-2 mt-md-0 mr-auto"
+                                            style={{minWidth: '250px'}}>
                                             <FilterDate
                                                 dateRange={dateRange}
                                                 onDateRangeChanged={this.onChangeFilter}
@@ -647,8 +647,8 @@ export class DashboardPage extends Component {
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}
-                                        <div className="col-6 col-md-1 btn-action-group pr-0">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100"
+                                        <div className="btn-action-group pr-0">
+                                            <Button className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
                                                     disabled={isLoading}
                                                     onClick={() => this.applyFilter()}
                                             >
