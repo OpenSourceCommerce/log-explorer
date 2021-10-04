@@ -160,12 +160,16 @@ class ExportService implements ExportServiceInterface
 
         $total = count($filters) - 1;
 
+        $isNew = true;
+
         foreach ($filters as $k => $filter) {
             $data = $this->streamService->getLogsInRange($export->getTable(), $filter);
-            $mode = empty($k) ? self::MODE_NEW_FILE : self::MODE_APPEND_FILE;
+            $mode = $isNew ? self::MODE_NEW_FILE : self::MODE_APPEND_FILE;
             $isEnd = $total == $k;
-            if ($mode != self::MODE_NEW_FILE && empty($data) && !$isEnd) {
+            if (empty($data) && !$isEnd) {
                 continue;
+            } elseif (!empty($data)) {
+                $isNew = false;
             }
             switch ($export->getFormat()) {
                 case ExportConstant::CSV_FORMAT:
@@ -208,7 +212,9 @@ class ExportService implements ExportServiceInterface
         if ($mode == self::MODE_SINGLE_FILE || $mode == self::MODE_NEW_FILE) {
             $this->deleteExistingFile($fullPath);
             $file = fopen($fullPath, 'w');
-            fputcsv($file, array_keys($data[0]));
+            if (count($data) > 0) {
+                fputcsv($file, array_keys($data[0]));
+            }
         } else {
             $file = fopen($fullPath, 'a');
         }
