@@ -15,6 +15,7 @@ export class JsGridTable extends Component {
             selectedItem: null,
             pageIndex: 1,
             itemCount: 0,
+            currentRequest: null
         };
         this.loadData = this.loadData.bind(this);
     }
@@ -49,6 +50,7 @@ export class JsGridTable extends Component {
             onDataLoaded = false,
             sorting = false
         } = this.props;
+        let {currentRequest} = this.state
         const that = this;
         const uuid = logview ? logview.uuid : null;
         const dataSrc = '/api/stream/' + LogTableActions.getUuid(uuid) + '/list';
@@ -66,10 +68,15 @@ export class JsGridTable extends Component {
                 controller: {
                     loadData(filter) {
                         filter = LogTableActions.getOptions(filter);
-                        return $.ajax({
+                        currentRequest = $.ajax({
                             url: dataSrc,
                             data: filter,
                             dataType,
+                            beforeSend: () => {
+                                if (currentRequest != null) {
+                                    currentRequest.abort();
+                                }
+                            },
                             success: (res) => {
                                 if (onDataLoaded) {
                                     onDataLoaded(res);
@@ -79,6 +86,10 @@ export class JsGridTable extends Component {
                                 })
                             }
                         });
+
+                        that.setState({currentRequest});
+
+                        return currentRequest;
                     }
                 },
 
