@@ -419,7 +419,7 @@ export class DashboardPage extends Component {
                     query: '',
                     table: tables[0].value,
                 });
-                tables[0].isSelected = false;
+                tables[0].isSelected = true;
             } else {
                 filters.map((item, index) => ({...item, id:index}));
             }
@@ -523,6 +523,7 @@ export class DashboardPage extends Component {
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
 
+        console.log('filters', filters)
         return (
             <>
                 <div className="dashboard-container">
