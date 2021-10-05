@@ -123,7 +123,7 @@ export class DashboardPage extends Component {
                 ...data,
                 configs: configs && configs.size ? {...configs} : {},
                 widgets: [...widgetList],
-            } || {};
+            };
         }
 
         this.setState({
@@ -252,26 +252,23 @@ export class DashboardPage extends Component {
                         return arr;
                     }, [])
                 }
-
-                if (!error) {
-                    arr.push({
-                        ...widgets[index],
-                        data,
-                        i: id.toString(),
-                        x,
-                        y,
-                        w: w || width,
-                        h: h || height,
-                        minW: minWidth,
-                        minH: minHeight,
-                        static: !!fixed,
-                        title,
-                        widget_id,
-                        type: type.toString(),
-                        color: colorForChart,
-                        duration: 1000,
-                    });
-                }
+                arr.push({
+                    ...widgets[index],
+                    data,
+                    i: id.toString(),
+                    x,
+                    y,
+                    w: w || width,
+                    h: h || height,
+                    minW: minWidth,
+                    minH: minHeight,
+                    static: !!fixed,
+                    title,
+                    widget_id,
+                    type: type.toString(),
+                    color: colorForChart,
+                    duration: 1000,
+                });
                 return arr;
             }, []);
         }
@@ -523,7 +520,6 @@ export class DashboardPage extends Component {
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
 
-        console.log('filters', filters)
         return (
             <>
                 <div className="dashboard-container">
