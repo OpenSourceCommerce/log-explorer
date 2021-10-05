@@ -24,22 +24,23 @@ export class DashboardPage extends Component {
             label: DATE_RANGE[0].label,
         };
 
-        const cData = getDataFromCookies(window.uuid) ?
-            getDataFromCookies(window.uuid).split('|') : '';
-        if (cData) {
-            const dateRangeLabel = JSON.parse(cData[0]).label || '';
+        const {filterCookie, dateRangeCookie} = this.getFilterDataFromCookies();
+        if (filterCookie && dateRangeCookie) {
+            const dateRangeLabel = dateRangeCookie.label || '';
             if (dateRangeLabel !== 'Custom Range') {
                 const dateRangeValue = DATE_RANGE.find(item => item.label === dateRangeLabel);
                 if (dateRangeValue) {
-                    dateRange = { ...dateRangeValue };
+                    dateRange = {...dateRangeValue};
                 }
             } else {
-                const dateRangeValue = JSON.parse(cData[0]);
-                dateRange.label = dateRangeValue.label;
-                dateRange.from = moment.unix(dateRangeValue.from);
-                dateRange.to = moment.unix(dateRangeValue.to);
+                dateRange.label = dateRangeCookie.label;
+                dateRange.from = moment.unix(dateRangeCookie.from);
+                dateRange.to = moment.unix(dateRangeCookie.to);
             }
-            filters = cData[1] ? JSON.parse(cData[1]).map((item, index) => ({ ...item, id: index })) : filters;
+            filters = filterCookie && filterCookie.length > 0? filterCookie.map((item, index) => ({
+                ...item,
+                id: index
+            })) : filters;
         } else {
             this.setDataCookies(filters, {label: dateRange.label});
         }
@@ -184,7 +185,9 @@ export class DashboardPage extends Component {
     }
 
     applyFilter = async () => {
-        const { filters, dashboardDetail, dateRange } = this.state;
+        this.setState({isLoading: true})
+
+        const {filters, dashboardDetail, dateRange} = this.state;
         const {uuid} = dashboardDetail;
         let widgets = [...dashboardDetail.widgets];
         const rawWidget = widgets.map((item) => {
@@ -212,6 +215,7 @@ export class DashboardPage extends Component {
         }
         this.setState({
             widgets,
+            isLoading: false,
         })
     }
 
@@ -295,16 +299,25 @@ export class DashboardPage extends Component {
         })
     }
 
-    setDataCookies = (filters, dateRange) => {
+    getFilterDataFromCookies = (filters = null, dateRange = null) => {
         const cData = getDataFromCookies(window.uuid) ?
             getDataFromCookies(window.uuid).split('|') : '';
+
         let filterCookie = filters;
         let dateRangeCookie = dateRange;
-        if (cData) {
-            filterCookie = filters || JSON.parse(cData[1]);
-            dateRangeCookie = dateRange || JSON.parse(cData[0]);
+
+        if(cData) {
+            filterCookie = filterCookie || JSON.parse(decodeURIComponent(cData[1]))
+            dateRangeCookie = dateRange || JSON.parse(cData[0])
         }
-        setDataToCookies(window.uuid, `${JSON.stringify(dateRangeCookie)}|${JSON.stringify(filterCookie.map(({query, table}) => ({ query, table })))}`, 30);
+
+        return {filterCookie, dateRangeCookie}
+    }
+
+    setDataCookies = (filters, dateRange) => {
+        const {filterCookie, dateRangeCookie} = this.getFilterDataFromCookies(filters, dateRange)
+        const filter = JSON.stringify(filterCookie.map(({query, table}) => ({query, table})))
+        setDataToCookies(window.uuid, `${JSON.stringify(dateRangeCookie)}|${encodeURIComponent(filter)}`, 30);
     }
 
     onQueryTableChange = ({name, value}, index) => {
@@ -339,6 +352,59 @@ export class DashboardPage extends Component {
         });
     }
 
+    onWidgetClicked = (value, column, table) => {
+        let queryStr = `${column} = '${value}'`
+        let isQueryChange = false
+
+        if (/^\d+$/.test(value)) {
+            queryStr = `${column} = ${value}`
+        }
+
+        const {filters, tables, dashboardDetail} = this.state
+
+        const widgets = [...dashboardDetail.widgets].map(item => ({
+            ...item,
+            duration: 0
+        }));
+
+        const tableList = tables
+        let filterList = filters
+
+        const tableIndex = tableList.findIndex(item => item.value === table)
+        tableList[tableIndex].isSelected = true
+
+        const filterIndex = filters.findIndex(item => item.table === table)
+
+        if (filterIndex !== -1) {
+            if (!filters[filterIndex].query.includes(value)) {
+                filterList[filterIndex].query = filterList[filterIndex].query ? `${filterList[filterIndex].query.trim()} AND ${queryStr}` : queryStr
+                isQueryChange = true
+            }
+        } else {
+            filterList = [...filters, {
+                id: filters.length - 1,
+                query: queryStr,
+                table: table
+            }]
+            isQueryChange = true
+        }
+
+        if (isQueryChange) {
+            this.setState({
+                tables: [...tableList],
+                filters: [...filterList],
+                dashboardDetail: {
+                    ...dashboardDetail,
+                    widgets,
+                },
+            }, () => {
+                this.setDataCookies(filters)
+                $('#collapseAdvanceSearch').addClass('show')
+                this.applyFilter()
+            })
+        }
+    }
+
     onRemoveFilter = (id, table) => {
         this.setState((preState) => {
             const tables = [...preState.tables];
@@ -353,7 +419,7 @@ export class DashboardPage extends Component {
                     query: '',
                     table: tables[0].value,
                 });
-                tables[0].isSelected = false;
+                tables[0].isSelected = true;
             } else {
                 filters.map((item, index) => ({...item, id:index}));
             }
@@ -457,6 +523,7 @@ export class DashboardPage extends Component {
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
 
+        console.log('filters', filters)
         return (
             <>
                 <div className="dashboard-container">
@@ -465,9 +532,9 @@ export class DashboardPage extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <div className="col-12">
-                                    <div className="d-flex justify-content-between flex-row flex-wrap">
-                                        {isUser() || <div className="col-md-auto col-12"
-                                            style={{minWidth: '300px'}}>
+                                    <div className="row justify-content-between flex-row flex-wrap">
+                                        {isUser() || <div className="col-md-3 col-12"
+                                            style={{minWidth: '250px'}}>
                                             <FormField
                                                 isHiddenLabel={true}
                                                 value={widgetSelected || ''}
@@ -490,14 +557,14 @@ export class DashboardPage extends Component {
                                                 </>
                                             </FormField>
                                         </div>}
-                                        <div className="col-md-auto col-12"
-                                            style={{minWidth: '300px'}}>
+                                        <div className="col-md-3 col-12 mt-2 mt-md-0 mr-auto"
+                                            style={{minWidth: '250px'}}>
                                             <FilterDate
                                                 dateRange={dateRange}
                                                 onDateRangeChanged={this.onChangeFilter}
                                             />
                                         </div>
-                                        <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0" style={{paddingRight: '7.5px'}}>
+                                        <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0">
                                             <div className="mr-2">
                                                 <Button className="btn-search"
                                                         disabled={isLoading}
@@ -581,8 +648,8 @@ export class DashboardPage extends Component {
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}
-                                        <div className="col-6 col-md-1 btn-action-group pr-0">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100"
+                                        <div className="btn-action-group pr-0">
+                                            <Button className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
                                                     disabled={isLoading}
                                                     onClick={() => this.applyFilter()}
                                             >
@@ -608,6 +675,7 @@ export class DashboardPage extends Component {
                                     window.location.href = '/widget/' + id;
                                 }}
                                 onLayoutChange={this.onLayoutChange}
+                                onWidgetClicked={this.onWidgetClicked}
                             />
                     </div>}
                 </div>

@@ -15,7 +15,7 @@ export class DoughnutPieChart extends Component {
     }
 
     componentDidMount = () => {
-        const {data, type = WIDGET_TYPE.doughnut, id = 'new', color, duration = 1000} = this.props;
+        const {data, type = WIDGET_TYPE.doughnut, id = 'new', color, duration = 1000, onLabelClicked} = this.props;
 
         this.legendId = `[data-results-chart-legends-${id}]`;
 
@@ -65,7 +65,29 @@ export class DoughnutPieChart extends Component {
                     options: chartOptions
                 });
                 $(document).ready(function () {
-                    document.querySelector(`.doughnut-pie-chart-${id} .data-results-chart-legends`).innerHTML = chart.generateLegend();
+                    const chartLegendElement = document.querySelector(`.doughnut-pie-chart-${id} .data-results-chart-legends`)
+                    if (chartLegendElement) {
+                        chartLegendElement.innerHTML = chart.generateLegend();
+                    }
+
+                    $(`#chart${id}`).unbind().click(
+                        (e) => {
+                            let activePoints = chart.getElementsAtEvent(e);
+                            if (activePoints[0]) {
+                                const chartData = activePoints[0]['_chart'].config.data;
+                                const idx = activePoints[0]['_index'];
+
+                                const label = chartData.labels[idx];
+                                onLabelClicked(label)
+                            }
+                        }
+                    );
+
+                    $(`.doughnut-pie-chart-${id} .data-results-chart-legends`).unbind().click('li',
+                        (e) => {
+                            onLabelClicked(charData.labels[$(e.target).parent().index()])
+                        }
+                    )
                 });
             }
         }
@@ -109,4 +131,5 @@ Chart.propTypes = {
     chart: PropTypes.string,
     minHeight: PropTypes.number,
     height: PropTypes.number,
+    onLabelClicked: PropTypes.func
 };

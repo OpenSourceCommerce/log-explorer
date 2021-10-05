@@ -11,7 +11,7 @@ import {WidgetTable} from "./_widget-table";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export class ResponsiveGridLayout extends Component {
+export class  ResponsiveGridLayout extends Component {
     constructor(props) {
         super(props);
 
@@ -36,6 +36,7 @@ export class ResponsiveGridLayout extends Component {
             removeWidget,
             editWidget,
             stickWidget,
+            onWidgetClicked,
             ...rest } = this.props;
         const { mounted,
             compactType,
@@ -69,7 +70,7 @@ export class ResponsiveGridLayout extends Component {
                     droppingItem={{i: "xx", h: 50, w: 250 }}
                 >
                     {layouts.map((item, index) => {
-                        let WidgetLayout = ({i, data, type, column, color, duration}) => {
+                        let WidgetLayout = ({i, data, type, column, color, duration, onLabelClicked, table}) => {
                             let component;
                             if (i && data) {
                                 switch (type) {
@@ -83,6 +84,7 @@ export class ResponsiveGridLayout extends Component {
                                             minHeight='200'
                                             color={color}
                                             duration={duration}
+                                            onLabelClicked={(value) => onLabelClicked(value, column, table)}
                                         />;
                                         break;
                                     }
@@ -97,6 +99,7 @@ export class ResponsiveGridLayout extends Component {
                                             column={column}
                                             data={data}
                                             isDashboardComponent={true}
+                                            onLabelClicked={(value, tableColumn) => onLabelClicked(value, tableColumn, table)}
                                         />
                                     }
                                 }
@@ -113,7 +116,9 @@ export class ResponsiveGridLayout extends Component {
                                               editWidget={() => editWidget(item.widget_id)}
                                               stickWidget={(isFixed) => stickWidget(item.widget_id, isFixed, index)}
                                 />
-                                <WidgetLayout {...item}/>
+                                <WidgetLayout {...item} onLabelClicked={(value, column, table) => {
+                                    if(value && column && table) onWidgetClicked(value, column, table);
+                                }}/>
                             </div>
                         )
                     })}
@@ -130,5 +135,6 @@ ResponsiveGridLayout.propTypes = {
     removeWidget: PropTypes.func,
     editWidget: PropTypes.func,
     stickWidget: PropTypes.func,
-    onLayoutChange: PropTypes.func
+    onLayoutChange: PropTypes.func,
+    onWidgetClicked: PropTypes.func
 };
