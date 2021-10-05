@@ -152,6 +152,7 @@ class Dashboard implements \JsonSerializable
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'uuid' => $this->getUuid()->toString(),
+            'query' => $this->getQuery(),
             'last_updated' => ($this->updatedAt ?? $this->createdAt)->format('Y-m-d H:i'),
         ];
     }

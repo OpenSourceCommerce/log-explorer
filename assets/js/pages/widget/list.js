@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Alert, WidgetActions} from "../../actions";
-import {Button, CardHeader, Icon, Link, Table, DeleteModal} from "../../components";
+import {Button, CardHeader, Icon, Link, Table, DeleteModal, ExportImport} from "../../components";
 import {WIDGET_TYPE} from "../../utils";
 
 const WIDGET = {
@@ -82,6 +82,7 @@ class WidgetList extends Component {
                 />
                 <div className="card">
                     <CardHeader title="Widget list" showCollapseButton={false} showRemoveButton={false}>
+                        <ExportImport widget={true} />
                         <Link href={'/widget/create'} className={'btn btn-success'}>Create widget</Link>
                     </CardHeader>
                     <div className="card-body">
@@ -90,6 +91,7 @@ class WidgetList extends Component {
                                 <Table>
                                     <thead>
                                     <tr>
+                                        <th>&nbsp;</th>
                                         <th>Title</th>
                                         <th>Type</th>
                                         <th>Query</th>
@@ -101,6 +103,7 @@ class WidgetList extends Component {
                                     {widgets.map((item, key) => {
                                         const url = '/widget/' + item.id;
                                         return <tr key={key}>
+                                            <td><input type="checkbox" className="export-item" data-id={item.id}/></td>
                                             <td>{item.title}</td>
                                             <td>{WIDGET[item.type]}</td>
                                             <td>{item.query}</td>

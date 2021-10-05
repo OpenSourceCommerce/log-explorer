@@ -170,11 +170,11 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize($asOriginal = false)
     {
         $columns = $this->getColumn();
 
-        if($this->getType() == WidgetConstant::TYPE_TABLE){
+        if(!$asOriginal && $this->getType() == WidgetConstant::TYPE_TABLE){
             $columns = explode(',', $columns);
         }
 

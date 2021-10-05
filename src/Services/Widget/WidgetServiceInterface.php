@@ -60,4 +60,9 @@ interface WidgetServiceInterface
      * @return Widget[]|array
      */
     public function getAllByIds(array $ids): array;
+
+    /**
+     * @return Widget[]|array
+     */
+    public function getAll(): array;
 }

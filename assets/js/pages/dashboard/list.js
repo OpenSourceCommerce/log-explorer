@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Alert, DashboardActions} from "../../actions";
-import {Button, CardHeader, Icon, Link, Table, DeleteModal} from "../../components";
+import {Button, CardHeader, Icon, Link, Table, DeleteModal, ExportImport} from "../../components";
 
 class DashboardList extends Component {
     constructor(props) {
@@ -74,6 +74,7 @@ class DashboardList extends Component {
                 />
                 <div className="card">
                     <CardHeader title="Dashboard list" showCollapseButton={false} showRemoveButton={false}>
+                        <ExportImport/>
                         <Link href={'/dashboard/create'} className={'btn btn-success'}>Create dashboard</Link>
                     </CardHeader>
                     <div className="card-body">
@@ -82,6 +83,7 @@ class DashboardList extends Component {
                                 <Table>
                                     <thead>
                                     <tr>
+                                        <th>&nbsp;</th>
                                         <th>Title</th>
                                         <th>Last update</th>
                                         <th>&nbsp;</th>
@@ -91,6 +93,7 @@ class DashboardList extends Component {
                                     {dashboards.map((item, key) => {
                                         const url = '/dashboard/edit/' + item.id;
                                         return <tr key={key}>
+                                            <td><input type="checkbox" className="export-item" data-id={item.id}/></td>
                                             <td>{item.title}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
