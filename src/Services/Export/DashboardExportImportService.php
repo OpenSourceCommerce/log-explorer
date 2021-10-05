@@ -129,7 +129,7 @@ class DashboardExportImportService implements DashboardExportImportServiceInterf
 
             $this->em->persist($entity);
 
-            $this->widgets[$widget['id']] = $entity->jsonSerialize(true);
+            $this->widgets[$widget['id']] = $entity;
         }
         foreach ($data['dashboards'] as $dashboard) {
             $entity = new Dashboard();
