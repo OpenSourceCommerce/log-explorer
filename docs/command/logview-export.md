@@ -6,6 +6,10 @@
 LOGVIEW_EXPORT_DIRECTORY=/exports
 ## Export expiry, 7 days after successful export
 LOGVIEW_EXPORT_EXPIRY="+7 days"
+# To prevent memory issue we split huge export data in to many small packet
+# every packet have maximum 24 hours in query filter and you can change it here
+# by this, if you export 30 days data, it will split to 30 packet
+LOGVIEW_EXPORT_MAX_RANGE=24
 ```
 
 ## Export data

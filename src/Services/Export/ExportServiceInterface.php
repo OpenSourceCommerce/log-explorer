@@ -7,6 +7,10 @@ use App\Entity\User;
 
 interface ExportServiceInterface
 {
+    const MODE_SINGLE_FILE = 0;
+    const MODE_NEW_FILE = 1;
+    const MODE_APPEND_FILE = 2;
+
     /**
      * @param Export $export
      * @return Export
@@ -25,26 +29,29 @@ interface ExportServiceInterface
     public function findNotProcessed(?int $limit = 1): array;
 
     /**
-     * @param string $filename
-     * @param string $format
-     * @param array $data
+     * @param Export $export
      * @return string
      */
-    public function export(string $filename, string $format, array $data): ?string;
+    public function export(Export $export): ?string;
 
     /**
+     * @param string $subDirectory
      * @param string $filename
      * @param array $data
+     * @param int $mode
      * @return mixed
      */
-    public function exportCsv(string $filename, array $data): ?string;
+    public function exportCsv(string $subDirectory, string $filename, array $data, int $mode = self::MODE_SINGLE_FILE);
 
     /**
+     * @param string $subDirectory
      * @param string $filename
      * @param array $data
+     * @param int $mode
+     * @param bool $isEnd
      * @return mixed
      */
-    public function exportJson(string $filename, array $data): ?string;
+    public function exportJson(string $subDirectory, string $filename, array $data, int $mode = self::MODE_SINGLE_FILE, bool $isEnd = false);
 
     /**
      * @return mixed
