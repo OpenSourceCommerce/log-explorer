@@ -103,7 +103,7 @@ class DashboardExportImportService implements DashboardExportImportServiceInterf
             foreach ($entity->getDashboardWidgets() as $dashboardWidget) {
                 $dashboard['widgets'][] = $dashboardWidget->jsonSerialize();
                 if (!isset($this->widgets[$dashboardWidget->getWidget()->getId()])) {
-                    $this->widgets[$dashboardWidget->getWidget()->getId()] = $dashboardWidget->getWidget();
+                    $this->widgets[$dashboardWidget->getWidget()->getId()] = $dashboardWidget->getWidget()->jsonSerialize(true);
                 }
             }
             $this->dashboards[] = $dashboard;
@@ -129,7 +129,7 @@ class DashboardExportImportService implements DashboardExportImportServiceInterf
 
             $this->em->persist($entity);
 
-            $this->widgets[$widget['id']] = $entity;
+            $this->widgets[$widget['id']] = $entity->jsonSerialize(true);
         }
         foreach ($data['dashboards'] as $dashboard) {
             $entity = new Dashboard();
