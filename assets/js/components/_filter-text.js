@@ -24,17 +24,19 @@ export class FilterText extends Component {
 
     componentDidMount() {
         const that = this;
+        let isInvalidData = this.state.isInvalid
         Event.bus.register(Event.RESPONSE_ERROR, response => {
             const {error, filter} = response;
             if (error === Event.ERROR_INVALID_QUERY) {
                 const {value} = that.state;
                 if (value === filter) {
-                    that.setState({
-                        isInvalid: true
-                    });
+                    isInvalidData = true;
                 }
             }
         });
+        this.setState({
+            isInvalid: isInvalidData
+        })
     }
 
     handleChange(e) {
