@@ -6,8 +6,10 @@ namespace App\Services\Widget;
 
 use App\Entity\Widget;
 use App\Services\Clickhouse\Connection;
+use App\Widget\BarWidget;
 use App\Widget\CounterWidget;
 use App\Widget\DoughnutWidget;
+use App\Widget\LineWidget;
 use App\Widget\PieChartWidget;
 use App\Widget\TableWidget;
 use App\Widget\WidgetInterface;
@@ -24,6 +26,8 @@ class WidgetIteration implements WidgetIterationInterface
            new PieChartWidget($connection),
            new TableWidget($connection),
            new DoughnutWidget($connection),
+           new LineWidget($connection),
+           new BarWidget($connection),
         ];
     }
 

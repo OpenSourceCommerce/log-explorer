@@ -149,6 +149,8 @@ export class DashboardPage extends Component {
         const widget = widgetList.find(item => item.id.toString() === widgetId);
         if (widget) {
             switch (widget.type.toString()) {
+                case WIDGET_TYPE.bar:
+                case WIDGET_TYPE.line:
                 case WIDGET_TYPE.doughnut:
                 case WIDGET_TYPE.pie: {
                     newWidget = {x: 0, y: 0, width: 3, height: 2, fixed: null};
@@ -243,7 +245,7 @@ export class DashboardPage extends Component {
                 let colorForChart;
                 if (color && color.length > 0 && color.length === data.length) {
                     colorForChart = color;
-                } else if (type.toString() === '4' || type.toString() === '2') {
+                } else if (type.toString() === WIDGET_TYPE.doughnut || type.toString() === WIDGET_TYPE.pie || type.toString() === WIDGET_TYPE.bar || type.toString() === WIDGET_TYPE.line) {
                     colorForChart = data.reduce((arr) => {
                         const colorCode = this.getRandomColor();
                         if(!arr.includes(colorCode)) {
@@ -523,7 +525,6 @@ export class DashboardPage extends Component {
 
         const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
 
-        console.log('filters', filters)
         return (
             <>
                 <div className="dashboard-container">

@@ -8,6 +8,7 @@ import '../../../styles/component/_responsive-grid-layout.scss';
 import {WIDGET_TYPE} from "../../utils";
 import {CounterSum} from "./_counter-sum";
 import {WidgetTable} from "./_widget-table";
+import {LineBarChart} from "./_line-bar-chart";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -77,6 +78,20 @@ export class  ResponsiveGridLayout extends Component {
                                     case WIDGET_TYPE.doughnut:
                                     case WIDGET_TYPE.pie: {
                                         component = <DoughnutPieChart
+                                            id={i}
+                                            type={type}
+                                            data={data}
+                                            height='200'
+                                            minHeight='200'
+                                            color={color}
+                                            duration={duration}
+                                            onLabelClicked={(value) => onLabelClicked(value, column, table)}
+                                        />;
+                                        break;
+                                    }
+                                    case WIDGET_TYPE.bar:
+                                    case WIDGET_TYPE.line: {
+                                        component = <LineBarChart
                                             id={i}
                                             type={type}
                                             data={data}
