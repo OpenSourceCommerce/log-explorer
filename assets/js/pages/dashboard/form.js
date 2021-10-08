@@ -249,13 +249,8 @@ class DashboardPage extends Component {
                                     </Button>
                                     {initialData.title &&
                                     <Button className="btn-search mb-3 ml-2"
-                                            data-toggle="collapse"
-                                            data-target="#collapseEditableDashboard"
-                                            aria-expanded="false"
-                                            aria-controls="collapseEditableDashboard"
                                             color="default"
                                             onClick={() => history.back()}>
-                                    >
                                         Cancel
                                     </Button>}
                                 </div>
