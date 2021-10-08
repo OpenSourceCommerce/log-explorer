@@ -254,6 +254,7 @@ class DashboardPage extends Component {
                                             aria-expanded="false"
                                             aria-controls="collapseEditableDashboard"
                                             color="default"
+                                            onClick={() => history.back()}>
                                     >
                                         Cancel
                                     </Button>}
