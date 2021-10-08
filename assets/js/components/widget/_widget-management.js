@@ -10,6 +10,8 @@ const WIDGET = [
     {label: 'Pie', value: WIDGET_TYPE.pie},
     {label: 'Counter Sum', value: WIDGET_TYPE.counterSum},
     {label: 'Table', value: WIDGET_TYPE.table},
+    {label: 'Bar', value: WIDGET_TYPE.bar},
+    {label: 'Line', value: WIDGET_TYPE.line},
 ]
 
 export class WidgetManagement extends Component {
