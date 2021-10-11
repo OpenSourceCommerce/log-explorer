@@ -23,13 +23,13 @@
     "email": "inactive@test.com",
     "password": "123456",
     "success": false,
-    "message": "Invalid credentials."
+    "message": "Your account was be disabled, please contact administrator for more detail."
   },
   {
     "title": "Test unconfirmed user",
     "email": "unconfirmed@test.com",
     "password": "123456",
     "success": false,
-    "message": "Invalid credentials."
+    "message": "Your account does not completed activation, please recheck your email to activate first."
   }
 ]

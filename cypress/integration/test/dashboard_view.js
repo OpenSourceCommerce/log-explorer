@@ -15,7 +15,7 @@ describe('Dashboard view page', () => {
 
     context('Filter', () => {
         it('Show data', () => {
-            dashboardPage.seeDashboard('Nginx OK');
+            dashboardPage.seeDashboard('Status OK');
         })
         it('Filter', () => {
             dashboardPage.dateRange('This Month')
