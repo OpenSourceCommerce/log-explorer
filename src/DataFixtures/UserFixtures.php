@@ -52,6 +52,7 @@ class UserFixtures extends Fixture
         $user->setFirstName('Unconfirmed');
         $user->setLastName("{$i}");
         $user->setEmail('unconfirmed@test.com');
+        $user->setPassword($this->userPasswordEncoder->hashPassword($user, '123456'));
         $manager->persist($user);
         $this->addReference(User::class.'_unconfirmed', $user);
 
@@ -62,6 +63,7 @@ class UserFixtures extends Fixture
         $user->setFirstName('Inactive');
         $user->setLastName("{$i}");
         $user->setEmail('inactive@test.com');
+        $user->setPassword($this->userPasswordEncoder->hashPassword($user, '123456'));
         $manager->persist($user);
         $this->addReference(User::class.'_inactive', $user);
 

@@ -39,7 +39,7 @@ export class AdvancedSearch extends React.Component {
                                 />
                             </div>
                             <div className="col-12 col-md-2 btn-action-group mt-2 mt-md-4">
-                                <Button className="btn-search w-100" onClick={() => Live.refresh()}>
+                                <Button id='btn-search' className="btn-search w-100" onClick={() => Live.refresh()}>
                                     SEARCH
                                 </Button>
                             </div>

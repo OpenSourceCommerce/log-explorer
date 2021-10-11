@@ -564,7 +564,8 @@ export class DashboardPage extends Component {
                                         </div>
                                         <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0">
                                             <div className="mr-2">
-                                                <Button className="btn-search"
+                                                <Button id="btn-search"
+                                                        className="btn-search"
                                                         disabled={isLoading}
                                                         onClick={() => this.onChangeFilter()}
                                                 >
@@ -572,7 +573,8 @@ export class DashboardPage extends Component {
                                                 </Button>
                                             </div>
                                             <div>
-                                                <Button className="btn-search"
+                                                <Button id="btn-filters"
+                                                        className="btn-search"
                                                         data-toggle="collapse"
                                                         href="#collapseAdvanceSearch"
                                                         aria-expanded="false"

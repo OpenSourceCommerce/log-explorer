@@ -22,6 +22,8 @@ services:
             - 127.0.0.1:9009:9009
             - 127.0.0.1:9004:9004
         environment:
+#            CLICKHOUSE_USER: default
+#            CLICKHOUSE_PASSWORD: ""
             CLICKHOUSE_DB: "logs"
     mysql:
         image: percona:5.7
