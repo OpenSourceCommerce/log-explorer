@@ -283,16 +283,16 @@ class StreamController extends ApiController
         }
         $options = $this->getFilter($request, false);
         $widgetItem = $widgetService->getWidgetInterface($widget);
-//        try {
+        try {
             $data = $streamService->getWidgetData($dashboard, $widgetItem, $options);
-//        } catch (Exception $e) {
-//            return $this->responseError([
-//                'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
-//                'data' => [],
-//                'message' => 'Invalid SQL query',
-//                'filter' => $options['filter'],
-//            ]);
-//        }
+        } catch (Exception $e) {
+            return $this->responseError([
+                'error' => ErrorCodeConstant::ERROR_INVALID_QUERY,
+                'data' => [],
+                'message' => 'Invalid SQL query',
+                'filter' => $options['filter'],
+            ]);
+        }
 
         return $this->responseSuccess([
             'data' => $data,
