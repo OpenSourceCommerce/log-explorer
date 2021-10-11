@@ -1,13 +1,88 @@
 import React, {Component} from 'react';
-import 'admin-lte/plugins/flot/jquery.flot';
+// import 'admin-lte/plugins/flot/jquery.flot';
+import uPlot from 'admin-lte/plugins/uplot/uPlot.cjs';
+import 'admin-lte/plugins/uplot/uPlot.min.css';
 import '../../styles/legend.scss';
 import {LogTableActions, Live} from '../actions';
 import {LiveButton} from '.';
 import PropTypes from 'prop-types';
 
-export class FlotChart extends Component {
+export class UPlotChart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            areaChart: null,
+        }
+        this.initChart = this.initChart.bind(this)
+    }
+
+    initChart() {
+        const _this = this
+
+        function getSize(elementId) {
+            return {
+                width: document.getElementById(elementId).offsetWidth,
+                height: document.getElementById(elementId).offsetHeight,
+            }
+        }
+
+        const optsAreaChart = {
+            ...getSize('interactive'),
+            scales: {
+                x: {
+                    time: true,
+                },
+            },
+            series: [
+                {},
+                {
+                    fill: 'rgba(60,141,188,0.7)',
+                    stroke: 'rgba(60,141,188,1)',
+                    scale: '%',
+                    label: 'Hit',
+                },
+            ],
+            hooks: {
+                setSelect: [
+                    (u) => {
+                        const {onDateRangeChanged} = _this.props;
+
+                        if (onDateRangeChanged && typeof onDateRangeChanged === 'function') {
+                            let min = u.posToVal(u.select.left, 'x');
+                            let max = u.posToVal(u.select.left + u.select.width, 'x');
+
+                            if (!min || !max) {
+                                return;
+                            }
+
+                            const dateRange = {
+                                // from: moment.unix(min),
+                                from: parseFloat(min),
+                                // to: moment.unix(max),
+                                to: parseFloat(max),
+                                label: 'Custom Range',
+                                isLive: false
+                            };
+
+                            onDateRangeChanged(min, max, dateRange, false);
+                            _this.loadData();
+                        }
+                    }
+                ]
+            }
+        };
+
+        let areaChart = new uPlot(optsAreaChart, [[0], [0]], document.getElementById('interactive'));
+        this.setState({areaChart})
+    }
+
     loadData() {
         const {uuid} = this.props;
+        const {areaChart} = this.state;
+
+        if (!areaChart) {
+            return;
+        }
 
         // Retrieve data
         LogTableActions.getGraph(uuid).then(res => {
@@ -48,62 +123,19 @@ export class FlotChart extends Component {
             }
             // End
 
-            const options = {
-                grid: {
-                    borderColor: '#f3f3f3',
-                    borderWidth: 1,
-                    tickColor: '#f3f3f3',
-                    hoverable: true,
-                    clickable: true
-                },
-                series: {
-                    lines: {
-                        lineWidth: 2,
-                        show: true,
-                        fill: false
-                    },
-                    points: {show: true}
-                },
-                xaxis: {
-                    mode: 'time',
-                    timeBase: 'milliseconds',
-                    timeformat: format
-                },
-                legend: legendSettings
-            };
-
-            $.plot('#interactive', data, options);
-
-            $('#interactive')
-                .bind('plothover', (event, pos, item) => {
-                    if (!pos.x || !pos.y) {
-                        return;
-                    }
-
-                    if (item) {
-                        const x = item.dataIndex;
-                        const y = item.datapoint[1];
-                        const date = new Date(item.series.data[x][0]);
-                        const string = `<br> ${date.toUTCString()}<br>Value: ${y}`;
-
-                        $('#tooltip')
-                            .html(item.series.label + string)
-                            .css({
-                                top: item.pageY + 5,
-                                left: item.pageX + 5
-                            })
-                            .fadeIn(200);
-                    } else {
-                        $('#tooltip')
-                            .hide();
-                    }
-                });
+            let x = [], y = [];
+            data[0].data.map((row) => {
+                x.push(row[0] / 1000);
+                y.push(row[1]);
+            })
+            areaChart.setData([x, y]);
         });
     }
 
     componentDidMount() {
         const _this = this;
         $(() => {
+            _this.initChart();
             $('<div id=\'tooltip\'></div>')
                 .css({
                     position: 'absolute',
@@ -123,12 +155,12 @@ export class FlotChart extends Component {
     }
 
     render() {
-        const { className } = this.props;
+        const {className} = this.props;
         return (
             <div className={`${className} card`}>
                 <div className="card-header pb-0 pt-1">
                     <h3 className="card-title">
-                        <i className="far fa-chart-bar" />
+                        <i className="far fa-chart-bar"/>
                         Interactive Area Chart
                     </h3>
 
@@ -137,7 +169,7 @@ export class FlotChart extends Component {
                     />
                 </div>
                 <div className="card-body pt-0 pb-0">
-                    <div id="interactive" style={{height: '100px'}}>
+                    <div id="interactive" style={{minHeight: '100px'}}>
                         &nbsp;
                     </div>
                 </div>
@@ -151,6 +183,6 @@ export class FlotChart extends Component {
     }
 }
 
-FlotChart.propTypes = {
+UPlotChart.propTypes = {
     uuid: PropTypes.string
 };

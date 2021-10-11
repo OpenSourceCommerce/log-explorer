@@ -50,3 +50,4 @@ export const {AlertForm} = require('./_alert-form');
 export const {DeleteModal} = require('./_delete-modal');
 export const {LogViewExportModal} = require('./_log-view-export-modal');
 export const {ExportImport} = require('./_export_import');
+export const {UPlotChart} = require('./_uplot-chart');

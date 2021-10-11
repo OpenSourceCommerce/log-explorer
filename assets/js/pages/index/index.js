@@ -218,7 +218,7 @@ class Index extends Component {
         this.setDataCookies(selectedTable.uuid, cData);
     }
 
-    onDateRangeChanged(from, to, dateRange) {
+    onDateRangeChanged(from, to, dateRange, needToRefresh = true) {
         const {selectedTable, interval, isLive} = this.state;
         if (to) {
             this.setState({
@@ -242,7 +242,11 @@ class Index extends Component {
 
         this.setState({
             dateRange,
-        }, () => Live.refresh());
+        }, () => {
+            if(needToRefresh) {
+                Live.refresh()
+            }
+        });
     }
 
     onSubmitQuery(query) {
@@ -389,7 +393,7 @@ class Index extends Component {
                                show={showQueryModal}
                                saveButtonAction={this.onQuerySave}
                                closeButtonAction={this.hideQueryModal}
-                               >
+                        >
                             {showQueryModal && <div className='row'>
                                 <div className='col-12'>
                                     <Input

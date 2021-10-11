@@ -32,6 +32,12 @@ export class FilterDate extends Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.dateRange !== this.props.dateRange) {
+            this.initDate()
+        }
+    }
+
     componentDidMount() {
         this.initDate()
     }
