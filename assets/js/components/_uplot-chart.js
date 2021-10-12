@@ -45,9 +45,9 @@ export class UPlotChart extends Component {
             hooks: {
                 setSelect: [
                     (u) => {
-                        const {onDateRangeChanged} = _this.props;
+                        const {setDate} = _this.props;
 
-                        if (onDateRangeChanged && typeof onDateRangeChanged === 'function') {
+                        if (setDate && typeof setDate === 'function') {
                             let min = u.posToVal(u.select.left, 'x');
                             let max = u.posToVal(u.select.left + u.select.width, 'x');
 
@@ -64,8 +64,9 @@ export class UPlotChart extends Component {
                                 isLive: false
                             };
 
-                            onDateRangeChanged(min, max, dateRange, false);
-                            _this.loadData();
+                            setDate(moment.unix(min), moment.unix(max), 'Custom Range', () => {
+                                // _this.loadData()
+                            });
                         }
                     }
                 ]
