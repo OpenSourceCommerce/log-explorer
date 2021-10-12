@@ -1,0 +1,26 @@
+.line-bar-chart {
+  overflow: auto;
+  .data-results-chart-legends {
+    -webkit-columns: 150px;
+    -moz-columns: 150px;
+    column-width: 50px;
+    column-gap: 2em;
+    -moz-column-gap: 2em;
+  }
+  li {
+    line-break: anywhere;
+    font-size: .85rem;
+    background: white;
+    padding-bottom: .4em;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .dot {
+    height: 10px;
+    width: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+}

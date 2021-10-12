@@ -7,6 +7,7 @@ import {WidgetTable} from "../../components/widget/_widget-table";
 import {Alert, WidgetActions} from "../../actions";
 import {Input} from "../../components/_input";
 import {Modal} from "../../components/_modal";
+import {LineBarChart} from "../../components/widget/_line-bar-chart";
 
 const SAMPLE_DATA = [
     {
@@ -224,6 +225,20 @@ class WidgetPage extends Component {
                 case WIDGET_TYPE.doughnut:
                 case WIDGET_TYPE.pie: {
                     component = <DoughnutPieChart
+                        id='new'
+                        type={type}
+                        widgetHeader={title}
+                        data={dataWidget}
+                        height='500'
+                        minHeight='500'
+                        duration={duration}
+                        color={color}
+                    />;
+                    break;
+                }
+                case WIDGET_TYPE.bar:
+                case WIDGET_TYPE.line: {
+                    component = <LineBarChart
                         id='new'
                         type={type}
                         widgetHeader={title}

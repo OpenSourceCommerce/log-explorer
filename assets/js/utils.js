@@ -9,7 +9,9 @@ export const WIDGET_TYPE = {
     doughnut: '4',
     pie: '2',
     counterSum: '1',
-    table: '3'
+    table: '3',
+    line: '5',
+    bar: '6',
 }
 
 export const setDataToCookies = (cName, cValue, exdays) => {
