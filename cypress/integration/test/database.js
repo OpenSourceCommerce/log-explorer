@@ -3,6 +3,7 @@ import DashboardPage from "../pages/dashboard_page";
 import AlertHelper from "../helpers/alert";
 import DatabasePage from "../pages/database_page";
 import TablePage from "../pages/table_page";
+import LogViewSettingPage from "../pages/logview_setting_page";
 import {random} from "lodash/number";
 
 const tableName = 'test_' + random(100000, 999999);
@@ -11,6 +12,7 @@ describe('Database page', () => {
     const dashboardPage = new DashboardPage();
     const databasePage = new DatabasePage();
     const tablePage = new TablePage();
+    const logViewSettingPage = new LogViewSettingPage();
     const alertHelper = new AlertHelper();
 
     before(() => {
@@ -60,6 +62,13 @@ describe('Database page', () => {
             databasePage.clickDelete();
             alertHelper.confirmDialog();
             alertHelper.hasMessage('Remove successful');
+        })
+    });
+    context('Table log view setting', () => {
+        it('Update setting', () => {
+            databasePage.selectTable('nginx_access');
+            databasePage.clickLogViewSetting();
+            logViewSettingPage.tableLoaded('nginx_access');
         })
     });
 })

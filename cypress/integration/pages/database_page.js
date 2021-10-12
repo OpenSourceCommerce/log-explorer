@@ -14,6 +14,9 @@ class DatabasePage {
     clickUpdate() {
         cy.get('button').contains('Update').click();
     }
+    clickLogViewSetting() {
+        cy.get('button').contains('Log view setting').click();
+    }
     clickCreateTable() {
         cy.get('a').contains('Create table').click();
     }
