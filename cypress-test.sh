@@ -1,8 +1,9 @@
 #!/bin/bash
 
 FULL_TEST="$1"
+KEEP_ENV=1
 
-if [ $FULL_TEST != "0" ]; then
+if [ "$FULL_TEST" != "0" ]; then
 
     if which node > /dev/null
         then
@@ -22,6 +23,7 @@ if [ $FULL_TEST != "0" ]; then
         if [ "$NODE_INSTALLED" == "1" ]; then
             docker-compose exec php bash -c "sed -i 's/APP_WEBPACK_FOLDER=assets/APP_WEBPACK_FOLDER=build/' .env.dev.local"
         fi
+        KEEP_ENV=0
     fi
 
     echo "CREATE test database"
@@ -64,7 +66,7 @@ fi
 echo "RUN UNIT TEST"
 npm run cli
 
-if [ $FULL_TEST != "0" ]; then
+if [ "$FULL_TEST" != "0" && "$KEEP_ENV" == "0" ]; then
     echo "REMOVE ENV"
     rm -rf .env.dev.local
 fi
