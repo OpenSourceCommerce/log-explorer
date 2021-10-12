@@ -5,6 +5,15 @@ import '../../styles/component/_advanced-search.scss';
 import {Live} from '../actions';
 
 export class AdvancedSearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.filterDateRef = React.createRef();
+    }
+
+    setDate(from, to, dateValue, callback){
+        this.filterDateRef.current.setDate(from, to, dateValue, callback)
+    }
+
     render() {
         const {
             onDateRangeChanged,
@@ -14,6 +23,7 @@ export class AdvancedSearch extends React.Component {
             onDeleteCLicked,
             ...otherProps
         } = this.props;
+
         return (
             <div className="advanced-search">
                 <div className="card mb-2">
@@ -33,6 +43,7 @@ export class AdvancedSearch extends React.Component {
                             </div>
                             <div className="input-search col-5 col-md-4">
                                 <FilterDate
+                                    ref={this.filterDateRef}
                                     label="Date Range"
                                     dateRange={dateRange}
                                     onDateRangeChanged={onDateRangeChanged}

@@ -18,6 +18,8 @@ export class FilterDate extends Component {
         };
 
         this.initDate = this.initDate.bind(this)
+        this.setDate = this.setDate.bind(this)
+        this.onDateSelected = this.onDateSelected.bind(this)
     }
 
     onFilterChanged(from, to, dateRangeValue, fromUnix, toUnix) {
@@ -36,8 +38,9 @@ export class FilterDate extends Component {
         this.initDate()
     }
 
-    initDate(){
-        const { dateRange } = this.props;
+    initDate() {
+        const _this = this
+        const {dateRange} = this.props;
         let startDate = moment().subtract(1, 'hour');
         let endDate = moment();
         let dateRangeValue = '1 hour';
@@ -64,30 +67,7 @@ export class FilterDate extends Component {
                     startDate,
                     endDate
                 },
-                (start, end, label) => {
-                    switch (label) {
-                        case '1 hour':
-                            this.onFilterChanged(60, '', label);
-                            break;
-                        case '12 hours':
-                            this.onFilterChanged(720, '', label);
-                            break;
-                        case '1 day':
-                            this.onFilterChanged(1440, '', label);
-                            break;
-                        case '7 days':
-                            this.onFilterChanged(10080, '', label);
-                            break;
-                        case 'Custom Range':
-                            this.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
-                                label, start.unix(), end.unix());
-                            break;
-                        default:
-                            this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'),
-                                label, start.unix(), end.unix());
-                            break;
-                    }
-                }
+                _this.onDateSelected
             );
         });
 
@@ -107,8 +87,48 @@ export class FilterDate extends Component {
         });
     }
 
+    onDateSelected(start, end, label) {
+        switch (label) {
+            case '1 hour':
+                this.onFilterChanged(60, '', label);
+                break;
+            case '12 hours':
+                this.onFilterChanged(720, '', label);
+                break;
+            case '1 day':
+                this.onFilterChanged(1440, '', label);
+                break;
+            case '7 days':
+                this.onFilterChanged(10080, '', label);
+                break;
+            case 'Custom Range':
+                this.onFilterChanged(start.format('YYYY-MM-DD HH:mm:00'), end.format('YYYY-MM-DD HH:mm:59'),
+                    label, start.unix(), end.unix());
+                break;
+            default:
+                this.onFilterChanged(start.format('YYYY-MM-DD 00:00:00'), end.format('YYYY-MM-DD 23:59:59'),
+                    label, start.unix(), end.unix());
+                break;
+        }
+    }
+
+    setDate(from, to, dateRangeValue, callback) {
+        const _this = this;
+
+        this.setState({from, to, dateRangeValue}, () => {
+            $('#date-range').data('daterangepicker').setStartDate(from);
+            $('#date-range').data('daterangepicker').setEndDate(to);
+
+            _this.onDateSelected(from, to, dateRangeValue)
+
+            if (callback && typeof callback === 'function') {
+                callback()
+            }
+        })
+    }
+
     render() {
-        const { label } = this.props;
+        const {label} = this.props;
         const {from, to, dateRangeValue} = this.state;
 
         return (

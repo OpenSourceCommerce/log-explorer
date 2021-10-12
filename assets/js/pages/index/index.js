@@ -4,7 +4,9 @@ import {
     AdvancedSearch,
     Summary,
     FlotChart,
-    LogViewTable, Size
+    LogViewTable,
+    Size,
+    UPlotChart
 } from '../../components';
 import {Live, LogTableActions, Event, LogViewActions, DatabaseActions, Alert} from '../../actions';
 import '../../../styles/pages/index.scss';
@@ -33,6 +35,8 @@ class Index extends Component {
             queryModalQuery: {},
         };
 
+        this.advanceSearchRef = React.createRef();
+
         this.handleRealTimeClicked = this.handleRealTimeClicked.bind(this);
         this.onDateRangeChanged = this.onDateRangeChanged.bind(this);
         this.setSelectedTable = this.setSelectedTable.bind(this);
@@ -42,6 +46,7 @@ class Index extends Component {
         this.onQueryModelChange = this.onQueryModelChange.bind(this);
         this.onDeleteQuery = this.onDeleteQuery.bind(this);
         this.hideQueryModal = this.hideQueryModal.bind(this);
+        this.setDate = this.setDate.bind(this);
     }
 
     loadData() {
@@ -218,7 +223,7 @@ class Index extends Component {
         this.setDataCookies(selectedTable.uuid, cData);
     }
 
-    onDateRangeChanged(from, to, dateRange) {
+    onDateRangeChanged(from, to, dateRange, needToRefresh = true) {
         const {selectedTable, interval, isLive} = this.state;
         if (to) {
             this.setState({
@@ -242,7 +247,11 @@ class Index extends Component {
 
         this.setState({
             dateRange,
-        }, () => Live.refresh());
+        }, () => {
+            if(needToRefresh) {
+                Live.refresh()
+            }
+        });
     }
 
     onSubmitQuery(query) {
@@ -333,6 +342,10 @@ class Index extends Component {
         })
     }
 
+    setDate(from, to, dateValue, callback){
+        this.advanceSearchRef.current.setDate(from, to, dateValue, callback);
+    }
+
     render() {
         const {
             isLive,
@@ -365,14 +378,16 @@ class Index extends Component {
                             queries={selectedQueries}
                             onSaveClicked={this.onSubmitQuery}
                             onDeleteCLicked={this.onDeleteQuery}
+                            ref={this.advanceSearchRef}
                         />
                         <div className="float-chart row justify-content-start flex-md-wrap">
                             <div className="col-12">
-                                <FlotChart isLive={isLive}
+                                <UPlotChart isLive={isLive}
                                     uuid={uuid}
                                     handleRealTimeClicked={this.handleRealTimeClicked}
                                     disableLive={disableLive}
                                     className="mb-2"
+                                    setDate={this.setDate}
                                 />
                             </div>
                             <div className="col-12 card-columns">
@@ -389,7 +404,7 @@ class Index extends Component {
                                show={showQueryModal}
                                saveButtonAction={this.onQuerySave}
                                closeButtonAction={this.hideQueryModal}
-                               >
+                        >
                             {showQueryModal && <div className='row'>
                                 <div className='col-12'>
                                     <Input
