@@ -236,7 +236,7 @@ export class GraphForm extends Component {
                     <div className="col-12 col-md-3 row m-md-0">
                         <span className="d-block d-md-none col-2">Name</span>
                         <Input
-                            className={`${item.error && item.title === '' ? 'is-invalid' : ''} col-10 col-md-12`}
+                            className={`${item.error && item.title === '' ? 'is-invalid' : ''} col-10 col-md-12 line_name`}
                             value={item.title}
                             onChange={e => this.onLineChange(key, 'title', e.target.value)}
                             placeholder={'Line title'}/>
@@ -245,7 +245,7 @@ export class GraphForm extends Component {
                         <span className="d-block d-md-none col-2">Color</span>
                         <div className="col-10 col-md-12 d-flex p-0">
                             <Input
-                                className={`${item.error && item.title === '' ? 'is-invalid' : ''}`}
+                                className={`${item.error && item.title === '' ? 'is-invalid' : ''} line_color`}
                                 value={item.color}
                                 onChange={e => this.onLineChange(key, 'color', e.target.value)}
                                 placeholder={'Line color'}/>
@@ -265,10 +265,10 @@ export class GraphForm extends Component {
                     <div className="col-12 col-md-7 d-flex mt-2 mt-md-0 row">
                         <span className="d-block d-md-none col-2">Filter</span>
                         <div className="col-10 col-md-12 d-flex p-0">
-                            <Input className="mr-2" value={item.filter ? item.filter : ''}
+                            <Input className="mr-2 line_filter" value={item.filter ? item.filter : ''}
                                    onChange={e => this.onLineChange(key, 'filter', e.target.value)}
                                    placeholder={'status = 200'}/>
-                            <Button onClick={() => this.deleteLine(key)} color={'danger'}><Icon
+                            <Button onClick={() => this.deleteLine(key)} color={'danger'} className="line_delete"><Icon
                                 name={'trash'}/></Button>
                         </div>
                     </div>
@@ -290,11 +290,11 @@ export class GraphForm extends Component {
                 </div>
                 <div className="form-group">
                     <label>Graph title</label>
-                    <Input className={titleError ? 'is-invalid' : ''} placeholder="Title" value={title} onChange={this.onTitleChange}/>
+                    <Input name="graph_title" className={titleError ? 'is-invalid' : ''} placeholder="Title" value={title} onChange={this.onTitleChange}/>
                 </div>
                 <div className="form-group">
                     <label>Max point</label>
-                    <Input className={maxPointError ? 'is-invalid' : ''} placeholder="Max point" value={maxPoint} onChange={this.onMaxPointChange}/>
+                    <Input name="graph_point" className={maxPointError ? 'is-invalid' : ''} placeholder="Max point" value={maxPoint} onChange={this.onMaxPointChange}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="exampleInputPassword1 mb-0 mb-md-2">Lines</label>

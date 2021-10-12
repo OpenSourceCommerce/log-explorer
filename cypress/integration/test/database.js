@@ -69,6 +69,16 @@ describe('Database page', () => {
             databasePage.selectTable('nginx_access');
             databasePage.clickLogViewSetting();
             logViewSettingPage.tableLoaded('nginx_access');
+            logViewSettingPage.fillGraphTitle('Nginx access ' + random(1000, 9999));
+            logViewSettingPage.setGraphPoint(random(6, 12));
+            logViewSettingPage.addLine('Status OK', '#ff00ff', 'status = 200')
+            logViewSettingPage.addLine('Status Error', '#ff0000', 'status >= 500')
+            logViewSettingPage.clickSave()
+            alertHelper.hasMessage('Update successful');
+            logViewSettingPage.deleteLine(2);
+            logViewSettingPage.deleteLine(1);
+            logViewSettingPage.clickSave()
+            alertHelper.hasMessage('Update successful');
         })
     });
 })
