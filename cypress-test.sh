@@ -66,7 +66,7 @@ fi
 echo "RUN UNIT TEST"
 npm run cli
 
-if [ "$FULL_TEST" != "0" && "$KEEP_ENV" == "0" ]; then
+if [ "$KEEP_ENV" == "0" ]; then
     echo "REMOVE ENV"
     rm -rf .env.dev.local
 fi
