@@ -21,6 +21,10 @@ class ProfilePage {
     save() {
         cy.get('#root').find('button').contains('Update').click();
     }
+
+    visible() {
+        cy.url().should('include', '/profile');
+    }
 }
 
 export default ProfilePage;

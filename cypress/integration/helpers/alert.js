@@ -1,5 +1,5 @@
 class AlertHelper {
-    hasMessage(message) {
+    hasToastMessage(message) {
         cy.waitFor('#toast-container')
         cy.get('#toast-container').should('contain.text', message);
     }
@@ -8,6 +8,10 @@ class AlertHelper {
     }
     confirmWindowDialog() {
         cy.on('window:confirm', () => true);
+    }
+
+    hasAlert(message) {
+        cy.get('div.alert-message').should('have.text', message);
     }
 }
 

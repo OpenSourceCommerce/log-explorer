@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://log.local",
+  "baseUrl": "http://localhost",
   "viewportHeight": 900,
   "viewportWidth": 1280,
   "defaultCommandTimeout": 30000,
@@ -7,5 +7,9 @@
   "taskTimeout": 120000,
   "pageLoadTimeout": 120000,
   "requestTimeout": 30000,
-  "responseTimeout": 30000
+  "responseTimeout": 30000,
+  "ignoreTestFiles": [
+    "**/helpers/*.js",
+    "**/pages/*.js"
+  ]
 }

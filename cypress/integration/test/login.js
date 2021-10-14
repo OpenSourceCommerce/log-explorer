@@ -1,9 +1,15 @@
 /// <reference types="cypress" />
-const users = require('../../fixtures/login.json');
+import DashboardPage from "../pages/dashboard_page";
 import LoginPage from '../pages/login_page';
+import AlertHelper from "../helpers/alert";
+
+const users = require('../../fixtures/login.json');
 
 describe('Login', () => {
     const loginPage = new LoginPage();
+    const dashboardPage = new DashboardPage();
+    const alertHelper = new AlertHelper();
+
     before(() => {
         cy.clearCookies()
     })
@@ -18,12 +24,9 @@ describe('Login', () => {
             it(title, () => {
                 loginPage.loginUser(email, password)
                 if (success) {
-                    cy.location().should((location) => {
-                        expect(location.pathname, '/dashboard/**')
-                    });
+                    dashboardPage.visible();
                 } else if (message){
-                    cy.get('div.alert-message')
-                        .should('have.text', message);
+                    alertHelper.hasAlert(message);
                 }
             })
         })

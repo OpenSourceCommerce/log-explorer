@@ -1,19 +1,25 @@
 /// <reference types="cypress" />
 import LogViewPage from "../pages/logview_page";
 import DashboardPage from "../pages/dashboard_page";
+import CookieHelper from "../helpers/cookie";
 
 describe('Log view page', () => {
     const dashboardPage = new DashboardPage();
     const logViewPage = new LogViewPage();
+    const cookieHelper = new CookieHelper();
 
-    before(() => {
-        cy.clearCookies()
-    })
-
-    beforeEach(function () {
-        cy.loginAsAdmin();
-        dashboardPage.visible();
-        cy.visit('/log-view');
+    beforeEach(() => {
+        cy.clearCookies();
+        cookieHelper.setCookieDismiss();
+        if (cookieHelper.hasSessionId()) {
+            cookieHelper.restoreSessionId();
+            cy.visit('/log-view');
+        } else {
+            cy.loginAsAdmin();
+            dashboardPage.visible();
+            logViewPage.open();
+        }
+        logViewPage.visible();
     })
 
     context('Filter', () => {

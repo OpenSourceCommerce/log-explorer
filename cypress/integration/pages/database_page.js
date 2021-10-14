@@ -26,6 +26,10 @@ class DatabasePage {
     open() {
         cy.get('a.nav-link').contains('Database').click({force: true});
     }
+
+    visible() {
+        cy.url().should('include', '/table');
+    }
 }
 
 export default DatabasePage;

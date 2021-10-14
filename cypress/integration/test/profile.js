@@ -2,20 +2,26 @@
 import DashboardPage from "../pages/dashboard_page";
 import ProfilePage from "../pages/profile_page";
 import AlertHelper from "../helpers/alert";
+import CookieHelper from "../helpers/cookie";
 
 describe('Dashboard view page', () => {
     const dashboardPage = new DashboardPage();
     const profilePage = new ProfilePage();
     const alertHelper = new AlertHelper();
+    const cookieHelper = new CookieHelper();
 
-    before(() => {
-        cy.clearCookies()
-    })
-
-    beforeEach(function () {
-        cy.loginAsUser();
-        dashboardPage.visible();
-        profilePage.open();
+    beforeEach(() => {
+        cy.clearCookies();
+        cookieHelper.setCookieDismiss();
+        if (cookieHelper.hasSessionId()) {
+            cookieHelper.restoreSessionId();
+            cy.visit('/profile');
+        } else {
+            cy.loginAsUser();
+            dashboardPage.visible();
+            profilePage.open();
+        }
+        profilePage.visible();
     })
 
     context('Update profile', () => {
@@ -35,7 +41,7 @@ describe('Dashboard view page', () => {
             profilePage.setFirstname('Test');
             profilePage.setLastname('No1');
             profilePage.save();
-            alertHelper.hasMessage('Update successful');
+            alertHelper.hasToastMessage('Update successful');
         })
     });
 })

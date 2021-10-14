@@ -5,6 +5,7 @@ import DatabasePage from "../pages/database_page";
 import TablePage from "../pages/table_page";
 import LogViewSettingPage from "../pages/logview_setting_page";
 import {random} from "lodash/number";
+import CookieHelper from "../helpers/cookie";
 
 const tableName = 'test_' + random(100000, 999999);
 
@@ -14,15 +15,20 @@ describe('Database page', () => {
     const tablePage = new TablePage();
     const logViewSettingPage = new LogViewSettingPage();
     const alertHelper = new AlertHelper();
+    const cookieHelper = new CookieHelper();
 
-    before(() => {
-        cy.clearCookies()
-    })
-
-    beforeEach(function () {
-        cy.loginAsAdmin();
-        dashboardPage.visible();
-        databasePage.open();
+    beforeEach(() => {
+        cy.clearCookies();
+        cookieHelper.setCookieDismiss();
+        if (cookieHelper.hasSessionId()) {
+            cookieHelper.restoreSessionId();
+            cy.visit('/table');
+        } else {
+            cy.loginAsAdmin();
+            dashboardPage.visible();
+            databasePage.open();
+        }
+        databasePage.visible();
     })
 
     context('Database view', () => {
@@ -52,16 +58,16 @@ describe('Database page', () => {
             tablePage.setColumn(1, "url_edit", "String");
             tablePage.deleteColumn(2);
             alertHelper.confirmDialog();
-            alertHelper.hasMessage('Remove successful');
+            alertHelper.hasToastMessage('Remove successful');
             tablePage.clickUpdate();
             alertHelper.confirmWindowDialog();
-            alertHelper.hasMessage('Update successful');
+            alertHelper.hasToastMessage('Update successful');
         })
         it('delete table', () => {
             databasePage.selectTable(tableName);
             databasePage.clickDelete();
             alertHelper.confirmDialog();
-            alertHelper.hasMessage('Remove successful');
+            alertHelper.hasToastMessage('Remove successful');
         })
     });
     context('Table log view setting', () => {
@@ -74,11 +80,11 @@ describe('Database page', () => {
             logViewSettingPage.addLine('Status OK', '#ff00ff', 'status = 200')
             logViewSettingPage.addLine('Status Error', '#ff0000', 'status >= 500')
             logViewSettingPage.clickSave()
-            alertHelper.hasMessage('Update successful');
+            alertHelper.hasToastMessage('Update successful');
             logViewSettingPage.deleteLine(2);
             logViewSettingPage.deleteLine(1);
             logViewSettingPage.clickSave()
-            alertHelper.hasMessage('Update successful');
+            alertHelper.hasToastMessage('Update successful');
         })
     });
 })

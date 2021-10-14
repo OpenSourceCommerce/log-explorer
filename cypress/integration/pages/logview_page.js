@@ -24,6 +24,14 @@ class LogViewPage {
             .find('a.btn-filter-remove').first()
             .click();
     }
+
+    open() {
+        cy.get('a.nav-link').contains('Explore').click({force: true});
+    }
+
+    visible() {
+        cy.url().should('include', '/log-view');
+    }
 }
 
 export default LogViewPage;
