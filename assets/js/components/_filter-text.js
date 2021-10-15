@@ -113,7 +113,7 @@ export class FilterText extends Component {
                         }}
                     />
                     {queries && <div className='input-group-append'>
-                        <Link className="btn btn-info" data-toggle="dropdown">
+                        <Link id="btn-filter-saved" className="btn btn-info" data-toggle="dropdown">
                             <Icon name="chevron-down"/>
                         </Link>
                         <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -128,7 +128,7 @@ export class FilterText extends Component {
                                         className="dropdown-item dropdown-footer"
                                     >
                                         <Link>{query.name}</Link>
-                                        <Link className={'float-right ml-2'} onClick={(e) => {
+                                        <Link className={'float-right ml-2 btn-filter-remove'} onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onDeleteCLicked(query)
@@ -150,6 +150,7 @@ export class FilterText extends Component {
                     </div>}
                     {queries && <div className='input-group-append'>
                         <Button
+                            id='btn-filter-save'
                             className='btn-success'
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
                         >Save</Button>

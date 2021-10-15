@@ -139,6 +139,7 @@ class DatabaseForm extends Component {
         const validColumns = [];
         let hasErrorBefore = false;
         let hasError = false;
+        let hasNew = false;
         if (table === '') {
             this.setState({
                 tableError: true,
@@ -175,6 +176,8 @@ class DatabaseForm extends Component {
                 if (type !== originType) {
                     change.push(`Column "${origin}" from "${originType}" to "${type}"`);
                 }
+            } else {
+                hasNew = true;
             }
 
             validColumns.push({
@@ -209,7 +212,7 @@ class DatabaseForm extends Component {
                 Alert.confirm("Are you sure to change table structure?\n" + change.join("\n"), () => {
                     this.createOrUpdate(originTable, tableData);
                 })
-            } else if (!originTable)  {
+            } else if (!originTable || hasNew)  {
                 this.createOrUpdate(originTable, tableData);
             }
         }
@@ -260,12 +263,12 @@ class DatabaseForm extends Component {
                 <div className="row">
                     <div className="col-5">
                         <Input disabled={disabled} value={item.name}
-                               className={item.error ? 'is-invalid' : ''}
+                               className={(item.error ? 'is-invalid ' : '') + 'table_field'}
                                onChange={e => this.onColumnChange(key, 'name', e)}
                                placeholder="Name"/>
                     </div>
                     <div className="col-5">
-                        <select disabled={disabled} className="form-control"
+                        <select disabled={disabled} className="form-control table_type"
                                 value={item.type}
                                 onChange={e => this.onColumnChange(key, 'type', e)}>
                             {types.map((type, k) => {
@@ -276,7 +279,7 @@ class DatabaseForm extends Component {
                     {!disabled && !item.isNew &&
                     <div className="col">
                         <a onClick={() => this.showDeleteConfirmationModal(item)} href='#'
-                           className="btn btn-danger"><i className="fa fa-trash"></i></a>
+                           className="btn btn-danger table_rm_column"><i className="fa fa-trash"></i></a>
                     </div>}
                 </div>
             </div>;
@@ -317,6 +320,7 @@ class DatabaseForm extends Component {
                             <div className="form-group">
                                 <label>Table name</label>
                                 <Input
+                                    name="table_name"
                                     className={tableError ? 'is-invalid' : ''}
                                     placeholder="Table name" value={table}
                                     onChange={this.onTableChange}/>
@@ -325,6 +329,7 @@ class DatabaseForm extends Component {
                             <div className="form-group">
                                 <label>Table TTL</label>
                                 <Input disabled={readonly}
+                                       name="table_ttl"
                                        placeholder="timestamp + toIntervalMonth(100)" value={ttl}
                                        onChange={this.onTTLChange}/>
                             </div>}
@@ -346,7 +351,7 @@ class DatabaseForm extends Component {
                                 {_columns}
 
                                 <div className="box-footer">
-                                    <Button color={'primary'} onClick={this.addMoreColumn}>Add
+                                    <Button id="btn-more-column" color={'primary'} onClick={this.addMoreColumn}>Add
                                         more column</Button>
                                 </div>
                             </>}

@@ -27,3 +27,7 @@ yarn-error.log
 /.idea
 .DS_Store
 /public/exports/
+
+# cypress test
+/cypress/screenshots/
+/cypress/videos/

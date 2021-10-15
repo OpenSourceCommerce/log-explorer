@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Test not exist user",
+    "email": "kdjladakld@ldakjsd.com",
+    "password": "dajdlkajdkjdlaksddkl",
+    "success": false,
+    "message": "Invalid credentials."
+  },
+  {
+    "title": "Test normal user",
+    "email": "user001@test.com",
+    "password": "123456",
+    "success": true
+  },
+  {
+    "title": "Test admin user",
+    "email": "admin1@test.com",
+    "password": "123456",
+    "success": true
+  },
+  {
+    "title": "Test inactive user",
+    "email": "inactive@test.com",
+    "password": "123456",
+    "success": false,
+    "message": "Your account was be disabled, please contact administrator for more detail."
+  },
+  {
+    "title": "Test unconfirmed user",
+    "email": "unconfirmed@test.com",
+    "password": "123456",
+    "success": false,
+    "message": "Your account does not completed activation, please recheck your email to activate first."
+  }
+]
