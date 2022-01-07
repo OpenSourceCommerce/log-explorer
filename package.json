@@ -51,6 +51,10 @@
     "react-input-color": "^4.0.0",
     "sass-loader": "^9.0.3",
     "webpack-notifier": "^1.6.0",
-    "xo": "^0.34.2"
+    "xo": "^0.34.2",
+    "ansi-regex": ">=5.0.1",
+    "nth-check": ">=2.0.1",
+    "tar": ">=4.4.18",
+    "trim-newlines": ">=3.0.1"
   }
 }
