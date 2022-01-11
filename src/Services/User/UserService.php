@@ -4,6 +4,7 @@
 namespace App\Services\User;
 
 
+use App\Constant\RoleConstant;
 use App\Entity\User;
 use App\Entity\UserToken;
 use App\Events\UserCreatedEvent;
@@ -12,6 +13,8 @@ use App\Repository\UserRepository;
 use App\Services\Mailer\MailerServiceInterface;
 use App\Services\UserToken\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -128,10 +131,10 @@ class UserService implements UserServiceInterface
     public function sendInvitationEmail(UserToken $token)
     {
         $activeUrl = $this->urlGenerator->generate('user_confirmation', ['token' => $token->getToken()],
-                UrlGeneratorInterface::ABSOLUTE_URL);
+            UrlGeneratorInterface::ABSOLUTE_URL);
 
         $data = [
-            'username' => $token->getUser()->getFirstname().' '.$token->getUser()->getLastName(),
+            'username' => $token->getUser()->getFirstname() . ' ' . $token->getUser()->getLastName(),
             'url' => $activeUrl,
         ];
         return $this->mailerService->sendEmailConfirmation($token->getUser()->getEmail(), $data);
@@ -260,5 +263,17 @@ class UserService implements UserServiceInterface
     public function find($id): ?User
     {
         return $this->getRepository()->find($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAdminUser(): ?User
+    {
+        try {
+            return $this->getRepository()->findActiveUserByRole(RoleConstant::USER_ADMIN);
+        } catch (NoResultException|NonUniqueResultException $e) {
+            return null;
+        }
     }
 }

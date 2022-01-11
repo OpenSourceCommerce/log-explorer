@@ -87,4 +87,9 @@ interface UserServiceInterface
      * @return User|null
      */
     public function find($id): ?User;
+
+    /**
+     * @return User|null
+     */
+    public function findAdminUser(): ?User;
 }
