@@ -2,7 +2,7 @@
 
 ## 1. Invite User
 
-#### Uri: `/api/user/create`
+#### Uri: `/api/v1/user/create`
 
 #### Method: `POST`
 

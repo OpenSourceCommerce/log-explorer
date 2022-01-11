@@ -42,6 +42,7 @@ class UserController extends ApiController
     }
 
     /**
+     * @Route("/api/v1/user/create", methods = "POST")
      * @Route("/api/user/create", methods = "POST")
      * @param Request $request
      * @param UserServiceInterface $userService
