@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -52,5 +54,20 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('ids', $ids)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function findActiveUserByRole($role)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere("u.roles LIKE :roles")
+            ->andWhere("u.isActive = 1")
+            ->andWhere("u.isConfirmed = 1")
+            ->setParameter('roles', '%"' . $role . '"%')
+            ->getQuery()
+            ->getSingleResult();
     }
 }

@@ -20,6 +20,7 @@ parameters:
     app.logview.export_expiry: '%env(LOGVIEW_EXPORT_EXPIRY)%'
     app.logview.export_max_range: '%env(LOGVIEW_EXPORT_MAX_RANGE)%' # in hour
     env(LOGVIEW_EXPORT_MAX_RANGE): '24'
+    app.api_token: '%env(API_TOKEN)%' # in hour
 
 services:
     # default configuration for services in *this* file
