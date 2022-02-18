@@ -35,7 +35,7 @@ pattern: '<%{POSINT:pri}>%{POSINT:version} %{TIMESTAMP_ISO8601:timestamp} %{HOST
 type: grok
 pattern: '%{TIMESTAMP_ISO8601:date} %{TIMESTAMP_ISO8601:timestamp} %{IP} %{GREEDYDATA:text}'
 
-             // or
+// or
 
 type: json
 ```
