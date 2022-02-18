@@ -172,6 +172,9 @@
             "config/packages/ramsey_uuid_doctrine.yaml"
         ]
     },
+    "runtime/swoole": {
+        "version": "0.3.0"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
