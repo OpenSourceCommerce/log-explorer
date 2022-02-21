@@ -10,17 +10,46 @@ $dotenv->load();
 
 $_ENV['ROOT_DIR'] = dirname(__FILE__);
 
-$server = new Server($_ENV['UDP_SERVER_HOST'], $_ENV['UDP_SERVER_PORT'], SWOOLE_BASE, SWOOLE_SOCK_UDP);
+$host = $_ENV['SERVER_HOST'];
+$udpPort = $_ENV['UDP_SERVER_PORT'] ?? null;
+$tcpPort = $_ENV['TCP_SERVER_PORT'] ?? null;
 
+if (empty($udpPort) && empty($tcpPort)) {
+    throw new Exception('Please provide at least TCP or UDP port');
+}
+
+$server = new Server($host, null, SWOOLE_BASE);
 $server->on(
-    'packet',
-    function (Server $server, string $message, array $clientInfo) {
-        go(function () use ($message) {
-            Process::process($message);
-        });
+    'receive',
+    function (Server $server, int $fd, int $reactorId, string $data) {
+        try {
+            Process::process($data);
+        } catch (\Exception $e) {
+            echo $e->getMessage() . "\r\n" . $e->getTraceAsString();
+        }
 
-        $server->sendto($clientInfo['address'], $clientInfo['port'], "OK");
+        $server->send($fd, "OK");
     }
 );
+
+if ($udpPort) {
+    $server->listen($host, $udpPort, SWOOLE_SOCK_UDP);
+    $server->on(
+        'packet',
+        function (Server $server, string $message, array $clientInfo) {
+            try {
+                Process::process($message);
+            } catch (\Exception $e) {
+                echo $e->getMessage() . "\r\n" . $e->getTraceAsString();
+            }
+
+            $server->sendto($clientInfo['address'], $clientInfo['port'], "OK");
+        }
+    );
+}
+
+if ($tcpPort) {
+    $server->listen($host, $tcpPort, SWOOLE_SOCK_TCP);
+}
 
 $server->start();

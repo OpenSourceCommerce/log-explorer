@@ -45,6 +45,7 @@ services:
         ports:
             - "127.0.0.1:9506:9506"
             - "127.0.0.1:9506:9506/udp"
+            - "9507:9507"
         volumes:
             - ./swoole:/var/www/dev-php:cached
         command: "php server.php"
