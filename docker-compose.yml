@@ -48,6 +48,6 @@ services:
             - "9507:9507"
         volumes:
             - ./swoole:/var/www/dev-php:cached
-        command: "php server.php"
+        command: "/usr/bin/bash -c 'composer install && php server.php'"
         links:
             - db

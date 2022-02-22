@@ -3,7 +3,7 @@
     "smi2/phpclickhouse": "^1.4",
     "ramsey/uuid": "^4.2",
     "vlucas/phpdotenv": "^5.4",
-    "symfony/yaml": "^6.0",
+    "symfony/yaml": "^6.0"
   },
   "autoload": {
     "psr-4": {
