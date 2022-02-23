@@ -54,11 +54,11 @@ php server.php
 ### 1. Send udp message with json format
 
 ```shell
-docker run --log-driver syslog --log-opt syslog-address=udp://localhost:9506 --log-opt tag="{table_name}" --log-opt syslog-format=rfc5424 alpine echo '{"text":"testing json format","date":"2022-02-18 09:47:14","timestamp":"2022-02-18 09:47:00"}'
+docker run --log-driver syslog --log-opt syslog-address=udp://{udp_server_address}:9506 --log-opt tag="{table_name}" --log-opt syslog-format=rfc5424 alpine echo '{"text":"testing json format","date":"2022-02-18 09:47:14","timestamp":"2022-02-18 09:47:00"}'
 ```
 
 ### 2. Send udp message with grok format
 
 ```shell
-docker run --log-driver syslog --log-opt syslog-address=udp://localhost:9506 --log-opt tag="{table_name}" --log-opt syslog-format=rfc5424 alpine echo '2022-02-18 17:11:14 2022-02-18 17:11:14 10.0.0.219 testing grok message'
+docker run --log-driver syslog --log-opt syslog-address=udp://{udp_server_address}:9506 --log-opt tag="{table_name}" --log-opt syslog-format=rfc5424 alpine echo '2022-02-18 17:11:14 2022-02-18 17:11:14 10.0.0.219 testing grok message'
 ```
