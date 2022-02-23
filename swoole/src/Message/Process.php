@@ -3,6 +3,7 @@
 namespace App\Message;
 
 use App\Clickhouse\Pool;
+use Ramsey\Uuid\Uuid;
 
 class Process
 {
@@ -12,6 +13,10 @@ class Process
 
         $pool = Pool::getPool();
         $db = $pool->get();
+
+        if (!array_key_exists('_id', $data)) {
+            $data['_id'] = Uuid::uuid4();
+        }
 
         $values = array_values($data);
         $columns = array_keys($data);
