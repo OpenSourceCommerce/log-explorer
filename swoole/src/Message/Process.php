@@ -3,7 +3,7 @@
 namespace App\Message;
 
 use App\Clickhouse\Pool;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Uuid;
 
 class Process
 {
@@ -15,7 +15,7 @@ class Process
         $db = $pool->get();
 
         if (!array_key_exists('_id', $data)) {
-            $data['_id'] = Uuid::uuid4();
+            $data['_id'] = (Uuid::v4())->toRfc4122();
         }
 
         $values = array_values($data);
