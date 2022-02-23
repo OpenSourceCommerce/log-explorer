@@ -31,3 +31,5 @@ yarn-error.log
 # cypress test
 /cypress/screenshots/
 /cypress/videos/
+/swoole/.env
+/swoole/vendor/

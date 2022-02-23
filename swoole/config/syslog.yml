@@ -1,0 +1,1 @@
+pattern: '<%{POSINT:pri}>%{POSINT:version} %{TIMESTAMP_ISO8601:timestamp} %{HOSTNAME:hostname} %{USERNAME:table_name} %{USERNAME:proc_id} %{USERNAME:app_name} \- %{GREEDYDATA:message}'

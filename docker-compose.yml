@@ -9,7 +9,7 @@ services:
         environment:
             APP_DEBUG: "true"
         ports:
-            - 127.0.0.1:80:80
+            - "127.0.0.1:80:80"
         links:
             - db
             - mysql
@@ -17,10 +17,10 @@ services:
     db:
         image: yandex/clickhouse-server:21.2.7
         ports:
-            - 127.0.0.1:9000:9000
-            - 127.0.0.1:8123:8123
-            - 127.0.0.1:9009:9009
-            - 127.0.0.1:9004:9004
+            - "127.0.0.1:9000:9000"
+            - "127.0.0.1:8123:8123"
+            - "127.0.0.1:9009:9009"
+            - "127.0.0.1:9004:9004"
         environment:
 #            CLICKHOUSE_USER: default
 #            CLICKHOUSE_PASSWORD: ""
@@ -33,8 +33,21 @@ services:
             MYSQL_USER: dev
             MYSQL_PASSWORD: dev
         ports:
-            - 3306:3306
+            - "3306:3306"
     mailhog:
         image: mailhog/mailhog
         ports:
-            - 127.0.0.1:8025:8025
+            - "127.0.0.1:8025:8025"
+
+    api:
+        image: scalecommerce/dev-php:8.1.2-2022-02-03
+        working_dir: /var/www/dev-php
+        ports:
+            - "127.0.0.1:9506:9506"
+            - "127.0.0.1:9506:9506/udp"
+            - "9507:9507"
+        volumes:
+            - ./swoole:/var/www/dev-php:cached
+        command: "/usr/bin/bash -c 'composer install && php server.php'"
+        links:
+            - db
