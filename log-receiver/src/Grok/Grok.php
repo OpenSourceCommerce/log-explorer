@@ -193,16 +193,12 @@ class Grok
      */
     public function resolve($pattern)
     {
-        //var_dump('resolve pattern:', $pattern);
         if (preg_match_all($this->pattern_regex, $pattern, $matches, PREG_SET_ORDER)) {
-            //var_dump($matches);
             foreach ($matches as $match) {
                 $subPattern = $this->resolve($this->patterns[$match['pattern']]);
                 if (isset($match['subname']) && !empty($match['subname'])) {
-                    //$this->fieldMap[$match['subname']] = ++$this->matchCount; //$subPattern;
                     $this->fieldMap[++$this->matchCount] = $match['subname'];
                     $subPattern = '(?<' . $match['subname'] . '>' . $subPattern . ')';
-                    //var_dump($subPattern);
                 }
                 $pattern = str_replace($match[0], $subPattern, $pattern, $replaced);
             }
