@@ -12,12 +12,12 @@ export class WidgetHeader extends Component {
             isFixed,
         } = this.props;
         return (
-            <div className="card-header pb-0 pt-2 pl-3 pr-2 font-weight-bold border-bottom-0">
-                <div className="float-left">{`${header || '< Input Header >'}`}</div>
-                {isUser() || <div className="dropdown float-right dropleft"
+            <div className="card-header pb-0 pt-2 ps-3 pe-2 font-weight-bold border-bottom-0">
+                <div className="float-start">{`${header || '< Input Header >'}`}</div>
+                {isUser() || <div className="dropdown float-end dropleft"
                      href="#"
                 >
-                    <div className=" pr-2 pl-2"
+                    <div className="pe-2 ps-2"
                          data-toggle="dropdown"
                          aria-haspopup="true"
                          aria-expanded="false"

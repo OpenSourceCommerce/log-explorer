@@ -13,7 +13,7 @@ class Navbar extends Component {
 
                 {role !== 'guest' && <NavSearch/>}
 
-                {role !== 'guest' && <ul className="navbar-nav ml-auto">
+                {role !== 'guest' && <ul className="navbar-nav ms-auto">
                     <NavMessage total={3}/>
                     <NavNotification total={15}/>
                     <NavUser logoutLink={logoutLink}
