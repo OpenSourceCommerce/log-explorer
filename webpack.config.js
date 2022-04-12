@@ -55,7 +55,7 @@ Encore
 	.addEntry('user_confirmation', './assets/js/pages/user/confirmation.js')
 	.addEntry('user_profile', './assets/js/pages/user/profile.js')
 	.addEntry('navbar', './assets/js/components/_navbar.js')
-	.addEntry('sidebar', './assets/js/components/_sidebar.js')
+	.addEntry('sidebar_component', './assets/js/components/_sidebar.js')
 	.addEntry('js_grid', './assets/js/components/_js-grid-table.js')
 	.addEntry('flot_chart', './assets/js/components/_flot-chart.js')
 	.addEntry('content-header', './assets/js/components/_content-header.js')
@@ -125,6 +125,7 @@ Encore
 	.addPlugin(new webpack.ProvidePlugin({
 		moment: 'moment',
 		daterangepicker: 'daterangepicker',
-		sparkline: 'Sparkline'
+		sparkline: 'Sparkline',
+        feather: 'feather-icons'
 	}))
 module.exports = Encore.getWebpackConfig();

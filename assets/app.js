@@ -8,7 +8,20 @@
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
 
-import 'jquery'
+const $ = require('jquery');
+import 'feather-icons';
+import "./vendor/theme.min.js";
+
+window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
+
+feather.replace();
+
+$(document).ready(function () {
+    $("#sidebarCollapse").on("click", () => {
+      $(".wrapper").toggleClass("active");
+    });
+});
+
 // Need jQuery? Install it with 'yarn add jquery', then uncomment to import it.
 // import 'admin-lte/plugins/jquery/jquery';
 // import 'admin-lte/plugins/jquery-ui/jquery-ui';
@@ -30,7 +43,4 @@ import 'jquery'
 // import 'admin-lte/dist/js/adminlte';
 // Import 'admin-lte/dist/js/pages/dashboard';
 // import 'admin-lte/dist/js/demo';
-// import 'bootstrap/dist/js/bootstrap.bundle.min'
-window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
-
 // Console.log('Hello Webpack Encore! Edit me in assets/app.js');

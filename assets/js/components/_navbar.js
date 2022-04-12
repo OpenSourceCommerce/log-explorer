@@ -1,25 +1,24 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {NavSearch, NavNotification, NavMenu, NavMessage, NavUser} from '.';
+import {NavUser} from '.';
 import PropTypes from 'prop-types';
 
 class Navbar extends Component {
     render() {
-        const {logoutLink, profileLink, changePasswordLink, role} = this.props;
+        const {
+            role,
+            ...props
+        } = this.props;
 
         return (
-            <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-                <NavMenu/>
+            <nav className="navbar navbar-expand navbar-light bg-white main-header">
 
-                {role !== 'guest' && <NavSearch/>}
-
-                {role !== 'guest' && <ul className="navbar-nav ms-auto">
-                    <NavMessage total={3}/>
-                    <NavNotification total={15}/>
-                    <NavUser logoutLink={logoutLink}
-                        changePasswordLink={changePasswordLink}
-                        profileLink={profileLink}/>
-                </ul>}
+                <div className="d-flex justify-content-between w-100 align-items-center">
+                    <span className="nav-item collapse-icon rounded-circle p-2" id="sidebarCollapse" href="#">
+                        <i data-feather="chevron-left"></i>
+                    </span>
+                    <NavUser {...props}/>
+                </div>
             </nav>
         );
     }
