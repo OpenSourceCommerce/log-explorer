@@ -64,7 +64,7 @@ jobs:
       - name: Create .env
         run: |
           cp .env.dist .env
-          sed -i 's/APP_ENV=dev/APP_ENV=prod/' .env
+          sed -i 's/APP_ENV=dev/APP_ENV=dev/' .env
           sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env
           sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env
           sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env
@@ -77,13 +77,13 @@ jobs:
           composer self-update
           composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Migration
-        run: bin/console doctrine:migrations:migrate --no-interaction --env="prod"
+        run: bin/console doctrine:migrations:migrate --no-interaction --env="dev"
       - name: Fixtures
-        run: bin/console doctrine:fixtures:load -n --env="prod"
+        run: bin/console doctrine:fixtures:load -n --env="dev"
       - name: Create sample database
-        run: bin/console app:createsampledatabase --env="prod"
+        run: bin/console app:createsampledatabase --env="dev"
       - name: Create sample data
-        run: bin/console app:createsampledata 300 --env="prod"
+        run: bin/console app:createsampledata 300 --env="dev"
 #      - name: Run test
 #        run: php bin/phpunit
       - name: Symfony start server
