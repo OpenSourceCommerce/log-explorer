@@ -5,7 +5,9 @@ name: Versioning
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - feature/LOG-12
 
 jobs:
   build:
