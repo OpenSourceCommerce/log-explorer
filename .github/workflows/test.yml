@@ -5,9 +5,13 @@ name: Testing
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - feature/LOG-12
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - feature/LOG-12
 
 jobs:
   test:
