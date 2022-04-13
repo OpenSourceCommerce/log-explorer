@@ -19,20 +19,17 @@
         }
     </script>
     {% endif %}
-    {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('navbar') }}
-    {{ encore_entry_script_tags('sidebar') }}
-    {% block javascripts %}{% endblock %}
+    {{ encore_entry_script_tags('sidebar_component') }}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed sidebar-collapse">
+<!-- Main Sidebar Container -->
+{% include "partials/sidebar.html.twig" %}
 <div class="wrapper">
 
     <!-- Navbar -->
     {% include "partials/navbar.html.twig" %}
     <!-- /.navbar -->
-
-    <!-- Main Sidebar Container -->
-    {% include "partials/sidebar.html.twig" %}
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -68,5 +65,7 @@
     <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+{{ encore_entry_script_tags('app') }}
+{% block javascripts %}{% endblock %}
 </body>
 </html>

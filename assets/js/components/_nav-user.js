@@ -1,31 +1,30 @@
 import React, {Component} from 'react';
-import {Link, Icon, NavDivider} from '.';
+import {Link} from '.';
 import PropTypes from 'prop-types';
 
 export class NavUser extends Component {
     render() {
-        const {logoutLink, profileLink, changePasswordLink} = this.props;
+        const {
+            logoutLink,
+            profileLink,
+            changePasswordLink,
+            username,
+            userimage,
+        } = this.props;
 
         return (
-            <li className="nav-item dropdown">
-                <Link className="nav-link" data-toggle="dropdown">
-                    <Icon name="user"/>
+            <div className="nav-item dropdown">
+                <Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span className="d-none d-md-inline-block me-2">{username}</span>
+                    <img src={userimage} className="rounded-circle" style={{width: "43px"}}/>
+                    <i data-feather="chevron-down" className="feather-sm"></i>
                 </Link>
-                <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    <Link href={profileLink} className="dropdown-item">
-                        My Profile
-                    </Link>
-                    <NavDivider/>
-                    <Link href={changePasswordLink} className="dropdown-item">
-                        Change Password
-                    </Link>
-                    <NavDivider/>
-
-                    <Link href={logoutLink} className="dropdown-item">
-                        Log out
-                    </Link>
-                </div>
-            </li>
+                <ul className="dropdown-menu border-0 shadow-sm dropdown-menu-end fade-down" aria-labelledby="navbarDropdown">
+                    <li><Link className="dropdown-item text-primary" href={profileLink}>My Profile</Link></li>
+                    <li><Link className="dropdown-item text-primary" href={changePasswordLink}>Change Password</Link></li>
+                    <li><Link className="dropdown-item text-danger" href={logoutLink}>Log out</Link></li>
+                </ul>
+            </div>
         );
     }
 }
