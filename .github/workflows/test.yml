@@ -63,12 +63,11 @@ jobs:
         run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Create .env
         run: |
-          cp .env.dist .env.test.local
-          sed -i 's/APP_ENV=dev/APP_ENV=test/' .env.test.local
-          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env.test.local
-          sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env.test.local
-          sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.test.local
-          cp .env.test.local .env
+          cp .env.dist .env
+          sed -i 's/APP_ENV=dev/APP_ENV=prod/' .env
+          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env
+          sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env
+          sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env
       - name: Install NPM
         run: npm i
       - name: Build NPM
@@ -78,25 +77,19 @@ jobs:
           composer self-update
           composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Migration
-        run: bin/console doctrine:migrations:migrate --no-interaction --env="test"
+        run: bin/console doctrine:migrations:migrate --no-interaction --env="prod"
       - name: Fixtures
-        run: bin/console doctrine:fixtures:load -n --env="test"
+        run: bin/console doctrine:fixtures:load -n --env="prod"
       - name: Create sample database
-        run: bin/console app:createsampledatabase --env="test"
+        run: bin/console app:createsampledatabase --env="prod"
       - name: Create sample data
-        run: bin/console app:createsampledata 300 --env="test"
+        run: bin/console app:createsampledata 300 --env="prod"
 #      - name: Run test
 #        run: php bin/phpunit
       - name: Symfony start server
         run: |
           curl -sS https://get.symfony.com/cli/installer | bash
           /home/runner/.symfony/bin/symfony server:start -d
-      - name: Create cypress .env
-        run: |
-          cp .env.dist .env
-          sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@127.0.0.1:3306\/test/' .env
-          sed -i 's/DATABASE_HOST=db/DATABASE_HOST=127.0.0.1/' .env
-          sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env
       - name: Cypress test
         run: CYPRESS_BASE_URL=http://localhost:8000 ./node_modules/.bin/cypress run
       - name: Upload test failed
@@ -106,4 +99,3 @@ jobs:
           name: Cypress
           path: |
             cypress/screenshots
-            cypress/videos

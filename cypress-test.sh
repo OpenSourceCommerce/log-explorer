@@ -18,7 +18,7 @@ if [ "$FULL_TEST" != "0" ]; then
     if [ ! -f .env.dev.local ]; then
         echo "INIT ENV"
         cp .env.dist .env.dev.local
-        docker-compose exec php bash -c "sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/test/' .env.dev.local"
+        docker-compose exec php bash -c "sed -i 's/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/dev/MYSQL_URL=mysql:\/\/dev:dev@mysql:3306\/cypress/' .env.dev.local"
         docker-compose exec php bash -c "sed -i 's/DATABASE_DBNAME=logs/DATABASE_DBNAME=default/' .env.dev.local"
         if [ "$NODE_INSTALLED" == "1" ]; then
             docker-compose exec php bash -c "sed -i 's/APP_WEBPACK_FOLDER=assets/APP_WEBPACK_FOLDER=build/' .env.dev.local"
@@ -27,7 +27,7 @@ if [ "$FULL_TEST" != "0" ]; then
     fi
 
     echo "CREATE test database"
-    docker-compose exec mysql bash -c "mysql -uroot -proot -e \"CREATE DATABASE IF NOT EXISTS test;GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%';\""
+    docker-compose exec mysql bash -c "mysql -uroot -proot -e \"CREATE DATABASE IF NOT EXISTS cypress;GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%';\""
 
     echo "COMPOSER INSTALL"
     docker-compose exec php bash -c "composer self-update"
@@ -51,16 +51,16 @@ if [ "$FULL_TEST" != "0" ]; then
     fi
 
     echo "FIXTURES"
-    docker-compose exec php bash -c "php bin/console doctrine:fixtures:load -n --env=\"test\""
+    docker-compose exec php bash -c "php bin/console doctrine:fixtures:load -n --env=\"dev\""
 
     echo "DROP OLD DATABASE TABLE IF EXIST"
-    docker-compose exec php bash -c "php bin/console app:deletesampledatabase --env=\"test\""
+    docker-compose exec php bash -c "php bin/console app:deletesampledatabase --env=\"dev\""
 
     echo "CREATE DATABASE TABLE"
-    docker-compose exec php bash -c "php bin/console app:createsampledatabase --env=\"test\""
+    docker-compose exec php bash -c "php bin/console app:createsampledatabase --env=\"dev\""
 
     echo "CREATE TEST DATA"
-    docker-compose exec php bash -c "php bin/console app:createsampledata 300 --env=\"test\""
+    docker-compose exec php bash -c "php bin/console app:createsampledata 300 --env=\"dev\""
 fi
 
 echo "RUN UNIT TEST"
