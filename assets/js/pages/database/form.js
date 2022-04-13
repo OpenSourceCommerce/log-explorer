@@ -309,7 +309,7 @@ class DatabaseForm extends Component {
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{isNew ? 'Create new table' : 'Update table'}</h3>
-                        <Button className="float-right" color={'success'}
+                        <Button className="float-end" color={'success'}
                                 onClick={this.onSubmit} isLoading={isLoading}>
                             {isNew ? 'Create table' : 'Update table'}
                         </Button>

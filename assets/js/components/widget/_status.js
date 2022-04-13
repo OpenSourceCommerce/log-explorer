@@ -7,7 +7,7 @@ export default class StatusWidget extends React.Component {
         const {data} = this.props;
 
         return (
-            <ul className="status-widget pr-3 pl-3">
+            <ul className="status-widget pe-3 ps-3">
                 {data.map((item, key) => {
                     const {label, value} = item;
                     let dotColor = '';
@@ -27,7 +27,7 @@ export default class StatusWidget extends React.Component {
                     return (
                         <li key={key} className="d-flex justify-content-between pb-2">
                             <div className="d-inline-flex">
-                                <span className={`dot mt-2 mr-2 ${dotColor}`}/>
+                                <span className={`dot mt-2 me-2 ${dotColor}`}/>
                                 {label}
                             </div>
                             <div>{value}</div>

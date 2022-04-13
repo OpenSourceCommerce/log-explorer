@@ -304,12 +304,12 @@ export class WidgetManagement extends Component {
             <div className="editable-widget">
                 {isLoading ?
                     <span
-                        className="spinner-border spinner-border-sm mr-2"
+                        className="spinner-border spinner-border-sm me-2"
                         role="status" aria-hidden="true"></span> :
                     <div className="card">
                         <div
-                            className="card-header pr-3 pl-3">{id ? 'Update setting' : 'Setting'}</div>
-                        <div className="card-body pr-2 pl-2">
+                            className="card-header pe-3 ps-3">{id ? 'Update setting' : 'Setting'}</div>
+                        <div className="card-body pe-2 ps-2">
                             <div className="col-12">
                                 <FormField
                                     label='Header'

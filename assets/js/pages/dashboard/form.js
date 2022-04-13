@@ -183,10 +183,10 @@ class DashboardPage extends Component {
         return (
             <div className="dashboard-management">
                 {isLoading ? (<span
-                    className="spinner-border spinner-border-sm mr-2"
+                    className="spinner-border spinner-border-sm me-2"
                     role="status" aria-hidden="true"></span>) : (
                     <>
-                        <div className="card mr-2 ml-2">
+                        <div className="card me-2 ms-2">
                             <div className="card-header">
                         <span className="align-items-center d-inline-flex">
                             <h3 className="mb-0">{`${title || 'Create new dashboard'}`}</h3>
@@ -248,7 +248,7 @@ class DashboardPage extends Component {
                                         Save
                                     </Button>
                                     {initialData.title &&
-                                    <Button className="btn-search mb-3 ml-2"
+                                    <Button className="btn-search mb-3 ms-2"
                                             color="default"
                                             onClick={() => history.back()}>
                                         Cancel

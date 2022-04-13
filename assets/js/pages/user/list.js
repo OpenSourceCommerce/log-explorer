@@ -100,12 +100,12 @@ class UserList extends Component {
                 <td>{user.status}</td>
                 <td>{user.last_updated}</td>
                 <td className={'text-right'}>
-                    <Link href={'/user/' + user.id} className={'btn btn-sm mr-3 btn-success'} title={'Edit'}><Icon name={'edit'}/></Link>
+                    <Link href={'/user/' + user.id} className={'btn btn-sm me-3 btn-success'} title={'Edit'}><Icon name={'edit'}/></Link>
                     {user.is_active == 1 &&
                     <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-warning'} title={'Disable'}><Icon name={'user-times'}/></Button>}
                     {user.is_active != 1 &&
                     <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Enable'}><Icon name={'user-plus'}/></Button>}
-                    <Button onClick={_ => this.onDelete(key)} className={'btn ml-3 btn-sm btn-danger'} title={'Delete'}><Icon name={'trash'}/></Button>
+                    <Button onClick={_ => this.onDelete(key)} className={'btn ms-3 btn-sm btn-danger'} title={'Delete'}><Icon name={'trash'}/></Button>
                 </td>
             </tr>;
         });
