@@ -4,7 +4,7 @@ import ProfilePage from "../pages/profile_page";
 import AlertHelper from "../helpers/alert";
 import CookieHelper from "../helpers/cookie";
 
-describe('Dashboard view page', () => {
+describe('Profile page', () => {
     const dashboardPage = new DashboardPage();
     const profilePage = new ProfilePage();
     const alertHelper = new AlertHelper();
@@ -15,13 +15,11 @@ describe('Dashboard view page', () => {
         cookieHelper.setCookieDismiss();
         if (cookieHelper.hasSessionId()) {
             cookieHelper.restoreSessionId();
-            cy.visit('/profile');
         } else {
             cy.loginAsUser();
             dashboardPage.visible();
-            profilePage.open();
         }
-        profilePage.visible();
+        profilePage.open();
     })
 
     context('Update profile', () => {

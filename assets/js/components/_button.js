@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export class Button extends Component {
     render() {
-        let {className = '', type = 'button', color = Colors.blue, isLoading = false, disabled = false, children, ...rest} = this.props;
+        let {className = '', type = 'button', color = Colors.blue, isLoading = false, disabled = false, children, cy = '', ...rest} = this.props;
 
         if (Array.isArray(children)) {
             children = children.map((child, index) => {
@@ -24,7 +24,7 @@ export class Button extends Component {
         }
 
         return (
-            <button {...rest} className={classes} disabled={disabled} type={type}>
+            <button {...rest} className={classes} disabled={disabled} type={type} data-cy={cy}>
                 {isLoading ? (<>  <span
                     className="spinner-border spinner-border-sm mr-2"
                     role="status" aria-hidden="true"></span>
@@ -41,5 +41,6 @@ Button.propTypes = {
     children: PropTypes.any,
     disabled: PropTypes.bool,
     onClick: PropTypes.func,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    cy: PropTypes.string
 };
