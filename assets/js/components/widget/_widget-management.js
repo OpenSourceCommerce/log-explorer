@@ -13,7 +13,6 @@ const WIDGET = [
     {label: 'Bar', value: WIDGET_TYPE.bar},
     {label: 'Line', value: WIDGET_TYPE.line},
 ]
-
 export class WidgetManagement extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +26,11 @@ export class WidgetManagement extends Component {
             title: '',
             type: '4',
         }
+
+        const mandatoryFields = [
+            'title', 'type', 'table', 'order', 'column'
+        ];
+
         this.state = {
             errors: {},
             initialData,
@@ -34,6 +38,8 @@ export class WidgetManagement extends Component {
                 //layout: {i: '', x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
                 ...initialData,
             },
+            mandatoryFields,
+            columns: [],
             isLoading: false,
         }
 
@@ -73,6 +79,7 @@ export class WidgetManagement extends Component {
             newWidgetDetail = {
                 ...widgetDetailRes.data,
                 order: widgetDetailRes.data.order_desc ? 'desc' : 'asc',
+                column: widgetDetailRes.data.column || ''
             };
             newInitialData = {
                 ...newWidgetDetail
@@ -105,15 +112,20 @@ export class WidgetManagement extends Component {
     }
 
     async onChangeData({name, value}, isUpdateWidget) {
-        const mandatoryField = ['title', 'type', 'table', 'order']
-        const {widgetDetail} = this.state
+        const {widgetDetail, columns, errors, mandatoryFields} = this.state;
+
+        let newColumnData = [...columns];
+        let newWidgetDetail = {...widgetDetail};
+        let newErrors = {...errors};
+        let newMandatoryFieldArray = [...mandatoryFields];
+        let newValue = value;
 
         if (name) {
             const {errors} = this.state;
 
             if (name === 'table') {
-                const columnRes = await DatabaseActions.getTableColumns(value);
-                const columns = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
+                const columnRes = await DatabaseActions.getTableColumns(newValue);
+                newColumnData = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
                     value: item.name,
                     label: item.name
                 })) : [];
@@ -124,33 +136,17 @@ export class WidgetManagement extends Component {
                     column = []
                 }
 
-                let newWidgetDetail = {...widgetDetail, column}
-
-                this.setState({
-                    columns, widgetDetail: {
-                        ...newWidgetDetail
-                    }
-                });
-            }
-
-            let newErrorArray = {...errors};
-            if (value) {
-                // remove field in error if have value
-                newErrorArray = Object.keys({...errors}).reduce(function (obj, key) {
-                    if (key !== name) obj[key] = errors[key];
-                    return obj;
-                }, {});
-            } else {
-                if (mandatoryField.includes(name)) {
-                    newErrorArray = {
-                        ...newErrorArray,
-                        [name]: true,
+                newWidgetDetail = {...widgetDetail, column}
+            } else if (name === 'type') {
+                if (newValue === WIDGET_TYPE.counterSum) {
+                    newMandatoryFieldArray = newMandatoryFieldArray.filter(item => item !== 'column');
+                } else {
+                    if (!newMandatoryFieldArray.includes('column')) {
+                        newMandatoryFieldArray.push('column')
                     }
                 }
-            }
-
-            if (name == 'column' && widgetDetail.type == WIDGET_TYPE.table) {
-                value = value.trim()
+            } else if (name == 'column' && widgetDetail.type == WIDGET_TYPE.table) {
+                newValue = newValue.trim()
 
                 let currentValue = widgetDetail.column
 
@@ -171,21 +167,44 @@ export class WidgetManagement extends Component {
                     }
                 }
 
-                value = currentValue
+                newValue = currentValue
+            }
+            if (newValue) {
+                // remove field in error if have value
+                newErrors = Object.keys({...errors}).reduce(function (obj, key) {
+                    if (key === 'column') {
+                        if (name === 'type' && newValue !== WIDGET_TYPE.counterSum) {
+                            obj[key] = errors[key]
+                        }
+                    } else if (key !== name) obj[key] = errors[key];
+
+                    return obj;
+                }, {});
+            } else {
+                if (mandatoryFields.includes(name)) {
+                    newErrors = {
+                        ...newErrors,
+                        [name]: true,
+                    }
+                }
             }
 
-            this.setState((preState) => ({
-                widgetDetail: {
-                    ...preState.widgetDetail,
-                    [name]: value,
-                },
-                errors: {...newErrorArray},
-            }), () => {
+            newWidgetDetail = {
+                ...newWidgetDetail,
+                [name]: newValue
+            }
+
+            this.setState({
+                columns: newColumnData.length > 0 ? [...newColumnData] : [],
+                widgetDetail: {...newWidgetDetail},
+                errors: {...newErrors},
+                mandatoryFields: [...newMandatoryFieldArray],
+            }, () => {
                 const {onUpdateWidget} = this.props;
                 if (isUpdateWidget && onUpdateWidget) {
                     onUpdateWidget(name, value);
                 }
-            })
+            });
         }
     }
 
@@ -226,47 +245,71 @@ export class WidgetManagement extends Component {
 
     async onSubmit() {
         // let layout;
-        const {widgetDetail} = this.state;
+        const {widgetDetail, errors, mandatoryFields} = this.state;
         const {order, id} = widgetDetail;
 
-        let data;
-        Object.entries(widgetDetail).forEach(([key, value]) => {
-            if (key === 'order') {
-                data = {
-                    ...data,
-                    isOrderDesc: order === 'desc',
+        let newErrors = {...errors}
+        mandatoryFields.forEach((item) => {
+            let isInvalidField = false;
+            if (!widgetDetail[item]) {
+                isInvalidField = true
+            } else if (Array.isArray(widgetDetail[item])) {
+                if (widgetDetail[item].length === 0) {
+                    isInvalidField = true
                 }
             }
-
-            if (value) {
-                if (key === 'column' && Array.isArray(value)) {
-                    value = value.join(',')
-                }
-
-                data = {
-                    ...data,
-                    [key]: value,
+            if (isInvalidField) {
+                newErrors = {
+                    ...newErrors,
+                    [item]: true
                 }
             }
-        });
+        })
 
-        const resp = await WidgetActions.createOrUpdate(id, data);
+        if (Object.keys(newErrors).length === 0) {
+            let data;
+            Object.entries(widgetDetail).forEach(([key, value]) => {
+                if (key === 'order') {
+                    data = {
+                        ...data,
+                        isOrderDesc: order === 'desc',
+                    }
+                }
 
-        if (resp && !resp.error) {
-            Alert.success(`${id ? 'Update' : 'Add new'} successful`);
-            if (resp.redirect) {
-                window.location.href = resp.redirect;
+                if (value) {
+                    if (key === 'column' && Array.isArray(value)) {
+                        value = value.join(',')
+                    }
+
+                    data = {
+                        ...data,
+                        [key]: value,
+                    }
+                }
+            });
+
+            const resp = await WidgetActions.createOrUpdate(id, data);
+
+            if (resp && !resp.error) {
+                Alert.success(`${id ? 'Update' : 'Add new'} successful`);
+                if (resp.redirect) {
+                    window.location.href = resp.redirect;
+                    return;
+                } else {
+                    this.setState({
+                        initialData: {...widgetDetail},
+                    })
+                }
                 return;
             } else {
+                const {fields} = resp;
                 this.setState({
-                    initialData: {...widgetDetail},
+                    errors: {...fields},
                 })
             }
-            return;
         } else {
-            const {fields} = resp;
             this.setState({
-                errors: {...fields},
+                errors: {...newErrors}
             })
         }
     }
@@ -279,6 +322,7 @@ export class WidgetManagement extends Component {
             columns,
             errors,
             isLoading,
+            mandatoryFields,
         } = this.state;
 
         const {
@@ -298,7 +342,7 @@ export class WidgetManagement extends Component {
             query
         } = widgetDetail;
 
-        const isCounterSumType = type === WIDGET_TYPE.counterSum;
+        const isCounterSumType = type == WIDGET_TYPE.counterSum;
 
         return (
             <div className="editable-widget">
@@ -318,7 +362,7 @@ export class WidgetManagement extends Component {
                                     fieldName='title'
                                     onChange={(e) => this.onChangeData(e.target)}
                                     onBlur={(e) => this.onChangeData(e.target, true)}
-                                    isMandatory={true}
+                                    isMandatory={mandatoryFields.includes('title')}
                                     errors={errors}
                                 />
                                 <FormField
@@ -337,7 +381,7 @@ export class WidgetManagement extends Component {
                                     value={table}
                                     fieldName='table'
                                     onChange={(e) => this.onChangeData(e.target)}
-                                    isMandatory={true}
+                                    isMandatory={mandatoryFields.includes('table')}
                                     type='select'
                                     errors={errors}
                                 >
@@ -349,7 +393,7 @@ export class WidgetManagement extends Component {
                                         value={column}
                                         fieldName='column'
                                         onChange={(e) => this.onChangeData(e.target, true)}
-                                        isMandatory={false}
+                                        isMandatory={mandatoryFields.includes('column')}
                                         type='select'
                                         errors={errors}
                                         disabled={!table}
@@ -368,7 +412,7 @@ export class WidgetManagement extends Component {
                                         value={order}
                                         fieldName='order'
                                         onChange={(e) => this.onChangeData(e.target)}
-                                        isMandatory={true}
+                                        isMandatory={mandatoryFields.includes('order')}
                                         type='select'
                                         errors={errors}
                                     >
@@ -380,7 +424,6 @@ export class WidgetManagement extends Component {
                                         value={size}
                                         fieldName='size'
                                         onChange={(e) => this.onChangeData(e.target, true)}
-                                        isMandatory={false}
                                         type='select'
                                         errors={errors}
                                     >
@@ -403,6 +446,7 @@ export class WidgetManagement extends Component {
                                     <div className="col-12 col-md-6 btn-action-group">
                                         <Button className="btn-search w-100 mt-0 mt-md-2"
                                                 onClick={() => this.onSubmit()}
+                                                disabled={Object.keys(errors).length > 0}
                                             // disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
                                         >
                                             {`${id ? 'Update' : 'Add new'}`}
