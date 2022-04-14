@@ -5,12 +5,13 @@ name: Versioning
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - feature/LOG-12
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14
