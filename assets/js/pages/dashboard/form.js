@@ -92,7 +92,7 @@ class DashboardPage extends Component {
 
             dashboardDetail = data ? {
                 ...data,
-                table: widgetSelected[0].table,
+                table: widgetSelected[0]?.table,
             } : {};
         }
 
