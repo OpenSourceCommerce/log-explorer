@@ -113,7 +113,7 @@ export class FilterText extends Component {
                         }}
                     />
                     {queries && <div className='input-group-append'>
-                        <Link id="btn-filter-saved" className="btn btn-info" data-toggle="dropdown">
+                        <Link id="btn-filter-saved" className="btn btn-info" data-bs-toggle="dropdown">
                             <Icon name="chevron-down"/>
                         </Link>
                         <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">

@@ -16,7 +16,7 @@ class ProfilePage {
         cy.get('input[name=lastName]').should('have.class', 'is-invalid');
     }
     open() {
-        cy.get('a.nav-link').contains('Profile').click({force: true});
+        cy.get('a.nav-item').contains('Profile').click({force: true});
     }
     save() {
         cy.get('#root').find('button').contains('Update').click();
