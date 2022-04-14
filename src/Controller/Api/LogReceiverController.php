@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LogReceiverController extends ApiController
 {
     /**
-     * @Route("/api/v1/log/receiver", name="log_receiver", methods={"POST"})
+     * @Route("/api/v1/log/receiver", name="app_api_log_receiver", methods={"POST"})
      * @param Request $request
      * @param LogServiceInterface $logService
      * @return Response
