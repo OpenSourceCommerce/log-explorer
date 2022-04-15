@@ -13,8 +13,8 @@ export class WidgetHeader extends Component {
         } = this.props;
         return (
             <div className="card-header pb-0 pt-2 ps-3 pe-2 font-weight-bold border-bottom-0">
-                <div className="float-left">{`${header || '< Input Header >'}`}</div>
-                {isUser() || <div className="dropdown float-right dropleft"
+                <div className="float-start">{`${header || '< Input Header >'}`}</div>
+                {isUser() || <div className="dropdown float-end dropleft"
                      href="#"
                 >
                     <div className=" pe-2 ps-2"

@@ -50,8 +50,8 @@ export class ControlSidebar extends Component {
                             {headerActions}
                         </div>
                     </div>}
-                    <h3 className="text-center ml-auto">{title}</h3>
-                    <Link className={'ml-auto me-2'}
+                    <h3 className="text-center ms-auto">{title}</h3>
+                    <Link className={'ms-auto me-2'}
                         href="#" onClick={event => {
                             this.close(event);
                             if (onCloseLogDetailSideBar) {

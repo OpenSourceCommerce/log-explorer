@@ -95,7 +95,7 @@ export class FilterText extends Component {
 
         return (
             <>
-                {label &&  <p className="float-left mb-1">{label}</p>}
+                {label &&  <p className="float-start mb-1">{label}</p>}
                 <div className='input-group'>
                     <Input
                         className={`form-group ${className}`}
@@ -128,14 +128,14 @@ export class FilterText extends Component {
                                         className="dropdown-item dropdown-footer"
                                     >
                                         <Link>{query.name}</Link>
-                                        <Link className={'float-right ms-2 btn-filter-remove'} onClick={(e) => {
+                                        <Link className={'float-end ms-2 btn-filter-remove'} onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onDeleteCLicked(query)
                                         }}>
                                             <i className={'fa fa-trash'}></i>
                                         </Link>
-                                        <Link className={'float-right'} onClick={(e) => {
+                                        <Link className={'float-end'} onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             this.onSaveClicked(query)

@@ -134,7 +134,7 @@ export class FilterDate extends Component {
         return (
             <div>
                 <div>
-                    <p className="float-left mb-1">{label}</p>
+                    <p className="float-start mb-1">{label}</p>
                 </div>
                 <button type="button" className="btn btn-default w-100" id="date-range">
                     <>

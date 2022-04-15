@@ -7,7 +7,7 @@ export default class StatusWidget extends React.Component {
         const {data} = this.props;
 
         return (
-            <ul className="status-widget pe-3 ps-3">
+            <ul className="status-widget pr-3 pl-3">
                 {data.map((item, key) => {
                     const {label, value} = item;
                     let dotColor = '';

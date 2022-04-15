@@ -245,9 +245,9 @@ export class LogViewTableSettingModal extends Component {
                                     <div className="col-8 d-flex justify-content-center align-items-center">
                                         {item.title}
                                     </div>
-                                    <div className="col-4 ps-0 pe-0">
+                                    <div className="col-4 pl-0 pr-0">
                                         <Input type='text'
-                                               className="ps-2 pe-2"
+                                               className="pl-2 pr-2"
                                                onClick={(e) => {
                                                    e.stopPropagation()
                                                }}

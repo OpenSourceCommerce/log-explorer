@@ -14,7 +14,7 @@ export class NavMessageItem extends Component {
                     <div className="media-body">
                         <h3 className="dropdown-item-title">
                             {name}
-                            <Text className="float-right" size={Size.small} color={color}>
+                            <Text className="float-end" size={Size.small} color={color}>
                                 <Icon name="star"/>
                             </Text>
                             <p className="text-sm">{title}</p>
