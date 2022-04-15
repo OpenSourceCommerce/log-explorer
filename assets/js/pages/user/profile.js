@@ -118,7 +118,7 @@ class ProfileForm extends Component {
                         <form role="form">
                             <div className="form-group">
                                 <label>Email</label>
-                                <Text className={'ml-3'}>{email}</Text>
+                                <Text className={'ms-3'}>{email}</Text>
                             </div>
                             <div className="form-group">
                                 <label>First name</label>

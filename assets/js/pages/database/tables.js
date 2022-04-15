@@ -188,7 +188,7 @@ class DatabaseTables extends Component {
                                     tables</Button>
                                 <div className="ml-auto ml-md-0">
                                     <Link href="/table/create"
-                                          className="btn btn-success mr-2 text-nowrap">Create
+                                          className="btn btn-success me-2 text-nowrap">Create
                                         table</Link>
                                 </div>
                                 <Button disabled={url === ''}

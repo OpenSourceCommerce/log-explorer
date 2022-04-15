@@ -66,7 +66,7 @@ export class ExportImport extends Component {
 
         return (
             <>
-                <div className="dropdown d-inline-block mr-3">
+                <div className="dropdown d-inline-block me-3">
                     <button className="btn btn-info dropdown-toggle" type="button"
                             id="dropdownExport" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -81,7 +81,7 @@ export class ExportImport extends Component {
                         <a onClick={this.exportSelected} className="dropdown-item" target="_blank" href="#">Export selected</a>
                     </div>
                 </div>
-                <Button onClick={this.importFile} className="mr-3">Import</Button>
+                <Button onClick={this.importFile} className="me-3">Import</Button>
                 <div style={{display: "none"}}>
                     <form method="POST" action="/dashboard/import" encType="multipart/form-data">
                     <input type="file" name="import" id="file-import" />

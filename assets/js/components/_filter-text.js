@@ -128,7 +128,7 @@ export class FilterText extends Component {
                                         className="dropdown-item dropdown-footer"
                                     >
                                         <Link>{query.name}</Link>
-                                        <Link className={'float-right ml-2 btn-filter-remove'} onClick={(e) => {
+                                        <Link className={'float-right ms-2 btn-filter-remove'} onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onDeleteCLicked(query)

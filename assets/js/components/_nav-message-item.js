@@ -10,7 +10,7 @@ export class NavMessageItem extends Component {
             <Link className="dropdown-item">
                 <div className="media">
                     <Image src={avatar} alt="User Avatar"
-                        className="img-size-50 mr-3 img-circle"/>
+                        className="img-size-50 me-3 img-circle"/>
                     <div className="media-body">
                         <h3 className="dropdown-item-title">
                             {name}
@@ -19,7 +19,7 @@ export class NavMessageItem extends Component {
                             </Text>
                             <p className="text-sm">{title}</p>
                             <p className="text-sm text-muted">
-                                <Icon type={'regular'} name="clock" className="mr-1"/>
+                                <Icon type={'regular'} name="clock" className="me-1"/>
                                 {time}
                             </p>
                         </h3>

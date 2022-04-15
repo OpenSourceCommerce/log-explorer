@@ -73,7 +73,7 @@ class GraphList extends Component {
                                                 <td>{item.max_point}</td>
                                                 <td>{item.last_updated}</td>
                                                 <td>
-                                                    <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
+                                                    <Link href={url} className={'btn btn-success me-3'}><Icon name={'edit'}/></Link>
                                                     <Button onClick={e => this.deleteGraph(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                                 </td>
                                             </tr>;

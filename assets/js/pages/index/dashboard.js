@@ -563,7 +563,7 @@ export class DashboardPage extends Component {
                                             />
                                         </div>
                                         <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0">
-                                            <div className="mr-2">
+                                            <div className="me-2">
                                                 <Button id="btn-search"
                                                         className="btn-search"
                                                         disabled={isLoading}
@@ -580,7 +580,7 @@ export class DashboardPage extends Component {
                                                         aria-expanded="false"
                                                         aria-controls="collapseAdvanceSearch"
                                                 >
-                                                    <Icon name="filter" className="mr-2"/>
+                                                    <Icon name="filter" className="me-2"/>
                                                     Filters
                                                 </Button>
                                             </div>
@@ -595,11 +595,11 @@ export class DashboardPage extends Component {
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
                                             return (<div className="row ml-0 mt-2" key={`${query}|${table}`}>
-                                                <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
+                                                <div className="col-12 col-md-9 d-flex ps-0 mb-2 mb-md-0">
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
                                                     >
-                                                        <Icon name="times" className="align-self-center mr-3"/>
+                                                        <Icon name="times" className="align-self-center me-3"/>
                                                     </Button>
                                                     <FilterText
                                                         className="mb-0"
@@ -648,7 +648,7 @@ export class DashboardPage extends Component {
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}
-                                        <div className="btn-action-group pr-0">
+                                        <div className="btn-action-group pe-0">
                                             <Button className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
                                                     disabled={isLoading}
                                                     onClick={() => this.applyFilter()}
