@@ -9,7 +9,7 @@ export class CardTool extends Component {
         return (
             <div className="btn-group">
                 <Button type="button" className="btn btn-sm dropdown-toggle" color={Colors.light}
-                    data-toggle="dropdown" data-offset="-52">
+                    data-bs-toggle="dropdown" data-offset="-52">
                     <Icon name={'bars'}/>
                 </Button>
                 <div className="dropdown-menu" role="menu">

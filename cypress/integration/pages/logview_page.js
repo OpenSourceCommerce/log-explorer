@@ -17,12 +17,12 @@ class LogViewPage {
         cy.get('#query').should('not.be.visible');
     }
     deleteFilter(name) {
-        cy.get('#btn-filter-saved').click();
+        cy.get('#btn-filter-saved').click({force: true});
         cy.get('#btn-filter-saved').closest('div')
             .find('.dropdown-item').contains(name)
             .closest('div')
             .find('a.btn-filter-remove').first()
-            .click();
+            .click({force: true});
     }
 
     open() {

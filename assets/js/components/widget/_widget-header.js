@@ -18,7 +18,7 @@ export class WidgetHeader extends Component {
                      href="#"
                 >
                     <div className=" pe-2 ps-2"
-                         data-toggle="dropdown"
+                         data-bs-toggle="dropdown"
                          aria-haspopup="true"
                          aria-expanded="false"
                     >

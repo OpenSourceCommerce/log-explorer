@@ -8,7 +8,7 @@ export class NavUser extends Component {
 
         return (
             <li className="nav-item dropdown">
-                <Link className="nav-link" data-toggle="dropdown">
+                <Link className="nav-link" data-bs-toggle="dropdown">
                     <Icon name="user"/>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
