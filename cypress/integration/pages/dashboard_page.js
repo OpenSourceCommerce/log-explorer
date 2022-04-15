@@ -13,7 +13,7 @@ class DashboardPage {
 
     }
     search() {
-        cy.get('#btn-search').click();
+        cy.get('#btn-search').click({force: true});
     }
     seeDashboard(name) {
         cy.get('.react-grid-layout').should('contain', name);

@@ -7,7 +7,7 @@ class LogViewPage {
         cy.get('#filter-text').type(query, {timeout: 20000, force: true});
     }
     search() {
-        cy.get('#btn-search').click();
+        cy.get('#btn-search').click({force: true});
     }
     saveFilter(name) {
         cy.get('#btn-filter-save').click();
