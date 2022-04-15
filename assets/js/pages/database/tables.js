@@ -177,23 +177,23 @@ class DatabaseTables extends Component {
                                 </select>
                             </div>
                             <div
-                                className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ms-0 ms-md-auto">
+                                className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
                                 <Button disabled={url === ''} onClick={this.gotoUpdate}
-                                        className="btn btn-primary me-md-2 mb-2">Update</Button>
+                                        className="btn btn-primary mr-md-2 mb-2">Update</Button>
                                 <Button disabled={url === ''} onClick={this.gotoLogView}
-                                        className="btn btn-primary me-md-2 mb-2">Log view
+                                        className="btn btn-primary mr-md-2 mb-2">Log view
                                     setting</Button>
                                 <Button onClick={this.syncAll}
-                                        className={'btn btn-success me-md-2 mb-2'}>Sync
+                                        className={'btn btn-success mr-md-2 mb-2'}>Sync
                                     tables</Button>
-                                <div className="ms-auto ms-md-0">
+                                <div className="ml-auto ml-md-0">
                                     <Link href="/table/create"
-                                          className="btn btn-success me-2 text-nowrap">Create
+                                          className="btn btn-success mr-2 text-nowrap">Create
                                         table</Link>
                                 </div>
                                 <Button disabled={url === ''}
                                         onClick={this.showDeleteConfirmationModal}
-                                        className="btn btn-danger me-md-2 mb-2">
+                                        className="btn btn-danger mr-md-2 mb-2">
                                     Delete
                                 </Button>
                             </div>

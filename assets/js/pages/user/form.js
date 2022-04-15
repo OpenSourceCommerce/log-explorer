@@ -131,7 +131,7 @@ class UserForm extends Component {
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">{id === '' ? 'Create new user' : 'Update user'}</h3>
-                        <Button className="float-end" color={'success'}
+                        <Button className="float-right" color={'success'}
                             onClick={this.onSubmit} isLoading={isLoading}>
                             {id === '' ? 'Create user' : 'Update user'}
                         </Button>

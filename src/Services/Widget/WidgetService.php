@@ -92,7 +92,7 @@ class WidgetService implements WidgetServiceInterface
      */
     public function checkWidgetIdSameTable(array $ids): bool
     {
-        if (count($ids) === 1) {
+        if (count($ids) <= 1) {
             return true;
         }
         return $this->getRepository()->checkWidgetIdSameTable($ids);
@@ -103,6 +103,9 @@ class WidgetService implements WidgetServiceInterface
      */
     public function getAllByIds(array $ids): array
     {
+        if (empty($ids)) {
+            return [];
+        }
         return $this->getRepository()->getAllByIds($ids);
     }
 

@@ -47,7 +47,7 @@ export class  ResponsiveGridLayout extends Component {
         // row Height : 340 / 2;
         return (
             <>{isLoading ? <span
-                className="spinner-border spinner-border-sm me-2"
+                className="spinner-border spinner-border-sm mr-2"
                 role="status" aria-hidden="true"/> :  <div className="responsive-grid-layout" {...rest}>
                 { layouts && layouts.length > 0  && <ResponsiveReactGridLayout
                     {...this.props}

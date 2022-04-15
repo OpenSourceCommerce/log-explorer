@@ -134,13 +134,13 @@ export class FilterDate extends Component {
         return (
             <div>
                 <div>
-                    <p className="float-start mb-1">{label}</p>
+                    <p className="float-left mb-1">{label}</p>
                 </div>
                 <button type="button" className="btn btn-default w-100" id="date-range">
                     <>
-                        <i className="far fa-calendar-alt me-2"></i>
+                        <i className="far fa-calendar-alt mr-2"></i>
                         <span>{dateRangeValue}</span>
-                        <i className="fas fa-caret-down ms-2"></i>
+                        <i className="fas fa-caret-down ml-2"></i>
                     </>
                 </button>
                 <input type="hidden" id="date-range-from" value={from}/>
