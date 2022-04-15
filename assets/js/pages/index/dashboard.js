@@ -555,15 +555,15 @@ export class DashboardPage extends Component {
                                                 </>
                                             </FormField>
                                         </div>}
-                                        <div className="col-md-3 col-12 mt-2 mt-md-0 me-auto"
+                                        <div className="col-md-3 col-12 mt-2 mt-md-0 mr-auto"
                                             style={{minWidth: '250px'}}>
                                             <FilterDate
                                                 dateRange={dateRange}
                                                 onDateRangeChanged={this.onChangeFilter}
                                             />
                                         </div>
-                                        <div className="d-flex ms-auto mt-2 mt-md-0 mb-2 mb-md-0">
-                                            <div className="me-2">
+                                        <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0">
+                                            <div className="mr-2">
                                                 <Button id="btn-search"
                                                         className="btn-search"
                                                         disabled={isLoading}
@@ -580,7 +580,7 @@ export class DashboardPage extends Component {
                                                         aria-expanded="false"
                                                         aria-controls="collapseAdvanceSearch"
                                                 >
-                                                    <Icon name="filter" className="me-2"/>
+                                                    <Icon name="filter" className="mr-2"/>
                                                     Filters
                                                 </Button>
                                             </div>
@@ -594,12 +594,12 @@ export class DashboardPage extends Component {
                                          key={filters}>
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
-                                            return (<div className="row ms-0 mt-2" key={`${query}|${table}`}>
-                                                <div className="col-12 col-md-9 d-flex ps-0 mb-2 mb-md-0">
+                                            return (<div className="row ml-0 mt-2" key={`${query}|${table}`}>
+                                                <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
                                                     >
-                                                        <Icon name="times" className="align-self-center me-3"/>
+                                                        <Icon name="times" className="align-self-center mr-3"/>
                                                     </Button>
                                                     <FilterText
                                                         className="mb-0"
@@ -648,7 +648,7 @@ export class DashboardPage extends Component {
                                                 <Icon name="plus-circle"/>
                                             </Button>
                                         </div>}
-                                        <div className="btn-action-group pe-0">
+                                        <div className="btn-action-group pr-0">
                                             <Button className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
                                                     disabled={isLoading}
                                                     onClick={() => this.applyFilter()}

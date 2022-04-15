@@ -1,39 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Size, Colors} from '.';
+import 'bootstrap/js/dist/modal';
 
 export class Modal extends Component {
-    componentDidMount = () => {
-        const {
-            id,
-            onShow,
-            onShown,
-            onHide,
-            onHidden,
-        } = this.props;
-        this.modalEl = document.getElementById(id);
-        this.modal = new bootstrap.Modal(this.modalEl);
-
-
-        if (onShow && typeof onShow === 'function') {
-            this.modalEl.addEventListener('show.bs.modal', onShow);
-        }
-
-        if (onShown && typeof onShown === 'function') {
-            this.modalEl.addEventListener('shown.bs.modal', onShown);
-        }
-
-        if (onHide && typeof onHide === 'function') {
-            this.modalEl.addEventListener('hide.bs.modal', onHide);
-        }
-
-        if (onHidden && typeof onHidden === 'function') {
-            this.modalEl.addEventListener('hidden.bs.modal', onHidden);
-        }
-    }
-
     render() {
-        const {
+        let {
             title,
             children,
             className = '',
@@ -46,20 +18,40 @@ export class Modal extends Component {
             saveButtonAction,
             saveButtonTitle = 'Save Changes',
             saveButtonColor = Colors.blue,
+            onShow,
+            onShown,
+            onHide,
+            onHidden,
             show = false
         } = this.props;
 
-        if(this.modal) {
-            if (show) {
-                //element.modal('show');
-                this.modal.show();
-            } else {
-                this.modal.hide();
-            }
+        className += ' modal fade';
+        const element = $(`#${id}`);
+
+        if (show) {
+            element.modal('show');
+        } else {
+            element.modal('hide');
+        }
+
+        if (onShow && typeof onShow === 'function') {
+            element.on('show.bs.modal', onShow);
+        }
+
+        if (onShown && typeof onShown === 'function') {
+            element.on('shown.bs.modal', onShown);
+        }
+
+        if (onHide && typeof onHide === 'function') {
+            element.on('hide.bs.modal', onHide);
+        }
+
+        if (onHidden && typeof onHidden === 'function') {
+            element.on('hidden.bs.modal', onHidden);
         }
 
         return (
-            <div className={`modal fade ${className}`} id={id}>
+            <div className={className} id={id}>
                 <div className={`modal-dialog modal-${size}`}>
                     <div className="modal-content">
                         <div className="modal-header">

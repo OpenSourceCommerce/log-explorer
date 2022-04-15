@@ -109,7 +109,7 @@ class WidgetList extends Component {
                                             <td>{item.query}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
-                                                <Link href={url} className={'btn btn-success me-3'}><Icon name={'edit'}/></Link>
+                                                <Link href={url} className={'btn btn-success mr-3'}><Icon name={'edit'}/></Link>
                                                 <Button onClick={e => this.deleteWidget(key)} color={'danger'}><Icon name={'trash'}/></Button>
                                             </td>
                                         </tr>;

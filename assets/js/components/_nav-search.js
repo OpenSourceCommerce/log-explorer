@@ -4,7 +4,7 @@ import {Button, Icon, Input} from '.';
 export class NavSearch extends Component {
     render() {
         return (
-            <form className="form-inline ms-3 d-none">
+            <form className="form-inline ml-3 d-none">
                 <div className="input-group input-group-sm">
                     <Input
                         className="form-control-navbar"

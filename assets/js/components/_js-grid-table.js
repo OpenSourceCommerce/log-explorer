@@ -156,7 +156,7 @@ export class JsGridTable extends Component {
                         >
                             <Icon name="chevron-left p-icon"></Icon>
                         </Button>
-                        <Input className="p-2 input-page-number h-75 text-right ps-2"
+                        <Input className="p-2 input-page-number h-75 text-right pl-2"
                                type="number"
                                min="1"
                                max={maxPageNumber}

@@ -8,9 +8,9 @@ export class NavNotificationItem extends Component {
 
         return (
             <Link href={href} className="dropdown-item" {...rest}>
-                <Icon name={type} className="me-2"/>
+                <Icon name={type} className="mr-2"/>
                 {title}
-                <Text className="float-end text-muted text-sm">{time}</Text>
+                <Text className="float-right text-muted text-sm">{time}</Text>
             </Link>
         );
     }

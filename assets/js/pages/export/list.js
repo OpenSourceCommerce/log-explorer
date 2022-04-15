@@ -111,7 +111,7 @@ class ExportList extends Component {
                                         <td>
                                             {item.isFinished ?
                                                 <Link href={item.path} target="_blank"
-                                                      className="me-4"
+                                                      className="mr-4"
                                                       title="Download"
                                                       download={item.filename}>
                                                     <Icon className="text-primary" name='download'/>
