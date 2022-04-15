@@ -14,7 +14,6 @@ describe('Dashboard view page', () => {
             cy.visit('/dashboard');
         } else {
             cy.loginAsAdmin();
-            dashboardPage.visible();
         }
         dashboardPage.visible();
     })

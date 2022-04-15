@@ -1,8 +1,11 @@
 class DatabasePage {
     selectTable(name) {
+        cy.intercept('GET', '/api/table/*/columns').as('loadColumns');
         cy.get('select')
             .first()
             .select(name)
+        cy.waitFor('@loadColumns')
+        cy.get('button').contains('Update').should('be.enabled');
     }
     tableLoaded() {
         cy.get('#root')
@@ -29,6 +32,9 @@ class DatabasePage {
 
     visible() {
         cy.url().should('include', '/table');
+        cy.intercept('GET', '/api/table').as('loadTable');
+        cy.waitFor('@loadTable')
+        cy.get('h3').contains('Table view').should('be.visible');
     }
 }
 

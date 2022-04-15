@@ -109,7 +109,7 @@ class ProfileForm extends Component {
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">Update profile</h3>
                         <Button className="float-end" color={'success'}
-                            onClick={this.onSubmit} isLoading={isLoading}>
+                            onClick={this.onSubmit} isLoading={isLoading} cy={'btnSave'}>
                             Update
                         </Button>
 
