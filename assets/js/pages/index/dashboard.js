@@ -530,7 +530,7 @@ export class DashboardPage extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <div className="col-12">
-                                    <div className="row justify-content-between flex-row flex-wrap">
+                                    <div className="row">
                                         {isUser() || <div className="col-md-3 col-12"
                                             style={{minWidth: '250px'}}>
                                             <FormField
@@ -562,28 +562,24 @@ export class DashboardPage extends Component {
                                                 onDateRangeChanged={this.onChangeFilter}
                                             />
                                         </div>
-                                        <div className="d-flex ms-auto mt-2 mt-md-0 mb-2 mb-md-0">
-                                            <div className="me-2">
-                                                <Button id="btn-search"
-                                                        className="btn-search"
-                                                        disabled={isLoading}
-                                                        onClick={() => this.onChangeFilter()}
-                                                >
-                                                    <Icon name="sync"/>
-                                                </Button>
-                                            </div>
-                                            <div>
-                                                <Button id="btn-filters"
-                                                        className="btn-search"
-                                                        data-toggle="collapse"
-                                                        href="#collapseAdvanceSearch"
-                                                        aria-expanded="false"
-                                                        aria-controls="collapseAdvanceSearch"
-                                                >
-                                                    <Icon name="filter" className="me-2"/>
+                                        <div className="d-flex justify-content-end offset-xl-4 offset-lg-3 offset-md-2 col-12 col-md-2">
+                                            <Button id="btn-search"
+                                                className="btn-search me-2"
+                                                disabled={isLoading}
+                                                onClick={() => this.onChangeFilter()}
+                                            >
+                                                <Icon name="sync"/>
+                                            </Button>
+                                            <Button id="btn-filters"
+                                                className="btn-search text-nowrap"
+                                                data-toggle="collapse"
+                                                href="#collapseAdvanceSearch"
+                                                aria-expanded="false"
+                                                aria-controls="collapseAdvanceSearch"
+                                            >
+                                                <Icon name="filter" className="me-2"/>
                                                     Filters
-                                                </Button>
-                                            </div>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
