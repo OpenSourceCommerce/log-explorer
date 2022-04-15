@@ -51,15 +51,7 @@ class ExpandableTable {
   }
 
   toggleRow() {
-    let $element = this._element
-
-    if ($element[0].nodeName !== 'TR') {
-      $element = $element.parent()
-      if ($element[0].nodeName !== 'TR') {
-        $element = $element.parent()
-      }
-    }
-
+    const $element = this._element
     const time = 500
     const $type = $element.attr(SELECTOR_ARIA_ATTR)
     const $body = $element.next(SELECTOR_EXPANDABLE_BODY).children().first().children()

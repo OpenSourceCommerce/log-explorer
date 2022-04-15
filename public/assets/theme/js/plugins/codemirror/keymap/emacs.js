@@ -330,9 +330,9 @@
 
   cmds.previousLine = move(byLine, -1);
 
-  cmds.scrollDownCommand = move(byPage, -1);
+  cmds.scrollDownCommand = move(byPage, 1);
 
-  cmds.scrollUpCommand = move(byPage, 1);
+  cmds.scrollUpCommand = move(byPage, -1);
 
   cmds.backwardParagraph = move(byParagraph, -1);
 
@@ -480,8 +480,8 @@
     "Home": "goLineStart",
     "Alt-V": "scrollDownCommand",
     "Ctrl-V": "scrollUpCommand",
-    "PageUp": "scrollDownCommand",
-    "PageDown": "scrollUpCommand",
+    "PageUp": "scrollUpCommand",
+    "PageDown": "scrollDownCommand",
     "Ctrl-Up": "backwardParagraph",
     "Ctrl-Down": "forwardParagraph",
     "Alt-{": "backwardParagraph",

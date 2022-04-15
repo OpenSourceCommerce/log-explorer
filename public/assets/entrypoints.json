@@ -2,372 +2,289 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~app.js",
-        "/assets/app.js"
+        "/assets/1.2ab0b88f.js",
+        "/assets/3.34ee1439.js",
+        "/assets/app.e917b146.js"
       ],
       "css": [
-        "/assets/vendors~app.css",
-        "/assets/app.css"
+        "/assets/3.00724fe7.css",
+        "/assets/app.f4675f30.css"
       ]
     },
     "page_index": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/page_index.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/page_index.3e2f28c3.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css",
-        "/assets/page_index.css"
+        "/assets/page_index.1c8b57ac.css"
       ]
     },
     "database_tables": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/database_tables.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/database_tables.18aa66ae.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/database_tables.dd1838f3.css"
       ]
     },
     "database_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/database_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/database_form.6fec8f8f.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/database_form.dd1838f3.css"
       ]
     },
     "graph_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/graph_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/graph_form.ac9d30d8.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/graph_form.dd1838f3.css"
       ]
     },
     "graph_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/graph_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/graph_list.9df6e0de.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/graph_list.dd1838f3.css"
       ]
     },
     "logview_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/logview_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/logview_form.966d2832.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/logview_form.dd1838f3.css"
       ]
     },
     "user_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/user_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/user_list.a7cb6b26.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/user_list.dd1838f3.css"
       ]
     },
     "user_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/user_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/user_form.73b9f0aa.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/user_form.dd1838f3.css"
       ]
     },
     "user_confirmation": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/user_confirmation.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/user_confirmation.d85d26bc.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/user_confirmation.dd1838f3.css"
       ]
     },
     "user_profile": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/user_profile.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/user_profile.77aa1026.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/user_profile.dd1838f3.css"
       ]
     },
     "navbar": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/navbar.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/navbar.44e29d14.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/navbar.dd1838f3.css"
       ]
     },
     "sidebar": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/sidebar.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/sidebar.8aa5b349.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/sidebar.dd1838f3.css"
       ]
     },
     "js_grid": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/js_grid.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/js_grid.65e35871.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/js_grid.bc5153ce.css"
       ]
     },
     "flot_chart": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/flot_chart.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/flot_chart.82ee9791.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/flot_chart.62fbb3d7.css"
       ]
     },
     "content-header": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/content-header.js"
+        "/assets/0.e665c24c.js",
+        "/assets/content-header.114b14c7.js"
       ]
     },
     "welcome-page": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/welcome-page.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/welcome-page.4f541642.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css",
-        "/assets/welcome-page.css"
+        "/assets/welcome-page.7387700b.css"
       ]
     },
     "page_login": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/page_login.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/page_login.0cf8c342.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/page_login.dd1838f3.css"
       ]
     },
     "page_forgot": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/page_forgot.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/page_forgot.4a03ad0a.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/page_forgot.dd1838f3.css"
       ]
     },
     "page_reset": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/page_reset.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/page_reset.55b73c62.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/page_reset.dd1838f3.css"
       ]
     },
     "page_change_password": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/page_change_password.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/page_change_password.eee1c92e.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/page_change_password.dd1838f3.css"
       ]
     },
     "dashboard_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/dashboard_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/dashboard_list.556c893d.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/dashboard_list.dd1838f3.css"
       ]
     },
     "dashboard_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/dashboard_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/dashboard_form.e012711a.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/dashboard_form.dd1838f3.css"
       ]
     },
     "widget_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/widget_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/widget_list.703adc96.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/widget_list.dd1838f3.css"
       ]
     },
     "widget_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/widget_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/widget_form.e8ceea3a.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/widget_form.dd1838f3.css"
       ]
     },
     "dashboard-page": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/dashboard-page.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/dashboard-page.63367209.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/dashboard-page.dd1838f3.css"
       ]
     },
     "alerts_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/alerts_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/alerts_list.a706a722.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/alerts_list.dd1838f3.css"
       ]
     },
     "alerts_form": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/alerts_form.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/alerts_form.5adcfad5.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/alerts_form.dd1838f3.css"
       ]
     },
     "export_list": {
       "js": [
-        "/assets/vendors~alerts_form~alerts_list~content-header~dashboard-page~dashboard_form~dashboard_list~database~ad6a277b.js",
-        "/assets/vendors~alerts_form~alerts_list~app~dashboard-page~dashboard_form~dashboard_list~database_form~datab~7df76b7b.js",
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.js",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.js",
-        "/assets/export_list.js"
+        "/assets/0.e665c24c.js",
+        "/assets/1.2ab0b88f.js",
+        "/assets/export_list.13937107.js"
       ],
       "css": [
-        "/assets/vendors~alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_~a0c5edc0.css",
-        "/assets/alerts_form~alerts_list~dashboard-page~dashboard_form~dashboard_list~database_form~database_tables~e~96755b64.css"
+        "/assets/export_list.dd1838f3.css"
       ]
     }
   }

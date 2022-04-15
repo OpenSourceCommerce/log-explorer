@@ -14,7 +14,7 @@ FullCalendar.globalLocales.push(function () {
       month: 'Hónap',
       week: 'Hét',
       day: 'Nap',
-      list: 'Lista',
+      list: 'Napló',
     },
     weekText: 'Hét',
     allDayText: 'Egész nap',

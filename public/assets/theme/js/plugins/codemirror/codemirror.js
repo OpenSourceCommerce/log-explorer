@@ -2351,14 +2351,12 @@
   function mapFromLineView(lineView, line, lineN) {
     if (lineView.line == line)
       { return {map: lineView.measure.map, cache: lineView.measure.cache} }
-    if (lineView.rest) {
-      for (var i = 0; i < lineView.rest.length; i++)
-        { if (lineView.rest[i] == line)
-          { return {map: lineView.measure.maps[i], cache: lineView.measure.caches[i]} } }
-      for (var i$1 = 0; i$1 < lineView.rest.length; i$1++)
-        { if (lineNo(lineView.rest[i$1]) > lineN)
-          { return {map: lineView.measure.maps[i$1], cache: lineView.measure.caches[i$1], before: true} } }
-    }
+    for (var i = 0; i < lineView.rest.length; i++)
+      { if (lineView.rest[i] == line)
+        { return {map: lineView.measure.maps[i], cache: lineView.measure.caches[i]} } }
+    for (var i$1 = 0; i$1 < lineView.rest.length; i$1++)
+      { if (lineNo(lineView.rest[i$1]) > lineN)
+        { return {map: lineView.measure.maps[i$1], cache: lineView.measure.caches[i$1], before: true} } }
   }
 
   // Render a line into the hidden node display.externalMeasured. Used
@@ -2585,11 +2583,9 @@
   }
 
   function widgetTopHeight(lineObj) {
-    var ref = visualLine(lineObj);
-    var widgets = ref.widgets;
     var height = 0;
-    if (widgets) { for (var i = 0; i < widgets.length; ++i) { if (widgets[i].above)
-      { height += widgetHeight(widgets[i]); } } }
+    if (lineObj.widgets) { for (var i = 0; i < lineObj.widgets.length; ++i) { if (lineObj.widgets[i].above)
+      { height += widgetHeight(lineObj.widgets[i]); } } }
     return height
   }
 
@@ -3154,19 +3150,13 @@
     var curFragment = result.cursors = document.createDocumentFragment();
     var selFragment = result.selection = document.createDocumentFragment();
 
-    var customCursor = cm.options.$customCursor;
-    if (customCursor) { primary = true; }
     for (var i = 0; i < doc.sel.ranges.length; i++) {
       if (!primary && i == doc.sel.primIndex) { continue }
       var range = doc.sel.ranges[i];
       if (range.from().line >= cm.display.viewTo || range.to().line < cm.display.viewFrom) { continue }
       var collapsed = range.empty();
-      if (customCursor) {
-        var head = customCursor(cm, range);
-        if (head) { drawSelectionCursor(cm, head, curFragment); }
-      } else if (collapsed || cm.options.showCursorWhenSelecting) {
-        drawSelectionCursor(cm, range.head, curFragment);
-      }
+      if (collapsed || cm.options.showCursorWhenSelecting)
+        { drawSelectionCursor(cm, range.head, curFragment); }
       if (!collapsed)
         { drawSelectionRange(cm, range, selFragment); }
     }
@@ -3181,12 +3171,6 @@
     cursor.style.left = pos.left + "px";
     cursor.style.top = pos.top + "px";
     cursor.style.height = Math.max(0, pos.bottom - pos.top) * cm.options.cursorHeight + "px";
-
-    if (/\bcm-fat-cursor\b/.test(cm.getWrapperElement().className)) {
-      var charPos = charCoords(cm, head, "div", null, null);
-      var width = charPos.right - charPos.left;
-      cursor.style.width = (width > 0 ? width : cm.defaultCharWidth()) + "px";
-    }
 
     if (pos.other) {
       // Secondary cursor, shown when on a 'jump' in bi-directional text
@@ -3360,14 +3344,10 @@
   function updateHeightsInViewport(cm) {
     var display = cm.display;
     var prevBottom = display.lineDiv.offsetTop;
-    var viewTop = Math.max(0, display.scroller.getBoundingClientRect().top);
-    var oldHeight = display.lineDiv.getBoundingClientRect().top;
-    var mustScroll = 0;
     for (var i = 0; i < display.view.length; i++) {
       var cur = display.view[i], wrapping = cm.options.lineWrapping;
       var height = (void 0), width = 0;
       if (cur.hidden) { continue }
-      oldHeight += cur.line.height;
       if (ie && ie_version < 8) {
         var bot = cur.node.offsetTop + cur.node.offsetHeight;
         height = bot - prevBottom;
@@ -3382,7 +3362,6 @@
       }
       var diff = cur.line.height - height;
       if (diff > .005 || diff < -.005) {
-        if (oldHeight < viewTop) { mustScroll -= diff; }
         updateLineHeight(cur.line, height);
         updateWidgetHeight(cur.line);
         if (cur.rest) { for (var j = 0; j < cur.rest.length; j++)
@@ -3397,7 +3376,6 @@
         }
       }
     }
-    if (Math.abs(mustScroll) > 2) { display.scroller.scrollTop += mustScroll; }
   }
 
   // Read and store the height of line widgets associated with the
@@ -3658,7 +3636,6 @@
       this.vert.firstChild.style.height =
         Math.max(0, measure.scrollHeight - measure.clientHeight + totalHeight) + "px";
     } else {
-      this.vert.scrollTop = 0;
       this.vert.style.display = "";
       this.vert.firstChild.style.height = "0";
     }
@@ -4409,10 +4386,6 @@
     // The element in which the editor lives.
     d.wrapper = elt("div", [d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
 
-    // This attribute is respected by automatic translation systems such as Google Translate,
-    // and may also be respected by tools used by human translators.
-    d.wrapper.setAttribute('translate', 'no');
-
     // Work around IE7 z-index bug (not perfect, hence IE7 not really being supported)
     if (ie && ie_version < 8) { d.gutters.style.zIndex = -1; d.scroller.style.paddingRight = 0; }
     if (!webkit && !(gecko && mobile)) { d.scroller.draggable = true; }
@@ -4510,12 +4483,6 @@
 
   function onScrollWheel(cm, e) {
     var delta = wheelEventDelta(e), dx = delta.x, dy = delta.y;
-    var pixelsPerUnit = wheelPixelsPerUnit;
-    if (e.deltaMode === 0) {
-      dx = e.deltaX;
-      dy = e.deltaY;
-      pixelsPerUnit = 1;
-    }
 
     var display = cm.display, scroll = display.scroller;
     // Quit if there's nothing to scroll here
@@ -4544,10 +4511,10 @@
     // estimated pixels/delta value, we just handle horizontal
     // scrolling entirely here. It'll be slightly off from native, but
     // better than glitching out.
-    if (dx && !gecko && !presto && pixelsPerUnit != null) {
+    if (dx && !gecko && !presto && wheelPixelsPerUnit != null) {
       if (dy && canScrollY)
-        { updateScrollTop(cm, Math.max(0, scroll.scrollTop + dy * pixelsPerUnit)); }
-      setScrollLeft(cm, Math.max(0, scroll.scrollLeft + dx * pixelsPerUnit));
+        { updateScrollTop(cm, Math.max(0, scroll.scrollTop + dy * wheelPixelsPerUnit)); }
+      setScrollLeft(cm, Math.max(0, scroll.scrollLeft + dx * wheelPixelsPerUnit));
       // Only prevent default scrolling if vertical scrolling is
       // actually possible. Otherwise, it causes vertical scroll
       // jitter on OSX trackpads when deltaX is small and deltaY
@@ -4560,15 +4527,15 @@
 
     // 'Project' the visible viewport to cover the area that is being
     // scrolled into view (if we know enough to estimate it).
-    if (dy && pixelsPerUnit != null) {
-      var pixels = dy * pixelsPerUnit;
+    if (dy && wheelPixelsPerUnit != null) {
+      var pixels = dy * wheelPixelsPerUnit;
       var top = cm.doc.scrollTop, bot = top + display.wrapper.clientHeight;
       if (pixels < 0) { top = Math.max(0, top + pixels - 50); }
       else { bot = Math.min(cm.doc.height, bot + pixels + 50); }
       updateDisplaySimple(cm, {top: top, bottom: bot});
     }
 
-    if (wheelSamples < 20 && e.deltaMode !== 0) {
+    if (wheelSamples < 20) {
       if (display.wheelStartX == null) {
         display.wheelStartX = scroll.scrollLeft; display.wheelStartY = scroll.scrollTop;
         display.wheelDX = dx; display.wheelDY = dy;
@@ -8245,7 +8212,7 @@
   }
 
   function hiddenTextarea() {
-    var te = elt("textarea", null, null, "position: absolute; bottom: -1em; padding: 0; width: 1px; height: 1em; min-height: 1em; outline: none");
+    var te = elt("textarea", null, null, "position: absolute; bottom: -1em; padding: 0; width: 1px; height: 1em; outline: none");
     var div = elt("div", [te], null, "overflow: hidden; position: relative; width: 3px; height: 0px;");
     // The textarea is kept positioned near the cursor to prevent the
     // fact that it'll be scrolled into view on input from scrolling
@@ -9009,11 +8976,9 @@
   ContentEditableInput.prototype.supportsTouch = function () { return true };
 
   ContentEditableInput.prototype.receivedFocus = function () {
-      var this$1 = this;
-
     var input = this;
     if (this.selectionInEditor())
-      { setTimeout(function () { return this$1.pollSelection(); }, 20); }
+      { this.pollSelection(); }
     else
       { runInOp(this.cm, function () { return input.cm.curOp.selectionChanged = true; }); }
 
@@ -9842,7 +9807,7 @@
 
   addLegacyProps(CodeMirror);
 
-  CodeMirror.version = "5.65.2";
+  CodeMirror.version = "5.62.0";
 
   return CodeMirror;
 
