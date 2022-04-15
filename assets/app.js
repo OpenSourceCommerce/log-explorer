@@ -9,6 +9,9 @@
 import './styles/app.scss';
 
 import 'jquery'
+
+window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
+
 // Need jQuery? Install it with 'yarn add jquery', then uncomment to import it.
 // import 'admin-lte/plugins/jquery/jquery';
 // import 'admin-lte/plugins/jquery-ui/jquery-ui';
