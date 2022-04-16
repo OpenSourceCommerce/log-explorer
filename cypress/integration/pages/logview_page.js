@@ -1,7 +1,7 @@
 class LogViewPage {
     dateRange(label) {
         cy.get('#date-range').click({force: true});
-        cy.contains(label).click();
+        cy.contains(label).click({force: true});
     }
     filter(query) {
         cy.get('#filter-text').type(query, {timeout: 20000, force: true});
