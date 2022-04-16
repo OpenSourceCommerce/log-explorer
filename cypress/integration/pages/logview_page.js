@@ -1,6 +1,6 @@
 class LogViewPage {
     dateRange(label) {
-        cy.get('#date-range').click();
+        cy.get('#date-range').click({force: true});
         cy.contains(label).click();
     }
     filter(query) {
@@ -10,7 +10,7 @@ class LogViewPage {
         cy.get('#btn-search').click({force: true});
     }
     saveFilter(name) {
-        cy.get('#btn-filter-save').click();
+        cy.get('#btn-filter-save').click({force: true});
         cy.get('input[name=name]').should('be.visible');
         cy.get('input[name=name]').type(name);
         cy.get('#query').contains('Save').click();

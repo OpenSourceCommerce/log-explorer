@@ -3,7 +3,7 @@ class DashboardPage {
         cy.url().should('include', '/dashboard/');
     }
     dateRange(label) {
-        cy.get('#date-range').click();
+        cy.get('#date-range').click({force: true});
         cy.contains(label).click();
     }
     filter(query) {
