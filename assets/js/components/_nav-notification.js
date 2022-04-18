@@ -8,7 +8,7 @@ export class NavNotification extends Component {
 
         return (
             <li className="nav-item dropdown d-none">
-                <Link className="nav-link" data-toggle="dropdown">
+                <Link className="nav-link" data-bs-toggle="dropdown">
                     <Icon name="bell"/>
                     <Text className="badge badge-warning navbar-badge">{total}</Text>
                 </Link>

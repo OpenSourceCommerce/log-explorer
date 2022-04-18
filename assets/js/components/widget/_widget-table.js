@@ -16,7 +16,7 @@ export class WidgetTable extends Component {
 
                 return (
                     <div
-                        className="widget-table-header row pt-2 pb-2 mr-4 ml-4">
+                        className="widget-table-header row pt-2 pb-2 me-4 ms-4">
                         {labels && labels.map((item, key) => {
                             return (
 
@@ -40,7 +40,7 @@ export class WidgetTable extends Component {
 
             return (
                 <div
-                    className="border-top widget-table-row row pt-2 pb-2 mr-4 ml-4">
+                    className="border-top widget-table-row row pt-2 pb-2 me-4 ms-4">
                     {children && Object.keys(children).map((item, key) => {
                         return (
                             <a key={key}

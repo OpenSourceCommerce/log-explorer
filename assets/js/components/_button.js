@@ -26,7 +26,7 @@ export class Button extends Component {
         return (
             <button {...rest} className={classes} disabled={disabled} type={type} data-cy={cy}>
                 {isLoading ? (<>  <span
-                    className="spinner-border spinner-border-sm mr-2"
+                    className="spinner-border spinner-border-sm me-2"
                     role="status" aria-hidden="true"></span>
                     Loading... </>) : children}
             </button>

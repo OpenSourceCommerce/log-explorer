@@ -530,7 +530,7 @@ export class DashboardPage extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <div className="col-12">
-                                    <div className="row justify-content-between flex-row flex-wrap">
+                                    <div className="row">
                                         {isUser() || <div className="col-md-3 col-12"
                                             style={{minWidth: '250px'}}>
                                             <FormField
@@ -555,35 +555,31 @@ export class DashboardPage extends Component {
                                                 </>
                                             </FormField>
                                         </div>}
-                                        <div className="col-md-3 col-12 mt-2 mt-md-0 mr-auto"
+                                        <div className="col-md-3 col-12 mt-2 mt-md-0 me-auto"
                                             style={{minWidth: '250px'}}>
                                             <FilterDate
                                                 dateRange={dateRange}
                                                 onDateRangeChanged={this.onChangeFilter}
                                             />
                                         </div>
-                                        <div className="d-flex ml-auto mt-2 mt-md-0 mb-2 mb-md-0">
-                                            <div className="mr-2">
-                                                <Button id="btn-search"
-                                                        className="btn-search"
-                                                        disabled={isLoading}
-                                                        onClick={() => this.onChangeFilter()}
-                                                >
-                                                    <Icon name="sync"/>
-                                                </Button>
-                                            </div>
-                                            <div>
-                                                <Button id="btn-filters"
-                                                        className="btn-search"
-                                                        data-toggle="collapse"
-                                                        href="#collapseAdvanceSearch"
-                                                        aria-expanded="false"
-                                                        aria-controls="collapseAdvanceSearch"
-                                                >
-                                                    <Icon name="filter" className="mr-2"/>
+                                        <div className="d-flex justify-content-end offset-xl-4 offset-lg-3 offset-md-2 col-12 col-md-2">
+                                            <Button id="btn-search"
+                                                className="btn-search me-2"
+                                                disabled={isLoading}
+                                                onClick={() => this.onChangeFilter()}
+                                            >
+                                                <Icon name="sync"/>
+                                            </Button>
+                                            <Button id="btn-filters"
+                                                className="btn-search text-nowrap"
+                                                data-toggle="collapse"
+                                                href="#collapseAdvanceSearch"
+                                                aria-expanded="false"
+                                                aria-controls="collapseAdvanceSearch"
+                                            >
+                                                <Icon name="filter" className="me-2"/>
                                                     Filters
-                                                </Button>
-                                            </div>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -594,12 +590,12 @@ export class DashboardPage extends Component {
                                          key={filters}>
                                         {filters.map((item, index) => {
                                             const { id, query, table } = item;
-                                            return (<div className="row ml-0 mt-2" key={`${query}|${table}`}>
-                                                <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
+                                            return (<div className="row ms-0 mt-2" key={`${query}|${table}`}>
+                                                <div className="col-12 col-md-9 d-flex ps-0 mb-2 mb-md-0">
                                                     <Button className="bg-transparent border-0 btn btn-light"
                                                             onClick={() => this.onRemoveFilter(id, table)}
                                                     >
-                                                        <Icon name="times" className="align-self-center mr-3"/>
+                                                        <Icon name="times" className="align-self-center me-3"/>
                                                     </Button>
                                                     <FilterText
                                                         className="mb-0"

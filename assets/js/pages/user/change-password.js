@@ -150,7 +150,7 @@ class ChangePasswordForm extends Component {
                                     placeholder="Current Password"
                                     onChange={this.handleChange}/>
                             </div>
-                            <Button type={'submit'} className="float-right" color={'success'}
+                            <Button type={'submit'} className="float-end" color={'success'}
                                 isLoading={isLoading}>
                                 Update
                             </Button>

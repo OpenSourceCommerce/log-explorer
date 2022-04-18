@@ -348,7 +348,7 @@ export class WidgetManagement extends Component {
             <div className="editable-widget">
                 {isLoading ?
                     <span
-                        className="spinner-border spinner-border-sm mr-2"
+                        className="spinner-border spinner-border-sm me-2"
                         role="status" aria-hidden="true"></span> :
                     <div className="card">
                         <div

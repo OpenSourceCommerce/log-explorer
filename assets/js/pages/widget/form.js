@@ -279,7 +279,7 @@ class WidgetPage extends Component {
             <div className="row">
                 {this.state.isLoading ?
                     <span
-                        className="spinner-border spinner-border-sm mr-2"
+                        className="spinner-border spinner-border-sm me-2"
                         role="status" aria-hidden="true"></span> :
                     <>
                         <Modal title={'Query'}

@@ -108,7 +108,7 @@ class ProfileForm extends Component {
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title align-items-center p-2">Update profile</h3>
-                        <Button className="float-right" color={'success'}
+                        <Button className="float-end" color={'success'}
                             onClick={this.onSubmit} isLoading={isLoading} cy={'btnSave'}>
                             Update
                         </Button>
@@ -118,7 +118,7 @@ class ProfileForm extends Component {
                         <form role="form">
                             <div className="form-group">
                                 <label>Email</label>
-                                <Text className={'ml-3'}>{email}</Text>
+                                <Text className={'ms-3'}>{email}</Text>
                             </div>
                             <div className="form-group">
                                 <label>First name</label>
