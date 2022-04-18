@@ -11,7 +11,7 @@ export class NavMessage extends Component {
 
         return (
             <li className="nav-item dropdown d-none">
-                <Link className="nav-link" data-toggle="dropdown">
+                <Link className="nav-link" data-bs-toggle="dropdown">
                     <Icon name="comments"/>
                     <Text className="badge badge-danger navbar-badge">
                         {total}

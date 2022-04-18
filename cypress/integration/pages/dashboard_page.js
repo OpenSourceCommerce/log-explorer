@@ -3,7 +3,7 @@ class DashboardPage {
         cy.url().should('include', '/dashboard/');
     }
     dateRange(label) {
-        cy.get('#date-range').click();
+        cy.get('#date-range').click({force: true});
         cy.contains(label).click();
     }
     filter(query) {
@@ -13,7 +13,7 @@ class DashboardPage {
 
     }
     search() {
-        cy.get('#btn-search').click();
+        cy.get('#btn-search').click({force: true});
     }
     seeDashboard(name) {
         cy.get('.react-grid-layout').should('contain', name);

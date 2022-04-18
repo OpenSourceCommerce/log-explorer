@@ -68,7 +68,7 @@ export class ExportImport extends Component {
             <>
                 <div className="dropdown d-inline-block me-3">
                     <button className="btn btn-info dropdown-toggle" type="button"
-                            id="dropdownExport" data-toggle="dropdown"
+                            id="dropdownExport" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         Export
                     </button>
