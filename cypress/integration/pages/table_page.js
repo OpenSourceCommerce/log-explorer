@@ -15,7 +15,7 @@ class TablePage {
             .should('contain', '_id');
     }
     clickUpdate() {
-        cy.get('button').contains('Update').click();
+        cy.get('button').contains('Update').click({force: true});
     }
     fillTableName(name) {
         cy.get('input[name=table_name]')
