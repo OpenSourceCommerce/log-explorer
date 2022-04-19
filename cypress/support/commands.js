@@ -14,7 +14,7 @@ Cypress.Commands.add('login', (email, password) => {
     cy.visit('/login');
     cy.get('input[name=email]').type(email, {timeout: 20000, force: true}).should('have.value', email);
     cy.get('input[name=password]').type(password, {timeout: 20000, force: true}).should('have.value', password);
-    cy.get('button[type=submit]').click({timeout: 30000});
+    cy.get('button[type=submit]').click({timeout: 30000, force: true});
 
 })
 

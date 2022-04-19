@@ -1,29 +1,45 @@
 class ProfilePage {
     clearInputs() {
-        cy.get('input[name=firstName]').clear();
-        cy.get('input[name=lastName]').clear();
+        cy.get('[data-cy=firstName]')
+            .should('be.visible')
+            .clear()
+            .should('have.value', '')
+        cy.get('[data-cy=lastName]')
+            .should('be.visible')
+            .clear()
+            .should('have.value', '')
     }
     setFirstname(firstName) {
-        cy.get('input[name=firstName]').type(firstName);
+        cy.get('[data-cy=firstName]').type(firstName);
     }
     setLastname(lastName) {
-        cy.get('input[name=lastName]').type(lastName);
+        cy.get('[data-cy=lastName]').type(lastName);
     }
     hasFirstnameError() {
-        cy.get('input[name=firstName]').should('have.class', 'is-invalid');
+        cy.get('[data-cy=firstName]').should('have.class', 'is-invalid');
     }
     hasLastnameError() {
-        cy.get('input[name=lastName]').should('have.class', 'is-invalid');
+        cy.get('[data-cy=lastName]').should('have.class', 'is-invalid');
     }
     open() {
-        cy.get('a.nav-link').contains('Profile').click({force: true});
+        cy.intercept('GET', '/api/profile').as('myProfile');
+        cy.visit('/profile')
+        cy.url().should('include', '/profile');
+        cy.waitFor('@myProfile')
+        cy.get('[data-cy=btnSave]')
+            .should('be.enabled');
+        // cy.wait('@myProfile').its('response.statusCode').should('equal', 200)
     }
     save() {
-        cy.get('#root').find('button').contains('Update').click();
+        cy.get('[data-cy=btnSave]')
+            .should('be.visible')
+            .should('be.enabled')
+            .click();
     }
 
     visible() {
-        cy.url().should('include', '/profile');
+        // cy.get('[data-cy=btnSave]')
+        //     .should('be.enabled');
     }
 }
 
