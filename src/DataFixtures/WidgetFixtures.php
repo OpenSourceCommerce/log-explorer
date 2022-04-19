@@ -24,6 +24,7 @@ class WidgetFixtures extends Fixture
         $entity = new Widget();
         $entity->setTitle('Status OK');
         $entity->setTable('nginx_access');
+        $entity->setColumn('status');
         $entity->setQuery('status < 300');
         $entity->setIsOrderDesc(true);
         $entity->setType(WidgetConstant::TYPE_PIE_CHART);
@@ -33,6 +34,7 @@ class WidgetFixtures extends Fixture
         $entity = new Widget();
         $entity->setTitle('Status OK 2');
         $entity->setTable('nginx_access');
+        $entity->setColumn('status');
         $entity->setQuery('status < 300');
         $entity->setIsOrderDesc(true);
         $entity->setType(WidgetConstant::TYPE_DOUGHNUT);
