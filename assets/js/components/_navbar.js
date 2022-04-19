@@ -4,6 +4,13 @@ import {NavUser} from '.';
 import PropTypes from 'prop-types';
 
 class Navbar extends Component {
+    componentDidMount(){
+        $(document).ready(function () {
+            $("#sidebarCollapse").on("click", () => {
+                $(".wrapper").toggleClass("w-100");
+            });
+        });
+    }
     render() {
         const {
             role,
