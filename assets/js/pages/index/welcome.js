@@ -156,7 +156,7 @@ export class WelcomePage extends Component {
                                     {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
                                 </span>
                                 <Icon name="copy" type="regular"
-                                    className="pe-3 pr-md-0"/>
+                                    className="pe-3 pe-md-0"/>
                             </a>
                         </code>
                     </pre>

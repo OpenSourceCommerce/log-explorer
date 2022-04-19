@@ -1,23 +1,8 @@
-.spinner-border {
-  padding: 1em;
+.wrapper {
+  width: calc(100% - 254px);
+  min-height: 100vh;
+  transition: all 0.3s;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-}
-
-.sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused, .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) {
-  .brand-link {
-    .brand-image {
-      float:none;
-      margin-left: -1rem;
-      transform: scale(0.6);
-    }
-  }
-}
-
-.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
-  .brand-image {
-    transition: transform 0.4s ease-in-out 0s;
-  }
+  top: 0;
+  right: 0;
 }

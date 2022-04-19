@@ -17,7 +17,7 @@ export class WidgetHeader extends Component {
                 {isUser() || <div className="dropdown float-end dropleft"
                      href="#"
                 >
-                    <div className=" pe-2 ps-2"
+                    <div className="pe-2 ps-2"
                          data-bs-toggle="dropdown"
                          aria-haspopup="true"
                          aria-expanded="false"

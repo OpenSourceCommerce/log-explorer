@@ -27,7 +27,7 @@ class DatabasePage {
         cy.get('button').contains('Delete').click();
     }
     open() {
-        cy.get('a.nav-link').contains('Database').click({force: true});
+        cy.get('a.nav-item').contains('Database').click({force: true});
     }
 
     visible() {

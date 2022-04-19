@@ -26,7 +26,7 @@ class LogViewPage {
     }
 
     open() {
-        cy.get('a.nav-link').contains('Explore').click({force: true});
+        cy.get('a.nav-item').contains('Explore').click({force: true});
     }
 
     visible() {
