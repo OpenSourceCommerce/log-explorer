@@ -11,5 +11,8 @@
   "ignoreTestFiles": [
     "**/helpers/*.js",
     "**/pages/*.js"
-  ]
+  ],
+  "videoUploadOnPasses": false,
+  "video": false,
+  "screenshotOnRunFailure": true
 }
