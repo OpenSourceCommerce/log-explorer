@@ -78,7 +78,7 @@ export class ForgotForm extends Component {
 
         return (
             <div className="reset-form card">
-                {emailSentSuccess ? (
+                {!emailSentSuccess ? (
                     <>
                         <div className="card-header bg-white">
                             <a
