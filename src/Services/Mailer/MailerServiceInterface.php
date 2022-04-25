@@ -22,11 +22,8 @@ interface MailerServiceInterface
      * @param $to
      * @param array $data
      * @return mixed
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
      */
-    public function send($template, $title, $to, $data = []);
+    public function send($template, $title, $to, array $data = []);
 
     /**
      * @param string $email
