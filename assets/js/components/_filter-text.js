@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
-
+import "../../styles/component/_filter-text.scss";
 export class FilterText extends Component {
     constructor(props) {
         super(props);
@@ -95,7 +95,18 @@ export class FilterText extends Component {
 
         return (
             <>
-                {label &&  <p className="float-left mb-1">{label}</p>}
+                {label && <div className="title-info align-items-center">
+                    <p className="float-left mb-1 mr-2">{label}</p>
+                    <a className="bg-info btn-info">
+                        <i className="fas fa-info fa-xs"></i>
+                        <blockquote className="quote-info">
+                            <h5>Tip!</h5>
+                            <ul>
+                                <li>We recommend <code className="highlighter-rouge">toString(timestamp)</code> when search <code className="highlighter-rouge">timestamp</code> field.</li>
+                            </ul>
+                        </blockquote>
+                    </a>
+                </div>}
                 <div className='input-group'>
                     <Input
                         className={`form-group ${className}`}
