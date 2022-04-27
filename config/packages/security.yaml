@@ -3,6 +3,8 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -19,7 +21,11 @@ security:
             user_checker: App\Security\UserChecker
             lazy: true
             provider: app_user_provider
-            custom_authenticator:
+            #form_login:
+            #    login_path: app_login
+            #    check_path: app_login
+            #    enable_csrf: true
+            custom_authenticators:
                 - App\Security\LoginFormAuthenticator
                 - App\Security\ApiTokenAuthenticator
             logout:
@@ -38,15 +44,15 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/password/forgot, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/confirmation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/forgot$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/password/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/password/reset$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/password/forgot, roles: PUBLIC_ACCESS }
+        - { path: ^/confirmation, roles: PUBLIC_ACCESS }
+        - { path: ^/api/confirmation, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/password/forgot$, roles: PUBLIC_ACCESS }
+        - { path: ^/password/reset, roles: PUBLIC_ACCESS }
+        - { path: ^/api/password/reset$, roles: PUBLIC_ACCESS }
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/profile, roles: ROLE_USER }
         - { path: ^/log-view, roles: ROLE_USER }
@@ -55,7 +61,7 @@ security:
         - { path: ^/logout, roles: ROLE_USER }
         - { path: ^/dashboard/*, roles: ROLE_USER }
         - { path: ^/logview/*, roles: ROLE_USER }
-        - { path: ^/*, roles: ROLE_ADMIN }
+#        - { path: ^/*, roles: ROLE_ADMIN }
 
 when@test:
     security:

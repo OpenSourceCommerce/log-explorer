@@ -3,7 +3,7 @@ version: '3.5'
 services:
     php:
         working_dir: /var/www/dev-php
-        image: scalecommerce/dev-php:7.4.27-2022-02-03
+        image: scalecommerce/dev-php:8.1.2-2022-02-03
         volumes:
             - .:/var/www/dev-php:cached
         environment:

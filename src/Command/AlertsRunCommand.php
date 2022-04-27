@@ -25,7 +25,7 @@ class AlertsRunCommand extends Command
         $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit num of queries will be executed per time. Default: 5');
     }
 
-    public function __construct(string $name = null, AlertServiceInterface $alertService)
+    public function __construct(AlertServiceInterface $alertService, string $name = null)
     {
         parent::__construct($name);
         $this->alertService = $alertService;

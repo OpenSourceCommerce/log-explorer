@@ -20,7 +20,7 @@ class CreateSampleDataCommand extends Command
      * @param string|null $name
      * @param SampleServiceInterface $sampleService
      */
-    public function __construct(string $name = null, SampleServiceInterface $sampleService)
+    public function __construct(SampleServiceInterface $sampleService, string $name = null)
     {
         parent::__construct($name);
         $this->sampleService = $sampleService;

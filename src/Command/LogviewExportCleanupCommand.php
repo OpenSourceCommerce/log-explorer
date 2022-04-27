@@ -25,7 +25,7 @@ class LogviewExportCleanupCommand extends Command
             ->addOption('limit', 'l', InputOption::VALUE_NONE, 'Limit exports to delete. 0 is unlimited. Default: 0');
     }
 
-    public function __construct(string $name = null, ExportServiceInterface $exportService)
+    public function __construct(ExportServiceInterface $exportService, string $name = null)
     {
         parent::__construct($name);
         $this->exportService = $exportService;

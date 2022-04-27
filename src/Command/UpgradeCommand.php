@@ -24,7 +24,7 @@ class UpgradeCommand extends Command
      * @param DatabaseServiceInterface $databaseService
      * @param LogViewServiceInterface $logViewService
      */
-    public function __construct(string $name = null, DatabaseServiceInterface $databaseService, LogViewServiceInterface $logViewService)
+    public function __construct(DatabaseServiceInterface $databaseService, LogViewServiceInterface $logViewService, string $name = null)
     {
         parent::__construct($name);
         $this->databaseService = $databaseService;

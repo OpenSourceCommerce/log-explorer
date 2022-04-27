@@ -23,7 +23,7 @@ class CreateUserCommand extends Command
      * @param string|null $name
      * @param UserServiceInterface $userService
      */
-    public function __construct(string $name = null, UserServiceInterface $userService)
+    public function __construct(UserServiceInterface $userService, string $name = null)
     {
         parent::__construct($name);
         $this->userService = $userService;
