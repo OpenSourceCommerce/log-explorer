@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import {Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
+import "../../styles/component/_filter-text.scss";
+
+const QUERY_TIPS = (<ul>
+    <li>Search like <code>DateTime:</code><code className="text-muted"> toString(timestamp) like '2022-04-27 03:19%'</code>.</li>
+</ul>)
 
 export class FilterText extends Component {
     constructor(props) {
@@ -95,7 +100,16 @@ export class FilterText extends Component {
 
         return (
             <>
-                {label &&  <p className="float-left mb-1">{label}</p>}
+                {label && <div className="title-info align-items-center">
+                    <p className="float-left mb-1 mr-2">{label}</p>
+                    <a className="bg-info btn-info">
+                        <i className="fas fa-info fa-xs"></i>
+                        <blockquote className="quote-info">
+                            <h5>Tip!</h5>
+                            {QUERY_TIPS}
+                        </blockquote>
+                    </a>
+                </div>}
                 <div className='input-group'>
                     <Input
                         className={`form-group ${className}`}
