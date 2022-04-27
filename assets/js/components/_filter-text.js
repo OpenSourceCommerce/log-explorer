@@ -6,7 +6,7 @@ import {Button} from "./_button";
 import "../../styles/component/_filter-text.scss";
 
 const QUERY_TIPS = (<ul>
-    <li>We recommend <code className="highlighter-rouge">toString(timestamp)</code> when search <code className="highlighter-rouge">timestamp</code> field.</li>
+    <li>Search like <code>DateTime:</code><code className="text-muted"> toString(timestamp) like '2022-04-27 03:19%'</code>.</li>
 </ul>)
 
 export class FilterText extends Component {
