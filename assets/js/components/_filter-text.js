@@ -4,6 +4,11 @@ import {Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
 import "../../styles/component/_filter-text.scss";
+
+const QUERY_TIPS = (<ul>
+    <li>We recommend <code className="highlighter-rouge">toString(timestamp)</code> when search <code className="highlighter-rouge">timestamp</code> field.</li>
+</ul>)
+
 export class FilterText extends Component {
     constructor(props) {
         super(props);
@@ -101,9 +106,7 @@ export class FilterText extends Component {
                         <i className="fas fa-info fa-xs"></i>
                         <blockquote className="quote-info">
                             <h5>Tip!</h5>
-                            <ul>
-                                <li>We recommend <code className="highlighter-rouge">toString(timestamp)</code> when search <code className="highlighter-rouge">timestamp</code> field.</li>
-                            </ul>
+                            {QUERY_TIPS}
                         </blockquote>
                     </a>
                 </div>}
