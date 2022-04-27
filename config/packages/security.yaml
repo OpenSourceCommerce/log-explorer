@@ -61,7 +61,7 @@ security:
         - { path: ^/logout, roles: ROLE_USER }
         - { path: ^/dashboard/*, roles: ROLE_USER }
         - { path: ^/logview/*, roles: ROLE_USER }
-#        - { path: ^/*, roles: ROLE_ADMIN }
+        - { path: ^/*, roles: ROLE_ADMIN }
 
 when@test:
     security:

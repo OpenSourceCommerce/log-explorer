@@ -14,10 +14,10 @@ class WebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 {
     public function getService($name)
     {
-        if (empty(self::$container)) {
+        if (empty(self::getContainer())) {
             self::bootKernel();
         }
-        return self::$container->get($name);
+        return self::getContainer()->get($name);
     }
 
     protected static function getMethod($class, $method): \ReflectionMethod
