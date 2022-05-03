@@ -27,6 +27,7 @@ services:
             CLICKHOUSE_DB: "logs"
     mysql:
         image: percona:5.7
+        platform: linux/amd64
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dev
