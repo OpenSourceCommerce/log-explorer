@@ -51,10 +51,6 @@ export class ForgotForm extends Component {
         $("#email").focus();
     }
 
-    returnLogin = () => {
-        window.location.href = "/";
-    };
-
     render() {
         const { message, email, emailSentSuccess } = this.state;
 
@@ -120,18 +116,17 @@ export class ForgotForm extends Component {
                                 </div>
                                 <Button
                                     type="submit"
-                                    className="btn-block w-100 mt-3"
+                                    className="btn-block w-100 my-3"
                                     color={Colors.blue}
                                 >
                                     Reset Password
                                 </Button>
-                                <button
-                                    className="btn text-primary w-100 mt-3"
-                                    role="link"
-                                    onClick={this.returnLogin}
+                                <a
+                                    className="text-decoration-none w-100"
+                                    href="/login"
                                 >
                                     Return to Login
-                                </button>
+                                </a>
                             </form>
                         </div>
                     </>
