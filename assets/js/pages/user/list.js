@@ -162,6 +162,48 @@ class UserList extends Component {
         );
     };
 
+    onConfirmDeleteUser = () => {
+        this.setState({
+            isLoading: true,
+        });
+
+        let toastContent = {};
+        const userData = [...users];
+        UserActions.delete(users[userSelected].id)
+            .then((res) => {
+                const { error } = res;
+
+                if (error) {
+                    toastContent = {
+                        color: "danger",
+                        message: "You can not delete this account",
+                    };
+                    return;
+                }
+
+                userData.splice(userSelected, 1);
+                toastContent = {
+                    color: "success",
+                    message: "Delete successful",
+                };
+            })
+            .finally(() => {
+                this.setState(
+                    {
+                        isLoading: false,
+                        userSelected: null,
+                        users: userData,
+                        toastContent,
+                    },
+                    () => {
+                        setTimeout(() => {
+                            this.setState({ toastContent: {} });
+                        }, 1500);
+                    }
+                );
+            });
+    };
+
     render() {
         const { users, newUser, userSelected, toastContent, isLoading } = this.state;
 
@@ -261,44 +303,7 @@ class UserList extends Component {
                             userSelected: null,
                         });
                     }}
-                    saveButtonAction={() => {
-                        this.setState({
-                            isLoading: true,
-                        });
-
-                        let toastContent = {};
-                        const userData = [...users];
-                        UserActions.delete(users[userSelected].id)
-                            .then((res) => {
-                                const { error } = res;
-
-                                if (error) {
-                                    toastContent = {
-                                        color: "danger",
-                                        message: "You can not delete this account",
-                                    }
-                                    return;
-                                }
-
-                                userData.splice(userSelected, 1);
-                                toastContent = {
-                                    color: "success",
-                                    message: "Delete successful",
-                                }
-                            })
-                            .finally(() => {
-                                this.setState({
-                                    isLoading: false,
-                                    userSelected: null,
-                                    users: userData,
-                                    toastContent,
-                                }, () => {
-                                    setTimeout(() => {
-                                        this.setState({ toastContent: {} });
-                                    }, 1500);
-                                });
-                            });
-                    }}
+                    saveButtonAction={() => this.onConfirmDeleteUser()}
                 />
                 <Toast toastContent={toastContent} message="User updated successfully" />
                 <div className="content ms-2 me-2">
@@ -307,46 +312,12 @@ class UserList extends Component {
                         btnRightSideTitle="Create User"
                         btnRightSideIcon="plus"
                         btnRightSideOnClick={() => {
-                            console.log("hello");
+                            window.location.href = "/user/create";
                         }}
                     />
                     <Table columns={columns} dataTable={users} />
                 </div>
             </div>
-
-            //     <div className="users container-fluid">
-            //         {newUser && (
-            //             <div className="alert alert-success" role="alert">
-            //                 {`The account ${newUser} has been created.`}
-            //             </div>)}
-            //         <div className="card">
-            //             <CardHeader title="User management" showCollapseButton={false} showRemoveButton={false}>
-            //                 <Link className={'btn btn-success'} href={'/user/create'}>Create user</Link>
-            //             </CardHeader>
-            //             <div className="card-body">
-            //                 <div className="row">
-            //                     <div className="col-12">
-            //                         <Table>
-            //                             <thead>
-            //                                 <tr>
-            //                                     <th>Name</th>
-            //                                     <th>Email</th>
-            //                                     <th>Role</th>
-            //                                     <th>Status</th>
-            //                                     <th>Last updated</th>
-            //                                     <th>&nbsp;</th>
-            //                                 </tr>
-            //                             </thead>
-            //                             <tbody>
-            //                                 {_users}
-            //                             </tbody>
-            //                         </Table>
-            //                     </div>
-            //                 </div>
-            //             </div>
-            //         </div>
-            //     </div>
-            // );
         );
     }
 }
