@@ -68,6 +68,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere("u.isConfirmed = 1")
             ->setParameter('roles', '%"' . $role . '"%')
             ->getQuery()
+            ->setMaxResults(1)
             ->getSingleResult();
     }
 }
