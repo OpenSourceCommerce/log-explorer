@@ -95,7 +95,7 @@ export class ForgotForm extends Component {
                             </label>
                             <form className="ms-3 me-3" onSubmit={this.handleSubmit}>
                                 {message && (
-                                    <div className={`alert alert-${message.type}`}>
+                                    <div className={`alert alert-${message.type} mt-3`}>
                                         <div className="alert-message">{message.message}</div>
                                     </div>
                                 )}
