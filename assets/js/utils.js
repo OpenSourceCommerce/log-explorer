@@ -2,7 +2,8 @@ import moment from "moment";
 
 export const PAGE_NAME = {
     dashboard: 'Dashboard',
-    table: 'Table'
+    table: 'Table',
+    user: 'Users'
 };
 
 export const WIDGET_TYPE = {

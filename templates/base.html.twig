@@ -33,10 +33,6 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        {% include "partials/content_header.html.twig" %}
-        <!-- /.content-header -->
-
         {% if app.session.flashbag.peekAll|length > 0 %}
             <div class="content pt-3">
             {% for type, messages in app.session.flashbag.all %}

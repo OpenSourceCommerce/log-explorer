@@ -7,14 +7,12 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const $ = require('jquery');
-import 'feather-icons';
 import "./vendor/theme.min.js";
 
 window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js');
-
-feather.replace();
 
 // Need jQuery? Install it with 'yarn add jquery', then uncomment to import it.
 // import 'admin-lte/plugins/jquery/jquery';

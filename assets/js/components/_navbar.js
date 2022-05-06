@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {NavUser} from '.';
+import {NavUser,Icon} from '.';
 import PropTypes from 'prop-types';
 
 class Navbar extends Component {
@@ -22,7 +22,7 @@ class Navbar extends Component {
 
                 <div className="d-flex justify-content-between w-100 align-items-center">
                     <span className="nav-item collapse-icon rounded-circle p-2" id="sidebarCollapse" href="#">
-                        <i data-feather="chevron-left"></i>
+                        <Icon dataFeather="chevron-left" />
                     </span>
                     <NavUser {...props}/>
                 </div>

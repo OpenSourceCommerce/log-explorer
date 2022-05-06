@@ -16,6 +16,8 @@ export class DeleteModal extends Component {
             displayField
         } = this.props;
 
+        const isShow = indexSelected || indexSelected === 0;
+
         return (
             <Modal
                 id={`delete-${objectName}`}
@@ -23,7 +25,7 @@ export class DeleteModal extends Component {
                 children={`Are you sure you want to delete ${objectName} ${data[indexSelected]?.[displayField]} ?`}
                 saveButtonTitle='Delete'
                 closeButtonTitle='Cancel'
-                show={indexSelected || indexSelected === 0}
+                show={!!isShow}
                 saveButtonColor={Colors.red}
                 size={Size.medium}
                 showSaveButton={true}

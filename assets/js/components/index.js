@@ -52,3 +52,5 @@ export const {LogViewExportModal} = require('./_log-view-export-modal');
 export const {ExportImport} = require('./_export_import');
 export const {LineBarChart} = require('./widget/_line-bar-chart');
 export const {UPlotChart} = require('./_uplot-chart');
+export const {ContentHeader} = require('./_content-header');
+export const {Toast} = require('./_toast');
