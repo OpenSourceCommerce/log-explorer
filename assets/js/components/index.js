@@ -54,3 +54,4 @@ export const {LineBarChart} = require('./widget/_line-bar-chart');
 export const {UPlotChart} = require('./_uplot-chart');
 export const {ContentHeader} = require('./_content-header');
 export const {Toast} = require('./_toast');
+export const {DataTable} = require('./_data-table');

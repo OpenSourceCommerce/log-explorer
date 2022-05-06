@@ -2,7 +2,7 @@ import { t } from "@nextcloud/event-bus";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Alert, UserActions } from "../../actions";
-import { ContentHeader, Table, Toast, DeleteModal } from "../../components";
+import { ContentHeader, DataTable, Toast, DeleteModal } from "../../components";
 import { Button } from "../../components/_button";
 import { Icon } from "../../components/_icon";
 
@@ -315,7 +315,7 @@ class UserList extends Component {
                             window.location.href = "/user/create";
                         }}
                     />
-                    <Table columns={columns} dataTable={users} />
+                    <DataTable columns={columns} dataTable={users} />
                 </div>
             </div>
         );
