@@ -8,14 +8,14 @@
       ],
       "css": [
         "/assets/3.b433ecf3.css",
-        "/assets/app.54c65174.css"
+        "/assets/app.73234f18.css"
       ]
     },
     "page_index": {
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/page_index.ab4de3db.js"
+        "/assets/page_index.20448aba.js"
       ],
       "css": [
         "/assets/page_index.90c1dbea.css"
@@ -25,7 +25,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/database_tables.c60e3023.js"
+        "/assets/database_tables.efc91859.js"
       ],
       "css": [
         "/assets/database_tables.dd1838f3.css"
@@ -35,7 +35,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/database_form.d0aade5d.js"
+        "/assets/database_form.d82e79d1.js"
       ],
       "css": [
         "/assets/database_form.dd1838f3.css"
@@ -45,7 +45,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/graph_form.3d21ac0e.js"
+        "/assets/graph_form.66c20393.js"
       ],
       "css": [
         "/assets/graph_form.dd1838f3.css"
@@ -55,7 +55,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/graph_list.e00c4a45.js"
+        "/assets/graph_list.6bc92edb.js"
       ],
       "css": [
         "/assets/graph_list.dd1838f3.css"
@@ -65,7 +65,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/logview_form.d806254d.js"
+        "/assets/logview_form.5957fcfb.js"
       ],
       "css": [
         "/assets/logview_form.dd1838f3.css"
@@ -75,7 +75,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/user_list.25efe0dc.js"
+        "/assets/user_list.23e1bb41.js"
       ],
       "css": [
         "/assets/user_list.dd1838f3.css"
@@ -85,7 +85,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/user_form.d70eb81a.js"
+        "/assets/user_form.4f113879.js"
       ],
       "css": [
         "/assets/user_form.dd1838f3.css"
@@ -95,7 +95,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/user_confirmation.61b61122.js"
+        "/assets/user_confirmation.4afade87.js"
       ],
       "css": [
         "/assets/user_confirmation.dd1838f3.css"
@@ -105,7 +105,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/user_profile.0621a167.js"
+        "/assets/user_profile.23929054.js"
       ],
       "css": [
         "/assets/user_profile.dd1838f3.css"
@@ -115,7 +115,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/navbar.02e79fc2.js"
+        "/assets/navbar.d88c5788.js"
       ],
       "css": [
         "/assets/navbar.dd1838f3.css"
@@ -125,7 +125,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/sidebar_component.86662f11.js"
+        "/assets/sidebar_component.18f2db38.js"
       ],
       "css": [
         "/assets/sidebar_component.dd1838f3.css"
@@ -135,7 +135,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/js_grid.607515e6.js"
+        "/assets/js_grid.0e6edd2a.js"
       ],
       "css": [
         "/assets/js_grid.bc5153ce.css"
@@ -145,7 +145,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/flot_chart.d0434060.js"
+        "/assets/flot_chart.bd73fd82.js"
       ],
       "css": [
         "/assets/flot_chart.62fbb3d7.css"
@@ -162,7 +162,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/welcome-page.e675ae08.js"
+        "/assets/welcome-page.b7d1ba60.js"
       ],
       "css": [
         "/assets/welcome-page.cba151df.css"
@@ -172,27 +172,27 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/page_login.57e8b8bf.js"
+        "/assets/page_login.67f4bdfe.js"
       ],
       "css": [
-        "/assets/page_login.d8b0148a.css"
+        "/assets/page_login.3816c63b.css"
       ]
     },
     "page_forgot": {
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/page_forgot.27037c37.js"
+        "/assets/page_forgot.944ada69.js"
       ],
       "css": [
-        "/assets/page_forgot.dd1838f3.css"
+        "/assets/page_forgot.40cd3cb7.css"
       ]
     },
     "page_reset": {
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/page_reset.467afb35.js"
+        "/assets/page_reset.7b6cd14d.js"
       ],
       "css": [
         "/assets/page_reset.dd1838f3.css"
@@ -202,7 +202,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/page_change_password.b63f4370.js"
+        "/assets/page_change_password.5292a8c5.js"
       ],
       "css": [
         "/assets/page_change_password.dd1838f3.css"
@@ -212,7 +212,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/dashboard_list.b6f911b4.js"
+        "/assets/dashboard_list.9eb386dd.js"
       ],
       "css": [
         "/assets/dashboard_list.dd1838f3.css"
@@ -222,7 +222,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/dashboard_form.2909303e.js"
+        "/assets/dashboard_form.ea48f271.js"
       ],
       "css": [
         "/assets/dashboard_form.dd1838f3.css"
@@ -232,7 +232,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/widget_list.53508576.js"
+        "/assets/widget_list.cae7284b.js"
       ],
       "css": [
         "/assets/widget_list.dd1838f3.css"
@@ -242,7 +242,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/widget_form.8e284596.js"
+        "/assets/widget_form.d9ffba7b.js"
       ],
       "css": [
         "/assets/widget_form.dd1838f3.css"
@@ -252,7 +252,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/dashboard-page.b2a63587.js"
+        "/assets/dashboard-page.a214d4ff.js"
       ],
       "css": [
         "/assets/dashboard-page.dd1838f3.css"
@@ -262,7 +262,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/alerts_list.520f4390.js"
+        "/assets/alerts_list.7c0e5fd9.js"
       ],
       "css": [
         "/assets/alerts_list.dd1838f3.css"
@@ -272,7 +272,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/alerts_form.b8b27c3f.js"
+        "/assets/alerts_form.befe1d8c.js"
       ],
       "css": [
         "/assets/alerts_form.dd1838f3.css"
@@ -282,7 +282,7 @@
       "js": [
         "/assets/0.744fd003.js",
         "/assets/1.c0db4376.js",
-        "/assets/export_list.01986d5d.js"
+        "/assets/export_list.25f0375b.js"
       ],
       "css": [
         "/assets/export_list.dd1838f3.css"
