@@ -5,6 +5,7 @@ import { Alert, UserActions } from "../../actions";
 import { ContentHeader, DataTable, Toast, DeleteModal } from "../../components";
 import { Button } from "../../components/_button";
 import { Icon } from "../../components/_icon";
+import { TOAST_STATUS } from "../../utils";
 
 class UserList extends Component {
     constructor(props) {
@@ -79,14 +80,14 @@ class UserList extends Component {
                 const strMessage = newStatus ? "Enable" : "Disable";
                 if (error) {
                     toastContent = {
-                        color: "danger",
+                        color: TOAST_STATUS.failed,
                         message: `${strMessage} user failed`,
                     };
                     return;
                 }
 
                 toastContent = {
-                    color: "success",
+                    color: TOAST_STATUS.success,
                     message: `${strMessage} user successfully`,
                 };
             })
@@ -96,11 +97,6 @@ class UserList extends Component {
                         isLoading: false,
                         users: [...userData],
                         toastContent,
-                    },
-                    () => {
-                        setTimeout(() => {
-                            this.setState({ toastContent: {} });
-                        }, 1500);
                     }
                 );
             });
@@ -132,19 +128,19 @@ class UserList extends Component {
             });
             if (res.error) {
                 toastContent = {
-                    color: "danger",
+                    color: TOAST_STATUS.failed,
                     message: "Updated user failed",
                 };
             } else {
                 userData[index].is_admin = value;
                 toastContent = {
-                    color: "success",
+                    color: TOAST_STATUS.success,
                     message: "Updated user successfully",
                 };
             }
         } catch (e) {
             toastContent = {
-                color: "danger",
+                color: TOAST_STATUS.failed,
                 message: e.message,
             };
         }
@@ -153,11 +149,6 @@ class UserList extends Component {
                 toastContent,
                 users: [...userData],
                 isLoading: false,
-            },
-            () => {
-                setTimeout(() => {
-                    this.setState({ toastContent: {} });
-                }, 1500);
             }
         );
     };
@@ -175,7 +166,7 @@ class UserList extends Component {
 
                 if (error) {
                     toastContent = {
-                        color: "danger",
+                        color: TOAST_STATUS.failed,
                         message: "You can not delete this account",
                     };
                     return;
@@ -183,7 +174,7 @@ class UserList extends Component {
 
                 userData.splice(userSelected, 1);
                 toastContent = {
-                    color: "success",
+                    color: TOAST_STATUS.success,
                     message: "Delete successful",
                 };
             })
@@ -194,11 +185,6 @@ class UserList extends Component {
                         userSelected: null,
                         users: userData,
                         toastContent,
-                    },
-                    () => {
-                        setTimeout(() => {
-                            this.setState({ toastContent: {} });
-                        }, 1500);
                     }
                 );
             });
@@ -305,7 +291,9 @@ class UserList extends Component {
                     }}
                     saveButtonAction={() => this.onConfirmDeleteUser()}
                 />
-                <Toast toastContent={toastContent} message="User updated successfully" />
+                <Toast toastContent={toastContent}
+                        onToastClosed={() => {this.setState({ toastContent: {} })}}
+                />
                 <div className="content ms-2 me-2">
                     <ContentHeader
                         iconName="users"

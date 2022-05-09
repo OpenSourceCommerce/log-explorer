@@ -6,6 +6,11 @@ export const PAGE_NAME = {
     user: 'Users'
 };
 
+export const TOAST_STATUS = {
+    failed: "danger",
+    success: "success"
+}
+
 export const WIDGET_TYPE = {
     doughnut: '4',
     pie: '2',

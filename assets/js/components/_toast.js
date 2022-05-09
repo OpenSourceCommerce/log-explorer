@@ -1,6 +1,34 @@
 import React, { Component } from "react";
 
 export class Toast extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            toastContent: {},
+        }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.toastContent.message !== prevState.toastContent.message) {
+            return {
+                toastContent: { ...nextProps.toastContent }
+            }
+        }
+        return null;
+    }
+
+    componentDidUpdate() {
+        const { onToastClosed } = this.props;
+        if (this.state.toastContent.message) {
+            setTimeout(() => {
+                onToastClosed();
+                this.setState({
+                    toastContent: {}
+                })
+            }, 1500);
+        }
+    }
+
     render() {
         const {
             toastContent

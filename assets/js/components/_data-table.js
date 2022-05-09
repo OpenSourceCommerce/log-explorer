@@ -11,7 +11,7 @@ export class DataTable extends Component {
                     <tr className="border-0">
                         {columns.map((item, index) => {
                             const { className, headerClassName, isSortable = true, label } = item;
-                            const classStr = `text-capitalize${className || ""}${
+                            const classStr = `text-capitalize ${className || ""} ${
                                 headerClassName || ""
                             } ${isSortable ? "col-sortable" : ""}`;
                             return (
