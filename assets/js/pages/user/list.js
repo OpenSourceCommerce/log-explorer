@@ -17,6 +17,7 @@ class UserList extends Component {
             deleteUserIndex: null,
             toastContent: {},
             isShowUserDetailForm: false,
+            indexRowUpdated: null,
         };
     }
 
@@ -53,37 +54,36 @@ class UserList extends Component {
         setTimeout(() => {
             this.setState({
                 isLoading: true,
+                indexRowUpdated: key,
             });
-        }, 200);
+            let toastContent = {};
 
-        let toastContent = {};
+            UserActions.setStatus(id, { is_active: newStatus })
+                .then((res) => {
+                    const { error } = res;
+                    const strMessage = newStatus ? "Enable" : "Disable";
+                    if (error) {
+                        toastContent = {
+                            color: TOAST_STATUS.failed,
+                            message: `${strMessage} user failed`,
+                        };
+                        return;
+                    }
 
-        UserActions.setStatus(id, { is_active: newStatus })
-            .then((res) => {
-                const { error } = res;
-                const strMessage = newStatus ? "Enable" : "Disable";
-                if (error) {
                     toastContent = {
-                        color: TOAST_STATUS.failed,
-                        message: `${strMessage} user failed`,
+                        color: TOAST_STATUS.success,
+                        message: `${strMessage} user successfully`,
                     };
-                    return;
-                }
-
-                toastContent = {
-                    color: TOAST_STATUS.success,
-                    message: `${strMessage} user successfully`,
-                };
-            })
-            .finally(() => {
-                this.setState(
-                    {
+                })
+                .finally(() => {
+                    this.setState({
                         isLoading: false,
                         users: [...userData],
                         toastContent,
-                    }
-                );
-            });
+                        indexRowUpdated: null,
+                    });
+                });
+        }, 150);
     };
 
     onDelete = (key) => {
@@ -98,6 +98,7 @@ class UserList extends Component {
     onUpdateUserRole = async (user, { value }, index) => {
         this.setState({
             isLoading: true,
+            indexRowUpdated: index,
         });
         const { first_name, last_name, email, id } = user;
         let toastContent = {};
@@ -127,13 +128,12 @@ class UserList extends Component {
                 message: e.message,
             };
         }
-        this.setState(
-            {
-                toastContent,
-                users: [...userData],
-                isLoading: false,
-            }
-        );
+        this.setState({
+            toastContent,
+            users: [...userData],
+            isLoading: false,
+            indexRowUpdated: null,
+        });
     };
 
     onConfirmDeleteUser = () => {
@@ -175,20 +175,23 @@ class UserList extends Component {
     onFinishEditUser = async (user, isUpdateUser) => {
         const toastContent = {
             color: "success",
-            message: `${isUpdateUser ? 'Update' : 'Create'} user  ${user.email} successful`,
+            message: `${isUpdateUser ? "Update" : "Create"} user  ${user.email} successful`,
         };
 
         await this.loadData();
 
-        this.setState({
-            isShowUserDetailForm: false,
-            editUserIndex: null,
-            toastContent,
-        }, () => {
-            setTimeout(() => {
-                this.setState({ toastContent: {} });
-            }, 1500);
-        });
+        this.setState(
+            {
+                isShowUserDetailForm: false,
+                editUserIndex: null,
+                toastContent,
+            },
+            () => {
+                setTimeout(() => {
+                    this.setState({ toastContent: {} });
+                }, 1500);
+            }
+        );
     };
 
     render() {
@@ -199,6 +202,7 @@ class UserList extends Component {
             toastContent,
             isLoading,
             isShowUserDetailForm,
+            indexRowUpdated,
         } = this.state;
 
         const columns = [
@@ -223,6 +227,7 @@ class UserList extends Component {
                         className="form-select"
                         aria-label={cell ? "Admin" : "User"}
                         defaultValue={cell}
+                        disabled={isLoading && indexRowUpdated === index}
                         onChange={(e) => this.onUpdateUserRole(row, e.target, index)}
                     >
                         <option value="0">User</option>
@@ -233,19 +238,24 @@ class UserList extends Component {
             {
                 label: "Status",
                 dataField: "is_active",
-                formatter: ({ index, cell }) => (
-                    <div className="form-check form-switch">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            role="switch"
-                            id="is_active"
-                            disabled={index === 0}
-                            defaultChecked={!!cell}
-                            onChange={(e) => this.onChangeStatus(index, e.target.checked)}
-                        />
-                    </div>
-                ),
+                formatter: ({ index, cell }) => {
+                    let isDisable = indexRowUpdated === index;
+                    if (index === 0) isDisable = true;
+
+                    return (
+                        <div className="form-check form-switch">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id={`is_active_${index}`}
+                                disabled={isDisable}
+                                defaultChecked={!!cell}
+                                onChange={(e) => this.onChangeStatus(index, !cell)}
+                            />
+                        </div>
+                    );
+                },
             },
             {
                 label: "Last updated",
@@ -297,8 +307,11 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
-                <Toast toastContent={toastContent}
-                        onToastClosed={() => {this.setState({ toastContent:{} })}}
+                <Toast
+                    toastContent={toastContent}
+                    onToastClosed={() => {
+                        this.setState({ toastContent: {} });
+                    }}
                 />
                 <div className="content ms-2 me-2">
                     <ContentHeader
