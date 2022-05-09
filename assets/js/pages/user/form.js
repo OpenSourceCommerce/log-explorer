@@ -124,11 +124,14 @@ export class UserForm extends Component {
             errorRes = message ? message : `${isUpdateUser ? "Update" : "Create"} user failed`;
         } catch (e) {
             errorRes = e.message;
+        } finally {
+            this.setState({
+                isLoading: false,
+            })
         }
         if (errorRes) {
             this.setState({
                 errorMessageRes: errorRes,
-                isLoading: false,
             });
         }
     };

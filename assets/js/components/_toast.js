@@ -21,7 +21,7 @@ export class Toast extends Component {
         const { onToastClosed, timeoutCloseToast = 1500 } = this.props;
         if (this.state.toastContent.message) {
             setTimeout(() => {
-                onToastClosed();
+                if (onToastClosed) onToastClosed();
                 this.setState({
                     toastContent: {}
                 })

@@ -297,7 +297,9 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
-                <Toast toastContent={toastContent} message="User updated successfully" />
+                <Toast toastContent={toastContent}
+                        onToastClosed={() => {this.setState({ toastContent:{} })}}
+                />
                 <div className="content ms-2 me-2">
                     <ContentHeader
                         iconName="users"
