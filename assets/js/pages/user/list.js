@@ -1,11 +1,10 @@
 import { t } from "@nextcloud/event-bus";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { Alert, UserActions } from "../../actions";
-import { ContentHeader, DataTable, Toast, DeleteModal } from "../../components";
-import { Button } from "../../components/_button";
-import { Icon } from "../../components/_icon";
+import { UserActions } from "../../actions";
+import { ContentHeader, DataTable, Toast, DeleteModal, Button, Icon } from "../../components";
 import { TOAST_STATUS } from "../../utils";
+import { UserForm } from "./form";
 
 class UserList extends Component {
     constructor(props) {
@@ -14,8 +13,10 @@ class UserList extends Component {
             users: [],
             isLoading: false,
             newUser: null,
-            userSelected: null,
+            editUserIndex: null,
+            deleteUserIndex: null,
             toastContent: {},
+            isShowUserDetailForm: false,
         };
     }
 
@@ -38,23 +39,6 @@ class UserList extends Component {
 
     componentDidMount() {
         this.loadData();
-        const newUser =
-            localStorage.getItem("newUser") && JSON.parse(localStorage.getItem("newUser")).email
-                ? JSON.parse(localStorage.getItem("newUser")).email
-                : null;
-        if (newUser) {
-            this.setState(
-                {
-                    newUser,
-                },
-                () => {
-                    setTimeout(() => {
-                        localStorage.removeItem("newUser");
-                        this.setState({ newUser: null });
-                    }, 5000);
-                }
-            );
-        }
     }
 
     onChangeStatus = (key, newValue) => {
@@ -105,11 +89,10 @@ class UserList extends Component {
     onDelete = (key) => {
         if (key !== 0) {
             this.setState({
-                userSelected: key,
+                deleteUserIndex: key,
             });
             return;
         }
-        Alert.error("Can not delete your account by yourself");
     };
 
     onUpdateUserRole = async (user, { value }, index) => {
@@ -159,8 +142,9 @@ class UserList extends Component {
         });
 
         let toastContent = {};
+        const { deleteUserIndex, users } = this.state;
         const userData = [...users];
-        UserActions.delete(users[userSelected].id)
+        UserActions.delete(users[deleteUserIndex].id)
             .then((res) => {
                 const { error } = res;
 
@@ -172,26 +156,50 @@ class UserList extends Component {
                     return;
                 }
 
-                userData.splice(userSelected, 1);
+                userData.splice(deleteUserIndex, 1);
                 toastContent = {
                     color: TOAST_STATUS.success,
                     message: "Delete successful",
                 };
             })
             .finally(() => {
-                this.setState(
-                    {
-                        isLoading: false,
-                        userSelected: null,
-                        users: userData,
-                        toastContent,
-                    }
-                );
+                this.setState({
+                    isLoading: false,
+                    deleteUserIndex: null,
+                    users: userData,
+                    toastContent,
+                });
             });
     };
 
+    onFinishEditUser = async (user, isUpdateUser) => {
+        const toastContent = {
+            color: "success",
+            message: `${isUpdateUser ? 'Update' : 'Create'} user  ${user.email} successful`,
+        };
+
+        await this.loadData();
+
+        this.setState({
+            isShowUserDetailForm: false,
+            editUserIndex: null,
+            toastContent,
+        }, () => {
+            setTimeout(() => {
+                this.setState({ toastContent: {} });
+            }, 1500);
+        });
+    };
+
     render() {
-        const { users, newUser, userSelected, toastContent, isLoading } = this.state;
+        const {
+            users,
+            editUserIndex,
+            deleteUserIndex,
+            toastContent,
+            isLoading,
+            isShowUserDetailForm,
+        } = this.state;
 
         const columns = [
             {
@@ -246,7 +254,6 @@ class UserList extends Component {
             {
                 isSortable: false,
                 formatter: ({ row, index }) => {
-                    const { id } = row;
                     return (
                         <div className="dropdown float-end">
                             <button
@@ -259,13 +266,24 @@ class UserList extends Component {
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <li>
-                                    <a className="dropdown-item text-primary" href={`/user/${id}`}>
+                                    <Button
+                                        className="dropdown-item text-primary"
+                                        onClick={() => {
+                                            this.setState({
+                                                isShowUserDetailForm: true,
+                                                editUserIndex: index,
+                                            });
+                                        }}
+                                    >
                                         Edit
-                                    </a>
+                                    </Button>
                                 </li>
                                 {index !== 0 && (
                                     <li>
-                                        <Button onClick={() => {this.onDelete(index)}} className="dropdown-item text-danger">
+                                        <Button
+                                            onClick={() => this.onDelete(index)}
+                                            className="dropdown-item text-danger"
+                                        >
                                             Delete
                                         </Button>
                                     </li>
@@ -279,32 +297,44 @@ class UserList extends Component {
 
         return (
             <div className="users container-fluid">
-                <DeleteModal
-                    data={users}
-                    indexSelected={userSelected}
-                    objectName="user"
-                    displayField="email"
-                    closeButtonAction={() => {
-                        this.setState({
-                            userSelected: null,
-                        });
-                    }}
-                    saveButtonAction={() => this.onConfirmDeleteUser()}
-                />
-                <Toast toastContent={toastContent}
-                        onToastClosed={() => {this.setState({ toastContent: {} })}}
-                />
+                <Toast toastContent={toastContent} message="User updated successfully" />
                 <div className="content ms-2 me-2">
                     <ContentHeader
                         iconName="users"
-                        btnRightSideTitle="Create User"
-                        btnRightSideIcon="plus"
-                        btnRightSideOnClick={() => {
-                            window.location.href = "/user/create";
+                        actionButtonTitle="Create User"
+                        actionButtonIcon="plus"
+                        onClickActionBtn={() => {
+                            this.setState({
+                                isShowUserDetailForm: true,
+                            });
                         }}
                     />
                     <DataTable columns={columns} dataTable={users} />
                 </div>
+                <UserForm
+                    isShow={isShowUserDetailForm}
+                    indexUserSelected={editUserIndex}
+                    users={users}
+                    onFinishEditUser={this.onFinishEditUser}
+                    onHidden={() => {
+                        this.setState({
+                            isShowUserDetailForm: false,
+                            editUserIndex: null,
+                        });
+                    }}
+                />
+                <DeleteModal
+                    data={users}
+                    indexSelected={deleteUserIndex}
+                    objectName="user"
+                    displayField="email"
+                    closeButtonAction={() => {
+                        this.setState({
+                            deleteUserIndex: null,
+                        });
+                    }}
+                    saveButtonAction={() => this.onConfirmDeleteUser()}
+                />
             </div>
         );
     }

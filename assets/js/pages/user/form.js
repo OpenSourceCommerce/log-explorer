@@ -1,166 +1,216 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {Input, Button, Checkbox} from '../../components';
-import {Alert, UserActions} from '../../actions';
+import React, { Component } from "react";
+import { Button, Modal, Size, Colors, FormField } from "../../components";
+import { UserActions } from "../../actions";
 
-class UserForm extends Component {
+const MANDATORY_FIELDS = ["firstName", "lastName", "email"];
+
+const DEFAULT_USER = {
+    id: null,
+    firstName: "",
+    lastName: "",
+    email: "",
+    isAdmin: false,
+};
+
+export class UserForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            id: window.user ? window.user : '',
-            firstName: '',
-            lastName: '',
-            email: '',
-            isAdmin: false
+            user: DEFAULT_USER,
+            userPosition: null,
+            errors: {},
+            errorMessageRes: null,
+            isLoading: false,
         };
-        this.onTextChange = this.onTextChange.bind(this);
-        this.onCheckboxChange = this.onCheckboxChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    loadUser(id) {
-        const that = this;
-        this.setState({
-            isLoading: true
-        });
-        UserActions.getUser(id)
-            .then(res => {
-                const {error, data} = res;
-                if (error) {
-                    return;
-                }
+    static getDerivedStateFromProps(props, state) {
+        const { userPosition, user } = state;
+        const { indexUserSelected, users } = props;
 
-                const {first_name, last_name, email, is_admin} = data;
+        let newUser = { ...user };
 
-                that.setState({
+        let position = indexUserSelected;
+
+        if (indexUserSelected !== userPosition) {
+            if (indexUserSelected === null) {
+                newUser = DEFAULT_USER;
+            } else {
+                const { id, first_name, last_name, email, is_admin } = users[indexUserSelected];
+
+                newUser = {
+                    id,
                     firstName: first_name,
                     lastName: last_name,
                     email,
                     isAdmin: is_admin == 1,
-                    isLoading: false,
-                    firstNameError: false,
-                    lastNameError: false,
-                    emailError: false
-                });
-            });
-    }
-
-    componentDidMount() {
-        const {id} = this.state;
-        if (id) {
-            this.loadUser(id);
+                };
+            }
         }
+
+        return {
+            ...state,
+            user: { ...newUser },
+            userPosition: position,
+        };
     }
 
-    onTextChange(e) {
-        const state = {};
-        state[e.target.name] = e.target.value;
-        state[e.target.name + 'Error'] = false;
-        this.setState(state);
-    }
+    onChangeField = (name, value) => {
+        this.setState((preState) => {
+            const { user, errors } = preState;
+            let newError = { ...errors };
+            if (MANDATORY_FIELDS.includes(name)) {
+                newError[name] = false;
+                if (!value) newError[name] = true;
+            }
 
-    onCheckboxChange(e) {
-        this.setState({
-            isAdmin: e.target.checked
+            newError = Object.entries(newError).reduce((obj, [key, value]) => {
+                if (value) obj[key] = value;
+                return obj;
+            }, {});
+
+            return {
+                user: {
+                    ...user,
+                    [name]: value,
+                },
+                errors: newError,
+                errorMessageRes: null,
+            };
         });
-    }
+    };
 
-    onSubmit() {
-        let hasError = false;
-        let {id, firstName, lastName, email, isAdmin} = this.state;
-        firstName = $.trim(firstName);
-        lastName = $.trim(lastName);
-        email = $.trim(email);
-        if (firstName === '') {
+    onSubmit = async () => {
+        const { user } = this.state;
+
+        const { onFinishEditUser } = this.props;
+
+        let errorObj = Object.entries(user).reduce((obj, [key, value]) => {
+            if (MANDATORY_FIELDS.includes(key) && !value) obj[key] = true;
+            return obj;
+        }, {});
+
+        if (Object.keys(errorObj).length > 0) {
             this.setState({
-                firstNameError: true
+                errors: { ...errorObj },
             });
-            hasError = true;
+            return;
         }
 
-        if (lastName === '') {
-            this.setState({
-                lastNameError: true
-            });
-            hasError = true;
+        const { id, firstName, lastName, email, isAdmin } = user;
+
+        const userPayload = {
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            is_admin: isAdmin ? 1 : 0,
+        };
+
+        let errorRes = null;
+
+        this.setState({
+            isLoading: true,
+        })
+
+        try {
+            const res = await UserActions.createOrUpdate(id, userPayload);
+            const { error, message } = res;
+            const isUpdateUser = parseInt(id) >= 0;
+            if (!error) {
+                onFinishEditUser(user, isUpdateUser);
+                return;
+            }
+            errorRes = message ? message : `${isUpdateUser ? "Update" : "Create"} user failed`;
+        } catch (e) {
+            errorRes = e.message;
         }
-
-        if (email === '') {
+        if (errorRes) {
             this.setState({
-                emailError: true
-            });
-            hasError = true;
-        }
-
-        if (!hasError) {
-            this.setState({
-                isLoading: true
-            });
-            const that = this;
-            UserActions.createOrUpdate(id, {
-                first_name: firstName,
-                last_name: lastName,
-                email,
-                is_admin: isAdmin ? 1 : 0
-            }).then(res => {
-                const {error, redirect} = res;
-                if (error) {
-                    return;
-                }
-
-                if (redirect) {
-                    localStorage.setItem('newUser', JSON.stringify({email}));
-                    window.location.href = '/user';
-                } else {
-                    Alert.success('Update successful');
-                }
-            }).finally(() => {
-                that.setState({
-                    isLoading: false
-                });
+                errorMessageRes: errorRes,
+                isLoading: false,
             });
         }
-    }
+    };
 
     render() {
-        const {id, firstName, lastName, email, isAdmin, isLoading, firstNameError, lastNameError, emailError} = this.state;
+        const { isLoading, errors, user, errorMessageRes } = this.state;
+
+        const { id, firstName, lastName, email, isAdmin } = user;
+
+        const { onHidden, isShow } = this.props;
+
+        const isUpdateUser = parseInt(id) >= 0;
 
         return (
-            <div className="user container-fluid">
-                <div className="card">
-                    <div className="card-header">
-                        <h3 className="card-title align-items-center p-2">{id === '' ? 'Create new user' : 'Update user'}</h3>
-                        <Button className="float-end" color={'success'}
-                            onClick={this.onSubmit} isLoading={isLoading}>
-                            {id === '' ? 'Create user' : 'Update user'}
-                        </Button>
-
-                    </div>
-                    <div className="card-body">
-                        <form role="form">
-                            <div className="form-group">
-                                <label>First name</label>
-                                <Input className={firstNameError ? 'is-invalid' : ''} required={true} name={'firstName'} placeholder="First name" value={firstName} onChange={this.onTextChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>Last name</label>
-                                <Input className={lastNameError ? 'is-invalid' : ''} required={true} name={'lastName'} placeholder="Last name" value={lastName} onChange={this.onTextChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>Email</label>
-                                <Input className={emailError ? 'is-invalid' : ''} required={true} type={'email'} name={'email'} placeholder="Email" value={email} onChange={this.onTextChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>Role</label>
-                                <Checkbox id={'isAdmin'} name={'isAdmin'} value={'1'} checked={isAdmin} onChange={this.onCheckboxChange} label={'Is Admin'} />
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <Modal
+                id={`update-user-${id}`}
+                size={Size.medium}
+                title={`${isUpdateUser ? "Update" : "Create new"} user`}
+                showCloseButton={false}
+                show={isShow}
+                isPositionCenter={true}
+                onHidden={onHidden}
+            >
+                <form role="form" className="mx-4">
+                    {errorMessageRes && (
+                        <div className={`alert alert-danger`}>
+                            <div className="alert-message">{errorMessageRes}</div>
+                        </div>
+                    )}
+                    <FormField
+                        className="mb-3"
+                        label="First name"
+                        value={firstName}
+                        placeholder="First name"
+                        fieldName="firstName"
+                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        isMandatory={MANDATORY_FIELDS.includes("firstName")}
+                        errors={errors}
+                    />
+                    <FormField
+                        className="mb-3"
+                        label="Last name"
+                        value={lastName}
+                        placeholder="Last name"
+                        fieldName="lastName"
+                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        isMandatory={MANDATORY_FIELDS.includes("lastName")}
+                        errors={errors}
+                    />
+                    <FormField
+                        className="mb-3"
+                        label="E-mail"
+                        value={email}
+                        placeholder="E-mail"
+                        fieldName="email"
+                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        isMandatory={MANDATORY_FIELDS.includes("email")}
+                        errors={errors}
+                    />
+                    <FormField
+                        id="isAdmin"
+                        className="mb-3"
+                        label="Role"
+                        type="checkbox"
+                        checkboxlabel="Is Admin"
+                        checked={isAdmin}
+                        fieldName="isAdmin"
+                        onChange={(e) => this.onChangeField(e.target.name, e.target.check)}
+                        isMandatory={MANDATORY_FIELDS.includes("isAdmin")}
+                        errors={errors}
+                    />
+                    <Button
+                        className="btn-block w-100 my-3"
+                        color={Colors.blue}
+                        onClick={() => this.onSubmit()}
+                        isLoading={isLoading}
+                        disabled={Object.keys(errors).length > 0 || errorMessageRes}
+                    >
+                        {`${isUpdateUser ? "Update" : "Create"} User`}
+                    </Button>
+                </form>
+            </Modal>
         );
     }
 }
-
-ReactDOM.render(<UserForm/>, document.querySelector('#root'));
