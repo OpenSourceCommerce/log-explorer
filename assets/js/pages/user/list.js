@@ -207,6 +207,7 @@ class UserList extends Component {
                 formatter: ({ cell }) => <span className="text-primary">{cell}</span>,
             },
             {
+                isSortable: false,
                 label: "Role",
                 dataField: "is_admin",
                 formatter: ({ cell, row, index }) => (
@@ -223,6 +224,7 @@ class UserList extends Component {
                 ),
             },
             {
+                isSortable: false,
                 label: "Status",
                 dataField: "is_active",
                 formatter: ({ index, cell }) => (
