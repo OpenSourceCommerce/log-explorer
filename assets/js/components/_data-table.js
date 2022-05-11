@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 
 export class DataTable extends Component {
     render() {
-        let { columns, className = "", dataTable } = this.props;
+        let { columns, className = "", dataTable, isSortableTable = false } = this.props;
 
         return (
-            <table className={`table table-striped table-responsive table-sortable ${className}`}>
+            <table className={`table table-striped table-responsive table-sortable ${isSortableTable ? 'table-sortable' : ''} ${className}`}>
                 <thead>
                     <tr className="border-0">
                         {columns.map((item, index) => {
-                            const { className, headerClassName, isSortable = true, label } = item;
+                            const { className, headerClassName, isSortable = false, label } = item;
                             const classStr = `text-capitalize ${className || ""} ${
                                 headerClassName || ""
                             } ${isSortable ? "col-sortable" : ""}`;

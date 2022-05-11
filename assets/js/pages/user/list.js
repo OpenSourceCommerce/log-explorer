@@ -207,7 +207,7 @@ class UserList extends Component {
 
         const columns = [
             {
-                isSortable: false,
+                label: '',
             },
             {
                 label: "Name",
@@ -262,7 +262,6 @@ class UserList extends Component {
                 dataField: "last_updated",
             },
             {
-                isSortable: false,
                 formatter: ({ row, index }) => {
                     return (
                         <div className="dropdown float-end">

@@ -9,7 +9,7 @@ class Login extends Component {
         const {forgotPasswordLink} = this.props;
 
         return (
-            <div className="login-screen min-vh-100 d-flex flex-column min-vh-100 justify-content-center align-items-center">
+            <div className="login-screen min-vh-100 d-flex flex-column min-vh-100 justify-content-center align-items-center authentication-background">
                 <div className="login-form-component">
                     <LoginForm forgotPasswordLink={forgotPasswordLink}/>
                 </div>
