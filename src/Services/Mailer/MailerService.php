@@ -3,42 +3,36 @@
 
 namespace App\Services\Mailer;
 
-use Swift_Mailer;
-use Swift_SendmailTransport;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 class MailerService implements MailerServiceInterface
 {
-    /** @var Environment */
-    private $twig;
-    /** @var \Swift_Mailer */
+    /** @var MailerInterface */
     private $mailer;
     /** @var ParameterBagInterface */
     private $parameterBag;
 
     /**
      * MailerService constructor.
-     * @param Environment $twig
-     * @param \Swift_Mailer $mailer
+     * @param MailerInterface $mailer
      * @param ParameterBagInterface $parameterBag
      */
-    public function __construct(Environment $twig, \Swift_Mailer $mailer, ParameterBagInterface $parameterBag)
+    public function __construct(MailerInterface $mailer, ParameterBagInterface $parameterBag)
     {
-        $this->twig = $twig;
         $this->mailer = $mailer;
         $this->parameterBag = $parameterBag;
     }
 
     /**
-     * Get SwiftMailer Transport
+     * Get MailerInterface
      *
-     * @return Swift_Mailer|Swift_SendmailTransport
+     * @return MailerInterface
      */
-    private function getMailer()
+    private function getMailer(): MailerInterface
     {
         return $this->mailer;
     }
@@ -46,18 +40,22 @@ class MailerService implements MailerServiceInterface
     /**
      * @inheritDoc
      */
-    public function send($template, $title, $to, $data = [])
+    public function send($template, $title, $to, array $data = [])
     {
         $mailer = $this->getMailer();
-        $message = (new \Swift_Message($title))
-            ->setFrom($this->parameterBag->get('app.email.from'))
-            ->setTo($to)
-            ->setBody(
-                $this->renderView($template, $data),
-                'text/html'
-            );
+        $message = (new TemplatedEmail())
+            ->sender(new Address($this->parameterBag->get('app.email.from')))
+            ->to(new Address($to))
+            ->htmlTemplate("mail/{$template}.html.twig")
+            ->context($data);
 
-        return $mailer->send($message);
+        try {
+            $mailer->send($message);
+        } catch (TransportExceptionInterface $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -68,29 +66,12 @@ class MailerService implements MailerServiceInterface
         return $this->send('confirmation', 'Confirm Your Account', $email, $data);
     }
 
-
-    /**
-     * @param $template
-     * @param $data
-     * @return string
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function renderView($template, $data): string
-    {
-        return $this->twig->render("mail/{$template}.html.twig", $data);
-    }
-
     /**
      * Send confirmation mail to user
      *
      * @param $to
      * @param array $data
      * @return mixed
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
      */
     public function sendResetPasswordEmail($to, array $data) {
         return $this->send('reset_password', 'Reset your password', $to,
@@ -103,6 +84,6 @@ class MailerService implements MailerServiceInterface
     public function sendAlertEmail($subject, $to, array $data)
     {
         return $this->send('alert', $subject, $to,
-            $data);
+                $data);
     }
 }
