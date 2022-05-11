@@ -195,7 +195,7 @@ class UserList extends Component {
 
         const columns = [
             {
-                isSortable: false,
+                label: '',
             },
             {
                 label: "Name",
@@ -207,7 +207,6 @@ class UserList extends Component {
                 formatter: ({ cell }) => <span className="text-primary">{cell}</span>,
             },
             {
-                isSortable: false,
                 label: "Role",
                 dataField: "is_admin",
                 formatter: ({ cell, row, index }) => (
@@ -224,7 +223,6 @@ class UserList extends Component {
                 ),
             },
             {
-                isSortable: false,
                 label: "Status",
                 dataField: "is_active",
                 formatter: ({ index, cell }) => (
@@ -246,7 +244,6 @@ class UserList extends Component {
                 dataField: "last_updated",
             },
             {
-                isSortable: false,
                 formatter: ({ row, index }) => {
                     const { id } = row;
                     return (
