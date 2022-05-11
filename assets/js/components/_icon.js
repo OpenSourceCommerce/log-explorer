@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import 'feather-icons';
 
 export class Icon extends Component {
     getTypeCode(type) {
@@ -15,13 +16,26 @@ export class Icon extends Component {
         }
     }
 
+    componentDidMount() {
+        if (this.props.dataFeather) {
+            feather.replace();
+        }
+    }
+
     render() {
-        const {name = '', className = '', type = 'solid', ...rest} = this.props;
+        const {name = '', className = '', type = 'solid', dataFeather,...rest} = this.props;
         const typeCode = this.getTypeCode(type);
-        const classes = `fa${typeCode} fa-${name} ${className}`;
+        let classes = `fa${typeCode} fa-${name} ${className}`;
+
+        if(dataFeather) {
+            classes = className;
+        }
 
         return (
-            <i className={classes} {...rest}/>
+            <i className={classes}
+                { ...( dataFeather && { 'data-feather': dataFeather } ) }
+                {...rest}
+            />
         );
     }
 }
@@ -29,5 +43,6 @@ export class Icon extends Component {
 Icon.propTypes = {
     name: PropTypes.string,
     className: PropTypes.string,
-    type: PropTypes.string
+    type: PropTypes.string,
+    dataFeather: PropTypes.string
 };

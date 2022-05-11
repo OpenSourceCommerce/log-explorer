@@ -1,9 +1,15 @@
 import React, {Component} from 'react';
 import {PAGE_NAME} from '../utils';
-import ReactDOM from 'react-dom';
+import { Icon, Button } from '.';
 
-class ContentHeader extends Component {
+export class ContentHeader extends Component {
     render() {
+        const {
+            iconName,
+            btnRightSideTitle,
+            btnRightSideIcon,
+            btnRightSideOnClick
+        } = this.props;
         const splitUrl = window.location.pathname.split('/');
 
         let title = '';
@@ -13,18 +19,18 @@ class ContentHeader extends Component {
         }
 
         return (
-            <div className={`content-header p-0 ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-4'}`}>
-                <div className="container-fluid d-none">
-                    <div className="row mb-2">
-                        <div className="col-sm-6">
-                            <h1 className="m-0 text-dark">{title}</h1>
-                        </div>
-                    </div>
+            <div className={`header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'mt-1' : 'mt-3'}`}>
+                <div className="title fw-bold">
+                    <Icon dataFeather={iconName} className="feather-lg" />
+                    <span className="align-middle ms-2">{title}</span>
                 </div>
+                {btnRightSideOnClick && <Button style={{ fonSize: "16px" }} onClick={btnRightSideOnClick}>
+                    {btnRightSideIcon && <Icon dataFeather={btnRightSideIcon} className="feather-lg"/>}
+                    {btnRightSideTitle && <span className="align-middle ms-1">
+                        {btnRightSideTitle}
+                    </span>}
+                </Button>}
             </div>
-
         );
     }
 }
-
-ReactDOM.render(<ContentHeader/>, document.querySelector('#content-header'));

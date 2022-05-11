@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from '.';
+import {Link,Icon} from '.';
 import PropTypes from 'prop-types';
 
 export class NavUser extends Component {
@@ -17,7 +17,7 @@ export class NavUser extends Component {
                 <Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span className="d-none d-md-inline-block me-2">{username}</span>
                     <img src={userimage} className="rounded-circle" style={{width: "43px"}}/>
-                    <i data-feather="chevron-down" className="feather-sm"></i>
+                    <Icon dataFeather="chevron-down" className="feather-sm"/>
                 </Link>
                 <ul className="dropdown-menu border-0 shadow-sm dropdown-menu-end fade-down" aria-labelledby="navbarDropdown">
                     <li><Link className="dropdown-item text-primary" href={profileLink}>My Profile</Link></li>

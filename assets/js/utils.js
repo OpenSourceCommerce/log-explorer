@@ -2,8 +2,14 @@ import moment from "moment";
 
 export const PAGE_NAME = {
     dashboard: 'Dashboard',
-    table: 'Table'
+    table: 'Table',
+    user: 'Users'
 };
+
+export const TOAST_STATUS = {
+    failed: "danger",
+    success: "success"
+}
 
 export const WIDGET_TYPE = {
     doughnut: '4',

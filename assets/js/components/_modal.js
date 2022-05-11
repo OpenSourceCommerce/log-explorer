@@ -63,19 +63,23 @@ export class Modal extends Component {
                 <div className={`modal-dialog modal-${size}`}>
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h4 className="modal-title">{title}</h4>
-                            <Button type="button" className="close" data-dismiss="modal" onClick={closeButtonAction}
+                            <h5 className="modal-title">{title}</h5>
+                            <button type="button" className="btn btn-close" data-bs-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </Button>
+                            </button>
                         </div>
                         <div className="modal-body">
                             {children}
                         </div>
-                        <div className="modal-footer justify-content-between">
-                            {showCloseButton && <Button type="button" className="btn btn-default" onClick={closeButtonAction}
-                                data-dismiss="modal">{closeButtonTitle}
-                            </Button>}
+                        <div className="modal-footer">
+                            {showCloseButton &&
+                            <button
+                                className="btn text-primary"
+                                onClick={closeButtonAction}
+                                data-dismiss="modal"
+                                role="link"
+                            >{closeButtonTitle}
+                            </button>}
                             {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
                                 color={saveButtonColor}>{saveButtonTitle}</Button>}
                         </div>
