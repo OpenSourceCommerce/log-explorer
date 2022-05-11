@@ -19,19 +19,21 @@ export class UserForm extends Component {
         this.state = {
             user: DEFAULT_USER,
             userPosition: null,
-            errors: {},
+            errors: [],
             errorMessageRes: null,
             isLoading: false,
         };
     }
 
     static getDerivedStateFromProps(props, state) {
-        const { userPosition, user } = state;
+        const { userPosition, user, errors } = state;
         const { indexUserSelected, users } = props;
 
         let newUser = { ...user };
 
         let position = indexUserSelected;
+
+        let newErrors = [...errors];
 
         if (indexUserSelected !== userPosition) {
             if (indexUserSelected === null) {
@@ -47,35 +49,31 @@ export class UserForm extends Component {
                     isAdmin: is_admin == 1,
                 };
             }
+            newErrors = [];
         }
 
         return {
-            ...state,
             user: { ...newUser },
             userPosition: position,
+            errors: newErrors,
         };
     }
 
-    onChangeField = (name, value) => {
+    onChangeField = ({name, value}) => {
         this.setState((preState) => {
             const { user, errors } = preState;
-            let newError = { ...errors };
+            let newErrorArr = [...errors];
             if (MANDATORY_FIELDS.includes(name)) {
-                newError[name] = false;
-                if (!value) newError[name] = true;
+                newErrorArr = newErrorArr.filter((el) => el !== name);
+                if (!value) newErrorArr.push(name);
             }
-
-            newError = Object.entries(newError).reduce((obj, [key, value]) => {
-                if (value) obj[key] = value;
-                return obj;
-            }, {});
 
             return {
                 user: {
                     ...user,
                     [name]: value,
                 },
-                errors: newError,
+                errors: newErrorArr,
                 errorMessageRes: null,
             };
         });
@@ -86,15 +84,15 @@ export class UserForm extends Component {
 
         const { onFinishEditUser } = this.props;
 
-        let errorObj = Object.entries(user).reduce((obj, [key, value]) => {
-            if (MANDATORY_FIELDS.includes(key) && !value) obj[key] = true;
-            return obj;
-        }, {});
+        const newErrorArr = MANDATORY_FIELDS.filter(el => {
+            if(!user[el]) return true;
+            return false;
+        })
 
-        if (Object.keys(errorObj).length > 0) {
+        if (newErrorArr && newErrorArr.length > 0) {
             this.setState({
-                errors: { ...errorObj },
-            });
+                errors: newErrorArr
+            })
             return;
         }
 
@@ -167,7 +165,7 @@ export class UserForm extends Component {
                         value={firstName}
                         placeholder="First name"
                         fieldName="firstName"
-                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("firstName")}
                         errors={errors}
                     />
@@ -177,7 +175,7 @@ export class UserForm extends Component {
                         value={lastName}
                         placeholder="Last name"
                         fieldName="lastName"
-                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("lastName")}
                         errors={errors}
                     />
@@ -187,7 +185,7 @@ export class UserForm extends Component {
                         value={email}
                         placeholder="E-mail"
                         fieldName="email"
-                        onChange={(e) => this.onChangeField(e.target.name, e.target.value)}
+                        onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("email")}
                         errors={errors}
                     />
@@ -199,7 +197,10 @@ export class UserForm extends Component {
                         checkboxlabel="Is Admin"
                         checked={isAdmin}
                         fieldName="isAdmin"
-                        onChange={(e) => this.onChangeField(e.target.name, e.target.check)}
+                        onChange={(e) => {
+                            const target = e.target;
+                            this.onChangeField({name: target.name, value: target.checked})
+                        }}
                         isMandatory={MANDATORY_FIELDS.includes("isAdmin")}
                         errors={errors}
                     />

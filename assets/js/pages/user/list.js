@@ -6,6 +6,11 @@ import { ContentHeader, DataTable, Toast, DeleteModal, Button, Icon } from "../.
 import { TOAST_STATUS } from "../../utils";
 import { UserForm } from "./form";
 
+const INDEX_CURRENT_USER = 0;
+
+const ADMIN_VALUE = 1;
+
+const USER_VALUE = 0;
 class UserList extends Component {
     constructor(props) {
         super(props);
@@ -43,12 +48,16 @@ class UserList extends Component {
     }
 
     onChangeStatus = (key, newValue) => {
+        if (key === INDEX_CURRENT_USER) {
+            return;
+        }
+
         const { users } = this.state;
         const userData = [...users];
 
         const { id } = userData[key];
 
-        const newStatus = newValue ? 1 : 0;
+        const newStatus = newValue ? ADMIN_VALUE : USER_VALUE;
 
         userData[key].is_active = newStatus;
         setTimeout(() => {
@@ -87,7 +96,7 @@ class UserList extends Component {
     };
 
     onDelete = (key) => {
-        if (key !== 0) {
+        if (key !== INDEX_CURRENT_USER) {
             this.setState({
                 deleteUserIndex: key,
             });
@@ -230,8 +239,8 @@ class UserList extends Component {
                         disabled={isLoading && indexRowUpdated === index}
                         onChange={(e) => this.onUpdateUserRole(row, e.target, index)}
                     >
-                        <option value="0">User</option>
-                        <option value="1">Admin</option>
+                        <option value={USER_VALUE}>User</option>
+                        <option value={ADMIN_VALUE}>Admin</option>
                     </select>
                 ),
             },
@@ -240,12 +249,12 @@ class UserList extends Component {
                 dataField: "is_active",
                 formatter: ({ index, cell }) => {
                     let isDisable = indexRowUpdated === index;
-                    if (index === 0) isDisable = true;
+                    if (index === INDEX_CURRENT_USER) isDisable = true;
 
                     return (
                         <div className="form-check form-switch">
                             <input
-                                className="form-check-input"
+                                className={`form-check-input ${index === INDEX_CURRENT_USER ? 'pe-none' : ''}`}
                                 type="checkbox"
                                 role="switch"
                                 id={`is_active_${index}`}
