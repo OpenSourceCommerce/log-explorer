@@ -99,9 +99,6 @@
     "egulias/email-validator": {
         "version": "2.1.21"
     },
-    "friendsofdoctrine/dbal-clickhouse": {
-        "version": "v1.5.3"
-    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
@@ -113,6 +110,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.10.0"
+    },
+    "opensourcecommerce/dbal-clickhouse": {
+        "version": "dev-master"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -382,9 +382,6 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.18.1"
     },
-    "symfony/polyfill-php73": {
-        "version": "v1.18.1"
-    },
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
@@ -435,9 +432,6 @@
         "version": "v5.1.5"
     },
     "symfony/security-csrf": {
-        "version": "v5.1.5"
-    },
-    "symfony/security-guard": {
         "version": "v5.1.5"
     },
     "symfony/security-http": {

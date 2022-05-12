@@ -185,7 +185,7 @@ class StreamService implements StreamServiceInterface
             }
             $data[] = [
                 $label->getTimestamp() * 1000,
-                intval($builder->execute()->fetchColumn()),
+                intval($builder->executeQuery()->fetchOne()),
             ];
             $lastPoint = $nextPoint;
         }
@@ -199,8 +199,8 @@ class StreamService implements StreamServiceInterface
     {
         $builder = $this->makeQueryBuilder($name, $options);
         return $builder->select('COUNT()')
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
@@ -222,12 +222,12 @@ class StreamService implements StreamServiceInterface
         }
         if ($widgetItem->hasSingleResult()) {
             return $builder
-                ->execute()
-                ->fetchColumn();
+                ->executeQuery()
+                ->fetchOne();
         } else {
             return $builder
-                ->execute()
-                ->fetchAll();
+                ->executeQuery()
+                ->fetchAllAssociative();
         }
     }
 }

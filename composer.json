@@ -1,6 +1,12 @@
 {
     "type": "project",
     "license": "proprietary",
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/OpenSourceCommerce/dbal-clickhouse"
+      }
+    ],
     "require": {
         "php": ">=8.0.2",
         "ext-ctype": "*",
@@ -11,7 +17,7 @@
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
-        "friendsofdoctrine/dbal-clickhouse": "^1.5",
+        "opensourcecommerce/dbal-clickhouse": "dev-master",
         "phpdocumentor/reflection-docblock": "^5.2",
         "ramsey/uuid-doctrine": "^1.6",
         "sensio/framework-extra-bundle": "^6.2",
