@@ -57,7 +57,7 @@ describe('Database page', () => {
             tablePage.setColumn(5, "add_more", "String");
             tablePage.setColumn(1, "url_edit", "String");
             tablePage.deleteColumn(2);
-            cy.wait(2000);
+            cy.wait(2000)
             alertHelper.confirmDialog();
             alertHelper.hasToastMessage('Remove successful');
             tablePage.clickUpdate();
