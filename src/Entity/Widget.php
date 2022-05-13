@@ -170,7 +170,7 @@ class Widget implements \JsonSerializable, WidgetAttributesInterface
     /**
      * @inheritDoc
      */
-    public function jsonSerialize($asOriginal = false)
+    public function jsonSerialize($asOriginal = false): mixed
     {
         $columns = $this->getColumn();
 

@@ -20,7 +20,7 @@ class Connection implements ConnectionInterface
      */
     public function ping()
     {
-        return $this->connection->ping();
+        return $this->connection->getNativeConnection()->ping();
     }
 
     /**
@@ -36,7 +36,7 @@ class Connection implements ConnectionInterface
      */
     public function getSchemaManager()
     {
-        return $this->connection->getSchemaManager();
+        return $this->connection->createSchemaManager();
     }
 
     /**
@@ -52,14 +52,13 @@ class Connection implements ConnectionInterface
      */
     public function fetchAllInSingleThread(string $query, array $params = [], array $types = [])
     {
-        /** @var \App\ClickHouse\ClickHouseConnection $conn */
-        $conn = $this->connection->getWrappedConnection();
-        $maxThreads = $conn->getClickHouseClient()->settings()->get('max_threads');
-        $conn->getClickHouseClient()->settings()->set('max_threads', 1);
+        $conn = $this->connection->getNativeConnection();
+        $maxThreads = $conn->settings()->get('max_threads');
+        $conn->settings()->set('max_threads', 1);
         try {
             $ret = $this->connection->fetchAllAssociative($query, $params, $types);
         } finally {
-            $conn->getClickHouseClient()->settings()->set('max_threads', $maxThreads);
+            $conn->settings()->set('max_threads', $maxThreads);
         }
         return $ret;
     }
@@ -115,7 +114,7 @@ class Connection implements ConnectionInterface
     {
         $database = $this->connection->getDatabase();
 
-        $sql = $this->connection->getSchemaManager()->getDatabasePlatform()->getListTableColumnsSQL($table, $database);
+        $sql = $this->connection->createSchemaManager()->getDatabasePlatform()->getListTableColumnsSQL($table, $database);
 
         return $this->connection->fetchAllAssociative($sql);
     }
@@ -165,7 +164,7 @@ SQL;
     public function dropTableIfExist(string $table)
     {
         if ($this->tableExists($table)) {
-            $this->connection->getSchemaManager()->dropTable($table);
+            $this->connection->createSchemaManager()->dropTable($table);
         }
     }
 }

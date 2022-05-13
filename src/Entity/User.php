@@ -106,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         return $this->id;
     }
 
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -284,7 +284,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->getId(),
@@ -337,7 +337,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     /**
      * @inheritDoc
      */
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
             return false;

@@ -25,7 +25,7 @@ class UserCreatedSubscriber implements EventSubscriberInterface
     /**
      * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             UserCreatedEvent::USER_CREATED => ['onUserCreated', 100],

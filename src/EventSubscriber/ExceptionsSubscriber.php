@@ -14,14 +14,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ExceptionsSubscriber implements EventSubscriberInterface
 {
-    /** @var UserServiceInterface */
-    private $userService;
-
-    public function __construct(UserServiceInterface $userService)
-    {
-        $this->userService = $userService;
-    }
-
     public function onKernelException(ExceptionEvent $event)
     {
         $uri = $event->getRequest()->getRequestUri();
@@ -41,7 +33,7 @@ class ExceptionsSubscriber implements EventSubscriberInterface
     /**
      * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => ['onKernelException', 100],

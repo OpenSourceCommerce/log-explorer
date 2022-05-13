@@ -19,7 +19,7 @@ class DeleteSampleDatabaseCommand extends Command
      * @param string|null $name
      * @param DatabaseServiceInterface $databaseService
      */
-    public function __construct(string $name = null, DatabaseServiceInterface $databaseService)
+    public function __construct(DatabaseServiceInterface $databaseService, string $name = null)
     {
         parent::__construct($name);
         $this->databaseService = $databaseService;

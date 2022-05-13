@@ -33,9 +33,9 @@ class LogviewExportDeleteCommand extends Command
     }
 
     public function __construct(
-        string $name = null,
         ExportServiceInterface $exportService,
-        UserServiceInterface $userService
+        UserServiceInterface $userService,
+        string $name = null
     ) {
         parent::__construct($name);
         $this->exportService = $exportService;

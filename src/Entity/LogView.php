@@ -134,7 +134,7 @@ class LogView implements \JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'uuid' => $this->getUuid(),

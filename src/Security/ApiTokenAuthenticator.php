@@ -12,9 +12,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 
 class ApiTokenAuthenticator extends AbstractAuthenticator
 {
@@ -51,7 +51,7 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     }
 
 
-    public function authenticate(Request $request): PassportInterface
+    public function authenticate(Request $request): Passport
     {
         $apiToken = $request->headers->get('X-AUTH-TOKEN');
         if (null === $apiToken) {

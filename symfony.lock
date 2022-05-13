@@ -6,16 +6,14 @@
         "version": "1.11.99"
     },
     "doctrine/annotations": {
-        "version": "1.0",
+        "version": "1.13",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.0",
-            "ref": "a2759dd6123694c8d901d0ec80006e044c2e6457"
+            "version": "1.10",
+            "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
         },
-        "files": [
-            "config/routes/annotations.yaml"
-        ]
+        "files": []
     },
     "doctrine/cache": {
         "version": "1.10.2"
@@ -101,9 +99,6 @@
     "egulias/email-validator": {
         "version": "2.1.21"
     },
-    "friendsofdoctrine/dbal-clickhouse": {
-        "version": "v1.5.3"
-    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
@@ -115,6 +110,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.10.0"
+    },
+    "opensourcecommerce/dbal-clickhouse": {
+        "version": "dev-master"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -384,9 +382,6 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.18.1"
     },
-    "symfony/polyfill-php73": {
-        "version": "v1.18.1"
-    },
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
@@ -406,12 +401,12 @@
         "version": "v5.1.5"
     },
     "symfony/routing": {
-        "version": "5.4",
+        "version": "6.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.3",
-            "ref": "85de1d8ae45b284c3c84b668171d2615049e698f"
+            "version": "6.0",
+            "ref": "eb3b377a4dc07006c4bdb2c773652cc9434f5246"
         },
         "files": [
             "config/packages/routing.yaml",
@@ -437,9 +432,6 @@
         "version": "v5.1.5"
     },
     "symfony/security-csrf": {
-        "version": "v5.1.5"
-    },
-    "symfony/security-guard": {
         "version": "v5.1.5"
     },
     "symfony/security-http": {

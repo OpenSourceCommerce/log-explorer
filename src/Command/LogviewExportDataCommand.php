@@ -31,7 +31,7 @@ class LogviewExportDataCommand extends Command
         $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit num of exports to process per time. Default: 1');
     }
 
-    public function __construct(string $name = null, ExportServiceInterface $exportService, ParameterBagInterface $parameterBag)
+    public function __construct(ExportServiceInterface $exportService, ParameterBagInterface $parameterBag, string $name = null)
     {
         parent::__construct($name);
         $this->exportService = $exportService;

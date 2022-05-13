@@ -186,7 +186,7 @@ class DashboardWidget implements \JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $widget = $this->getWidget();
         return [

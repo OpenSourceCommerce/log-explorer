@@ -14,8 +14,8 @@ doctrine:
                 user: '%env(resolve:DATABASE_USER)%'
                 password: '%env(resolve:DATABASE_PASSWORD)%'
                 dbname: '%env(resolve:DATABASE_DBNAME)%'
-                driver_class: App\ClickHouse\Driver
-                wrapper_class: App\ClickHouse\Connection
+                driver_class: FOD\DBALClickHouse\Driver
+                wrapper_class: FOD\DBALClickHouse\Connection
                 options:
                     enable_http_compression: 1
                     max_execution_time: 60
