@@ -36,7 +36,7 @@ class AlertTriggeredSubscriber implements EventSubscriberInterface
     /**
      * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AlertTriggeredEvent::ALERT_TRIGGERED => ['onUserCreated', 100],

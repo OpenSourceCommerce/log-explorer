@@ -31,7 +31,7 @@ class UnactivatedUserSubscriber implements EventSubscriberInterface
     /**
      * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             UnactivatedUserEvent::UNACTIVATED_USER_LOGIN => ['resendActivationEmail', 100],
