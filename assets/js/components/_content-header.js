@@ -19,7 +19,7 @@ export class ContentHeader extends Component {
         }
 
         return (
-            <div className={`header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'mt-1' : 'mt-3'}`}>
+            <div className={`header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-3'}`}>
                 <div className="title fw-bold">
                     <Icon dataFeather={iconName} className="feather-lg" />
                     <span className="align-middle ms-2">{title}</span>

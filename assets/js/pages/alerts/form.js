@@ -1,26 +1,31 @@
-import React, {Component} from "react";
-import ReactDOM from "react-dom";
-import {AlertForm, CardHeader, Link} from "../../components";
+import React, { Component } from "react";
+import { AlertForm, Modal, Size } from "../../components";
 
-class AlertFormPage extends Component {
+export class AlertFormModal extends Component {
     render() {
-        let {alertId} = this.props
+        let { isShow, editAlertIndex, alertList, onHidden, ...props } = this.props;
+
+        const alertId = alertList[editAlertIndex]?.id;
+
+        const alertElement = alertList[editAlertIndex];
 
         return (
-            <>
-                <div className="card">
-                    <CardHeader title={alertId? 'Update Alert' : 'Create new Alert'} showCollapseButton={false}
-                                showRemoveButton={false}>
-                    </CardHeader>
-                    <div className="card-body">
-                        <AlertForm alertId={alertId}/>
-                    </div>
-                </div>
-            </>
-        )
+            <Modal
+                id={`alert-form-${alertId || "create"}`}
+                size={Size.medium}
+                title={`${alertId ? "Update" : "Create new"} alert`}
+                showCloseButton={false}
+                show={isShow}
+                isPositionCenter={true}
+                onHidden={onHidden}
+            >
+                <AlertForm
+                    key={alertId}
+                    alertId={alertId}
+                    alertElement={alertElement}
+                    {...props}
+                />
+            </Modal>
+        );
     }
 }
-
-const root = document.querySelector('#root')
-
-ReactDOM.render(<AlertFormPage {...root.dataset}/>, root);
