@@ -46,7 +46,8 @@ export class Modal extends Component {
             saveButtonAction,
             saveButtonTitle = 'Save Changes',
             saveButtonColor = Colors.blue,
-            show = false
+            show = false,
+            isPositionCenter = false
         } = this.props;
 
         if(this.modal) {
@@ -60,10 +61,10 @@ export class Modal extends Component {
 
         return (
             <div className={`modal fade ${className}`} id={id}>
-                <div className={`modal-dialog modal-${size}`}>
+                <div className={`modal-dialog modal-${size} ${isPositionCenter ? 'modal-dialog-centered': ''}`}>
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">{title}</h5>
+                            <p className="modal-title fw-bold">{title}</p>
                             <button type="button" className="btn btn-close" data-bs-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
                             </button>
@@ -71,7 +72,7 @@ export class Modal extends Component {
                         <div className="modal-body">
                             {children}
                         </div>
-                        <div className="modal-footer">
+                        <div className={`modal-footer ${!showCloseButton && !showSaveButton ? 'd-none' : ''}`}>
                             {showCloseButton &&
                             <button
                                 className="btn text-primary"

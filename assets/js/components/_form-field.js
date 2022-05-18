@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input} from "./index";
+import {Input, Checkbox} from "./index";
 import {WidgetTable} from "./widget/_widget-table";
 import {Select2} from "./_select2";
 import {Select} from "./_select";
@@ -7,13 +7,16 @@ import '../../styles/component/_form-field.scss';
 
 const FormFieldComponent = ({...props}) => {
     let component;
-    const {type, children } = {...props};
+    const {type, children, checkboxlabel } = {...props};
     switch (type) {
         case 'select':
             component = <Select {...props} > {children} </Select>
             break;
         case 'selectTypeAhead':
             component = <Select2 {...props} > {children} </Select2>
+            break;
+        case 'checkbox':
+            component = <Checkbox {...props} label={checkboxlabel} />;
             break;
         default:
             component = <Input {...props} />;
@@ -23,14 +26,6 @@ const FormFieldComponent = ({...props}) => {
 }
 
 export class FormField extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isOnChangeField: false,
-        }
-    }
-
     render() {
         const {
             label,
@@ -46,26 +41,26 @@ export class FormField extends Component {
             errors,
             ...rest
         } = this.props;
-        const { isOnChangeField } = this.state;
 
-        const setErrorField = errors && errors[fieldName];
+        let isInvalidField = false;
 
-        const isInvalidField = isMandatory && !value && isOnChangeField || setErrorField;
+        if (Array.isArray(errors)) {
+            isInvalidField = errors.includes(fieldName);
+        } else if (typeof errors === 'object') {
+            isInvalidField = errors[fieldName];
+        }
 
         return (
-            <div className={`form-field form-group ${className}`}>
+            <div key={isInvalidField} className={`form-field form-group ${className}`}>
                 {!isHiddenLabel && <label className={isMandatory ? 'required' : ''}>{label}</label>}
                 <FormFieldComponent
-                    className={`${isInvalidField && 'is-invalid'}`}
+                    className={isInvalidField ? 'is-invalid' : ''}
                     name={fieldName}
                     value={value}
                     onChange={(e) => {
                         if (onChange) onChange(e);
                     }}
                     onBlur={(e) => {
-                        this.setState({
-                            isOnChangeField: true,
-                        });
                         if (onBlur) onBlur(e);
                     }}
                     {...rest}

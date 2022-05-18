@@ -6,9 +6,9 @@ export class ContentHeader extends Component {
     render() {
         const {
             iconName,
-            btnRightSideTitle,
-            btnRightSideIcon,
-            btnRightSideOnClick
+            actionButtonTitle,
+            actionButtonIcon,
+            onClickActionBtn
         } = this.props;
         const splitUrl = window.location.pathname.split('/');
 
@@ -24,10 +24,10 @@ export class ContentHeader extends Component {
                     <Icon dataFeather={iconName} className="feather-lg" />
                     <span className="align-middle ms-2">{title}</span>
                 </div>
-                {btnRightSideOnClick && <Button style={{ fonSize: "16px" }} onClick={btnRightSideOnClick}>
-                    {btnRightSideIcon && <Icon dataFeather={btnRightSideIcon} className="feather-lg"/>}
-                    {btnRightSideTitle && <span className="align-middle ms-1">
-                        {btnRightSideTitle}
+                {onClickActionBtn && <Button style={{ fonSize: "16px" }} onClick={onClickActionBtn}>
+                    {actionButtonIcon && <Icon dataFeather={actionButtonIcon} className="feather-lg"/>}
+                    {actionButtonTitle && <span className="align-middle ms-1">
+                        {actionButtonTitle}
                     </span>}
                 </Button>}
             </div>

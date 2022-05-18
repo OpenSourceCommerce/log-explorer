@@ -31,6 +31,7 @@ export class DeleteModal extends Component {
                 showSaveButton={true}
                 closeButtonAction={closeButtonAction}
                 saveButtonAction={saveButtonAction}
+                onHidden={closeButtonAction}
             />
         )
     }

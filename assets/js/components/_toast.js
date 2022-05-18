@@ -18,14 +18,14 @@ export class Toast extends Component {
     }
 
     componentDidUpdate() {
-        const { onToastClosed } = this.props;
+        const { onToastClosed, timeoutCloseToast = 1500 } = this.props;
         if (this.state.toastContent.message) {
             setTimeout(() => {
-                onToastClosed();
+                if (onToastClosed) onToastClosed();
                 this.setState({
                     toastContent: {}
                 })
-            }, 1500);
+            }, timeoutCloseToast);
         }
     }
 

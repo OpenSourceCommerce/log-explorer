@@ -51,7 +51,6 @@ Encore
 	.addEntry('graph_list', './assets/js/pages/graph/list.js')
 	.addEntry('logview_form', './assets/js/pages/logview/form.js')
 	.addEntry('user_list', './assets/js/pages/user/list.js')
-	.addEntry('user_form', './assets/js/pages/user/form.js')
 	.addEntry('user_confirmation', './assets/js/pages/user/confirmation.js')
 	.addEntry('user_profile', './assets/js/pages/user/profile.js')
 	.addEntry('navbar', './assets/js/components/_navbar.js')
