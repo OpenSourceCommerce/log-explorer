@@ -61,9 +61,6 @@ export class FormField extends Component {
                         if (onChange) onChange(e);
                     }}
                     onBlur={(e) => {
-                        this.setState({
-                            isOnChangeField: true,
-                        });
                         if (onBlur) onBlur(e);
                     }}
                     {...rest}
