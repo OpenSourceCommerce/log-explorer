@@ -26,14 +26,6 @@ const FormFieldComponent = ({...props}) => {
 }
 
 export class FormField extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isOnChangeField: false,
-        }
-    }
-
     render() {
         const {
             label,
@@ -49,26 +41,17 @@ export class FormField extends Component {
             errors,
             ...rest
         } = this.props;
-        const { isOnChangeField } = this.state;
-
-        let setErrorField = false;
-
-        if (Array.isArray(errors)) {
-            setErrorField = errors.includes(fieldName);
-        } else if (typeof errors === 'object') {
-            setErrorField = errors[fieldName];
-        }
 
         let isInvalidField = false;
-        if (isMandatory && !value && isOnChangeField) {
-            isInvalidField = true;
-        }
-        if (setErrorField) {
-            isInvalidField = true;
+
+        if (Array.isArray(errors)) {
+            isInvalidField = errors.includes(fieldName);
+        } else if (typeof errors === 'object') {
+            isInvalidField = errors[fieldName];
         }
 
         return (
-            <div key={value || isInvalidField} className={`form-field form-group ${className}`}>
+            <div key={isInvalidField} className={`form-field form-group ${className}`}>
                 {!isHiddenLabel && <label className={isMandatory ? 'required' : ''}>{label}</label>}
                 <FormFieldComponent
                     className={isInvalidField ? 'is-invalid' : ''}

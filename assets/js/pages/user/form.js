@@ -151,7 +151,10 @@ export class UserForm extends Component {
                 showCloseButton={false}
                 show={isShow}
                 isPositionCenter={true}
-                onHidden={onHidden}
+                onHidden={() => {
+                    onHidden();
+                    this.setState({user: DEFAULT_USER, errors: []})
+                }}
             >
                 <form role="form" className="mx-4">
                     {errorMessageRes && (
