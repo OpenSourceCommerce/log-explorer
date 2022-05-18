@@ -84,25 +84,27 @@ class AlertList extends Component {
 
         let toastContent = {};
 
+        const toastStr = !!parseInt(newValue) ? "Activate" : "Deactivate";
+
         try {
             const res = await AlertActions.updateStatus(id);
             if (res.error) {
                 toastContent = {
                     color: TOAST_STATUS.failed,
-                    message: `${newValue ? "Activate" : "Deactivate"} alert failed`,
+                    message: `${toastStr} alert failed`,
                 };
                 return;
             }
             toastContent = {
                 color: TOAST_STATUS.success,
-                message: `${newValue ? "Activate" : "Deactivate"} alert successful`,
+                message: `${toastStr} alert successful`,
             };
 
             newAlertList[index].isActive = newValue;
         } catch (e) {
             toastContent = {
                 color: TOAST_STATUS.failed,
-                message: `${newValue ? "Activate" : "Deactivate"} alert failed`,
+                message: `${toastStr} alert failed`,
             };
         } finally {
             this.setState({
@@ -142,21 +144,26 @@ class AlertList extends Component {
             {
                 label: "Status",
                 dataField: "isActive",
-                formatter: ({ row, cell, index }) => (
-                    <div className="form-check form-switch">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            role="switch"
-                            id="is_active"
-                            defaultChecked={!!cell}
-                            onChange={(e) => this.onChangeStatus(row.id, index, !cell)}
-                        />
-                    </div>
-                ),
+                formatter: ({ row, cell, index }) => {
+                    const value = parseInt(cell);
+                    return (
+                        <div className="form-check form-switch">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="isActive"
+                                defaultChecked={!!value}
+                                onChange={() =>
+                                    this.onChangeStatus(row.id, index, !value ? "1" : "0")
+                                }
+                            />
+                        </div>
+                    );
+                },
             },
             {
-                formatter: ({ index, row }) => {
+                formatter: ({ index }) => {
                     return (
                         <div className="dropdown float-end">
                             <button
@@ -190,10 +197,6 @@ class AlertList extends Component {
                 },
             },
         ];
-
-        console.log('deleteAlertIndex', deleteAlertIndex);
-        console.log('isShowAlertDetailForm', isShowAlertDetailForm);
-        console.log('editAlertIndex', editAlertIndex);
 
         return (
             <div className="alert container-fluid" style={{ backgroundColor: "#F8F9FA" }}>
