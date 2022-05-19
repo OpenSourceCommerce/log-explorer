@@ -1,169 +1,262 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import {Button, CardHeader, Icon, Link, Modal, Size} from "../../components";
-import {Alert, AlertActions, GraphActions} from "../../actions";
-import {Table} from "../../components/_table";
+import { Button, Icon, DeleteModal, ContentHeader, DataTable, Toast } from "../../components";
+import { AlertActions, DatabaseActions } from "../../actions";
+import { TOAST_STATUS } from "../../utils";
+import { AlertFormModal } from "./form";
 
 class AlertList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
-            deletingAlert: null,
+            alertList: [],
+            tableList: [],
+            toastContent: {},
+            deleteAlertIndex: null,
+            isShowAlertDetailForm: false,
+            editAlertIndex: null,
         };
-
-        this.getData = this.getData.bind(this)
-        this.updateStatus = this.updateStatus.bind(this)
-        this.deleteAlert = this.deleteAlert.bind(this)
     }
 
-    getData() {
-        AlertActions.listAlert().then((response) => {
-            const {error, data} = response
-            const deletingAlert = null
+    getData = async () => {
+        const { tableList } = this.state;
+        const [alertRes, dataTablesRes] = await Promise.all([
+            AlertActions.listAlert(),
+            tableList.length === 0 ? DatabaseActions.getAllTable() : [],
+        ]);
 
-            if (error === 0) {
-                this.setState({data, deletingAlert})
-            }
-        })
-    }
+        if (!alertRes.error || !dataTablesRes.error) {
+            this.setState({
+                alertList: alertRes.data,
+                tableList: dataTablesRes.data || tableList,
+            });
+        }
+    };
 
     componentDidMount() {
-        this.getData()
+        this.getData();
     }
 
-    deleteAlert() {
-        const $this = this;
-        const {deletingAlert} = this.state;
+    onConfirmDeleteAlert = async () => {
+        const { deleteAlertIndex, alertList } = this.state;
 
-        if (!deletingAlert) {
+        if (parseInt(deleteAlertIndex) < 0) {
             return;
         }
 
-        AlertActions.deleteAlert(deletingAlert.id)
-            .then(res => {
-                const {error} = res;
-                if (error) {
-                    return;
-                }
+        let toastContent = {};
 
-                $this.getData()
-                Alert.success('Delete successful');
+        let newAlertList = [...alertList];
+
+        try {
+            const res = await AlertActions.deleteAlert(newAlertList[deleteAlertIndex].id);
+
+            if (res.error) {
+                toastContent = {
+                    color: TOAST_STATUS.failed,
+                    message: "Delete alert failed",
+                };
+            } else {
+                toastContent = {
+                    color: TOAST_STATUS.success,
+                    message: "Delete alert successful",
+                };
+
+                newAlertList.splice(deleteAlertIndex, 1);
+            }
+        } catch (e) {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: e.message,
+            };
+        } finally {
+            this.setState({
+                toastContent,
+                deleteAlertIndex: null,
+                alertList: newAlertList,
             });
-    }
+        }
+    };
 
-    updateStatus(event) {
-        const $this = this
-        const {id} = event.target.dataset
+    onChangeStatus = async (id, index, newValue) => {
+        const { alertList } = this.state;
 
-        AlertActions.updateStatus(id).then(() => {
-            $this.getData()
-        })
-    }
+        const newAlertList = [...alertList];
+
+        let toastContent = {};
+
+        const toastStr = !!parseInt(newValue) ? "Activate" : "Deactivate";
+
+        try {
+            const res = await AlertActions.updateStatus(id);
+            if (res.error) {
+                toastContent = {
+                    color: TOAST_STATUS.failed,
+                    message: `${toastStr} alert failed`,
+                };
+                return;
+            }
+            toastContent = {
+                color: TOAST_STATUS.success,
+                message: `${toastStr} alert successful`,
+            };
+
+            newAlertList[index].isActive = newValue;
+        } catch (e) {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: `${toastStr} alert failed`,
+            };
+        } finally {
+            this.setState({
+                toastContent,
+                alertList: newAlertList,
+            });
+        }
+    };
 
     render() {
-        const {data, deletingAlert} = this.state
+        const {
+            alertList,
+            deleteAlertIndex,
+            toastContent,
+            isShowAlertDetailForm,
+            editAlertIndex,
+            tableList,
+        } = this.state;
+
+        const columns = [
+            {
+                label: "Title",
+                dataField: "title",
+            },
+            {
+                label: "Table",
+                dataField: "from_table",
+            },
+            {
+                label: "Threshold",
+                dataField: "threshold",
+            },
+            {
+                label: "Interval (min.)",
+                dataField: "interval_time",
+            },
+            {
+                label: "Status",
+                dataField: "isActive",
+                formatter: ({ row, cell, index }) => {
+                    const value = parseInt(cell);
+                    return (
+                        <div className="form-check form-switch">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id="isActive"
+                                defaultChecked={!!value}
+                                onChange={() =>
+                                    this.onChangeStatus(row.id, index, !value ? "1" : "0")
+                                }
+                            />
+                        </div>
+                    );
+                },
+            },
+            {
+                formatter: ({ index }) => {
+                    return (
+                        <div className="dropdown float-end">
+                            <button
+                                className="btn text-dark"
+                                id="dropdownMenuLink"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <Icon name="ellipsis-h" />
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li>
+                                    <Button
+                                        className="dropdown-item text-primary"
+                                        onClick={() => this.setState({ editAlertIndex: index })}
+                                    >
+                                        Edit
+                                    </Button>
+                                </li>
+                                <li>
+                                    <Button
+                                        onClick={() => this.setState({ deleteAlertIndex: index })}
+                                        className="dropdown-item text-danger"
+                                    >
+                                        Delete
+                                    </Button>
+                                </li>
+                            </ul>
+                        </div>
+                    );
+                },
+            },
+        ];
 
         return (
-            <>
-                <Modal
-                    size={Size.medium}
-                    id={'delete-alert'}
-                    title={`Deleting Alert`}
-                    showCloseButton={true}
-                    closeButtonTitle='Abort'
-                    showSaveButton={true}
-                    saveButtonTitle='OK'
-                    saveButtonColor='danger'
-                    saveButtonAction={this.deleteAlert}
-                    show={deletingAlert != null}
-                    onHidden={() => {
-                        this.setState({deletingAlert: null})
-                    }}
-                >
-                    Do you want to delete this alert "{deletingAlert?.title}"?
-                </Modal>
-                <div className="card">
-                    <CardHeader title="Alert List" showCollapseButton={false}
-                                showRemoveButton={false}>
-                        <Link href={'/alert/create'} className={'btn btn-success'}>
-                            Create Alert
-                        </Link>
-                    </CardHeader>
-                    <div className="card-body">
-                        <Table>
-                            <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Table</th>
-                                <th>Threshold</th>
-                                <th>Interval</th>
-                                <th>Is Active</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {data && data.map((item, key) => {
-                                return (
-                                    <tr key={key}>
-                                        <td>{item.title}</td>
-                                        <td>{item.from_table}</td>
-                                        <td>{item.threshold}</td>
-                                        <td>{item.interval_time}</td>
-                                        <td>
-                                            <a href='#'
-                                               onClick={this.updateStatus}>
-                                                {
-                                                    (item.isActive === '1') ?
-                                                        <Icon className="text-success"
-                                                              data-id={item.id}
-                                                              name='check-circle'/> :
-                                                        <Icon className="text-danger"
-                                                              data-id={item.id}
-                                                              name='times-circle'/>
-                                                }
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <Link href={`/alert/${item.id}`}
-                                                  className={'btn btn-success btn-sm me-2'}>
-                                                <Icon name={'edit'}/>
-                                            </Link>
-                                            <Link
-                                                onClick={this.updateStatus}
-                                                className={`btn btn-sm me-2 ${(item.isActive === '1'? 'btn-primary' : 'btn-warning')}`}
-                                                data-id={item.id}>
-                                                {(item.isActive === '1') ?
-                                                    <Icon data-id={item.id}
-                                                          name='check-circle'/> :
-                                                    <Icon data-id={item.id}
-                                                          name='times-circle'/>}
-                                            </Link>
-                                            <Button
-                                                onClick={e => this.setState({deletingAlert: item})}
-                                                className="btn-sm"
-                                                color={'danger'}>
-                                                <Icon name={'trash'}/>
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                            {data.length < 1 && <tr>
-                                <td colSpan={6}>
-                                    <p>
-                                        No Alert found
-                                    </p>
-                                </td>
-                            </tr>}
-                            </tbody>
-                        </Table>
-                    </div>
+            <div className="alert container-fluid" style={{ backgroundColor: "#F8F9FA" }}>
+                <div className="content ms-2 me-2">
+                    <ContentHeader
+                        iconName="alert-triangle"
+                        actionButtonTitle="Create Alert"
+                        actionButtonIcon="plus"
+                        onClickActionBtn={() => {
+                            this.setState({ isShowAlertDetailForm: true });
+                        }}
+                    />
+                    <Toast
+                        toastContent={toastContent}
+                        onToastClosed={() => {
+                            this.setState({ toastContent: {} });
+                        }}
+                    />
+                    {alertList && alertList.length > 0 ? (
+                        <DataTable columns={columns} dataTable={alertList} className="bg-white" />
+                    ) : (
+                        <div className="d-flex justify-content-center">No alert found</div>
+                    )}
+                    <DeleteModal
+                        data={alertList}
+                        indexSelected={deleteAlertIndex}
+                        objectName="alert"
+                        displayField="title"
+                        closeButtonAction={() => {
+                            this.setState({
+                                deleteAlertIndex: null,
+                            });
+                        }}
+                        saveButtonAction={() => this.onConfirmDeleteAlert()}
+                    />
+                    <AlertFormModal
+                        isShow={isShowAlertDetailForm || parseInt(editAlertIndex) >= 0}
+                        alertList={alertList}
+                        editAlertIndex={editAlertIndex}
+                        tableList={tableList}
+                        onSubmitAlertData={(toastContent) => {
+                            this.getData();
+                            this.setState({
+                                isShowAlertDetailForm: false,
+                                editAlertIndex: null,
+                                toastContent,
+                            });
+                        }}
+                        onHidden={() => {
+                            this.setState({
+                                isShowAlertDetailForm: false,
+                                editAlertIndex: null,
+                            });
+                        }}
+                    />
                 </div>
-            </>
-        )
+            </div>
+        );
     }
 }
 
-ReactDOM.render(<AlertList/>, document.querySelector('#root'));
-
+ReactDOM.render(<AlertList />, document.querySelector("#root"));

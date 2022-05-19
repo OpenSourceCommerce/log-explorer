@@ -1,28 +1,54 @@
 import React, {Component} from 'react';
 import {Input, Checkbox} from "./index";
-import {WidgetTable} from "./widget/_widget-table";
 import {Select2} from "./_select2";
 import {Select} from "./_select";
 import '../../styles/component/_form-field.scss';
+
+const COMPONENT_TYPE = {
+    SELECT: 'select',
+    SELECT_TYPE_AHEAD: 'selectTypeAhead',
+    CHECKBOX: 'checkbox',
+    NUMBER: 'number'
+}
+
 
 const FormFieldComponent = ({...props}) => {
     let component;
     const {type, children, checkboxlabel } = {...props};
     switch (type) {
-        case 'select':
+        case COMPONENT_TYPE.SELECT:
             component = <Select {...props} > {children} </Select>
             break;
-        case 'selectTypeAhead':
+        case COMPONENT_TYPE.SELECT_TYPE_AHEAD:
             component = <Select2 {...props} > {children} </Select2>
             break;
-        case 'checkbox':
+        case COMPONENT_TYPE.CHECKBOX:
             component = <Checkbox {...props} label={checkboxlabel} />;
             break;
         default:
-            component = <Input {...props} />;
+            component = <Input type={type} {...props} />;
             break;
     }
     return component;
+}
+
+const generateErrorMessage = (componentType) => {
+    let errorMessage = '';
+    switch (componentType) {
+        case COMPONENT_TYPE.SELECT:
+            errorMessage = 'Please select a valid value.';
+            break;
+        case COMPONENT_TYPE.SELECT_TYPE_AHEAD:
+            errorMessage = 'Please select at least one option.';
+            break;
+        case COMPONENT_TYPE.CHECKBOX:
+            errorMessage = 'Please check to this checkbox.';
+            break;
+        default:
+            errorMessage = 'Please fill out this field.';
+            break;
+    }
+    return errorMessage;
 }
 
 export class FormField extends Component {
@@ -38,7 +64,9 @@ export class FormField extends Component {
             isMandatory = false,
             isHiddenLabel = false,
             children,
+            errorMessage,
             errors,
+            type,
             ...rest
         } = this.props;
 
@@ -51,12 +79,13 @@ export class FormField extends Component {
         }
 
         return (
-            <div key={isInvalidField} className={`form-field form-group ${className}`}>
+            <div className={`form-field form-group ${className}`}>
                 {!isHiddenLabel && <label className={isMandatory ? 'required' : ''}>{label}</label>}
                 <FormFieldComponent
                     className={isInvalidField ? 'is-invalid' : ''}
                     name={fieldName}
                     value={value}
+                    type={type}
                     onChange={(e) => {
                         if (onChange) onChange(e);
                     }}
@@ -67,7 +96,7 @@ export class FormField extends Component {
                 >
                     {children}
                 </FormFieldComponent>
-                {isInvalidField && <span className="error invalid-feedback">Please fill out this field</span>}
+                {isInvalidField && <span className="error invalid-feedback">{errorMessage || generateErrorMessage(type)}</span>}
             </div>
         );
     }

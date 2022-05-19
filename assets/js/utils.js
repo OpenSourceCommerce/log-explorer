@@ -3,7 +3,8 @@ import moment from "moment";
 export const PAGE_NAME = {
     dashboard: 'Dashboard',
     table: 'Table',
-    user: 'Users'
+    user: 'Users',
+    alert: 'Alert'
 };
 
 export const TOAST_STATUS = {
