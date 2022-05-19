@@ -19,15 +19,16 @@ class AlertList extends Component {
     }
 
     getData = async () => {
+        const { tableList } = this.state;
         const [alertRes, dataTablesRes] = await Promise.all([
             AlertActions.listAlert(),
-            DatabaseActions.getAllTable(),
+            tableList.length === 0 ? DatabaseActions.getAllTable() : [],
         ]);
 
         if (!alertRes.error || !dataTablesRes.error) {
             this.setState({
                 alertList: alertRes.data,
-                tableList: dataTablesRes.data,
+                tableList: dataTablesRes.data || tableList,
             });
         }
     };

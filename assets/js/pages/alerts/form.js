@@ -100,12 +100,7 @@ export class AlertFormModal extends Component {
     };
 
     onChangeFilter = async (from, to, dateRange) => {
-        let { data } = this.state;
-        data["time_range"] = dateRange;
-
-        this.setState({
-            data,
-        });
+        this.onChangeField({name: 'time_range', value: dateRange})
     };
 
     onSubmit = () => {
@@ -162,6 +157,12 @@ export class AlertFormModal extends Component {
                     };
                     payloadData.id = response.id;
                 }
+            })
+            .catch((e) => {
+                toastContent = {
+                    color: TOAST_STATUS.failed,
+                    message: `${data.id ? "Update" : "Create"} alert failed.`,
+                };
             })
             .finally(() => {
                 this.setState({
@@ -224,6 +225,7 @@ export class AlertFormModal extends Component {
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("from_table")}
                         type="select"
+                        errors={errors}
                     >
                         <option value="">Select table</option>
                         {tableList.map((table, key) => (
@@ -319,6 +321,7 @@ export class AlertFormModal extends Component {
                             isLoading={isLoading}
                             type="button"
                             className="btn-block w-100"
+                            disabled={errors.length > 0}
                             onClick={this.onSubmit}
                         >
                             Save Alert
