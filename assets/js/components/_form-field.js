@@ -80,7 +80,7 @@ export class FormField extends Component {
         }
 
         return (
-            <div key={isInvalidField} className={`form-field form-group ${className}`}>
+            <div className={`form-field form-group ${className}`}>
                 {!isHiddenLabel && <label className={isMandatory ? 'required' : ''}>{label}</label>}
                 <FormFieldComponent
                     className={isInvalidField ? 'is-invalid' : ''}
