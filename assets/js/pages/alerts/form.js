@@ -251,6 +251,7 @@ export class AlertFormModal extends Component {
                                 value={threshold}
                                 fieldName="threshold"
                                 type="number"
+                                min="0"
                                 onChange={(e) => this.onChangeField(e.target)}
                                 isMandatory={MANDATORY_FIELDS.includes("threshold")}
                                 errors={errors}
@@ -261,6 +262,7 @@ export class AlertFormModal extends Component {
                                 label="Check interval in minutes"
                                 value={interval_time}
                                 type="number"
+                                min="0"
                                 fieldName="interval_time"
                                 onChange={(e) => this.onChangeField(e.target)}
                                 isMandatory={MANDATORY_FIELDS.includes("interval_time")}

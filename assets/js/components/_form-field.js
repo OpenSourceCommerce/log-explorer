@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Input, Checkbox} from "./index";
-import {WidgetTable} from "./widget/_widget-table";
 import {Select2} from "./_select2";
 import {Select} from "./_select";
 import '../../styles/component/_form-field.scss';
