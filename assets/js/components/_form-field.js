@@ -5,10 +5,11 @@ import {Select2} from "./_select2";
 import {Select} from "./_select";
 import '../../styles/component/_form-field.scss';
 
-const COMPONENT_NAME = {
+const COMPONENT_TYPE = {
     SELECT: 'select',
     SELECT_TYPE_AHEAD: 'selectTypeAhead',
-    CHECKBOX: 'checkbox'
+    CHECKBOX: 'checkbox',
+    NUMBER: 'number'
 }
 
 
@@ -16,17 +17,17 @@ const FormFieldComponent = ({...props}) => {
     let component;
     const {type, children, checkboxlabel } = {...props};
     switch (type) {
-        case COMPONENT_NAME.SELECT:
+        case COMPONENT_TYPE.SELECT:
             component = <Select {...props} > {children} </Select>
             break;
-        case COMPONENT_NAME.SELECT_TYPE_AHEAD:
+        case COMPONENT_TYPE.SELECT_TYPE_AHEAD:
             component = <Select2 {...props} > {children} </Select2>
             break;
-        case COMPONENT_NAME.CHECKBOX:
+        case COMPONENT_TYPE.CHECKBOX:
             component = <Checkbox {...props} label={checkboxlabel} />;
             break;
         default:
-            component = <Input {...props} />;
+            component = <Input type={type} {...props} />;
             break;
     }
     return component;
@@ -35,17 +36,17 @@ const FormFieldComponent = ({...props}) => {
 const generateErrorMessage = (componentType) => {
     let errorMessage = '';
     switch (componentType) {
-        case COMPONENT_NAME.SELECT:
+        case COMPONENT_TYPE.SELECT:
             errorMessage = 'Please select a valid value.';
             break;
-        case COMPONENT_NAME.SELECT_TYPE_AHEAD:
+        case COMPONENT_TYPE.SELECT_TYPE_AHEAD:
             errorMessage = 'Please select at least one option.';
             break;
-        case COMPONENT_NAME.CHECKBOX:
+        case COMPONENT_TYPE.CHECKBOX:
             errorMessage = 'Please check to this checkbox.';
             break;
         default:
-            errorMessage = 'Please fill out this field'
+            errorMessage = 'Please fill out this field.';
             break;
     }
     return errorMessage;

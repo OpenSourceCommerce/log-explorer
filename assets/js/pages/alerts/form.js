@@ -211,7 +211,7 @@ export class AlertFormModal extends Component {
                         className="mb-3"
                         label="Title"
                         value={title}
-                        placeholder="Title"
+                        placeholder="New alert"
                         fieldName="title"
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("title")}
@@ -238,7 +238,7 @@ export class AlertFormModal extends Component {
                         className="mb-3"
                         label="Criteria to search for in sql mode"
                         value={query}
-                        placeholder="Query"
+                        placeholder="..."
                         fieldName="query"
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("query")}
@@ -249,8 +249,8 @@ export class AlertFormModal extends Component {
                             <FormField
                                 label="Limit for alert"
                                 value={threshold}
-                                placeholder="Last name"
                                 fieldName="threshold"
+                                type="number"
                                 onChange={(e) => this.onChangeField(e.target)}
                                 isMandatory={MANDATORY_FIELDS.includes("threshold")}
                                 errors={errors}
@@ -260,7 +260,7 @@ export class AlertFormModal extends Component {
                             <FormField
                                 label="Check interval in minutes"
                                 value={interval_time}
-                                placeholder="Last name"
+                                type="number"
                                 fieldName="interval_time"
                                 onChange={(e) => this.onChangeField(e.target)}
                                 isMandatory={MANDATORY_FIELDS.includes("interval_time")}
@@ -284,7 +284,6 @@ export class AlertFormModal extends Component {
                         className="mb-3"
                         label="Email Address"
                         value={email}
-                        placeholder="Email Address"
                         fieldName="email"
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("email")}
@@ -294,7 +293,6 @@ export class AlertFormModal extends Component {
                         className="mb-3"
                         label="Email Subject"
                         value={subject}
-                        placeholder="Email Subject"
                         fieldName="subject"
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("subject")}
