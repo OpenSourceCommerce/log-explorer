@@ -4,7 +4,8 @@ export const PAGE_NAME = {
     dashboard: 'Dashboard',
     table: 'Table',
     user: 'Users',
-    alert: 'Alert'
+    alert: 'Alert',
+    profile: 'Settings'
 };
 
 export const TOAST_STATUS = {

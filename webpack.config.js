@@ -61,7 +61,6 @@ Encore
 	.addEntry('page_login', './assets/js/pages/security/login.js')
 	.addEntry('page_forgot', './assets/js/pages/security/forgot.js')
 	.addEntry('page_reset', './assets/js/pages/security/reset-password.js')
-	.addEntry('page_change_password', './assets/js/pages/user/change-password.js')
 	.addEntry('dashboard_list', './assets/js/pages/dashboard/list.js')
 	.addEntry('dashboard_form', './assets/js/pages/dashboard/form.js')
 	.addEntry('widget_list', './assets/js/pages/widget/list.js')
