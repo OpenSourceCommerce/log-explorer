@@ -39,7 +39,7 @@ describe('Profile page', () => {
             profilePage.setFirstname('Test');
             profilePage.setLastname('No1');
             profilePage.save();
-            alertHelper.hasToastMessage('Update successful');
+            alertHelper.findToastMessageByClassName('Update profile successful');
         })
     });
 })
