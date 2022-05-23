@@ -109,7 +109,7 @@ export class UserProfile extends React.Component {
         return (
             <div className="col-4 card">
                 <div className="card-body mx-4">
-                    <h5 className="mb-4">User Profile</h5>
+                    <h5 className="mb-4">Update Profile</h5>
                     <form role="form">
                         <div className="row mb-3">
                             <FormField

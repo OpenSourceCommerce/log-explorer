@@ -10,7 +10,7 @@ const ValidatorHelper = {
         }, 'Email is invalid format');
 
         jQuery.validator.addMethod('passwordCapitalCharacters', function (value, element) {
-            const strongRegex = new RegExp('^(?=.*[a-zA-Z\\d])(?=.*[!@#$%^&\\.\\,\\/\\;\\\'\\[\\]\\(\\)\\=\\+\\-\\<\\>\\?\\:\\"\\{\\}])(?=.{8,})');
+            const strongRegex = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
             return this.optional(element) || strongRegex.test(value);
         }, 'Password is invalid format');
         $(element).validate({

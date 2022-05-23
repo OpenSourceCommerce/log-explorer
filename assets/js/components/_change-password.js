@@ -8,7 +8,7 @@ const DEFAULT_VALUE = {
     confirm_password: "",
 };
 
-const MANDATORY_FIELDS = ["current_password", "password", "current_password"];
+const MANDATORY_FIELDS = ["current_password", "password", "confirm_password"];
 
 const InputPasswordComponent = ({ fieldName, helpText, ...props }) => {
     return (
@@ -48,7 +48,6 @@ export class ChangePasswordForm extends Component {
 
     handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(this.state);
         this.setState((preState) => ({
             ...preState,
             [name]: value,
@@ -95,8 +94,6 @@ export class ChangePasswordForm extends Component {
         return {
             current_password: {
                 required: true,
-                passwordCapitalCharacters: true,
-                minlength: 8,
             },
             password: {
                 required: true,
@@ -140,7 +137,7 @@ export class ChangePasswordForm extends Component {
                             placeholder="Input your new password"
                             onChange={this.handleChange}
                             helpText="Minimum 8 characters, at least one uppercase letter, one lowercase
-                            letter, one number and one special"
+                            letter, one number and one special character."
                         />
                         <InputPasswordComponent
                             id="confirm_password"
