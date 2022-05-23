@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {PAGE_NAME} from '../utils';
 import { Icon, Button } from '.';
+import "../../styles/component/_content-header.scss";
 
 export class ContentHeader extends Component {
     render() {
@@ -19,7 +20,7 @@ export class ContentHeader extends Component {
         }
 
         return (
-            <div className={`header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-3'}`}>
+            <div className={`content-header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-3'}`}>
                 <div className="title fw-bold">
                     <Icon dataFeather={iconName} className="feather-lg" />
                     <span className="align-middle ms-2">{title}</span>

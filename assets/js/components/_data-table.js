@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import "../../styles/component/_data-table.scss";
 
 export class DataTable extends Component {
     render() {
         let { columns, className = "", dataTable, isSortableTable = false } = this.props;
 
         return (
-            <table className={`table bg-white mt-3 table-striped table-responsive table-sortable ${isSortableTable ? 'table-sortable' : ''} ${className}`}>
+            <table className={`data-table table bg-white mt-3 table-striped table-responsive table-sortable ${isSortableTable ? 'table-sortable' : ''} ${className}`}>
                 <thead>
                     <tr className="border-0">
                         {columns.map((item, index) => {
