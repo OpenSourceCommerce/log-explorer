@@ -2,18 +2,20 @@ import React from "react";
 import { FormField, Button } from ".";
 import { UserActions } from "../actions";
 import { TOAST_STATUS } from "../utils";
+import isEqual from "lodash/isEqual";
 
 const MANDATORY_FIELDS = ["firstName", "lastName"];
-
+const DEFAULT_USER_DATA = {
+    firstName: "",
+    lastName: "",
+    email: "",
+};
 export class UserProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                firstName: "",
-                lastName: "",
-                email: "",
-            },
+            user: DEFAULT_USER_DATA,
+            oldUserData: DEFAULT_USER_DATA,
             errors: [],
         };
     }
@@ -30,12 +32,15 @@ export class UserProfile extends React.Component {
 
             const { first_name, last_name, email } = data;
 
+            const user = {
+                firstName: first_name,
+                lastName: last_name,
+                email,
+            };
+
             this.setState({
-                user: {
-                    firstName: first_name,
-                    lastName: last_name,
-                    email,
-                },
+                user,
+                oldUserData: user,
                 isLoading: false,
             });
         });
@@ -94,45 +99,44 @@ export class UserProfile extends React.Component {
             .finally(() => {
                 this.setState({
                     isLoading: false,
+                    oldUserData: user,
                 });
                 setToastMessage(toastContent);
             });
-    }
+    };
 
     render() {
-        const {
-            user: { firstName, lastName, email },
-            isLoading,
-            errors,
-        } = this.state;
+        const { user, isLoading, errors, oldUserData } = this.state;
+
+        const { firstName, lastName, email } = user;
+
+        const isDisableSaveButton = errors.length > 0 || isEqual(user, oldUserData);
 
         return (
-            <div className="col-4 card">
+            <div className="col-4 card border-0 rounded-0">
                 <div className="card-body mx-4">
-                    <h5 className="mb-4">Update Profile</h5>
+                    <h5 className="header mb-3">Update Profile</h5>
                     <form role="form">
-                        <div className="row mb-3">
-                            <FormField
-                                className="col"
-                                label="First name"
-                                value={firstName}
-                                placeholder="First name"
-                                fieldName="firstName"
-                                onChange={(e) => this.onFieldChange(e.target)}
-                                isMandatory={MANDATORY_FIELDS.includes("firstName")}
-                                errors={errors}
-                            />
-                            <FormField
-                                className="col"
-                                label="Last name"
-                                value={lastName}
-                                placeholder="Last name"
-                                fieldName="lastName"
-                                onChange={(e) => this.onFieldChange(e.target)}
-                                isMandatory={MANDATORY_FIELDS.includes("lastName")}
-                                errors={errors}
-                            />
-                        </div>
+                        <FormField
+                            className="mb-3"
+                            label="First name"
+                            value={firstName}
+                            placeholder="First name"
+                            fieldName="firstName"
+                            onChange={(e) => this.onFieldChange(e.target)}
+                            isMandatory={MANDATORY_FIELDS.includes("firstName")}
+                            errors={errors}
+                        />
+                        <FormField
+                            className="mb-3"
+                            label="Last name"
+                            value={lastName}
+                            placeholder="Last name"
+                            fieldName="lastName"
+                            onChange={(e) => this.onFieldChange(e.target)}
+                            isMandatory={MANDATORY_FIELDS.includes("lastName")}
+                            errors={errors}
+                        />
                         <FormField
                             className="mb-3"
                             label="E-Mail"
@@ -148,6 +152,7 @@ export class UserProfile extends React.Component {
                             className="float-end"
                             color="primary"
                             onClick={this.onSubmit}
+                            disabled={isDisableSaveButton}
                             isLoading={isLoading}
                             cy={"btnSave"}
                         >

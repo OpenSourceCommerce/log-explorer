@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, FormField } from "./";
-import { Alert, UserActions, ValidatorHelper } from "../actions";
+import { UserActions, ValidatorHelper } from "../actions";
+import { TOAST_STATUS } from "../utils";
 
 const DEFAULT_VALUE = {
     current_password: "",
@@ -26,7 +27,7 @@ const InputPasswordComponent = ({ fieldName, helpText, ...props }) => {
                     </div>
                 </a>
             </div>
-            {helpText && <small className="form-text text-muted">{helpText}</small>}
+            {helpText && <div className="form-text text-muted fw-light px-3 m-0">{helpText}</div>}
         </div>
     );
 };
@@ -58,20 +59,36 @@ export class ChangePasswordForm extends Component {
         e.preventDefault();
         const hasError = false;
         const { current_password, password } = this.state;
+        const { setToastMessage } = this.props;
 
         if (!hasError) {
             this.setState({
                 isLoading: true,
             });
 
+            let toastContent = {}
+
             UserActions.changePassword(current_password, password)
                 .then((res) => {
                     const { error } = res;
                     if (error) {
+                        toastContent = {
+                            color: TOAST_STATUS.failed,
+                            message: "Change password failed",
+                        };
                         return;
                     }
 
-                    Alert.success("Update successful");
+                    toastContent = {
+                        color: TOAST_STATUS.success,
+                        message: "Change password successful",
+                    };
+                })
+                .catch((e) => {
+                    toastContent = {
+                        color: TOAST_STATUS.failed,
+                        message: "Change password failed",
+                    };
                 })
                 .finally(() => {
                     this.setState({
@@ -80,6 +97,7 @@ export class ChangePasswordForm extends Component {
                         password: "",
                         confirm_password: "",
                     });
+                    setToastMessage(toastContent);
                 });
         }
     };
@@ -114,10 +132,12 @@ export class ChangePasswordForm extends Component {
     render() {
         const { isLoading, current_password, password, confirm_password } = this.state;
 
+        const isDisableSaveButton = MANDATORY_FIELDS.find(item => !this.state[item]);
+
         return (
-            <div className="col-4 card mt-3">
+            <div className="col-4 card mt-3 border-0 rounded-0">
                 <div className="card-body mx-4">
-                    <h5 className="mb-4">Change Password</h5>
+                    <h5 className="header mb-3">Change Password</h5>
                     <form id={"change-password"} onSubmit={this.onSubmit}>
                         <InputPasswordComponent
                             id="current_password"
@@ -152,6 +172,7 @@ export class ChangePasswordForm extends Component {
                             type={"submit"}
                             className="float-end"
                             color={"primary"}
+                            disabled={isDisableSaveButton}
                             isLoading={isLoading}
                         >
                             Save Changes

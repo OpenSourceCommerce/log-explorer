@@ -39,7 +39,7 @@ export class Toast extends Component {
         const isShow = color && message;
 
         return (
-            <div id="toast-container" className="toast-container p-3 top-0 start-50 translate-middle-x fixed-top">
+            <div className="toast-container p-3 top-0 start-50 translate-middle-x fixed-top">
                 <div
                     className={`toast text-white bg-${color} border-0 fade ${isShow ? 'show' : 'hide'} w-auto`}
                     role="alert"

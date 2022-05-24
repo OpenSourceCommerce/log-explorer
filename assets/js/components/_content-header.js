@@ -11,7 +11,8 @@ export class ContentHeader extends Component {
             actionButtonTitle,
             actionButtonIcon,
             onClickActionBtn,
-            children
+            children,
+            pageTitle
         } = this.props;
         const splitUrl = window.location.pathname.split('/');
 
@@ -20,12 +21,15 @@ export class ContentHeader extends Component {
         if (splitUrl[1] !== 'welcome') {
             title = PAGE_NAME[splitUrl[1]] || PAGE_NAME.dashboard;
         }
+
+        title = title || pageTitle;
+
         return (
-            <div className={`content-header d-flex justify-content-between aligns-items-center ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-3'} ${className || ''}`}>
+            <div className={`content-header d-flex justify-content-between aligns-items-center`}>
                 <div className='d-flex flex-first aligns-items-center'>
-                    <div className="title fw-bold">
+                    <div className="title my-auto">
                         <Icon dataFeather={iconName} className="feather-lg" />
-                        <span className="align-middle ms-2">{title}</span>
+                        <span className="ms-2">{title}</span>
                     </div>
                     {children}
                 </div>
