@@ -323,6 +323,7 @@ class UserList extends Component {
                 />
                 <div className="content ms-2 me-2">
                     <ContentHeader
+                        pageTitle="Users"
                         iconName="users"
                         actionButtonTitle="Create User"
                         actionButtonIcon="plus"

@@ -20,8 +20,7 @@ export class NavUser extends Component {
                     <Icon dataFeather="chevron-down" className="feather-sm"/>
                 </Link>
                 <ul className="dropdown-menu border-0 shadow-sm dropdown-menu-end fade-down" aria-labelledby="navbarDropdown">
-                    <li><Link className="dropdown-item text-primary" href={profileLink}>My Profile</Link></li>
-                    <li><Link className="dropdown-item text-primary" href={changePasswordLink}>Change Password</Link></li>
+                    <li><Link className="dropdown-item text-primary" href={profileLink}>Edit Profile</Link></li>
                     <li><Link className="dropdown-item text-danger" href={logoutLink}>Log out</Link></li>
                 </ul>
             </div>

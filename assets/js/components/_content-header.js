@@ -6,10 +6,13 @@ import "../../styles/component/_content-header.scss";
 export class ContentHeader extends Component {
     render() {
         const {
+            className,
             iconName,
             actionButtonTitle,
             actionButtonIcon,
-            onClickActionBtn
+            onClickActionBtn,
+            children,
+            pageTitle
         } = this.props;
         const splitUrl = window.location.pathname.split('/');
 
@@ -19,13 +22,18 @@ export class ContentHeader extends Component {
             title = PAGE_NAME[splitUrl[1]] || PAGE_NAME.dashboard;
         }
 
+        title = title || pageTitle;
+
         return (
-            <div className={`content-header d-flex justify-content-between ${splitUrl[1] === 'log-view' ? 'pt-1' : 'pt-3'}`}>
-                <div className="title fw-bold">
-                    <Icon dataFeather={iconName} className="feather-lg" />
-                    <span className="align-middle ms-2">{title}</span>
+            <div className={`content-header d-flex justify-content-between aligns-items-center`}>
+                <div className='d-flex flex-first aligns-items-center'>
+                    <div className="title my-auto">
+                        <Icon dataFeather={iconName} className="feather-lg" />
+                        <span className="ms-2">{title}</span>
+                    </div>
+                    {children}
                 </div>
-                {onClickActionBtn && <Button style={{ fonSize: "16px" }} onClick={onClickActionBtn}>
+                {onClickActionBtn && <Button style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
                     {actionButtonIcon && <Icon dataFeather={actionButtonIcon} className="feather-lg"/>}
                     {actionButtonTitle && <span className="align-middle ms-1">
                         {actionButtonTitle}

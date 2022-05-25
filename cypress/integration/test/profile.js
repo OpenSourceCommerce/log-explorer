@@ -26,20 +26,18 @@ describe('Profile page', () => {
         it('Save empty field', () => {
             profilePage.clearInputs();
             profilePage.setFirstname('Test');
-            profilePage.save();
-            profilePage.hasLastnameError();
+            profilePage.isDisableSave();
 
             profilePage.clearInputs();
             profilePage.setLastname('Test');
-            profilePage.save();
-            profilePage.hasFirstnameError();
+            profilePage.isDisableSave();
         })
         it('Save success', () => {
             profilePage.clearInputs();
             profilePage.setFirstname('Test');
-            profilePage.setLastname('No1');
+            profilePage.setLastname('New Value');
             profilePage.save();
-            alertHelper.hasToastMessage('Update successful');
+            alertHelper.findToastMessageByClassName('Update profile successful');
         })
     });
 })

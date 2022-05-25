@@ -203,6 +203,7 @@ class AlertList extends Component {
             <div className="alert container-fluid" style={{ backgroundColor: "#F8F9FA" }}>
                 <div className="content ms-2 me-2">
                     <ContentHeader
+                        pageTitle="Alert"
                         iconName="alert-triangle"
                         actionButtonTitle="Create Alert"
                         actionButtonIcon="plus"

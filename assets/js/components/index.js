@@ -55,3 +55,5 @@ export const {UPlotChart} = require('./_uplot-chart');
 export const {ContentHeader} = require('./_content-header');
 export const {Toast} = require('./_toast');
 export const {DataTable} = require('./_data-table');
+export const {UserProfile} = require('./_user-profile');
+export const {ChangePasswordForm} = require('./_change-password');
