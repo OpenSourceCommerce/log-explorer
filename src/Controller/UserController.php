@@ -9,6 +9,7 @@ use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Services\Clickhouse\ClickhouseServiceInterface;
 
 class UserController extends AbstractController
 {
@@ -53,7 +54,7 @@ class UserController extends AbstractController
             throw new ExpiredUserTokenException();
         }
         return $this->render('user/confirmation.html.twig', [
-            'token' => $userToken,
+        'token' => $userToken,
         ]);
     }
 
@@ -61,10 +62,12 @@ class UserController extends AbstractController
      * @Route("/profile", priority=10, name="user_profile", methods = "GET")
      * @return Response
      */
-    public function profile(): Response
+    public function profile(ClickhouseServiceInterface $clickhouseService): Response
     {
+        $types = $clickhouseService->getTypes();
         return $this->render('user/profile.html.twig', [
             'user' => $this->getUser(),
+            'types' => json_encode($types),
         ]);
     }
 

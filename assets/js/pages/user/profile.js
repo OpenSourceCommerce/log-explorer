@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
+import { DatabaseTables } from "../database/tables";
 
 class ProfileForm extends Component {
     constructor(props) {
@@ -28,8 +29,12 @@ class ProfileForm extends Component {
                     />
                     <div className="bg-white">
                         <div className="container-fluid">
-                            <div className="ms-2 me-2">
-                                <ContentHeader pageTitle="Settings" iconName="settings" className="pb-2 bg-white">
+                            <div className="ms-4 me-4">
+                                <ContentHeader
+                                    pageTitle="Settings"
+                                    iconName="settings"
+                                    className="pb-2 bg-white"
+                                >
                                     <ul
                                         className="nav nav-pills ms-4"
                                         id="pills-tab"
@@ -37,7 +42,7 @@ class ProfileForm extends Component {
                                     >
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link active"
+                                                className="nav-link"
                                                 id="pills-profile-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-profile"
@@ -51,7 +56,7 @@ class ProfileForm extends Component {
                                         </li>
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link"
+                                                className="nav-link active"
                                                 id="pills-databases-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-databases"
@@ -82,33 +87,31 @@ class ProfileForm extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="tab-content container-fluid mt-3" id="pills-tabContent">
-                        <div className="ms-2 me-2">
-                            <div
-                                className="tab-pane fade show active"
-                                id="pills-profile"
-                                role="tabpanel"
-                                aria-labelledby="pills-profile-tab"
-                            >
-                                <UserProfile setToastMessage={this.setToastMessage} />
-                                <ChangePasswordForm setToastMessage={this.setToastMessage} />
-                            </div>
-                            <div
-                                className="tab-pane fade"
-                                id="pills-databases"
-                                role="tabpanel"
-                                aria-labelledby="pills-databases-tab"
-                            >
-                                Databases config tab
-                            </div>
-                            <div
-                                className="tab-pane fade"
-                                id="pills-widgets"
-                                role="tabpanel"
-                                aria-labelledby="pills-widgets-tab"
-                            >
-                                Widget config tab
-                            </div>
+                    <div className="tab-content" id="pills-tabContent">
+                        <div
+                            className="container-fluid mx-2 mt-3 tab-pane fade"
+                            id="pills-profile"
+                            role="tabpanel"
+                            aria-labelledby="pills-profile-tab"
+                        >
+                            <UserProfile setToastMessage={this.setToastMessage} />
+                            <ChangePasswordForm setToastMessage={this.setToastMessage} />
+                        </div>
+                        <div
+                            className="tab-pane fade show active"
+                            id="pills-databases"
+                            role="tabpanel"
+                            aria-labelledby="pills-databases-tab"
+                        >
+                            <DatabaseTables />
+                        </div>
+                        <div
+                            className="tab-pane fade"
+                            id="pills-widgets"
+                            role="tabpanel"
+                            aria-labelledby="pills-widgets-tab"
+                        >
+                            Widget config tab
                         </div>
                     </div>
                 </div>
