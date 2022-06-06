@@ -5,73 +5,11 @@ import DatabaseActions from "../../actions/_database-actions";
 import { Modal, Colors } from "../../components";
 import { Size } from "../../components/_size";
 import { TOAST_STATUS } from "../../utils";
-
-const COLUMN_TYPE_LIST = window.clickhouseTypes;
+import { TableColumn } from "./table-columns";
 
 const DEFAULT_COLUMN_DATA = {
     name: "",
     type: "String",
-};
-
-const REGEX_SPECIAL_CHARACTERS = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/;
-const EMPTY_FIELD_ERROR = "Please fill out this field.";
-const DUPLICATE_FIELD_ERROR = "Duplicate column name error.";
-const SPECIAL_CHARACTERS_ERROR = "Column name should not contain special characters.";
-
-const TableDetailRow = ({
-    column,
-    position,
-    onFieldChange,
-    onFieldBlur,
-    errorMessage,
-    disabled,
-    onRemoveColumnClicked,
-}) => {
-    const { name, type, isDisableEdit } = column;
-
-    const isDisableField = isDisableEdit || disabled;
-    return (
-        <tr>
-            <td className="ps-0" style={{ width: "70%" }}>
-                <FormField
-                    fieldName="name"
-                    value={name}
-                    isHiddenLabel={true}
-                    disabled={isDisableField}
-                    errorMessage={errorMessage}
-                    onChange={(e) => onFieldChange(position, e.target)}
-                    onBlur={(e) => onFieldBlur(position, e.target.value)}
-                />
-            </td>
-            <td style={{ width: "25%" }}>
-                <FormField
-                    fieldName="type"
-                    disabled={isDisableField}
-                    value={type}
-                    type="select"
-                    isHiddenLabel={true}
-                    onChange={(e) => onFieldChange(position, e.target)}
-                >
-                    <option value="">Select type</option>
-                    {COLUMN_TYPE_LIST.map((item, key) => (
-                        <option key={key} value={item}>
-                            {item}
-                        </option>
-                    ))}
-                </FormField>
-            </td>
-            <td className="pe-0" style={{ width: "5%" }}>
-                {!isDisableField && (
-                    <button
-                        className="btn btn-outline-danger"
-                        onClick={() => onRemoveColumnClicked(column.name)}
-                    >
-                        <Icon dataFeather="trash-2" />
-                    </button>
-                )}
-            </td>
-        </tr>
-    );
 };
 
 const AlertUpdateColumn = ({
@@ -220,40 +158,15 @@ export const DatabaseTableDetail = ({
             return [...cloneColumnList];
         });
 
-        let newErrors = [...errors].filter((item) => item.index !== index);
-
-        if (!value) {
-            newErrors.push({
-                index,
-                errorMessage: EMPTY_FIELD_ERROR,
-            });
-        }
-
+        let newErrors = [...errors].filter((item) => item.position !== index);
         setError([...newErrors]);
     };
 
-    const onFieldBlur = (position, value) => {
-        let newErrors = [...errors].filter((item, index) => index !== position);
+    const onFieldBlur = (position, error) => {
+        let newErrors = [...errors].filter((item) => item.position !== position);
 
-        if (value) {
-            const valueIsExist = !!columns.find(
-                (item, index) => index !== position && item.name === value
-            )?.name;
+        if (error) newErrors.push(error);
 
-            if (valueIsExist) {
-                newErrors.push({
-                    index: position,
-                    errorMessage: DUPLICATE_FIELD_ERROR,
-                });
-            }
-
-            if (REGEX_SPECIAL_CHARACTERS.test(value)) {
-                newErrors.push({
-                    index: position,
-                    errorMessage: SPECIAL_CHARACTERS_ERROR,
-                });
-            }
-        }
         setError(newErrors);
     };
 
@@ -372,50 +285,15 @@ export const DatabaseTableDetail = ({
                                 </Button>
                             </div>
                         </div>
-                        <div className="table-header d-flex justify-content-between mt-3">
-                            <span className="fw-bold">Columns</span>
-                            <button
-                                className="btn btn-link text-primary"
-                                onClick={() => addNewColumn()}
-                            >
-                                <Icon dataFeather="plus" className="me-2 feather-sm" />
-                                <span className="d-inline-block align-middle fw-medium">
-                                    Add Column
-                                </span>
-                            </button>
-                        </div>
-                        <table className="table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th className="fw-medium">Name</th>
-                                    <th className="fw-medium">Type</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {columns && columns.length > 0
-                                    ? columns.map((item, key) => {
-                                          const errorObj = errors.find(
-                                              (item) => item.index === key
-                                          );
-                                          return (
-                                              <TableDetailRow
-                                                  errorMessage={errorObj?.errorMessage}
-                                                  column={item}
-                                                  key={key}
-                                                  position={key}
-                                                  disabled={isEnableSaveChangesModal}
-                                                  onFieldChange={onFieldChange}
-                                                  onFieldBlur={onFieldBlur}
-                                                  onRemoveColumnClicked={(columnName) =>
-                                                      setColumnNameWillRemove(columnName)
-                                                  }
-                                              />
-                                          );
-                                      })
-                                    : null}
-                            </tbody>
-                        </table>
+                        <TableColumn
+                            columns={columns}
+                            errors={errors}
+                            setColumnNameWillRemove={setColumnNameWillRemove}
+                            isEnableSaveChangesModal={isEnableSaveChangesModal}
+                            onFieldChange={onFieldChange}
+                            onFieldBlur={onFieldBlur}
+                            addNewColumn={addNewColumn}
+                        />
                     </div>
                     <AlertUpdateColumn
                         name={tableName}
