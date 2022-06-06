@@ -18,10 +18,9 @@ export class Sidebar extends Component {
             ];
         } else {
             navList = [
-                {href: 'log-view', iconName: 'search', label: 'Explore'},
-                {href: 'profile', iconName: 'user', label: 'Profile'},
-                {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
+                {href: 'log-view', iconName: 'search', label: 'Explore'},
+                {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
                 {href: 'export', iconName: 'download', label: 'Exports'},
