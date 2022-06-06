@@ -19,7 +19,7 @@ class ProfileForm extends Component {
     render() {
         const { toastContent } = this.state;
         return (
-            <div className="setting-profile">
+            <div className="setting-profile" style={{marginBottom: "50px"}}>
                 <div className="content">
                     <Toast
                         toastContent={toastContent}
@@ -42,7 +42,7 @@ class ProfileForm extends Component {
                                     >
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link"
+                                                className="nav-link active"
                                                 id="pills-profile-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-profile"
@@ -56,7 +56,7 @@ class ProfileForm extends Component {
                                         </li>
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link active"
+                                                className="nav-link"
                                                 id="pills-databases-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-databases"
@@ -89,7 +89,7 @@ class ProfileForm extends Component {
                     </div>
                     <div className="tab-content" id="pills-tabContent">
                         <div
-                            className="container-fluid mx-2 mt-3 tab-pane fade"
+                            className="container-fluid mx-2 mt-3 tab-pane fade show active"
                             id="pills-profile"
                             role="tabpanel"
                             aria-labelledby="pills-profile-tab"
@@ -98,7 +98,7 @@ class ProfileForm extends Component {
                             <ChangePasswordForm setToastMessage={this.setToastMessage} />
                         </div>
                         <div
-                            className="tab-pane fade show active"
+                            className="tab-pane fade"
                             id="pills-databases"
                             role="tabpanel"
                             aria-labelledby="pills-databases-tab"
