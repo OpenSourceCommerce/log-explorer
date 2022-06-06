@@ -20,7 +20,6 @@ export class Sidebar extends Component {
             navList = [
                 {href: 'log-view', iconName: 'search', label: 'Explore'},
                 {href: 'profile', iconName: 'user', label: 'Profile'},
-                {href: 'table', iconName: 'database', label: 'Database'},
                 {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
                 {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
