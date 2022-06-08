@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Spinner, Icon, Toast, Size, Modal, FormField, Button } from "../../components";
-import { DatabaseActions } from "../../actions";
-import "../../../styles/pages/tables.scss";
+import { Spinner, Icon, Toast, Size, Modal, FormField, Button, Image } from "../../components";
+import { DatabaseActions } from "../../actions";;
 import { DatabaseTableDetail } from "./table-details";
 import { TableColumn } from "./table-columns";
 import { TOAST_STATUS } from "../../utils";
+import ChevronRight from "../../../images/chevron-right.svg";
+import "../../../styles/pages/tables.scss"
 
 const DEFAULT_DATATABLE_VALUE = {
     tableName: "",
@@ -223,18 +224,18 @@ export const DatabaseTables = () => {
                     <div className="col-12 col-md-3 bg-white min-h-100 d-flex flex-column p-0 project-list-side">
                         <small className="title ps-cp-4 my-3">Datatables</small>
                         <button
-                            className="ps-cp-4 py-3 btn btn-link text-start text-info fw-medium"
+                            className="ps-cp-4 py-3 btn btn-link text-start text-info"
                             onClick={() => syncAllTable()}
                         >
                             <Icon dataFeather="refresh-ccw" className="feather-sm me-2" />
-                            <span className="d-inline-block align-middle">Sync tables</span>
+                            <span className="d-inline-block align-middle fw-bold">Sync tables</span>
                         </button>
                         <button
-                            className="ps-cp-4 py-3 btn btn-link text-start fw-medium"
+                            className="ps-cp-4 py-3 btn btn-link text-start"
                             onClick={() => setIsShowCreateDatabaseTable(true)}
                         >
                             <Icon dataFeather="plus" className="feather-sm me-2" />
-                            <span className="d-inline-block align-middle">
+                            <span className="d-inline-block align-middle fw-bold">
                                 Create new datatable
                             </span>
                         </button>
@@ -249,13 +250,11 @@ export const DatabaseTables = () => {
                                           role="button"
                                       >
                                           <button
-                                              className="w-100 d-flex justify-content-between btn btn-link text-start py-3 ps-cp-4 pe-3 text-dark"
+                                              className="w-100 d-flex justify-content-between align-items-center btn btn-link text-start py-3 ps-cp-4 pe-3 text-dark"
                                               onClick={() => setCurrentTableSelected(item)}
                                           >
-                                              <span className="d-inline-block align-middle fw-medium">
-                                                  {item}
-                                              </span>
-                                              <Icon dataFeather="chevron-right" />
+                                              <span>{item}</span>
+                                              <Image src={ChevronRight} />
                                           </button>
                                       </li>
                                   ))

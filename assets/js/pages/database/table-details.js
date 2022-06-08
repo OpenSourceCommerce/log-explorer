@@ -185,7 +185,13 @@ export const DatabaseTableDetail = ({
         const res = await DatabaseActions.createOrUpdate(passedTableName, dataPayload);
         await setIsEnableSaveChangesModal(false);
         if (!res.error) {
-            setOriginColumnData([...columns]);
+            const newColumns = columns.map((item) => ({
+                ...item,
+                originType: item.type,
+                originName: item.name,
+            }));
+            setColumns([...newColumns]);
+            setOriginColumnData([...newColumns]);
             if (passedTableName !== tableName) {
                 setNewTableName(passedTableName, tableName);
             }
@@ -242,8 +248,18 @@ export const DatabaseTableDetail = ({
         }
     };
 
+    const onRemoveColumnClick = (column) => {
+        if (column.originName) {
+            setColumnNameWillRemove(column.name);
+            return;
+        }
+        const newColumns = [...columns];
+        newColumns.splice(column.position, 1);
+        setColumns([...newColumns]);
+    };
+
     const addNewColumn = () => {
-        setColumns([{ ...DEFAULT_COLUMN_DATA }, ...columns]);
+        setColumns([...columns, { ...DEFAULT_COLUMN_DATA }]);
     };
 
     const isEnableSaveChanges =
@@ -253,7 +269,7 @@ export const DatabaseTableDetail = ({
         <>
             {!isLoading ? (
                 <>
-                    <div className="table-detail mt-3 me-cp-3 ms-2 fw-medium">
+                    <div className="table-detail mt-3 me-cp-3 ms-2">
                         <div className="d-flex justify-content-between align-items-end">
                             {tableName && (
                                 <FormField
@@ -272,13 +288,12 @@ export const DatabaseTableDetail = ({
                                     onClick={() => setTableWillRemove(tableName)}
                                 >
                                     <Icon dataFeather="trash-2" className="feather-xs me-2" />
-                                    <span className="d-inline-block align-middle fw-medium">
+                                    <span className="d-inline-block align-middle">
                                         Delete datatable
                                     </span>
                                 </button>
                                 <Button
                                     onClick={() => setIsEnableSaveChangesModal(true)}
-                                    className="fw-medium"
                                     disabled={!isEnableSaveChanges || errors.length > 0}
                                 >
                                     Save Changes
@@ -288,7 +303,7 @@ export const DatabaseTableDetail = ({
                         <TableColumn
                             columns={columns}
                             errors={errors}
-                            setColumnNameWillRemove={setColumnNameWillRemove}
+                            setColumnNameWillRemove={(column) => onRemoveColumnClick(column)}
                             isEnableSaveChangesModal={isEnableSaveChangesModal}
                             onFieldChange={onFieldChange}
                             onFieldBlur={onFieldBlur}

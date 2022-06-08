@@ -1,18 +1,23 @@
 .database-page {
-  // .project-list-side {
-  //   width: 18%;
-  // }
   .project-list {
     li.active {
       background: #99d2ee 0% 0% no-repeat padding-box !important;
       transform: scaleX(1) !important;
     }
+    li.active button:focus {
+      box-shadow: none;
+    }
     li {
       transition: all 0.3s ease-in-out;
       &:hover {
         transform: scaleX(1.075);
-        background: #FAFCFC 0% 0% no-repeat padding-box;
+        background: #fafcfc 0% 0% no-repeat padding-box;
       }
+    }
+  }
+  #create-new-table {
+    .modal-title {
+      font-size: 20px;
     }
   }
 }

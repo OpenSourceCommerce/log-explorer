@@ -92,7 +92,7 @@ const TableDetailRow = ({
                     <button
                         className="btn btn-outline-danger"
                         disabled={columns.length < 2}
-                        onClick={() => onRemoveColumnClicked(column.name)}
+                        onClick={onRemoveColumnClicked}
                     >
                         <Icon dataFeather="trash-2" />
                     </button>
@@ -121,15 +121,15 @@ export const TableColumn = ({
                 <span className="fw-bold">Columns</span>
                 <button className="btn btn-link text-primary" onClick={() => addNewColumn()}>
                     <Icon dataFeather="plus" className="me-2 feather-sm" />
-                    <span className="d-inline-block align-middle fw-medium">Add Column</span>
+                    <span className="d-inline-block align-middle fw-bold">Add Column</span>
                 </button>
             </div>
             <table className="table table-borderless">
                 <thead>
                     <tr>
-                        <th className="fw-medium p-0">Name</th>
-                        <th className="fw-medium p-0">Type</th>
-                        <th></th>
+                        <th className="p-0 fw-medium border-0">Name</th>
+                        <th className="p-0 fw-medium border-0">Type</th>
+                        <th className="border-0"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -146,8 +146,8 @@ export const TableColumn = ({
                                       disabled={isEnableSaveChangesModal}
                                       onFieldChange={onFieldChange}
                                       onFieldBlur={onFieldBlur}
-                                      onRemoveColumnClicked={(columnName) =>
-                                          setColumnNameWillRemove(columnName)
+                                      onRemoveColumnClicked={() =>
+                                          setColumnNameWillRemove({ ...item, position: key })
                                       }
                                   />
                               );

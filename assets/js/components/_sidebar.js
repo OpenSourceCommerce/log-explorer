@@ -24,6 +24,7 @@ export class Sidebar extends Component {
                 {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
                 {href: 'export', iconName: 'download', label: 'Exports'},
+                {href: 'setting', iconName: 'settings', label: 'Settings'},
             ];
         }
 
