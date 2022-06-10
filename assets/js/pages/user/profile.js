@@ -18,6 +18,8 @@ class ProfileForm extends Component {
 
     render() {
         const { toastContent } = this.state;
+        const { currentTab } = this.props
+
         return (
             <div className="setting-profile" style={{marginBottom: "50px"}}>
                 <div className="content">
@@ -120,4 +122,5 @@ class ProfileForm extends Component {
     }
 }
 
-ReactDOM.render(<ProfileForm />, document.querySelector("#root"));
+const root = document.querySelector('#root');
+ReactDOM.render(<ProfileForm {...root.dataset}/>, root);
