@@ -127,7 +127,7 @@ export class FilterText extends Component {
                         }}
                     />
                     {queries && <div className='input-group-append'>
-                        <Link id="btn-filter-saved" className="btn btn-info" data-bs-toggle="dropdown">
+                        <Link id="btn-filter-saved" className="btn btn-secondary" data-bs-toggle="dropdown">
                             <Icon name="chevron-down"/>
                         </Link>
                         <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -165,7 +165,7 @@ export class FilterText extends Component {
                     {queries && <div className='input-group-append'>
                         <Button
                             id='btn-filter-save'
-                            className='btn-success'
+                            className='btn-outline-primary px-4'
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
                         >Save</Button>
                     </div>}

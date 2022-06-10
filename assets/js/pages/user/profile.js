@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
 import { DatabaseTables } from "../database/tables";
+import { WidgetList } from "../widget/widget-list";
 
 class ProfileForm extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ class ProfileForm extends Component {
                                     >
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link active"
+                                                className="nav-link"
                                                 id="pills-profile-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-profile"
@@ -70,7 +71,7 @@ class ProfileForm extends Component {
                                         </li>
                                         <li className="nav-item" role="presentation">
                                             <button
-                                                className="nav-link"
+                                                className="nav-link active"
                                                 id="pills-widgets-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-widgets"
@@ -89,7 +90,7 @@ class ProfileForm extends Component {
                     </div>
                     <div className="tab-content" id="pills-tabContent">
                         <div
-                            className="container-fluid mx-2 mt-3 tab-pane fade show active"
+                            className="container-fluid mx-2 mt-3 tab-pane fade"
                             id="pills-profile"
                             role="tabpanel"
                             aria-labelledby="pills-profile-tab"
@@ -106,12 +107,12 @@ class ProfileForm extends Component {
                             <DatabaseTables />
                         </div>
                         <div
-                            className="tab-pane fade"
+                            className="tab-pane fade show active"
                             id="pills-widgets"
                             role="tabpanel"
                             aria-labelledby="pills-widgets-tab"
                         >
-                            Widget config tab
+                            <WidgetList/>
                         </div>
                     </div>
                 </div>

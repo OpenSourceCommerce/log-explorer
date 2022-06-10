@@ -57,3 +57,4 @@ export const {Toast} = require('./_toast');
 export const {DataTable} = require('./_data-table');
 export const {UserProfile} = require('./_user-profile');
 export const {ChangePasswordForm} = require('./_change-password');
+export const {AlertMessage} = require('./_alert-message');

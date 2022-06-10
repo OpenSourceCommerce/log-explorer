@@ -1,478 +1,400 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {Button, FilterText, FormField} from "../index";
-import {WIDGET_TYPE} from "../../utils";
-import {Alert, DatabaseActions, WidgetActions} from "../../actions";
-import {isEqual} from "lodash";
+import React, { useState, useEffect } from "react";
+import { Button, FilterText, FormField, Spinner, Colors } from "../index";
+import { generateDataBaseOnColumn, SAMPLE_DATA, WIDGET_TYPE } from "../../utils";
+import { DatabaseActions, WidgetActions } from "../../actions";
+import isEqual from "lodash/isEqual";
+import { Chart } from "./_chart";
+import { CounterSum } from "./_counter-sum";
+import { WidgetDataTable } from "./_table";
+import { AlertMessage } from "../_alert-message";
 
 const WIDGET = [
-    {label: 'Doughnut', value: WIDGET_TYPE.doughnut},
-    {label: 'Pie', value: WIDGET_TYPE.pie},
-    {label: 'Counter Sum', value: WIDGET_TYPE.counterSum},
-    {label: 'Table', value: WIDGET_TYPE.table},
-    {label: 'Bar', value: WIDGET_TYPE.bar},
-    {label: 'Line', value: WIDGET_TYPE.line},
-]
-export class WidgetManagement extends Component {
-    constructor(props) {
-        super(props);
+    { label: "Doughnut", value: WIDGET_TYPE.doughnut },
+    { label: "Pie", value: WIDGET_TYPE.pie },
+    { label: "Counter Sum", value: WIDGET_TYPE.counterSum },
+    { label: "Table", value: WIDGET_TYPE.table },
+    { label: "Bar", value: WIDGET_TYPE.bar },
+    { label: "Line", value: WIDGET_TYPE.line },
+];
+const MANDATORY_FIELD = ["title", "type", "table", "order", "column", "size"];
 
-        // initial data will be data exist when user edit widget
-        const initialData = {
-            column: '',
-            order: 'desc',
-            size: '5',
-            table: '',
-            title: '',
-            type: '4',
+const ORDER_FIELD_VALUE = {
+    asc: "asc",
+    desc: "desc",
+};
+
+const INVISIBLE_FIELD_IN_COUNTER_SUM = ["order", "column", "size"];
+
+const WidgetLayout = ({ type, title, size, column, id }) => {
+    let component = null;
+    switch (type) {
+        case WIDGET_TYPE.doughnut:
+        case WIDGET_TYPE.pie:
+        case WIDGET_TYPE.bar:
+        case WIDGET_TYPE.line: {
+            component = (
+                <Chart id={id} type={type} size={size} data={[...SAMPLE_DATA].splice(0, size)} />
+            );
+            break;
         }
-
-        const mandatoryFields = [
-            'title', 'type', 'table', 'order', 'column'
-        ];
-
-        this.state = {
-            errors: {},
-            initialData,
-            widgetDetail: {
-                //layout: {i: '', x: 0, y: 0, w: 3, h: 2, minW: 3, minH: 2},
-                ...initialData,
-            },
-            mandatoryFields,
-            columns: [],
-            isLoading: false,
+        case WIDGET_TYPE.counterSum: {
+            component = <CounterSum data={SAMPLE_DATA.length} widgetHeader={title} />;
+            break;
         }
-
-        this.onChangeData = this.onChangeData.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+        case WIDGET_TYPE.table: {
+            const sizeData = size;
+            let columnData = column && column.length > 0 ? column : ["example_data"];
+            columnData = [...columnData, "value"];
+            component = (
+                <WidgetDataTable
+                    data={generateDataBaseOnColumn(columnData, sizeData)}
+                    widgetHeader={title}
+                    column={columnData}
+                    isDashboardComponent={true}
+                />
+            );
+            break;
+        }
     }
 
-    async componentDidMount() {
-        /*
-           When user wanna edit any widget, will be call API to get widget detail here
+    return component;
+};
 
-        */
-        this.setState({
-            isLoading: true,
+export const WidgetManagement = ({
+    widgetDetail: passedWidgetDetail,
+    queries,
+    tables,
+    onSubmitDataSuccess,
+}) => {
+    const [mandatoryFields, setMandatoryFields] = useState(MANDATORY_FIELD);
+    const [widgetDetail, setWidgetDetail] = useState(passedWidgetDetail);
+    const [columns, setColumns] = useState([]);
+    const [errors, setErrors] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [columnLoading, setColumnLoading] = useState(false);
+    const [alertErrorMessage, setAlertErrorMessage] = useState();
+
+    useEffect(() => {
+        setIsLoading(true);
+        setWidgetDetail({
+            ...passedWidgetDetail,
         });
+        setErrors([]);
+        setAlertErrorMessage();
+        setIsLoading(false);
+    }, [passedWidgetDetail]);
 
-        const {widget} = this.props;
-        const {initialData} = this.state;
+    useEffect(() => {
+        const loadColumnList = async () => {
+            const { type, table } = widgetDetail;
+            if (table && type != WIDGET_TYPE.counterSum) {
+                setColumnLoading(true);
+                let columnList = await loadColumn(table);
+                setColumns(columnList);
+                setColumnLoading(false);
+            }
+        };
+        loadColumnList();
+    }, [widgetDetail.table]);
 
-        const [
-            tableRes,
-            widgetDetailRes,
-        ] = await Promise.all([
-            DatabaseActions.getAllTable(),
-            widget && WidgetActions.loadWidget(widget),
-        ]);
+    const loadColumn = async (tableName) => {
+        const columnRes = await DatabaseActions.getTableColumns(tableName);
+        return columnRes && columnRes.data && columnRes.data.length > 0
+            ? columnRes.data.map((item) => ({
+                  value: item.name,
+                  label: item.name,
+              }))
+            : [];
+    };
 
-        let tables = tableRes && tableRes.data && tableRes.data.length > 0 ? tableRes.data.map(item => ({
-            value: item,
-            label: item
-        })) : [];
-
-        let newInitialData = {...initialData};
-        let newWidgetDetail = {...initialData};
-
-        if (widgetDetailRes && widgetDetailRes.data) {
-            newWidgetDetail = {
-                ...widgetDetailRes.data,
-                order: widgetDetailRes.data.order_desc ? 'desc' : 'asc',
-                column: widgetDetailRes.data.column || ''
-            };
-            newInitialData = {
-                ...newWidgetDetail
-            };
-
-        }
-
-        let columns = [];
-
-        if (newWidgetDetail && newWidgetDetail.table) {
-            const columnRes = await DatabaseActions.getTableColumns(newWidgetDetail.table);
-            columns = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
-                value: item.name,
-                label: item.name
-            })) : [];
-        }
-
-        this.setState({
-            tables,
-            columns,
-            widgetDetail: newWidgetDetail,
-            initialData: newInitialData,
-            isLoading: false,
-        }, () => {
-            const {updateInitialData} = this.props;
-            if (updateInitialData) updateInitialData(newWidgetDetail);
-        });
-
-        // If create new widget we will use data below
-    }
-
-    async onChangeData({name, value}, isUpdateWidget) {
-        const {widgetDetail, columns, errors, mandatoryFields} = this.state;
-
-        let newColumnData = [...columns];
-        let newWidgetDetail = {...widgetDetail};
-        let newErrors = {...errors};
-        let newMandatoryFieldArray = [...mandatoryFields];
+    const onChangeData = async ({ name, value }, isUpdateWidget) => {
+        let newWidgetDetail = { ...widgetDetail };
+        let newErrors = [...errors].filter((item) => item !== name);
         let newValue = value;
 
         if (name) {
-            const {errors} = this.state;
-
-            if (name === 'table') {
-                const columnRes = await DatabaseActions.getTableColumns(newValue);
-                newColumnData = columnRes && columnRes.data && columnRes.data.length > 0 ? columnRes.data.map(item => ({
-                    value: item.name,
-                    label: item.name
-                })) : [];
-
-                let column = ''
-
+            if (name === "table") {
+                let column = "";
                 if (widgetDetail.type == WIDGET_TYPE.table) {
-                    column = []
+                    column = [];
                 }
-
-                newWidgetDetail = {...widgetDetail, column}
-            } else if (name === 'type') {
+                newWidgetDetail = { ...widgetDetail, column };
+            } else if (name === "type") {
+                let newMandatoryFieldArray = [...mandatoryFields];
                 if (newValue === WIDGET_TYPE.counterSum) {
-                    newMandatoryFieldArray = newMandatoryFieldArray.filter(item => item !== 'column');
+                    newMandatoryFieldArray = newMandatoryFieldArray.filter(
+                        (item) => !INVISIBLE_FIELD_IN_COUNTER_SUM.includes(item)
+                    );
                 } else {
-                    if (!newMandatoryFieldArray.includes('column')) {
-                        newMandatoryFieldArray.push('column')
-                    }
+                    INVISIBLE_FIELD_IN_COUNTER_SUM.forEach((item) => {
+                        if (!newMandatoryFieldArray.includes(item)) {
+                            newMandatoryFieldArray.push(item);
+                        }
+                    });
                 }
-            } else if (name == 'column' && widgetDetail.type == WIDGET_TYPE.table) {
-                newValue = newValue.trim()
+                newValue = parseInt(newValue);
+                setMandatoryFields([...newMandatoryFieldArray]);
+            } else if (name == "column" && widgetDetail.type === WIDGET_TYPE.table) {
+                newValue = newValue.trim();
 
-                let currentValue = widgetDetail.column
+                let currentValue = widgetDetail.column;
 
-                if (typeof currentValue === 'string') {
-                    currentValue = currentValue.split(',')
+                if (typeof currentValue === "string") {
+                    currentValue = currentValue.split(",");
                 }
 
                 if (!currentValue) {
-                    currentValue = []
-                    currentValue.push(value)
+                    currentValue = [];
+                    currentValue.push(value);
                 } else {
-                    const index = currentValue.indexOf(value)
+                    const index = currentValue.indexOf(value);
 
                     if (index >= 0) {
-                        currentValue.splice(index, 1)
+                        currentValue.splice(index, 1);
                     } else {
-                        currentValue.push(value)
+                        currentValue.push(value);
                     }
                 }
 
-                newValue = currentValue
+                newValue = currentValue;
             }
-            if (newValue) {
-                // remove field in error if have value
-                newErrors = Object.keys({...errors}).reduce(function (obj, key) {
-                    if (key === 'column') {
-                        if (name === 'type' && newValue !== WIDGET_TYPE.counterSum) {
-                            obj[key] = errors[key]
-                        }
-                    } else if (key !== name) obj[key] = errors[key];
-
-                    return obj;
-                }, {});
-            } else {
-                if (mandatoryFields.includes(name)) {
-                    newErrors = {
-                        ...newErrors,
-                        [name]: true,
-                    }
-                }
+            if (mandatoryFields.includes(name) && !value) {
+                newErrors.push(name);
             }
 
             newWidgetDetail = {
                 ...newWidgetDetail,
-                [name]: newValue
-            }
-
-            this.setState({
-                columns: newColumnData.length > 0 ? [...newColumnData] : [],
-                widgetDetail: {...newWidgetDetail},
-                errors: {...newErrors},
-                mandatoryFields: [...newMandatoryFieldArray],
-            }, () => {
-                const {onUpdateWidget} = this.props;
-                if (isUpdateWidget && onUpdateWidget) {
-                    onUpdateWidget(name, value);
-                }
-            });
+                [name]: newValue,
+            };
+            setWidgetDetail({ ...newWidgetDetail });
+            setErrors(newErrors);
+            setAlertErrorMessage();
         }
-    }
+    };
 
-    generateOption(data, field) {
+    const generateOption = (data, field) => {
         let options = data;
-        if (field === 'order') {
+        if (field === "order") {
             options = [
-                {value: 'asc', label: 'Ascending'},
-                {value: 'desc', label: 'Descending'},
-            ]
-        } else if (field === 'size') {
+                { value: ORDER_FIELD_VALUE.asc, label: "Ascending" },
+                { value: ORDER_FIELD_VALUE.desc, label: "Descending" },
+            ];
+        } else if (field === "size") {
             options = [
-                {value: '1', label: '1'},
-                {value: '5', label: '5'},
-                {value: '10', label: '10'},
-                {value: '20', label: '20'},
-            ]
-        } else if (field === 'type') {
-            options = [...WIDGET]
+                { value: "1", label: "1" },
+                { value: "5", label: "5" },
+                { value: "10", label: "10" },
+                { value: "20", label: "20" },
+            ];
+        } else if (field === "type") {
+            options = [...WIDGET];
         }
 
         if (options && options.length > 0) {
+            const isGenerateDataForColumnWithTableType =
+                widgetDetail.type === WIDGET_TYPE.table && field === "column";
             return (
                 <>
-                    <option value='' className='d-none'>{`Select ${field}`}</option>
-                    {options.map((item, index) => (
-                        <option value={item.value}
-                                key={index}
-                        >
-                            {item.label}
-                        </option>))}
+                    {!isGenerateDataForColumnWithTableType && (
+                        <option value="">{`Select ${field}`}</option>
+                    )}
+                    {options.map((item, index) => {
+                        const { value, label } = item;
+                        return (
+                            <option value={value} key={index}>
+                                {label}
+                            </option>
+                        );
+                    })}
                 </>
-            )
+            );
         } else {
             return null;
         }
-    }
+    };
 
-    async onSubmit() {
-        // let layout;
-        const {widgetDetail, errors, mandatoryFields} = this.state;
-        const {order, id} = widgetDetail;
+    const onSaveClicked = () => {};
 
-        let newErrors = {...errors}
+    const onDeleteCLicked = () => {};
+
+    const onSubmit = async () => {
+        let errors = [];
         mandatoryFields.forEach((item) => {
             let isInvalidField = false;
             if (!widgetDetail[item]) {
-                isInvalidField = true
+                isInvalidField = true;
             } else if (Array.isArray(widgetDetail[item])) {
                 if (widgetDetail[item].length === 0) {
-                    isInvalidField = true
+                    isInvalidField = true;
                 }
             }
             if (isInvalidField) {
-                newErrors = {
-                    ...newErrors,
-                    [item]: true
-                }
+                errors = [...errors, item];
             }
-        })
+        });
 
-        if (Object.keys(newErrors).length === 0) {
-            let data;
-            Object.entries(widgetDetail).forEach(([key, value]) => {
-                if (key === 'order') {
-                    data = {
-                        ...data,
-                        isOrderDesc: order === 'desc',
-                    }
+        if (errors.length === 0) {
+            const { id } = widgetDetail;
+            let payload = Object.entries(widgetDetail).reduce((obj, [key, value]) => {
+                if (key === "order") {
+                    obj.isOrderDesc = value === "desc";
+                } else if (key === "column" && Array.isArray(value)) {
+                    obj.column = value.join(",");
+                } else {
+                    obj[key] = value;
                 }
+                return obj;
+            }, {});
 
-                if (value) {
-                    if (key === 'column' && Array.isArray(value)) {
-                        value = value.join(',')
-                    }
-
-                    data = {
-                        ...data,
-                        [key]: value,
-                    }
-                }
-            });
-
-            const resp = await WidgetActions.createOrUpdate(id, data);
+            const resp = await WidgetActions.createOrUpdate(id, payload);
 
             if (resp && !resp.error) {
-                Alert.success(`${id ? 'Update' : 'Add new'} successful`);
-                if (resp.redirect) {
-                    window.location.href = resp.redirect;
-                    return;
-                } else {
-                    this.setState({
-                        initialData: {...widgetDetail},
-                    })
-                }
-                return;
+                onSubmitDataSuccess(!!id);
             } else {
-                const {fields} = resp;
-                this.setState({
-                    errors: {...fields},
-                })
+                setAlertErrorMessage(resp.message);
             }
         } else {
-            this.setState({
-                errors: {...newErrors}
-            })
+            setErrors(errors);
         }
-    }
+    };
 
-    render() {
-        const {
-            widgetDetail,
-            initialData,
-            tables,
-            columns,
-            errors,
-            isLoading,
-            mandatoryFields,
-        } = this.state;
+    const { id, title, type, table, column, order, size, query } = widgetDetail;
 
-        const {
-            onSaveClicked,
-            onDeleteCLicked,
-            queries
-        } = this.props
+    const isCounterSumType = type == WIDGET_TYPE.counterSum;
 
-        const {
-            title,
-            table,
-            column,
-            order,
-            size,
-            type,
-            id,
-            query
-        } = widgetDetail;
+    const isDisableSaveButton =
+        isEqual(passedWidgetDetail, widgetDetail) ||
+        Object.keys(errors).length > 0 ||
+        alertErrorMessage;
 
-        const isCounterSumType = type == WIDGET_TYPE.counterSum;
-
-        return (
-            <div className="editable-widget">
-                {isLoading ?
-                    <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status" aria-hidden="true"></span> :
-                    <div className="card">
-                        <div
-                            className="card-header pr-3 pl-3">{id ? 'Update setting' : 'Setting'}</div>
-                        <div className="card-body pr-2 pl-2">
-                            <div className="col-12">
+    return (
+        <div className="editable-widget">
+            {!isLoading ? (
+                <div className="row parent-row">
+                    <div className="col col-md-6 widget-info">
+                        <AlertMessage message={alertErrorMessage} />
+                        <FormField
+                            className="mb-3"
+                            label="Header"
+                            value={title}
+                            placeholder="Input header"
+                            fieldName="title"
+                            onChange={(e) => onChangeData(e.target)}
+                            onBlur={(e) => onChangeData(e.target, true)}
+                            isMandatory={mandatoryFields.includes("title")}
+                            errors={errors}
+                        />
+                        <FormField
+                            className="mb-3"
+                            label="Widget Type"
+                            value={type}
+                            fieldName="type"
+                            onChange={(e) => onChangeData(e.target, true)}
+                            isMandatory={mandatoryFields.includes("type")}
+                            type="select"
+                            errors={errors}
+                        >
+                            {generateOption(null, "type")}
+                        </FormField>
+                        <FormField
+                            className="mb-3"
+                            label="Datatable"
+                            value={table}
+                            fieldName="table"
+                            onChange={(e) => onChangeData(e.target)}
+                            isMandatory={mandatoryFields.includes("table")}
+                            type="select"
+                            errors={errors}
+                        >
+                            {generateOption(tables, "table")}
+                        </FormField>
+                        {!isCounterSumType && (
+                            <div className="mb-3">
                                 <FormField
-                                    label='Header'
-                                    value={title}
-                                    placeholder='Input header'
-                                    fieldName='title'
-                                    onChange={(e) => this.onChangeData(e.target)}
-                                    onBlur={(e) => this.onChangeData(e.target, true)}
-                                    isMandatory={mandatoryFields.includes('title')}
+                                    label="Column"
+                                    value={column}
+                                    fieldName="column"
+                                    onChange={(e) => onChangeData(e.target, true)}
+                                    isMandatory={mandatoryFields.includes("column")}
+                                    type="select"
                                     errors={errors}
-                                />
-                                <FormField
-                                    label='Type'
-                                    value={type}
-                                    fieldName='type'
-                                    onChange={(e) => this.onChangeData(e.target, true)}
-                                    isMandatory={true}
-                                    type='select'
-                                    errors={errors}
+                                    disabled={!table || columnLoading}
+                                    multiple={type == WIDGET_TYPE.table}
                                 >
-                                    {this.generateOption(null, 'type')}
+                                    {generateOption(columns, "column")}
                                 </FormField>
-                                <FormField
-                                    label='Datatable'
-                                    value={table}
-                                    fieldName='table'
-                                    onChange={(e) => this.onChangeData(e.target)}
-                                    isMandatory={mandatoryFields.includes('table')}
-                                    type='select'
-                                    errors={errors}
-                                >
-                                    {this.generateOption(tables, 'table')}
-                                </FormField>
-                                {!isCounterSumType && <>
-                                    <FormField
-                                        label='Column'
-                                        value={column}
-                                        fieldName='column'
-                                        onChange={(e) => this.onChangeData(e.target, true)}
-                                        isMandatory={mandatoryFields.includes('column')}
-                                        type='select'
-                                        errors={errors}
-                                        disabled={!table}
-                                        multiple={type == WIDGET_TYPE.table}
-                                    >
-                                        {this.generateOption(columns, 'column')}
-                                    </FormField>
-                                    {type == WIDGET_TYPE.table && <span className="text-sm">
+                                {type == WIDGET_TYPE.table && (
+                                    <small className="fst-italic">
                                         * Can select multiple columns
-                                    </span>}
-                                </>}
-                                <div className="row">
-                                    <FormField
-                                        className={`col-12 ${!isCounterSumType && 'col-md-6'}`}
-                                        label='Order'
-                                        value={order}
-                                        fieldName='order'
-                                        onChange={(e) => this.onChangeData(e.target)}
-                                        isMandatory={mandatoryFields.includes('order')}
-                                        type='select'
-                                        errors={errors}
-                                    >
-                                        {this.generateOption(null, 'order')}
-                                    </FormField>
-                                    {!isCounterSumType && <FormField
-                                        className='col-12 col-md-6 pt-md-0'
-                                        label='Size'
-                                        value={size}
-                                        fieldName='size'
-                                        onChange={(e) => this.onChangeData(e.target, true)}
-                                        type='select'
-                                        errors={errors}
-                                    >
-                                        {this.generateOption(null, 'size')}
-                                    </FormField>}
-                                </div>
-                                <div className='form-field form-group'>
-                                    <label>Filter</label>
-                                    <FilterText
-                                        fieldName='query'
-                                        value={query}
-                                        queries={queries}
-                                        onSaveClicked={onSaveClicked}
-                                        onDeleteCLicked={onDeleteCLicked}
-                                        placeholder="status = 200 AND url LIKE '%product%'"
-                                        onBlur={(e) => this.onChangeData(e.target)}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <div className="col-12 col-md-6 btn-action-group">
-                                        <Button className="btn-search w-100 mt-0 mt-md-2"
-                                                onClick={() => this.onSubmit()}
-                                                disabled={Object.keys(errors).length > 0}
-                                            // disabled={isEqual(initialData, widgetDetail) || Object.keys(errors).length > 0}
-                                        >
-                                            {`${id ? 'Update' : 'Add new'}`}
-                                        </Button>
-                                    </div>
-                                    <div
-                                        className="col-12 col-md-6 btn-action-group pt-2 pt-md-0">
-                                        <Button className="btn-search w-100 mt-0 mt-md-2"
-                                                color="default"
-                                                onClick={() => history.back()}>
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </div>
+                                    </small>
+                                )}
                             </div>
+                        )}
+                        {!isCounterSumType && (
+                            <div className="row">
+                                <FormField
+                                    className="col-12 col-md-6 pt-md-0 mb-3"
+                                    label="Order"
+                                    value={order}
+                                    fieldName="order"
+                                    onChange={(e) => onChangeData(e.target)}
+                                    isMandatory={mandatoryFields.includes("order")}
+                                    type="select"
+                                    errors={errors}
+                                >
+                                    {generateOption(null, "order")}
+                                </FormField>
+                                <FormField
+                                    className="col-12 col-md-6 pt-md-0 mb-3"
+                                    label="Size"
+                                    value={size}
+                                    fieldName="size"
+                                    onChange={(e) => onChangeData(e.target, true)}
+                                    isMandatory={mandatoryFields.includes("size")}
+                                    type="select"
+                                    errors={errors}
+                                >
+                                    {generateOption(null, "size")}
+                                </FormField>
+                            </div>
+                        )}
+                        <div className="form-field form-group mb-3">
+                            <label className="mb-1">Filter</label>
+                            <FilterText
+                                fieldName="query"
+                                value={query}
+                                queries={queries}
+                                onSaveClicked={onSaveClicked}
+                                onDeleteCLicked={onDeleteCLicked}
+                                placeholder="status = 200 AND url LIKE '%product%'"
+                                onBlur={(e) => onChangeData(e.target)}
+                            />
+                        </div>
+                        <div className="float-end">
+                            <Button
+                                className="btn-search mt-3"
+                                color={Colors.blue}
+                                onClick={() => onSubmit()}
+                                disabled={isDisableSaveButton}
+                            >
+                                {`${id ? "Update" : "Create"}`}
+                            </Button>
                         </div>
                     </div>
-                }
-            </div>
-        );
-    }
-}
-
-WidgetManagement.propTypes = {
-    onChange: PropTypes.func,
-    checked: PropTypes.bool,
-    disabled: PropTypes.bool,
-    className: PropTypes.string
+                    <div className="col col-md-6">
+                        Preview
+                        {type ? (
+                            <WidgetLayout {...widgetDetail} />
+                        ) : (
+                            <p className="d-flex justify-content-center align-items-center h-75">
+                                Not selected widget type yet.
+                            </p>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <Spinner />
+            )}
+        </div>
+    );
 };
