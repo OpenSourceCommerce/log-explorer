@@ -43,46 +43,49 @@ class ProfileForm extends Component {
                                         role="tablist"
                                     >
                                         <li className="nav-item" role="presentation">
-                                            <button
+                                            <a
                                                 className="nav-link active"
                                                 id="pills-profile-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-profile"
                                                 type="button"
+                                                href="#profile"
                                                 role="tab"
                                                 aria-controls="pills-profile"
                                                 aria-selected="true"
                                             >
                                                 My Profile
-                                            </button>
+                                            </a>
                                         </li>
                                         <li className="nav-item" role="presentation">
-                                            <button
+                                            <a
                                                 className="nav-link"
                                                 id="pills-databases-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-databases"
                                                 type="button"
+                                                href="#databases"
                                                 role="tab"
                                                 aria-controls="pills-databases"
                                                 aria-selected="false"
                                             >
                                                 Databases
-                                            </button>
+                                            </a>
                                         </li>
                                         <li className="nav-item" role="presentation">
-                                            <button
+                                            <a
                                                 className="nav-link"
                                                 id="pills-widgets-tab"
                                                 data-bs-toggle="pill"
                                                 data-bs-target="#pills-widgets"
                                                 type="button"
+                                                href="#widgets"
                                                 role="tab"
                                                 aria-controls="pills-widgets"
                                                 aria-selected="false"
                                             >
                                                 Widgets
-                                            </button>
+                                            </a>
                                         </li>
                                     </ul>
                                 </ContentHeader>
