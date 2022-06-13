@@ -25,7 +25,7 @@ export class ContentHeader extends Component {
         title = title || pageTitle;
 
         return (
-            <div className={`content-header d-flex justify-content-between aligns-items-center`}>
+            <div className={`content-header d-flex justify-content-between aligns-items-center ${className}`}>
                 <div className='d-flex flex-first aligns-items-center'>
                     <div className="title my-auto">
                         <Icon dataFeather={iconName} className="feather-lg" />
