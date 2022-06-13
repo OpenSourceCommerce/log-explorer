@@ -47,6 +47,7 @@ class UserController extends AbstractController
      * @param UserToken $userToken
      * @param UserTokenServiceInterface $userTokenService
      * @return Response
+     * @throws ExpiredUserTokenException
      */
     public function confirmation(UserToken $userToken, UserTokenServiceInterface $userTokenService): Response
     {
@@ -55,19 +56,6 @@ class UserController extends AbstractController
         }
         return $this->render('user/confirmation.html.twig', [
         'token' => $userToken,
-        ]);
-    }
-
-    /**
-     * @Route("/profile", priority=10, name="user_profile", methods = "GET")
-     * @return Response
-     */
-    public function profile(ClickhouseServiceInterface $clickhouseService): Response
-    {
-        $types = $clickhouseService->getTypes();
-        return $this->render('user/profile.html.twig', [
-            'user' => $this->getUser(),
-            'types' => json_encode($types),
         ]);
     }
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Spinner, Icon, Toast, Size, Modal, FormField, Button, Image } from "../../components";
-import { DatabaseActions } from "../../actions";;
+import { DatabaseActions } from "../../actions";
 import { DatabaseTableDetail } from "./table-details";
 import { TableColumn } from "./table-columns";
 import { TOAST_STATUS } from "../../utils";
 import ChevronRight from "../../../images/chevron-right.svg";
-import "../../../styles/pages/tables.scss"
+import "../../../styles/pages/tables.scss";
 
 const DEFAULT_DATATABLE_VALUE = {
     tableName: "",
@@ -62,7 +62,9 @@ const CreateDatabaseTableModal = ({
         setErrors(newErrors);
     };
 
-    const setColumnNameWillRemove = () => {};
+    const setColumnNameWillRemove = ({ position }) => {
+        setDataTableColumns([...dataTableColumns].filter((_, index) => index !== position));
+    };
 
     const createNewDataTable = async () => {
         setIsLoading(true);
