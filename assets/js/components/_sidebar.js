@@ -18,14 +18,13 @@ export class Sidebar extends Component {
             ];
         } else {
             navList = [
-                {href: 'log-view', iconName: 'search', label: 'Explore'},
-                {href: 'profile', iconName: 'user', label: 'Profile'},
-                {href: 'table', iconName: 'database', label: 'Database'},
-                {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
+                {href: 'log-view', iconName: 'search', label: 'Explore'},
+                {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
                 {href: 'export', iconName: 'download', label: 'Exports'},
+                {href: 'setting?tabs=profile', iconName: 'settings', label: 'Settings'},
             ];
         }
 
@@ -41,7 +40,7 @@ export class Sidebar extends Component {
                             return (
                                 <li key={index}>
                                     <Link href={`/${href}`} className={`nav-item ${href.includes(featureName[1]) ? 'active' : ''}`}>
-                                        <i data-feather={iconName}></i> {label}
+                                        <Icon dataFeather={iconName}></Icon> {label}
                                     </Link>
                                 </li>
                             )
