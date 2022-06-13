@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Icon, FormField } from "../../components";
+import { Icon, FormField, Button, Colors } from "../../components";
 
 const COLUMN_TYPE_LIST = window.clickhouseTypes;
 const REGEX_SPECIAL_CHARACTERS = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]+/;
@@ -89,13 +89,13 @@ const TableDetailRow = ({
             </td>
             <td className="pe-0" style={{ width: "5%" }}>
                 {!isDisableField && (
-                    <button
-                        className="btn btn-outline-danger"
+                    <Button
+                        outlineColor={Colors.red}
                         disabled={columns.length < 2}
                         onClick={onRemoveColumnClicked}
                     >
                         <Icon dataFeather="trash-2" />
-                    </button>
+                    </Button>
                 )}
             </td>
         </tr>

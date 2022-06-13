@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Input, Link, NavDivider} from '.';
+import {Colors, Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
 import "../../styles/component/_filter-text.scss";
@@ -165,7 +165,7 @@ export class FilterText extends Component {
                     {queries && <div className='input-group-append'>
                         <Button
                             id='btn-filter-save'
-                            className='btn-outline-primary px-4'
+                            outlineColor={Colors.blue}
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
                         >Save</Button>
                     </div>}

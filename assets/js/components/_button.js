@@ -1,11 +1,11 @@
 import React from "react";
-import { Colors } from ".";
 import PropTypes from "prop-types";
 
 export const Button = ({
     className = "",
     type = "button",
     color,
+    outlineColor,
     isLoading = false,
     disabled = false,
     children,
@@ -13,14 +13,15 @@ export const Button = ({
     ...rest
 }) => {
     let classes = `btn ${className}`;
-    if (color) classes += " btn-" + color;
 
-    if (isLoading) {
-        disabled = true;
-    }
+    if (outlineColor) classes += ` btn-outline-${color}`;
+
+    if (color) classes += ` btn-${color}`;
+
+    if (!outlineColor && !color) classes += " btn-primary";
 
     return (
-        <button {...rest} className={classes} disabled={disabled} type={type} data-cy={cy}>
+        <button {...rest} className={classes} disabled={disabled || isLoading} type={type} data-cy={cy}>
             {isLoading ? (
                 <>
                     <span
