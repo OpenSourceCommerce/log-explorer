@@ -1,17 +1,17 @@
 .setting-profile {
   .nav {
     .nav-item {
-      a {
+      .nav-link {
         font-size: 1.125rem;
         color: black;
         border-radius: unset;
-        padding: .85rem;
+        padding: 0.85rem;
 
         &:hover {
-          background: #E2E6EA 0% 0% no-repeat padding-box;
+          background: #e2e6ea 0% 0% no-repeat padding-box;
         }
       }
-      .active{
+      .active {
         background: none;
         border-bottom: 2px solid var(--bs-primary);
         color: var(--bs-primary);
