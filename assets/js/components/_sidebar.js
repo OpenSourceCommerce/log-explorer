@@ -21,7 +21,6 @@ export class Sidebar extends Component {
                 {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
                 {href: 'log-view', iconName: 'search', label: 'Explore'},
                 {href: 'user', iconName: 'users', label: 'Users'},
-                {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
                 {href: 'export', iconName: 'download', label: 'Exports'},
                 {href: 'setting?tabs=profile', iconName: 'settings', label: 'Settings'},
