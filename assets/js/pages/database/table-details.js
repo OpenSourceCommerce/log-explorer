@@ -92,11 +92,12 @@ const AlertDeleteTable = ({ tableName, onConfirmDeleteTable, onHidden }) => {
             id={"delete-table"}
             title={`Deleting table ${tableName}`}
             showCloseButton={true}
-            closeButtonTitle="Abort"
+            closeButtonTitle="Cancel"
             showSaveButton={true}
             saveButtonTitle="OK"
             saveButtonColor="danger"
             saveButtonAction={() => onConfirmDeleteTable(tableName)}
+            closeButtonAction={() => onHidden()}
             show={!!tableName}
             onHidden={onHidden}
         >
