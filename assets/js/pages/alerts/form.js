@@ -100,7 +100,7 @@ export class AlertFormModal extends Component {
     };
 
     onChangeFilter = async (from, to, dateRange) => {
-        this.onChangeField({name: 'time_range', value: dateRange})
+        this.onChangeField({ name: "time_range", value: dateRange });
     };
 
     onSubmit = () => {
@@ -244,32 +244,28 @@ export class AlertFormModal extends Component {
                         isMandatory={MANDATORY_FIELDS.includes("query")}
                         errors={errors}
                     />
-                    <div className="row mb-3">
-                        <div className="col">
-                            <FormField
-                                label="Limit for alert"
-                                value={threshold}
-                                fieldName="threshold"
-                                type="number"
-                                min="0"
-                                onChange={(e) => this.onChangeField(e.target)}
-                                isMandatory={MANDATORY_FIELDS.includes("threshold")}
-                                errors={errors}
-                            />
-                        </div>
-                        <div className="col">
-                            <FormField
-                                label="Check interval in minutes"
-                                value={interval_time}
-                                type="number"
-                                min="0"
-                                fieldName="interval_time"
-                                onChange={(e) => this.onChangeField(e.target)}
-                                isMandatory={MANDATORY_FIELDS.includes("interval_time")}
-                                errors={errors}
-                            />
-                        </div>
-                    </div>
+                    <FormField
+                        className="mb-3"
+                        label="Limit for alert"
+                        value={threshold}
+                        fieldName="threshold"
+                        type="number"
+                        min="0"
+                        onChange={(e) => this.onChangeField(e.target)}
+                        isMandatory={MANDATORY_FIELDS.includes("threshold")}
+                        errors={errors}
+                    />
+                    <FormField
+                        className="mb-3"
+                        label="Check interval in minutes"
+                        value={interval_time}
+                        type="number"
+                        min="0"
+                        fieldName="interval_time"
+                        onChange={(e) => this.onChangeField(e.target)}
+                        isMandatory={MANDATORY_FIELDS.includes("interval_time")}
+                        errors={errors}
+                    />
                     <div className={`form-group mb-3` + (errors?.time_range ? "is-invalid" : "")}>
                         <label>Time Range</label>
                         <FilterDate

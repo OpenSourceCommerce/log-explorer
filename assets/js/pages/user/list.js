@@ -321,7 +321,7 @@ class UserList extends Component {
                         this.setState({ toastContent: {} });
                     }}
                 />
-                <div className="content ms-2 me-2">
+                <div className="content ms-2 me-2 mt-3">
                     <ContentHeader
                         pageTitle="Users"
                         iconName="users"

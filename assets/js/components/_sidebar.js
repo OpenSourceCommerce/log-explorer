@@ -40,7 +40,7 @@ export class Sidebar extends Component {
                             return (
                                 <li key={index}>
                                     <Link href={`/${href}`} className={`nav-item ${href.includes(featureName[1]) ? 'active' : ''}`}>
-                                        <i data-feather={iconName}></i> {label}
+                                        <Icon dataFeather={iconName}></Icon> {label}
                                     </Link>
                                 </li>
                             )
