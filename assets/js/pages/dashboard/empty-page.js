@@ -58,7 +58,7 @@ const CreateNewDashboardModal = ({ isShow, onHidden }) => {
             if (resLoad && !resLoad.error) {
                 await setAlertMessage({
                     color: Colors.green,
-                    message: "Create dashboard success, we will redirect your in few second",
+                    message: "Create new dashboard successful, we will redirect you now",
                 });
                 setTimeout(() => {
                     window.location.href = `/dashboard/${resLoad.data.uuid}`;
