@@ -23,7 +23,7 @@ const ORDER_FIELD_VALUE = {
     desc: "desc",
 };
 
-const INVISIBLE_FIELD_IN_COUNTER_SUM = ["order", "column", "size"];
+const INVISIBLE_FIELD_IN_COUNTER_SUM = ["order", "size"];
 
 const WidgetLayout = ({ type, title, size, column, id }) => {
     let component = null;
@@ -86,13 +86,11 @@ export const WidgetManagement = ({
 
     useEffect(() => {
         const loadColumnList = async () => {
-            const { type, table } = widgetDetail;
-            if (table && type != WIDGET_TYPE.counterSum) {
-                setColumnLoading(true);
-                let columnList = await loadColumn(table);
-                setColumns(columnList);
-                setColumnLoading(false);
-            }
+            const { table } = widgetDetail;
+            setColumnLoading(true);
+            let columnList = table ? await loadColumn(table) : [];
+            setColumns(columnList);
+            setColumnLoading(false);
         };
         loadColumnList();
     }, [widgetDetail.table]);
@@ -107,18 +105,17 @@ export const WidgetManagement = ({
             : [];
     };
 
-    const onChangeData = async ({ name, value }, isUpdateWidget) => {
+    const onChangeData = async ({ name, value }) => {
         let newWidgetDetail = { ...widgetDetail };
         let newErrors = [...errors].filter((item) => item !== name);
-        let newValue = value;
+        let newValue = name === 'type' && !!value ? parseInt(value) : value;
 
         if (name) {
             if (name === "table") {
                 let column = "";
-                if (widgetDetail.type == WIDGET_TYPE.table) {
+                if (widgetDetail.type === WIDGET_TYPE.table) {
                     column = [];
                 }
-                newWidgetDetail = { ...widgetDetail, column };
             } else if (name === "type") {
                 let newMandatoryFieldArray = [...mandatoryFields];
                 if (newValue === WIDGET_TYPE.counterSum) {
@@ -132,8 +129,18 @@ export const WidgetManagement = ({
                         }
                     });
                 }
-                newValue = parseInt(newValue);
                 setMandatoryFields([...newMandatoryFieldArray]);
+
+                let column = widgetDetail.column;
+                if (newValue === WIDGET_TYPE.table) {
+                    column = [];
+                } else {
+                    if (Array.isArray(column)) {
+                        column = "";
+                    }
+                }
+
+                newWidgetDetail = { ...widgetDetail, column };
             } else if (name == "column" && widgetDetail.type === WIDGET_TYPE.table) {
                 newValue = newValue.trim();
 
@@ -193,11 +200,11 @@ export const WidgetManagement = ({
         if (options && options.length > 0) {
             const isGenerateDataForColumnWithTableType =
                 widgetDetail.type === WIDGET_TYPE.table && field === "column";
+
+            const isInvisibleNullOption = isGenerateDataForColumnWithTableType || field === "order";
             return (
                 <>
-                    {!isGenerateDataForColumnWithTableType && (
-                        <option value="">{`Select ${field}`}</option>
-                    )}
+                    {!isInvisibleNullOption && <option value="">{`Select ${field}`}</option>}
                     {options.map((item, index) => {
                         const { value, label } = item;
                         return (
@@ -308,28 +315,24 @@ export const WidgetManagement = ({
                         >
                             {generateOption(tables, "table")}
                         </FormField>
-                        {!isCounterSumType && (
-                            <div className="mb-3">
-                                <FormField
-                                    label="Column"
-                                    value={column}
-                                    fieldName="column"
-                                    onChange={(e) => onChangeData(e.target, true)}
-                                    isMandatory={mandatoryFields.includes("column")}
-                                    type="select"
-                                    errors={errors}
-                                    disabled={!table || columnLoading}
-                                    multiple={type == WIDGET_TYPE.table}
-                                >
-                                    {generateOption(columns, "column")}
-                                </FormField>
-                                {type == WIDGET_TYPE.table && (
-                                    <small className="fst-italic">
-                                        * Can select multiple columns
-                                    </small>
-                                )}
-                            </div>
-                        )}
+                        <div className="mb-3">
+                            <FormField
+                                label="Column"
+                                value={column}
+                                fieldName="column"
+                                onChange={(e) => onChangeData(e.target, true)}
+                                isMandatory={mandatoryFields.includes("column")}
+                                type="select"
+                                errors={errors}
+                                disabled={!table || columnLoading}
+                                multiple={type == WIDGET_TYPE.table}
+                            >
+                                {generateOption(columns, "column")}
+                            </FormField>
+                            {type == WIDGET_TYPE.table && (
+                                <small className="fst-italic">* Can select multiple columns</small>
+                            )}
+                        </div>
                         {!isCounterSumType && (
                             <div className="row">
                                 <FormField

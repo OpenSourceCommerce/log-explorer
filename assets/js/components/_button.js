@@ -14,7 +14,7 @@ export const Button = ({
 }) => {
     let classes = `btn ${className}`;
 
-    if (outlineColor) classes += ` btn-outline-${color}`;
+    if (outlineColor) classes += ` btn-outline-${outlineColor}`;
 
     if (color) classes += ` btn-${color}`;
 

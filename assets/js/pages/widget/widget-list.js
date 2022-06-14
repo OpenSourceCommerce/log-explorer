@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import DatabaseActions from "../../actions/_database-actions";
 import WidgetActions from "../../actions/_widget-actions";
 import { Spinner, Icon, Toast, Colors, Modal, Size } from "../../components";
@@ -12,18 +12,18 @@ const WIDGET_ICON = {
     count: "count",
 };
 
+const ORDER_FIELD_VALUE = {
+    asc: "asc",
+    desc: "desc",
+};
+
 const WIDGET_DEFAULT = {
     column: "",
-    order: "",
+    order: ORDER_FIELD_VALUE.asc,
     size: 5,
     table: "",
     title: "",
     type: "",
-};
-
-const ORDER_FIELD_VALUE = {
-    asc: "asc",
-    desc: "desc",
 };
 
 const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
@@ -67,14 +67,16 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
                 <div className="text-center">
                     {id ? (
                         <span className={`rounded-circle bg-${widgetType} p-3`}>
-                            {widgetType === "count" ? (
-                                <span className="text-white fw-medium">123</span>
-                            ) : (
-                                <Icon
-                                    className="text-white"
-                                    dataFeather={WIDGET_ICON[widgetType]}
-                                />
-                            )}
+                            <Fragment>
+                                {widgetType === "count" ? (
+                                    <span className="text-white fw-medium">123</span>
+                                ) : (
+                                    <Icon
+                                        className="text-white"
+                                        dataFeather={WIDGET_ICON[widgetType]}
+                                    />
+                                )}
+                            </Fragment>
                         </span>
                     ) : (
                         <Icon className="text-primary" dataFeather="plus" />
@@ -157,9 +159,10 @@ export const WidgetList = () => {
     };
 
     const onSubmitDataSuccess = async (isUpdateWidget) => {
-        await loadData();
         await setIsWidgetDetailClicked(false);
         await setWidgetSelected(null);
+        await setIsLoading(true);
+        await loadData();
         setToastContent({
             color: TOAST_STATUS.success,
             message: `${isUpdateWidget ? "Update" : "Create"} widget successful`,
@@ -183,7 +186,7 @@ export const WidgetList = () => {
         };
 
         setWidgetRemoveSelected();
-        const newWidgetList = [...widgets].filter(item => item.id !== widgetRemoveSelected.id);
+        const newWidgetList = [...widgets].filter((item) => item.id !== widgetRemoveSelected.id);
         setWidgets(newWidgetList);
 
         setToastContent(toastContent);
