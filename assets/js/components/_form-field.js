@@ -72,12 +72,15 @@ export class FormField extends Component {
 
         let isInvalidField = false;
 
-        if (Array.isArray(errors)) {
-            isInvalidField = errors.includes(fieldName);
-        } else if (typeof errors === 'object') {
-            isInvalidField = errors[fieldName];
+        if (errorMessage) {
+            isInvalidField = true;
+        } else {
+            if (Array.isArray(errors)) {
+                isInvalidField = errors.includes(fieldName);
+            } else if (typeof errors === 'object') {
+                isInvalidField = errors[fieldName];
+            }
         }
-
         return (
             <div className={`form-field form-group ${className}`}>
                 {!isHiddenLabel && <label className={`mb-1 ${isMandatory ? 'required' : ''}`}>{label}</label>}

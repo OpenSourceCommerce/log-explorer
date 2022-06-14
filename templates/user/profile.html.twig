@@ -11,6 +11,12 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        window.clickhouseTypes = {{ types | raw }};
+        {% if table is defined %}
+        window.table = "{{ table }}";
+        {% endif %}
+    </script>
     {{ encore_entry_script_tags('user_profile') }}
 {% endblock %}
 

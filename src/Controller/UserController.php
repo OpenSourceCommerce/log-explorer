@@ -9,6 +9,7 @@ use App\Services\UserToken\UserTokenServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Services\Clickhouse\ClickhouseServiceInterface;
 
 class UserController extends AbstractController
 {
@@ -46,6 +47,7 @@ class UserController extends AbstractController
      * @param UserToken $userToken
      * @param UserTokenServiceInterface $userTokenService
      * @return Response
+     * @throws ExpiredUserTokenException
      */
     public function confirmation(UserToken $userToken, UserTokenServiceInterface $userTokenService): Response
     {
@@ -53,18 +55,7 @@ class UserController extends AbstractController
             throw new ExpiredUserTokenException();
         }
         return $this->render('user/confirmation.html.twig', [
-            'token' => $userToken,
-        ]);
-    }
-
-    /**
-     * @Route("/profile", priority=10, name="user_profile", methods = "GET")
-     * @return Response
-     */
-    public function profile(): Response
-    {
-        return $this->render('user/profile.html.twig', [
-            'user' => $this->getUser(),
+        'token' => $userToken,
         ]);
     }
 
