@@ -113,7 +113,7 @@ export class UserProfile extends React.Component {
         const isDisableSaveButton = errors.length > 0 || isEqual(user, oldUserData);
 
         return (
-            <div className="col-4 card border-0 rounded-0">
+            <div className="update-profile col-12 col-md-5 card border-0 rounded-0">
                 <div className="card-body mx-4">
                     <h5 className="header mb-3">Update Profile</h5>
                     <form role="form">

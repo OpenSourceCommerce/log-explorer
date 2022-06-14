@@ -135,7 +135,7 @@ export class ChangePasswordForm extends Component {
         const isDisableSaveButton = MANDATORY_FIELDS.find(item => !this.state[item]);
 
         return (
-            <div className="col-4 card mt-3 border-0 rounded-0">
+            <div className="change-password col-12 col-md-5 card mt-3 border-0 rounded-0">
                 <div className="card-body mx-4">
                     <h5 className="header mb-3">Change Password</h5>
                     <form id={"change-password"} onSubmit={this.onSubmit}>
