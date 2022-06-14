@@ -26,7 +26,7 @@ class DashboardController extends AbstractController
         if ($dashboard) {
             return $this->redirectToRoute('dashboard', ['uuid' => $dashboard->getUuid()]);
         }
-        return $this->redirectToRoute('dashboard_list');
+        return $this->render('dashboard/list.html.twig');
     }
 
     /**

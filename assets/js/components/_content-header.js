@@ -25,16 +25,16 @@ export class ContentHeader extends Component {
         title = title || pageTitle;
 
         return (
-            <div className={`content-header d-flex justify-content-between aligns-items-center`}>
+            <div className={`content-header d-flex justify-content-between aligns-items-center ${className || ''}`}>
                 <div className='d-flex flex-first aligns-items-center'>
                     <div className="title my-auto">
-                        <Icon dataFeather={iconName} className="feather-lg" />
-                        <span className="ms-2">{title}</span>
+                        <Icon dataFeather={iconName} className="feather-lg" style={{marginTop: "3px"}} />
+                        <span className="ms-2 align-middle">{title}</span>
                     </div>
                     {children}
                 </div>
                 {onClickActionBtn && <Button style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
-                    {actionButtonIcon && <Icon dataFeather={actionButtonIcon} className="feather-lg"/>}
+                    {actionButtonIcon && <Icon dataFeather={actionButtonIcon} className="feather-lg" stroke-width="3"/>}
                     {actionButtonTitle && <span className="align-middle ms-1">
                         {actionButtonTitle}
                     </span>}
