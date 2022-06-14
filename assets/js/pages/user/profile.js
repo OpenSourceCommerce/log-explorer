@@ -1,120 +1,123 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
+import { DatabaseTables } from "../database/tables";
 
-class ProfileForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            toastContent: {},
-        };
-    }
+const TAB_LIST = [
+    {
+        id: "profile",
+        title: "My Profile",
+    },
+    {
+        id: "databases",
+        title: "Databases",
+    },
+    {
+        id: "widgets",
+        title: "Widgets",
+    },
+];
 
-    setToastMessage = (toastContent) => {
-        this.setState({ toastContent });
-    };
-
-    render() {
-        const { toastContent } = this.state;
+const NavComponent = ({ currentTab }) => {
+    const TabComponent = ({ title, id, currentTab }) => {
         return (
-            <div className="setting-profile">
-                <div className="content">
-                    <Toast
-                        toastContent={toastContent}
-                        onToastClosed={() => {
-                            this.setState({ toastContent: {} });
-                        }}
-                    />
-                    <div className="bg-white">
-                        <div className="container-fluid">
-                            <div className="ms-2 me-2">
-                                <ContentHeader pageTitle="Settings" iconName="settings" className="pb-2 bg-white">
-                                    <ul
-                                        className="nav nav-pills ms-4"
-                                        id="pills-tab"
-                                        role="tablist"
-                                    >
-                                        <li className="nav-item" role="presentation">
-                                            <button
-                                                className="nav-link active"
-                                                id="pills-profile-tab"
-                                                data-bs-toggle="pill"
-                                                data-bs-target="#pills-profile"
-                                                type="button"
-                                                role="tab"
-                                                aria-controls="pills-profile"
-                                                aria-selected="true"
-                                            >
-                                                My Profile
-                                            </button>
-                                        </li>
-                                        <li className="nav-item" role="presentation">
-                                            <button
-                                                className="nav-link"
-                                                id="pills-databases-tab"
-                                                data-bs-toggle="pill"
-                                                data-bs-target="#pills-databases"
-                                                type="button"
-                                                role="tab"
-                                                aria-controls="pills-databases"
-                                                aria-selected="false"
-                                            >
-                                                Databases
-                                            </button>
-                                        </li>
-                                        <li className="nav-item" role="presentation">
-                                            <button
-                                                className="nav-link"
-                                                id="pills-widgets-tab"
-                                                data-bs-toggle="pill"
-                                                data-bs-target="#pills-widgets"
-                                                type="button"
-                                                role="tab"
-                                                aria-controls="pills-widgets"
-                                                aria-selected="false"
-                                            >
-                                                Widgets
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </ContentHeader>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="tab-content container-fluid mt-3" id="pills-tabContent">
-                        <div className="ms-2 me-2">
-                            <div
-                                className="tab-pane fade show active"
-                                id="pills-profile"
-                                role="tabpanel"
-                                aria-labelledby="pills-profile-tab"
+            <li className="nav-item" role="presentation">
+                <button
+                    className={`nav-link ${currentTab === id ? "active" : ""}`}
+                    id={`pills-${id}-tab`}
+                    data-bs-toggle="pill"
+                    data-bs-target={`#pills-${id}`}
+                    type="button"
+                    role="tab"
+                    aria-controls={`pills-${id}`}
+                    aria-selected="true"
+                    onClick={() => {
+                        location.href = `setting?tab=${id}`;
+                    }}
+                >
+                    {title}
+                </button>
+            </li>
+        );
+    };
+    return (
+        <ul className="nav nav-pills ms-4" id="pills-tab" role="tablist">
+            {TAB_LIST.map((item) => (
+                <TabComponent key={item.id} {...item} currentTab={currentTab} />
+            ))}
+        </ul>
+    );
+};
+
+const ProfileForm = ({ currentTab: passedCurrentTab }) => {
+    const [toastContent, setToastContent] = useState();
+    const [currentTab, setCurrentTab] = useState();
+
+    useEffect(() => {
+        const currentValue = window.location.search;
+        setCurrentTab(currentValue?.split("=")[1] || 'profile');
+    }, []);
+
+    useEffect(() => {
+        setCurrentTab(passedCurrentTab);
+    }, [passedCurrentTab]);
+
+    const setToastMessage = (toastContent) => setToastContent(toastContent);
+
+    return (
+        <div className="setting-profile" style={{ marginBottom: "50px" }}>
+            <div className="content">
+                <Toast
+                    toastContent={toastContent}
+                    onToastClosed={() => {
+                        setToastContent();
+                    }}
+                />
+                <div className="bg-white">
+                    <div className="container-fluid">
+                        <div className="ms-4 me-4">
+                            <ContentHeader
+                                pageTitle="Settings"
+                                iconName="settings"
+                                className="pb-2 bg-white"
                             >
-                                <UserProfile setToastMessage={this.setToastMessage} />
-                                <ChangePasswordForm setToastMessage={this.setToastMessage} />
-                            </div>
-                            <div
-                                className="tab-pane fade"
-                                id="pills-databases"
-                                role="tabpanel"
-                                aria-labelledby="pills-databases-tab"
-                            >
-                                Databases config tab
-                            </div>
-                            <div
-                                className="tab-pane fade"
-                                id="pills-widgets"
-                                role="tabpanel"
-                                aria-labelledby="pills-widgets-tab"
-                            >
-                                Widget config tab
-                            </div>
+                                <NavComponent currentTab={currentTab} />
+                            </ContentHeader>
                         </div>
                     </div>
                 </div>
+                <div className="tab-content" id="pills-tabContent">
+                    <div
+                        className={`container-fluid mx-2 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
+                        id="pills-profile"
+                        role="tabpanel"
+                        aria-labelledby="pills-profile-tab"
+                    >
+                        <UserProfile setToastMessage={setToastMessage} />
+                        <ChangePasswordForm setToastMessage={setToastMessage} />
+                    </div>
+                    <div
+                        className={`tab-pane fade ${currentTab === 'databases' ? 'show active' : '' }`}
+                        id="pills-databases"
+                        role="tabpanel"
+                        aria-labelledby="pills-databases-tab"
+                    >
+                        <DatabaseTables />
+                    </div>
+                    <div
+                        className={`tab-pane fade ${currentTab === 'widgets' ? 'show active' : '' }`}
+                        id="pills-widgets"
+                        role="tabpanel"
+                        aria-labelledby="pills-widgets-tab"
+                    >
+                        Widget config tab
+                    </div>
+                </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
-ReactDOM.render(<ProfileForm />, document.querySelector("#root"));
+const root = document.querySelector("#root");
+ReactDOM.render(<ProfileForm {...root.dataset} />, root);

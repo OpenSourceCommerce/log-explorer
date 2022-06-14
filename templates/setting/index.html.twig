@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% if table is defined %}Update{% else %}Create{% endif %} table{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block stylesheets %}
-    {{ encore_entry_link_tags('database_form') }}
+    {{ encore_entry_link_tags('user_profile') }}
 {% endblock %}
 
 {% block body %}
-    <div id="root"></div>
+    <div id="root" data-current-tab="{{ tab }}"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -17,6 +17,6 @@
         window.table = "{{ table }}";
         {% endif %}
     </script>
-    {{ encore_entry_script_tags('database_form') }}
+    {{ encore_entry_script_tags('user_profile') }}
 {% endblock %}
 

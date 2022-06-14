@@ -64,7 +64,7 @@ export class Modal extends Component {
                 <div className={`modal-dialog modal-${size} ${isPositionCenter ? 'modal-dialog-centered': ''}`}>
                     <div className="modal-content">
                         <div className="modal-header">
-                            <p className="modal-title fw-bold">{title}</p>
+                            <p className="modal-title">{title}</p>
                             <button type="button" className="btn btn-close" data-bs-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
                             </button>

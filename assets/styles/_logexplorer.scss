@@ -2,6 +2,18 @@
   background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #ffffff 100%) 0% 0% no-repeat padding-box;
 }
 
+.min-h-100 {
+  min-height: 100vh;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.fw-medium {
+  font-weight: $fw-medium;
+}
+
 .content-wrapper {
   background-color: #f8f9fa;
   max-height: 100vh;

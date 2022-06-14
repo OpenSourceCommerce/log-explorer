@@ -18,14 +18,13 @@ export class Sidebar extends Component {
             ];
         } else {
             navList = [
+                {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
                 {href: 'log-view', iconName: 'search', label: 'Explore'},
-                {href: 'profile', iconName: 'user', label: 'Profile'},
-                {href: 'table', iconName: 'database', label: 'Database'},
                 {href: 'user', iconName: 'users', label: 'Users'},
-                {href: 'dashboard', iconName: 'home', label: 'Dashboards'},
                 {href: 'widget', iconName: 'pie-chart', label: 'Widgets'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
                 {href: 'export', iconName: 'download', label: 'Exports'},
+                {href: 'setting?tabs=profile', iconName: 'settings', label: 'Settings'},
             ];
         }
 
