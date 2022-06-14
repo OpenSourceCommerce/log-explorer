@@ -1,6 +1,23 @@
+$fw-medium: 500;
+
+body {
+  font-weight: $fw-medium;
+}
 
 .authentication-background {
   background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+}
+
+.min-h-100 {
+  min-height: 100vh;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.fw-medium {
+  font-weight: $fw-medium;
 }
 
 .content-wrapper {

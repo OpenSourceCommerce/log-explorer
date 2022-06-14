@@ -18,8 +18,7 @@ class Navbar extends Component {
         } = this.props;
 
         return (
-            <nav className="navbar navbar-expand navbar-light bg-white main-header">
-
+            <nav className="navbar navbar-expand navbar-light bg-white main-header ps-cp-4">
                 <div className="d-flex justify-content-between w-100 align-items-center">
                     <span className="nav-item collapse-icon rounded-circle p-2" id="sidebarCollapse" href="#">
                         <Icon dataFeather="chevron-left" />
