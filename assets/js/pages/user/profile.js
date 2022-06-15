@@ -33,7 +33,7 @@ const NavComponent = ({ currentTab }) => {
                     aria-controls={`pills-${id}`}
                     aria-selected="true"
                     onClick={() => {
-                        location.href = `setting?tab=${id}`;
+                        if(currentTab !== id) location.href = `setting?tab=${id}`;
                     }}
                 >
                     {title}
