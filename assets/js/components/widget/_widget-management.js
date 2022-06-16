@@ -78,6 +78,7 @@ export const WidgetManagement = ({
         setIsLoading(true);
         setWidgetDetail({
             ...passedWidgetDetail,
+            column: Array.isArray(passedWidgetDetail.column) ? passedWidgetDetail.column.map(item => item) : passedWidgetDetail.column,
         });
         setErrors([]);
         setAlertErrorMessage();
