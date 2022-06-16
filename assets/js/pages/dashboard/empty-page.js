@@ -113,7 +113,7 @@ const DashBoardEmptyPage = ({}) => {
     return (
         <div className="dashboard-page">
             <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
-            <ContentHeader className="mt-2" pageTitle="Dashboard" iconName="home"></ContentHeader>
+            <ContentHeader className="mt-2 ms-cp-4" pageTitle="Dashboard" iconName="home"></ContentHeader>
             <EmptyDashboardComponent
                 onCreateNewDashboardClick={() => setIsDisplayCreateNewDashboardModal(true)}
             />

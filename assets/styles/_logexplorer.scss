@@ -35,6 +35,11 @@ body {
   right: 0;
 }
 
+.navbar {
+  padding: 0.15rem 0 0.15rem 1.25rem;
+  z-index: 1;
+}
+
 .stroke-width-4 {
   stroke-width: 4;
   stroke-linecap: square;
