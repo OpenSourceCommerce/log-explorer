@@ -59,7 +59,7 @@ Encore
 	.addEntry('page_login', './assets/js/pages/security/login.js')
 	.addEntry('page_forgot', './assets/js/pages/security/forgot.js')
 	.addEntry('page_reset', './assets/js/pages/security/reset-password.js')
-	.addEntry('dashboard_list', './assets/js/pages/dashboard/list.js')
+	.addEntry('dashboard_empty', './assets/js/pages/dashboard/empty-page.js')
 	.addEntry('dashboard_form', './assets/js/pages/dashboard/form.js')
 	.addEntry('widget_list', './assets/js/pages/widget/list.js')
 	.addEntry('widget_form', './assets/js/pages/widget/form.js')

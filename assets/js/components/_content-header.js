@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {PAGE_NAME} from '../utils';
-import { Icon, Button } from '.';
+import React, { Component } from "react";
+import { PAGE_NAME } from "../utils";
+import { Icon, Button } from ".";
 import "../../styles/component/_content-header.scss";
 
 export class ContentHeader extends Component {
@@ -12,33 +12,39 @@ export class ContentHeader extends Component {
             actionButtonIcon,
             onClickActionBtn,
             children,
-            pageTitle
+            pageTitle,
         } = this.props;
-        const splitUrl = window.location.pathname.split('/');
+        const splitUrl = window.location.pathname.split("/");
 
-        let title = '';
+        let title = "";
 
-        if (splitUrl[1] !== 'welcome') {
+        if (splitUrl[1] !== "welcome") {
             title = PAGE_NAME[splitUrl[1]];
         }
 
         title = title || pageTitle;
 
         return (
-            <div className={`content-header d-flex justify-content-between aligns-items-center ${className}`}>
-                <div className='d-flex flex-first aligns-items-center'>
-                    <div className="title my-auto">
-                        <Icon dataFeather={iconName} className="feather-lg" />
-                        <span className="ms-2">{title}</span>
-                    </div>
+            <div
+                className={`content-header d-flex justify-content-between aligns-items-center ${
+                    className || ""
+                }`}
+            >
+                <div className="d-flex align-items-center">
+                    <Icon dataFeather={iconName} className="icon-title" />
+                    <span className="title ms-2 align-middle">{title}</span>
                     {children}
                 </div>
-                {onClickActionBtn && <Button style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
-                    {actionButtonIcon && <Icon dataFeather={actionButtonIcon} className="feather-lg"/>}
-                    {actionButtonTitle && <span className="align-middle ms-1">
-                        {actionButtonTitle}
-                    </span>}
-                </Button>}
+                {onClickActionBtn && (
+                    <Button style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
+                        {actionButtonIcon && (
+                            <Icon dataFeather={actionButtonIcon} className="feather-lg" />
+                        )}
+                        {actionButtonTitle && (
+                            <span className="align-middle ms-1">{actionButtonTitle}</span>
+                        )}
+                    </Button>
+                )}
             </div>
         );
     }

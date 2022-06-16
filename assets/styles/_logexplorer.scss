@@ -5,7 +5,7 @@ body {
 }
 
 .authentication-background {
-  background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #ffffff 100%) 0% 0% no-repeat padding-box;
 }
 
 .min-h-100 {
@@ -21,7 +21,7 @@ body {
 }
 
 .content-wrapper {
-  background-color: #F8F9FA;
+  background-color: #f8f9fa;
   max-height: 100vh;
   overflow: auto;
 }
@@ -36,6 +36,11 @@ body {
 }
 
 .navbar {
-  padding: .15rem 0 .15rem 1.25rem;
+  padding: 0.15rem 0 0.15rem 1.25rem;
   z-index: 1;
+}
+
+.stroke-width-4 {
+  stroke-width: 4;
+  stroke-linecap: square;
 }

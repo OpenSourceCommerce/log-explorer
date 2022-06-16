@@ -18,7 +18,7 @@ export class Sidebar extends Component {
             ];
         } else {
             navList = [
-                {href: 'dashboard/list', iconName: 'home', label: 'Dashboards'},
+                {href: 'dashboard', iconName: 'home', label: 'Dashboards'},
                 {href: 'log-view', iconName: 'search', label: 'Explore'},
                 {href: 'user', iconName: 'users', label: 'Users'},
                 {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
