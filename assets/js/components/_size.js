@@ -1,7 +1,8 @@
 const Size = {
     small: 'sm',
     medium: 'md',
-    large: 'lg'
+    large: 'lg',
+    extraLarge: 'xl'
 };
 
 module.exports = {Size};

@@ -58,7 +58,7 @@ const CreateNewDashboardModal = ({ isShow, onHidden }) => {
             if (resLoad && !resLoad.error) {
                 await setAlertMessage({
                     color: Colors.green,
-                    message: "Create dashboard success, we will redirect your in few second",
+                    message: "Create new dashboard successful, we will redirect you now",
                 });
                 setTimeout(() => {
                     window.location.href = `/dashboard/${resLoad.data.uuid}`;
@@ -113,7 +113,7 @@ const DashBoardEmptyPage = ({}) => {
     return (
         <div className="dashboard-page">
             <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
-            <ContentHeader className="mt-2" pageTitle="Dashboard" iconName="home"></ContentHeader>
+            <ContentHeader className="mt-2 ms-cp-4" pageTitle="Dashboard" iconName="home"></ContentHeader>
             <EmptyDashboardComponent
                 onCreateNewDashboardClick={() => setIsDisplayCreateNewDashboardModal(true)}
             />

@@ -1,5 +1,11 @@
+$fw-medium: 500;
+
+body {
+  font-weight: $fw-medium;
+}
+
 .authentication-background {
-  background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #ffffff 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
 }
 
 .min-h-100 {
@@ -15,7 +21,7 @@
 }
 
 .content-wrapper {
-  background-color: #f8f9fa;
+  background-color: #F8F9FA;
   max-height: 100vh;
   overflow: auto;
 }
@@ -27,6 +33,11 @@
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.navbar {
+  padding: .15rem 0 .15rem 1.25rem;
+  z-index: 1;
 }
 
 .stroke-width-4 {

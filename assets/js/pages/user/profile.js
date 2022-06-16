@@ -1,8 +1,9 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
 import { DatabaseTables } from "../database/tables";
+import { WidgetList } from "../widget/widget-list";
 
 const TAB_LIST = [
     {
@@ -56,7 +57,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
 
     useEffect(() => {
         const currentValue = window.location.search;
-        setCurrentTab(currentValue?.split("=")[1] || 'profile');
+        setCurrentTab(currentValue?.split("=")[1] || "profile");
     }, []);
 
     useEffect(() => {
@@ -89,7 +90,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                 </div>
                 <div className="tab-content" id="pills-tabContent">
                     <div
-                        className={`container-fluid mx-2 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
+                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
                         id="pills-profile"
                         role="tabpanel"
                         aria-labelledby="pills-profile-tab"
@@ -98,7 +99,9 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                         <ChangePasswordForm setToastMessage={setToastMessage} />
                     </div>
                     <div
-                        className={`tab-pane fade ${currentTab === 'databases' ? 'show active' : '' }`}
+                        className={`tab-pane fade ${
+                            currentTab === "databases" ? "show active" : ""
+                        }`}
                         id="pills-databases"
                         role="tabpanel"
                         aria-labelledby="pills-databases-tab"
@@ -106,12 +109,12 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                         <DatabaseTables />
                     </div>
                     <div
-                        className={`tab-pane fade ${currentTab === 'widgets' ? 'show active' : '' }`}
+                        className={`tab-pane fade ${currentTab === "widgets" ? "show active" : ""}`}
                         id="pills-widgets"
                         role="tabpanel"
                         aria-labelledby="pills-widgets-tab"
                     >
-                        Widget config tab
+                        <WidgetList />
                     </div>
                 </div>
             </div>
