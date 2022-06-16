@@ -1,6 +1,6 @@
 import React from "react";
 
-export const WidgetDataTable = ({ column, data }) => {
+export const WidgetDataTable = ({ column, data, onItemClicked }) => {
     return (
         <div className="widget-table table-responsive">
             <table className="table">
@@ -27,7 +27,7 @@ export const WidgetDataTable = ({ column, data }) => {
                                     }}
                                     onClick={() => {
                                         if (el !== "value") {
-                                            console.log(item[el]);
+                                            if (onItemClicked) onItemClicked();
                                         }
                                     }}
                                 >

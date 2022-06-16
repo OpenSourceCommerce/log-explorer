@@ -37,7 +37,6 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
             <div
                 className="ms-auto dropdown"
                 style={{ height: "1rem" }}
-                onClick={() => console.log(id)}
             >
                 <div
                     className={`${id ? "d-block" : "d-none"}`}
