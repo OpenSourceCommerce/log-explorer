@@ -94,7 +94,7 @@ const AlertDeleteTable = ({ tableName, onConfirmDeleteTable, onHidden }) => {
             showCloseButton={true}
             closeButtonTitle="Cancel"
             showSaveButton={true}
-            saveButtonTitle="OK"
+            saveButtonTitle="Delete table"
             saveButtonColor="danger"
             saveButtonAction={() => onConfirmDeleteTable(tableName)}
             closeButtonAction={() => onHidden()}
