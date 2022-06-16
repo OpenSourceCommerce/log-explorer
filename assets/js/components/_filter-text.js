@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Input, Link, NavDivider} from '.';
+import {Colors, Icon, Input, Link, NavDivider} from '.';
 import {Live, Event} from '../actions';
 import {Button} from "./_button";
 import "../../styles/component/_filter-text.scss";
@@ -127,7 +127,7 @@ export class FilterText extends Component {
                         }}
                     />
                     {queries && <div className='input-group-append'>
-                        <Link id="btn-filter-saved" className="btn btn-info" data-bs-toggle="dropdown">
+                        <Link id="btn-filter-saved" className="btn btn-secondary" data-bs-toggle="dropdown">
                             <Icon name="chevron-down"/>
                         </Link>
                         <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -165,7 +165,7 @@ export class FilterText extends Component {
                     {queries && <div className='input-group-append'>
                         <Button
                             id='btn-filter-save'
-                            className='btn-success'
+                            outlineColor={Colors.blue}
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}
                         >Save</Button>
                     </div>}
