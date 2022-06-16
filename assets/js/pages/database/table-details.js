@@ -261,6 +261,10 @@ export const DatabaseTableDetail = ({
 
     const addNewColumn = () => {
         setColumns([...columns, { ...DEFAULT_COLUMN_DATA }]);
+        setToastMessage({
+            color: TOAST_STATUS.success,
+            message: "Add column successful.",
+        });
     };
 
     const isEnableSaveChanges =
