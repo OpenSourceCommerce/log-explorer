@@ -4,7 +4,8 @@
   z-index: 1030;
   background: white;
 }
-.widget-table-row, .widget-table-header {
+.widget-table-row,
+.widget-table-header {
   a {
     white-space: nowrap;
     overflow: hidden;
@@ -12,6 +13,17 @@
     &:hover {
       overflow: auto;
       white-space: normal;
+    }
+  }
+}
+
+.widget-table {
+  thead {
+    tr:nth-child(1) th {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
   }
 }

@@ -6,6 +6,7 @@ import { Modal, Colors } from "../../components";
 import { Size } from "../../components/_size";
 import { TOAST_STATUS } from "../../utils";
 import { TableColumn } from "./table-columns";
+import { Color } from "react-input-color";
 
 const DEFAULT_COLUMN_DATA = {
     name: "",
@@ -288,15 +289,16 @@ export const DatabaseTableDetail = ({
                                 />
                             )}
                             <div className="action-button">
-                                <button
-                                    className="me-2 btn btn-outline-danger"
+                                <Button
+                                    outlineColor={Colors.red}
+                                    className="me-2"
                                     onClick={() => setTableWillRemove(tableName)}
                                 >
                                     <Icon dataFeather="trash-2" className="feather-xs me-2" />
                                     <span className="d-inline-block align-middle">
                                         Delete datatable
                                     </span>
-                                </button>
+                                </Button>
                                 <Button
                                     onClick={() => setIsEnableSaveChangesModal(true)}
                                     disabled={!isEnableSaveChanges || errors.length > 0}
