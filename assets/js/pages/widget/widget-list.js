@@ -82,9 +82,9 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
                         <Icon className="text-primary" dataFeather="plus" />
                     )}
                 </div>
-                <div className="mt-4 text-center fw-medium">
+                <div className="mt-4 text-center fw-medium mx-3">
                     {id ? (
-                        <span>{title}</span>
+                        <span className="text-break">{title}</span>
                     ) : (
                         <span className="text-primary">Create new widget</span>
                     )}
@@ -182,7 +182,7 @@ export const WidgetList = () => {
         }
         toastContent = {
             color: TOAST_STATUS.success,
-            message: "Delete toast successful",
+            message: "Delete widget successful",
         };
 
         setWidgetRemoveSelected();

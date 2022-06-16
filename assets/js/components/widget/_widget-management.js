@@ -141,7 +141,7 @@ export const WidgetManagement = ({
                 }
 
                 newWidgetDetail = { ...widgetDetail, column };
-            } else if (name == "column" && widgetDetail.type === WIDGET_TYPE.table) {
+            } else if (name === "column" && widgetDetail.type === WIDGET_TYPE.table) {
                 newValue = newValue.trim();
 
                 let currentValue = widgetDetail.column;
@@ -157,7 +157,7 @@ export const WidgetManagement = ({
                     const index = currentValue.indexOf(value);
 
                     if (index >= 0) {
-                        currentValue.splice(index, 1);
+                        currentValue = currentValue.filter(item => item !== value);
                     } else {
                         currentValue.push(value);
                     }
