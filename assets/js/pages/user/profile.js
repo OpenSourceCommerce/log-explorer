@@ -90,9 +90,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                 </div>
                 <div className="tab-content" id="pills-tabContent">
                     <div
-                        className={`container-fluid mx-2 mt-3 tab-pane fade ${
-                            currentTab === "profile" ? "show active" : ""
-                        }`}
+                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
                         id="pills-profile"
                         role="tabpanel"
                         aria-labelledby="pills-profile-tab"

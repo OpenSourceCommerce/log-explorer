@@ -95,7 +95,7 @@ const AlertDeleteTable = ({ tableName, onConfirmDeleteTable, onHidden }) => {
             showCloseButton={true}
             closeButtonTitle="Cancel"
             showSaveButton={true}
-            saveButtonTitle="OK"
+            saveButtonTitle="Delete table"
             saveButtonColor="danger"
             saveButtonAction={() => onConfirmDeleteTable(tableName)}
             closeButtonAction={() => onHidden()}
@@ -262,6 +262,10 @@ export const DatabaseTableDetail = ({
 
     const addNewColumn = () => {
         setColumns([...columns, { ...DEFAULT_COLUMN_DATA }]);
+        setToastMessage({
+            color: TOAST_STATUS.success,
+            message: "Add column successful.",
+        });
     };
 
     const isEnableSaveChanges =
