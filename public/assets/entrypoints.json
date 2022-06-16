@@ -14,243 +14,243 @@
     "page_index": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/page_index.384cebed.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/page_index.49e43f18.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/page_index.e0319903.css"
+        "/assets/page_index.a5ec752a.css"
       ]
     },
     "graph_form": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/graph_form.c3f5537c.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/graph_form.0b22c892.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/graph_form.3a3f71f6.css"
+        "/assets/graph_form.0f4e6ca9.css"
       ]
     },
     "graph_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/graph_list.53704b0b.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/graph_list.a89860c3.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/graph_list.3a3f71f6.css"
+        "/assets/graph_list.0f4e6ca9.css"
       ]
     },
     "logview_form": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/logview_form.643a41c2.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/logview_form.1b961310.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/logview_form.3a3f71f6.css"
+        "/assets/logview_form.0f4e6ca9.css"
       ]
     },
     "user_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/user_list.943e67ff.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/user_list.fe403966.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/user_list.3a3f71f6.css"
+        "/assets/user_list.0f4e6ca9.css"
       ]
     },
     "user_confirmation": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/user_confirmation.ddccd0a1.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/user_confirmation.63107ba9.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/user_confirmation.3a3f71f6.css"
+        "/assets/user_confirmation.0f4e6ca9.css"
       ]
     },
     "user_profile": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/user_profile.65e80d3c.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/user_profile.192eda87.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/user_profile.674e28b3.css"
+        "/assets/user_profile.1a6a3479.css"
       ]
     },
     "navbar": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/navbar.5cdec64a.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/navbar.33b7a60e.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/navbar.3a3f71f6.css"
+        "/assets/navbar.0f4e6ca9.css"
       ]
     },
     "sidebar_component": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/sidebar_component.169aa28c.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/sidebar_component.8254178e.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/sidebar_component.3a3f71f6.css"
+        "/assets/sidebar_component.0f4e6ca9.css"
       ]
     },
     "js_grid": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/js_grid.0bb6906e.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/js_grid.3a7f2133.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/js_grid.17bdf01c.css"
+        "/assets/js_grid.6a2eb84a.css"
       ]
     },
     "flot_chart": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/flot_chart.4674a463.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/flot_chart.22004cff.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/flot_chart.61c0eef4.css"
+        "/assets/flot_chart.94df2a9c.css"
       ]
     },
     "welcome-page": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/welcome-page.15060755.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/welcome-page.95a8ea82.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/welcome-page.1932c9bd.css"
+        "/assets/welcome-page.4eb586c2.css"
       ]
     },
     "page_login": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/page_login.e78955ff.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/page_login.fc8d3639.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/page_login.53c5a1b7.css"
+        "/assets/page_login.10b50b9a.css"
       ]
     },
     "page_forgot": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/page_forgot.701c9206.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/page_forgot.ce0576c1.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/page_forgot.50c00b15.css"
+        "/assets/page_forgot.4a1261e1.css"
       ]
     },
     "page_reset": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/page_reset.15c86dd0.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/page_reset.96879098.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/page_reset.3a3f71f6.css"
+        "/assets/page_reset.0f4e6ca9.css"
       ]
     },
     "dashboard_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/dashboard_list.df5117f9.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/dashboard_list.5b28d17e.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/dashboard_list.3a3f71f6.css"
+        "/assets/dashboard_list.0f4e6ca9.css"
       ]
     },
     "dashboard_form": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/dashboard_form.4615c70a.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/dashboard_form.6fe2253e.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/dashboard_form.3a3f71f6.css"
+        "/assets/dashboard_form.0f4e6ca9.css"
       ]
     },
     "widget_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/widget_list.b2c83ed3.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/widget_list.2207ad76.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/widget_list.3a3f71f6.css"
+        "/assets/widget_list.0f4e6ca9.css"
       ]
     },
     "widget_form": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/widget_form.40b5bcc1.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/widget_form.eeb1a5d5.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/widget_form.3a3f71f6.css"
+        "/assets/widget_form.0f4e6ca9.css"
       ]
     },
     "dashboard-page": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/dashboard-page.2893a0bb.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/dashboard-page.95b63ac5.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/dashboard-page.3a3f71f6.css"
+        "/assets/dashboard-page.0f4e6ca9.css"
       ]
     },
     "alerts_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/alerts_list.3115bafa.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/alerts_list.feff4fe9.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/alerts_list.3a3f71f6.css"
+        "/assets/alerts_list.0f4e6ca9.css"
       ]
     },
     "export_list": {
       "js": [
         "/assets/0.f0f1d94b.js",
-        "/assets/1.5ec9dd31.js",
-        "/assets/export_list.12e150f5.js"
+        "/assets/1.2373bfcc.js",
+        "/assets/export_list.7dd4c516.js"
       ],
       "css": [
         "/assets/1.04b85e3d.css",
-        "/assets/export_list.3a3f71f6.css"
+        "/assets/export_list.0f4e6ca9.css"
       ]
     }
   }
