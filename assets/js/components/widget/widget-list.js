@@ -4,7 +4,7 @@ import WidgetActions from "../../actions/_widget-actions";
 import { Spinner, Icon, Toast, Colors, Modal, Size } from "../../components";
 import { TOAST_STATUS } from "../../utils";
 import { WidgetDetailModal } from "./widget-detail";
-import "./widget-list.scss";
+import "../../../styles/component/widget-list.scss";
 
 const WIDGET_ICON = {
     widget: "activity",
@@ -26,7 +26,7 @@ const WIDGET_DEFAULT = {
     type: "",
 };
 
-const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
+const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick}) => {
     const { id, title, type } = widgetItem;
     let widgetType = "widget";
     if (type === 1) widgetType = "count";
@@ -34,10 +34,7 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
 
     return (
         <div className={`widget-item d-flex flex-column ${!id ? "border-dashed" : ""}`}>
-            <div
-                className="ms-auto dropdown"
-                style={{ height: "1rem" }}
-            >
+            <div className="ms-auto dropdown" style={{ height: "1rem" }}>
                 <div
                     className={`${id ? "d-block" : "d-none"}`}
                     type="button"
@@ -112,7 +109,7 @@ const AlertDeleteWidget = ({ widget, onHidden, onConfirmDeleteButton }) => {
     );
 };
 
-export const WidgetList = () => {
+export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) => {
     const [widgets, setWidgets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [widgetSelected, setWidgetSelected] = useState();
@@ -209,8 +206,12 @@ export const WidgetList = () => {
                                         key={index}
                                         widgetItem={item}
                                         onWidgetClick={() => {
-                                            setWidgetSelected(item);
-                                            setIsWidgetDetailClicked(true);
+                                            if (onSelectWidgetForDashboard && item?.id) {
+                                                onSelectWidgetForDashboard(item);
+                                            } else {
+                                                setWidgetSelected(item);
+                                                setIsWidgetDetailClicked(true);
+                                            }
                                         }}
                                         onRemoveWidgetClick={() => {
                                             setWidgetRemoveSelected(item);
@@ -238,7 +239,7 @@ export const WidgetList = () => {
                     />
                 </>
             ) : (
-                <Spinner />
+                <Spinner isSpinnerFullHeight={isSpinnerFullHeight} />
             )}
         </div>
     );
