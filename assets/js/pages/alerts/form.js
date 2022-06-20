@@ -22,7 +22,6 @@ const DEFAULT_ALERT = {
     interval_time: "60",
     email: "",
     subject: "",
-    isActive: "0",
     time_range: {
         from: DATE_RANGE[0].from,
         to: DATE_RANGE[0].to,
@@ -109,7 +108,7 @@ export class AlertFormModal extends Component {
         });
         const { data } = this.state;
 
-        let payloadData = { ...data };
+        let payloadData = { ...data, isActive: "1" };
 
         const { onSubmitAlertData } = this.props;
 
@@ -186,7 +185,6 @@ export class AlertFormModal extends Component {
             interval_time,
             email,
             subject,
-            isActive,
             time_range,
         } = data;
 
@@ -294,22 +292,6 @@ export class AlertFormModal extends Component {
                         fieldName="subject"
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("subject")}
-                        errors={errors}
-                    />
-                    <FormField
-                        id="active"
-                        className="mb-3"
-                        type="checkbox"
-                        isHiddenLabel={true}
-                        checkboxlabel="Active"
-                        checked={!!parseInt(isActive)}
-                        value={isActive}
-                        fieldName="isActive"
-                        onChange={(e) => {
-                            const { name, checked } = e.target;
-                            this.onChangeField({ name, value: checked ? "1" : "0" });
-                        }}
-                        isMandatory={MANDATORY_FIELDS.includes("isAdmin")}
                         errors={errors}
                     />
                     <div className="form-group">
