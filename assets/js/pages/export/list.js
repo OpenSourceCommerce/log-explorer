@@ -93,12 +93,19 @@ const ExportList = ({}) => {
             dataField: "isFinished",
             formatter: ({ cell }) =>
                 cell ? (
-                    <div className="text-success">
+                    <div className="text-success d-flex justify-content-start align-items-center">
                         <Icon dataFeather="check-circle" className="me-2 feather-sm" />
-                        <span className="align-middle">Ready to download</span>
+                        <span className="align-middle d-inline-block">Ready to download</span>
                     </div>
                 ) : (
-                    <div>Processing</div>
+                    <div className="d-flex justify-content-start align-items-center">
+                        <div
+                            class="spinner-border me-2"
+                            role="status"
+                            style={{ width: "15px", height: "15px", color: "#0f62fe" }}
+                        />
+                        <span className="align-middle d-inline-block">Processing</span>
+                    </div>
                 ),
         },
         {
@@ -114,7 +121,7 @@ const ExportList = ({}) => {
                         <a
                             href={row.path}
                             target="_blank"
-                            className={`btn btn-primary ${!isFinished ? 'disabled': ''}`}
+                            className={`btn btn-primary ${!isFinished ? "disabled" : ""}`}
                             title="Download"
                             download={row.filename}
                         >
