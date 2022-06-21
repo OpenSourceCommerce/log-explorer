@@ -1,147 +1,173 @@
-import React, {Component} from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import {CardHeader, Colors, Icon, Link, Modal, Size} from "../../components";
-import {ExportActions} from "../../actions";
-import {Table} from "../../components/_table";
+import {
+    Button,
+    Colors,
+    ContentHeader,
+    DataTable,
+    Icon,
+    Modal,
+    Size,
+    Spinner,
+    Toast,
+} from "../../components";
+import { ExportActions } from "../../actions";
+import { TOAST_STATUS } from "../../utils";
 
-class ExportList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: [],
-            selectedExportId: null
-        };
+const ConfirmDeleteModal = ({ exportSelected, onHidden, onConfirmDeleteExport }) => (
+    <Modal
+        id="delete-export"
+        title="Confirm Delete"
+        children={`Are you sure you want to delete this export?`}
+        saveButtonTitle="Delete export"
+        showSaveButton={true}
+        size={Size.medium}
+        closeButtonTitle="Cancel"
+        saveButtonColor={Colors.red}
+        show={!!exportSelected?.id}
+        closeButtonAction={onHidden}
+        saveButtonAction={onConfirmDeleteExport}
+    />
+);
 
-        this.getData = this.getData.bind(this)
-        this.deleteExport = this.deleteExport.bind(this)
-        this.showConfirmDeleteModal = this.showConfirmDeleteModal.bind(this)
-    }
+const ExportList = ({}) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [exportData, setExportData] = useState();
+    const [toastContent, setToastContent] = useState();
+    const [exportSelected, setExportSelected] = useState();
 
-    getData() {
-        ExportActions.listExport().then((response) => {
-            const {error, data} = response
+    useEffect(() => {
+        loadExportData();
+    }, []);
 
-            if (error === 0) {
-                this.setState({data})
-            }
-        })
-    }
+    const loadExportData = async () => {
+        setIsLoading(true);
 
-    componentDidMount() {
-        this.getData()
-    }
+        const res = await ExportActions.listExport();
 
-    showConfirmDeleteModal(e) {
-        const {id} = e.target.dataset
-        this.setState({selectedExportId: id})
-    }
-
-    deleteExport() {
-        const that = this
-        const {selectedExportId} = this.state
-
-        if (!selectedExportId) {
-            return
+        if (res && !res.error) {
+            setExportData([...res.data]);
         }
 
-        ExportActions.deleteExport(selectedExportId).then(() => {
-            that.getData()
-            that.setState({selectedExportId: null})
-        })
-    }
+        setIsLoading(false);
+    };
 
-    render() {
-        const {data, selectedExportId} = this.state
+    const onConfirmDeleteExport = async () => {
+        setIsLoading(true);
+        const res = await ExportActions.deleteExport(exportSelected.id);
+        let toastContent = {};
+        let newExportList = [...exportData];
 
-        return (
-            <>
-                <Modal
-                    id="delete-export"
-                    title='Confirm Delete'
-                    children={`Are you sure you want to delete this export?`}
-                    saveButtonTitle='Delete'
-                    showSaveButton={true}
-                    size={Size.medium}
-                    closeButtonTitle='Cancel'
-                    saveButtonColor={Colors.red}
-                    show={!!selectedExportId}
-                    closeButtonAction={() => {
-                        this.setState({
-                            selectedExportId: null,
-                        })
-                    }}
-                    saveButtonAction={this.deleteExport}
-                />
-                <div className="card">
-                    <CardHeader title="Export List" showCollapseButton={false}
-                                showRemoveButton={false}>
-                    </CardHeader>
-                    <div className="card-body">
-                        <Table>
-                            <thead>
-                            <tr>
-                                <th>Table</th>
-                                <th>Format</th>
-                                <th>Created At</th>
-                                <th>Is Finished</th>
-                                <th>Expired At</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {data && data.map((item, key) => {
-                                return (
-                                    <tr key={key}>
-                                        <td>{item.table}</td>
-                                        <td>{item.format}</td>
-                                        <td>{item.createdAt}</td>
-                                        <td>
-                                            {item.isFinished ?
-                                                <Icon className="text-success"
-                                                      name='check-circle'/> :
-                                                <Icon className="text-secondary"
-                                                      name='minus'/>}
-                                        </td>
-                                        <td>
-                                            {item.isFinished ?
-                                                item.expiredAt :
-                                                <Icon className="text-secondary"
-                                                      name='minus'/>}
-                                        </td>
-                                        <td>
-                                            {item.isFinished ?
-                                                <Link href={item.path} target="_blank"
-                                                      className="me-4"
-                                                      title="Download"
-                                                      download={item.filename}>
-                                                    <Icon className="text-primary" name='download'/>
-                                                </Link> : ''}
+        if (res && !res.error) {
+            toastContent = {
+                color: TOAST_STATUS.success,
+                message: "Delete export success",
+            };
 
-                                            <Icon onClick={this.showConfirmDeleteModal}
-                                                  data-id={item.id}
-                                                  className="text-danger"
-                                                  title="Delete"
-                                                  style={{cursor: "pointer"}}
-                                                  name='trash'/>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                            {data.length < 1 && <tr>
-                                <td colSpan={4}>
-                                    <p>
-                                        No Export found
-                                    </p>
-                                </td>
-                            </tr>}
-                            </tbody>
-                        </Table>
+            newExportList = newExportList.filter((item) => item.id !== exportSelected.id);
+        } else {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: res.message,
+            };
+        }
+
+        setExportSelected();
+        setExportData([...newExportList]);
+        setIsLoading(false);
+        setToastContent(toastContent);
+    };
+
+    const columns = [
+        { label: "Table", dataField: "table" },
+        {
+            label: "Format",
+            dataField: "format",
+        },
+        {
+            label: "Created at",
+            dataField: "createdAt",
+        },
+        {
+            label: "Status",
+            dataField: "isFinished",
+            formatter: ({ cell }) =>
+                cell ? (
+                    <div className="text-success d-flex justify-content-start align-items-center">
+                        <Icon dataFeather="check-circle" className="me-2 feather-sm" />
+                        <span className="align-middle d-inline-block">Ready to download</span>
                     </div>
-                </div>
-            </>
-        )
-    }
-}
+                ) : (
+                    <div className="d-flex justify-content-start align-items-center">
+                        <div
+                            class="spinner-border me-2"
+                            role="status"
+                            style={{ width: "15px", height: "15px", color: "#0f62fe" }}
+                        />
+                        <span className="align-middle d-inline-block">Processing</span>
+                    </div>
+                ),
+        },
+        {
+            label: "Expires at",
+            dataField: "expiredAt",
+            formatter: ({ cell }) => cell || "-",
+        },
+        {
+            formatter: ({ row }) => {
+                const { isFinished = false } = row;
+                return (
+                    <div>
+                        <a
+                            href={row.path}
+                            target="_blank"
+                            className={`btn btn-primary ${!isFinished ? "disabled" : ""}`}
+                            title="Download"
+                            download={row.filename}
+                        >
+                            <Icon dataFeather="download" />
+                        </a>
+                        <Button
+                            className="ms-2"
+                            outlineColor={Colors.red}
+                            onClick={() => setExportSelected({ ...row })}
+                        >
+                            <Icon dataFeather="trash-2" />
+                        </Button>
+                    </div>
+                );
+            },
+        },
+    ];
 
-ReactDOM.render(<ExportList/>, document.querySelector('#root'));
+    return (
+        <div className="export-page mt-3 ms-cp-4 me-cp-3">
+            <div className="content">
+                <ConfirmDeleteModal
+                    exportSelected={exportSelected}
+                    onHidden={() => setExportSelected()}
+                    onConfirmDeleteExport={onConfirmDeleteExport}
+                />
+                <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
+                <ContentHeader pageTitle="Exports" iconName="download" />
+                {!isLoading ? (
+                    <>
+                        {exportData && exportData.length > 0 ? (
+                            <DataTable
+                                columns={columns}
+                                dataTable={exportData}
+                                className="bg-white"
+                            />
+                        ) : (
+                            <div className="d-flex justify-content-center">No alert found</div>
+                        )}
+                    </>
+                ) : (
+                    <Spinner />
+                )}
+            </div>
+        </div>
+    );
+};
 
+ReactDOM.render(<ExportList />, document.querySelector("#root"));
