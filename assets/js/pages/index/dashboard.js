@@ -85,39 +85,13 @@ const DashboardPage = ({}) => {
 
         let dashboardDetail = {};
 
-        let tables = [];
-
         if (dashboardRes && !dashboardRes.error) {
-
-            const {widgets, data, configs} = dashboardRes;
-
-            tables = widgets && widgets.length > 0 ? widgets.reduce((result, item, index) => {
-                if (item.table != '') {
-                    if (result.length === 0 || !result.find(e => e.value === item.table)) {
-                        let isSelected = index === 0;
-                        if (filters && filters.length > 0) {
-                            isSelected = !!filters.find((el) => el.table === item.table);
-                        }
-                        result = [
-                            ...result,
-                            {
-                                value: item.table,
-                                label: item.table,
-                                isSelected,
-                            }
-                        ]
-                    }
-                }
-                return result;
-            }, []) : [];
-
-
-            const widgetList = await this.getWidgetDetail(widgets, configs, uuid);
+            const { widgets, data, configs } = dashboardRes;
 
             dashboardDetail = {
                 ...data,
-                configs: configs && configs.size ? {...configs} : {},
-                widgets: [...widgetList],
+                configs: configs && configs.size ? { ...configs } : {},
+                widgets,
             };
 
             widgetList = widgetList.filter((item) =>
@@ -146,24 +120,17 @@ const DashboardPage = ({}) => {
             if (newDashboardList.length > 0) {
                 pathname = `${pathname}/${newDashboardList[0]?.uuid}`;
             }
+            window.location.pathname = pathname;
+        } else {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: res?.message,
+            };
 
-            const addWidgetRes = await DashboardActions.addWidget(id, widget.id, newWidget);
-
-            if (addWidgetRes && !addWidgetRes.error) {
-                await this.loadingData();
-            }
-        }
-    }
-
-    removeWidget = async (id) => {
-        this.setState({
-            isLoading: true,
-        })
-        const {dashboardDetail} = this.state;
-        const removeWidgetRes = await DashboardActions.removeWidget(dashboardDetail.id, id);
-
-        if (removeWidgetRes && !removeWidgetRes.error) {
-            await this.loadingData();
+            setVisibleConfirmDeleteDashboard();
+            setIsLoading(false);
+            setDashboardList([...newDashboardList]);
+            setToastContent(toastContent);
         }
     };
 
@@ -262,10 +229,11 @@ const DashboardPage = ({}) => {
                         onSelectWidgetForDashboard={(item) => onAddNewWidget(item)}
                     />
                 </div>
-            </>
+            ) : (
+                <Spinner />
+            )}
+        </>
+    );
+};
 
-        );
-    }
-}
-
-ReactDOM.render(<DashboardPage/>, document.querySelector('#root'));
+ReactDOM.render(<DashboardPage />, document.querySelector("#root"));

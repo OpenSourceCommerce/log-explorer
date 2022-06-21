@@ -4,7 +4,7 @@ import WidgetActions from "../../actions/_widget-actions";
 import { Spinner, Icon, Toast, Colors, Modal, Size } from "..";
 import { TOAST_STATUS } from "../../utils";
 import { WidgetDetailModal } from "./_widget-detail";
-import "../../../styles/component/widget-list.scss";
+import "../../../styles/component/_widget-list.scss";
 
 const WIDGET_ICON = {
     widget: "activity",
