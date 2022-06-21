@@ -1,6 +1,6 @@
 import React from "react";
 import { ChartJsComponent } from "./_chart-component";
-import { generateRandomColor, SAMPLE_DATA, WIDGET_TYPE } from "../../utils";
+import { generateRandomColor, WIDGET_TYPE } from "../../utils";
 import "../../../styles/component/_doughnut-pie-chart.scss";
 
 export const Chart = ({
@@ -9,7 +9,6 @@ export const Chart = ({
     id = "new",
     onLabelClicked,
     className,
-    size,
 }) => {
     const mapDataForChart = () => {
         let chartData = {
@@ -64,7 +63,7 @@ export const Chart = ({
     };
 
     return (
-        <div className="card-body pt-0 pb-2">
+        <div className="card-body pt-0 pb-2 overflow-auto">
             {data && data.length > 0 ? (
                 <div
                     id={`doughnut-pie-chart-${id}`}

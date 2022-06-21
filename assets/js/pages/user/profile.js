@@ -59,10 +59,26 @@ const NavComponent = ({ currentTab }) => {
 const ProfileForm = ({ currentTab: passedCurrentTab }) => {
     const [toastContent, setToastContent] = useState();
     const [currentTab, setCurrentTab] = useState();
+    const [widgetIdParam, setWidgetIdParam] = useState();
 
     useEffect(() => {
-        const currentValue = window.location.search;
-        setCurrentTab(currentValue?.split("=")[1] || "profile");
+        const currentUrlQueries = window.location.search;
+        const currentUrlQueriesArray = currentUrlQueries.split("&");
+        if (currentUrlQueriesArray && currentUrlQueriesArray.length > 0) {
+            currentUrlQueriesArray.forEach((item) => {
+                const queryParam = item.split("=");
+                switch (queryParam[0]) {
+                    case "tab": {
+                        setCurrentTab(queryParam[1]);
+                        break;
+                    }
+                    case "widgetId": {
+                        setWidgetIdParam(queryParam[1]);
+                        break;
+                    }
+                }
+            });
+        }
     }, []);
 
     useEffect(() => {
@@ -121,7 +137,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                         role="tabpanel"
                         aria-labelledby="pills-widgets-tab"
                     >
-                        <WidgetList />
+                        <WidgetList widgetIdParam={widgetIdParam} />
                     </div>
                 </div>
             </div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, Fragment } from "react";
 import DatabaseActions from "../../actions/_database-actions";
 import WidgetActions from "../../actions/_widget-actions";
-import { Spinner, Icon, Toast, Colors, Modal, Size } from "../../components";
+import { Spinner, Icon, Toast, Colors, Modal, Size } from "..";
 import { TOAST_STATUS } from "../../utils";
-import { WidgetDetailModal } from "./widget-detail";
+import { WidgetDetailModal } from "./_widget-detail";
 import "../../../styles/component/widget-list.scss";
 
 const WIDGET_ICON = {
@@ -26,7 +26,7 @@ const WIDGET_DEFAULT = {
     type: "",
 };
 
-const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick}) => {
+const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
     const { id, title, type } = widgetItem;
     let widgetType = "widget";
     if (type === 1) widgetType = "count";
@@ -109,8 +109,13 @@ const AlertDeleteWidget = ({ widget, onHidden, onConfirmDeleteButton }) => {
     );
 };
 
-export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) => {
-    const [widgets, setWidgets] = useState([]);
+export const WidgetList = ({
+    widgetList: passedWidgetList,
+    onSelectWidgetForDashboard,
+    isSpinnerFullHeight,
+    widgetIdParam,
+}) => {
+    const [widgets, setWidgets] = useState(passedWidgetList);
     const [isLoading, setIsLoading] = useState(false);
     const [widgetSelected, setWidgetSelected] = useState();
     const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
@@ -119,14 +124,19 @@ export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) 
     const [toastContent, setToastContent] = useState();
     const [widgetRemoveSelected, setWidgetRemoveSelected] = useState();
 
-    const loadData = async () => {
-        const [tableRes, queriesRes, widgetRes] = await Promise.all([
-            DatabaseActions.getAllTable(),
-            WidgetActions.getQueries(),
-            WidgetActions.listWidget(),
-        ]);
+    useEffect(() => {
+        loadWidgetList();
+    }, [passedWidgetList, widgetIdParam]);
 
-        const widgetListItem = widgetRes.data.map((item) => {
+    const loadWidgetList = async () => {
+        const widgetRes =
+            passedWidgetList && passedWidgetList.length > 0
+                ? passedWidgetList
+                : await WidgetActions.listWidget();
+
+        const widgetListRes = passedWidgetList || widgetRes.data;
+
+        const widgetListItem = widgetListRes.map((item) => {
             const widget = { ...item };
             if (item.hasOwnProperty("order_desc")) {
                 widget.order = item.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
@@ -134,9 +144,24 @@ export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) 
             return widget;
         });
 
-        if (!widgetRes.error) {
-            setWidgets([{ ...WIDGET_DEFAULT }, ...widgetListItem]);
+        if (widgetIdParam && widgetListItem) {
+            const widgetSelected = widgetListItem.find(
+                (item) => item.id === parseInt(widgetIdParam)
+            );
+            if (widgetSelected?.id) {
+                setWidgetSelected(widgetSelected);
+                setIsWidgetDetailClicked(true);
+            }
         }
+
+        setWidgets([{ ...WIDGET_DEFAULT }, ...widgetListItem]);
+    };
+
+    const loadData = async () => {
+        const [tableRes, queriesRes] = await Promise.all([
+            DatabaseActions.getAllTable(),
+            WidgetActions.getQueries(),
+        ]);
 
         let tables =
             tableRes && tableRes.data && tableRes.data.length > 0
@@ -193,6 +218,9 @@ export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) 
         loadData();
     }, []);
 
+    console.log(widgetSelected);
+    console.log(isWidgetDetailClicked);
+
     return (
         <div className="widget-list">
             <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
@@ -201,23 +229,25 @@ export const WidgetList = ({ onSelectWidgetForDashboard, isSpinnerFullHeight }) 
                     <div className="container-fluid">
                         <div className="ms-2">
                             <div className="d-flex flex-wrap">
-                                {widgets.map((item, index) => (
-                                    <Widget
-                                        key={index}
-                                        widgetItem={item}
-                                        onWidgetClick={() => {
-                                            if (onSelectWidgetForDashboard && item?.id) {
-                                                onSelectWidgetForDashboard(item);
-                                            } else {
-                                                setWidgetSelected(item);
-                                                setIsWidgetDetailClicked(true);
-                                            }
-                                        }}
-                                        onRemoveWidgetClick={() => {
-                                            setWidgetRemoveSelected(item);
-                                        }}
-                                    />
-                                ))}
+                                {widgets &&
+                                    widgets.length > 0 &&
+                                    widgets.map((item, index) => (
+                                        <Widget
+                                            key={index}
+                                            widgetItem={item}
+                                            onWidgetClick={() => {
+                                                if (onSelectWidgetForDashboard && item?.id) {
+                                                    onSelectWidgetForDashboard(item);
+                                                } else {
+                                                    setWidgetSelected(item);
+                                                    setIsWidgetDetailClicked(true);
+                                                }
+                                            }}
+                                            onRemoveWidgetClick={() => {
+                                                setWidgetRemoveSelected(item);
+                                            }}
+                                        />
+                                    ))}
                             </div>
                         </div>
                     </div>

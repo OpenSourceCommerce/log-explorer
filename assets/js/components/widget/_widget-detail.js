@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Size, WidgetManagement } from "../../components";
+import React from "react";
+import { Modal, Size, WidgetManagement } from "..";
 
 export const WidgetDetailModal = ({ widget, isShow, onHidden, ...props }) => {
     return (

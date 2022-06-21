@@ -1,9 +1,10 @@
 import React from "react";
+import '../../../styles/component/_widget-table.scss';
 
 export const WidgetDataTable = ({ column, data, onItemClicked }) => {
     return (
-        <div className="widget-table table-responsive">
-            <table className="table">
+        <div className="widget-table table-responsive mt-2">
+            <table className="table table-hover">
                 <thead>
                     <tr>
                         {column.map((item, key) => {

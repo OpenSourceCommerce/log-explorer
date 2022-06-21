@@ -13,12 +13,7 @@ export const WidgetListModal = ({ isShow, onHidden, ...props }) => {
             show={isShow}
             onHidden={onHidden}
         >
-            <WidgetList
-                onSelectWidgetForDashboard={(item) => {
-                    console.log(item);
-                }}
-                {...props}
-            />
+            {isShow && <WidgetList {...props} />}
         </Modal>
     );
 };
