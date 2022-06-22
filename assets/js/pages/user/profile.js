@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
+import { ContentHeader, Toast, UserProfile, ChangePasswordForm, WidgetList } from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
 import { DatabaseTables } from "../database/tables";
-import { WidgetList } from "../widget/widget-list";
 
 const TAB_LIST = [
     {
@@ -130,7 +129,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                         role="tabpanel"
                         aria-labelledby="pills-widgets-tab"
                     >
-                        <WidgetList widgetIdParam={widgetIdParam} />
+                        <WidgetList className="mx-3" widgetIdParam={widgetIdParam} />
                     </div>
                 </div>
             </div>

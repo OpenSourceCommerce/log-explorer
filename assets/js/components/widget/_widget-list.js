@@ -114,6 +114,8 @@ export const WidgetList = ({
     onSelectWidgetForDashboard,
     isSpinnerFullHeight,
     widgetIdParam,
+    isCreateNewWidgetCallback,
+    className,
 }) => {
     const [widgets, setWidgets] = useState(passedWidgetList);
     const [isLoading, setIsLoading] = useState(false);
@@ -184,6 +186,7 @@ export const WidgetList = ({
         await setWidgetSelected(null);
         await setIsLoading(true);
         await loadData();
+        if (isCreateNewWidgetCallback) await isCreateNewWidgetCallback();
         setToastContent({
             color: TOAST_STATUS.success,
             message: `${isUpdateWidget ? "Update" : "Create"} widget successful`,
@@ -218,38 +221,31 @@ export const WidgetList = ({
         loadData();
     }, []);
 
-    console.log(widgetSelected);
-    console.log(isWidgetDetailClicked);
-
     return (
-        <div className="widget-list">
+        <div className={`widget-list ${className || ''}`}>
             <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
             {!isLoading ? (
                 <>
-                    <div className="container-fluid">
-                        <div className="ms-2">
-                            <div className="d-flex flex-wrap">
-                                {widgets &&
-                                    widgets.length > 0 &&
-                                    widgets.map((item, index) => (
-                                        <Widget
-                                            key={index}
-                                            widgetItem={item}
-                                            onWidgetClick={() => {
-                                                if (onSelectWidgetForDashboard && item?.id) {
-                                                    onSelectWidgetForDashboard(item);
-                                                } else {
-                                                    setWidgetSelected(item);
-                                                    setIsWidgetDetailClicked(true);
-                                                }
-                                            }}
-                                            onRemoveWidgetClick={() => {
-                                                setWidgetRemoveSelected(item);
-                                            }}
-                                        />
-                                    ))}
-                            </div>
-                        </div>
+                    <div className="d-flex flex-wrap">
+                        {widgets &&
+                            widgets.length > 0 &&
+                            widgets.map((item, index) => (
+                                <Widget
+                                    key={index}
+                                    widgetItem={item}
+                                    onWidgetClick={() => {
+                                        if (onSelectWidgetForDashboard && item?.id) {
+                                            onSelectWidgetForDashboard(item);
+                                        } else {
+                                            setWidgetSelected(item);
+                                            setIsWidgetDetailClicked(true);
+                                        }
+                                    }}
+                                    onRemoveWidgetClick={() => {
+                                        setWidgetRemoveSelected(item);
+                                    }}
+                                />
+                            ))}
                     </div>
                     <WidgetDetailModal
                         tables={tables}
@@ -269,7 +265,7 @@ export const WidgetList = ({
                     />
                 </>
             ) : (
-                <Spinner isSpinnerFullHeight={isSpinnerFullHeight} />
+                <Spinner isFullHeight={isSpinnerFullHeight} />
             )}
         </div>
     );

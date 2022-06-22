@@ -65,18 +65,10 @@ const DashboardPage = ({}) => {
 
     const loadData = async () => {
         setIsLoading(true);
-        const [dashboardListRes, dashboardRes, widgetListRes] = await Promise.all([
+        const [dashboardListRes, dashboardRes] = await Promise.all([
             DashboardActions.listDashboard(),
             LogTableActions.getDashboard(uuid),
-            WidgetActions.listWidget(),
         ]);
-
-        let widgetList =
-            widgetListRes && widgetListRes.data && widgetListRes.data.length > 0
-                ? widgetListRes.data
-                : [];
-
-        const widgetListOrigin = widgetList;
 
         const dashboardList =
             dashboardListRes && dashboardListRes.data && dashboardListRes.data.length > 0
@@ -94,15 +86,11 @@ const DashboardPage = ({}) => {
                 widgets,
             };
 
-            widgetList = widgetList.filter((item) =>
-                widgets.every((el) => el.widget_id !== item.id)
-            );
+            loadWidgetList(widgets);
         }
 
-        setWidgetListOrigin([...widgetListOrigin]);
         setDashboardList([...dashboardList]);
         setDashboardDetail({ ...dashboardDetail });
-        setWidgetList([...widgetList]);
         setIsLoading(false);
     };
 
@@ -132,6 +120,25 @@ const DashboardPage = ({}) => {
             setDashboardList([...newDashboardList]);
             setToastContent(toastContent);
         }
+    };
+
+    const loadWidgetList = async (widgetExistInDashboard) => {
+        const widgetListRes = await WidgetActions.listWidget();
+
+        let widgetList =
+            widgetListRes && widgetListRes.data && widgetListRes.data.length > 0
+                ? widgetListRes.data
+                : [];
+
+        const widgetListOrigin = widgetList;
+
+        if (widgetExistInDashboard?.length > 0)
+            widgetList = widgetList.filter((item) =>
+                widgetExistInDashboard.every((el) => el.widget_id !== item.id)
+            );
+
+        setWidgetListOrigin([...widgetListOrigin]);
+        setWidgetList([...widgetList]);
     };
 
     const onAddNewWidget = async (widget) => {
@@ -227,6 +234,7 @@ const DashboardPage = ({}) => {
                         }}
                         isSpinnerFullHeight={false}
                         onSelectWidgetForDashboard={(item) => onAddNewWidget(item)}
+                        isCreateNewWidgetCallback={() => loadWidgetList(dashboardDetail?.widgets)}
                     />
                 </div>
             ) : (
