@@ -1,15 +1,17 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
     Button,
     CardTool,
-    DropdownItem, Icon,
+    Colors,
+    DropdownItem,
+    Icon,
     JsGridTable,
     LogViewTableSettingModal,
-    QueryInfo
-} from '.';
-import {LogTableActions, ExportActions, Alert} from '../actions';
-import {LogViewExportModal} from "./_log-view-export-modal";
+    QueryInfo,
+} from ".";
+import { LogTableActions, ExportActions, Alert } from "../actions";
+import { LogViewExportModal } from "./_log-view-export-modal";
 
 export class LogViewTable extends Component {
     constructor(props) {
@@ -19,7 +21,7 @@ export class LogViewTable extends Component {
             showTableSettingModal: false,
             fields: [],
             queryInfo: {},
-            updated: false
+            updated: false,
         };
 
         this.showTableSettingModal = this.showTableSettingModal.bind(this);
@@ -31,7 +33,7 @@ export class LogViewTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {selectedTable} = this.props;
+        const { selectedTable } = this.props;
         const prevSelectedTable = prevProps.selectedTable;
 
         if (selectedTable && selectedTable !== prevSelectedTable) {
@@ -44,33 +46,33 @@ export class LogViewTable extends Component {
     }
 
     loadColumns() {
-        const {selectedTable} = this.props;
+        const { selectedTable } = this.props;
 
         if (!selectedTable) {
             return;
         }
 
-        LogTableActions.getColumns(selectedTable.uuid).then(response => {
-            const {data, error} = response;
+        LogTableActions.getColumns(selectedTable.uuid).then((response) => {
+            const { data, error } = response;
             if (error) {
                 return;
             }
 
             this.setState({
                 fields: data,
-                updated: true
+                updated: true,
             });
         });
     }
 
     showTableSettingModal(event) {
         event.preventDefault();
-        this.setState({showTableSettingModal: true});
+        this.setState({ showTableSettingModal: true });
     }
 
     hideTableSettingModal(event) {
         event.preventDefault();
-        this.setState({showTableSettingModal: false});
+        this.setState({ showTableSettingModal: false });
     }
 
     onTableSettingModalChanged() {
@@ -78,97 +80,106 @@ export class LogViewTable extends Component {
     }
 
     onDataLoaded(res) {
-        const {itemsCount = 0, data = [], queryInfo = {}} = res;
+        const { itemsCount = 0, data = [], queryInfo = {} } = res;
         queryInfo.total = itemsCount;
         queryInfo.current = data.length;
-        this.setState({queryInfo, updated: false});
+        this.setState({ queryInfo, updated: false });
     }
 
     showExportModal(event) {
         event.preventDefault();
-        this.setState({showExportModal: true});
+        this.setState({ showExportModal: true });
     }
 
     exportData(format) {
-        const {selectedTable} = this.props;
-        const filter = LogTableActions.getOptions({})
+        const { selectedTable } = this.props;
+        const filter = LogTableActions.getOptions({});
 
         ExportActions.exportData(selectedTable.table, format, filter).then((response) => {
-            const {error, redirect} = response
+            const { error, redirect } = response;
 
             if (error === 0) {
-                const showExportModal = false
-                this.setState({showExportModal})
-                Alert.success('Your request are being in progress. <br>' +
-                    'Please visit <a href="' + redirect + '">Export Page</a> to download.')
+                const showExportModal = false;
+                this.setState({ showExportModal });
+                Alert.success(
+                    "Your request are being in progress. <br>" +
+                        'Please visit <a href="' +
+                        redirect +
+                        '">Export Page</a> to download.'
+                );
 
                 if (redirect) {
                     setTimeout(() => {
-                        window.location.href = redirect
-                    }, 1000)
+                        window.location.href = redirect;
+                    }, 1000);
                 }
             }
         });
     }
 
     render() {
-        const {selectedTable} = this.props;
-        const {fields, showTableSettingModal, queryInfo, updated, showExportModal} = this.state;
+        const { selectedTable } = this.props;
+        const { fields, showTableSettingModal, queryInfo, updated, showExportModal } = this.state;
 
         return (
-            (fields && fields.length > 0 && <div className="col-12 col-md-auto">
-                <LogViewTableSettingModal show={showTableSettingModal}
-                                          selectedTable={selectedTable}
-                                          onSave={this.onTableSettingModalChanged}
-                                          onHidden={this.hideTableSettingModal}/>
-                <LogViewExportModal show={showExportModal}
-                                    onSelected={this.exportData}/>
-                <div className="card">
-                    <div className="card-header pt-1 pb-0">
-                        <h3 className="card-title">
-                            <QueryInfo queryInfo={queryInfo} className={'col-12'}/>
-                        </h3>
-
+            fields &&
+            fields.length > 0 && (
+                <div className="log-view-table">
+                    <LogViewTableSettingModal
+                        show={showTableSettingModal}
+                        selectedTable={selectedTable}
+                        onSave={this.onTableSettingModalChanged}
+                        onHidden={this.hideTableSettingModal}
+                    />
+                    <LogViewExportModal show={showExportModal} onSelected={this.exportData} />
+                    <div className="d-flex justify-content-between align-item-center mb-2">
+                        <QueryInfo className="d-flex align-items-center" queryInfo={queryInfo} />
                         <div className="card-tools">
                             <CardTool>
-                                <DropdownItem onClick={this.showTableSettingModal}>
-                                    Setting
+                                <small className="py-1 px-2">Select format</small>
+                                <DropdownItem
+                                    className="text-primary"
+                                    onClick={() => this.exportData("csv")}
+                                >
+                                    CSV
                                 </DropdownItem>
-                                <DropdownItem onClick={this.showExportModal}>
-                                    Export
+                                <DropdownItem
+                                    className="text-primary"
+                                    onClick={() => this.exportData("json")}
+                                >
+                                    Json
                                 </DropdownItem>
                             </CardTool>
-
-                            <Button color="tool"
-                                    data-card-widget="collapse"
-                                    data-toggle="tooltip" title="Collapse">
-                                <Icon className="" name={'minus'}/>
-                            </Button>
-                            <Button color="tool"
-                                    data-card-widget="remove"
-                                    data-toggle="tooltip" title="Remove">
-                                <Icon name={'times'}/>
+                            <Button
+                                className="ms-2"
+                                outlineColor={Colors.blue}
+                                onClick={this.showTableSettingModal}
+                            >
+                                <Icon
+                                    className="feather-sm me-2 stroke-width-3"
+                                    dataFeather="grid"
+                                />
+                                <span className="d-inline-block align-middle fw-bold">
+                                    Customize
+                                </span>
                             </Button>
                         </div>
                     </div>
-                    <div className="card-body pt-0">
-                        {fields && fields.length > 0 &&
-                        <JsGridTable
-                            height='auto'
-                            logview={selectedTable}
-                            fields={fields}
-                            updated={updated}
-                            pageSize={100}
-                            sorting={true}
-                            onDataLoaded={this.onDataLoaded}
-                        />}
-                    </div>
+                    <JsGridTable
+                        height="auto"
+                        logview={selectedTable}
+                        fields={fields}
+                        updated={updated}
+                        pageSize={100}
+                        sorting={true}
+                        onDataLoaded={this.onDataLoaded}
+                    />
                 </div>
-            </div>)
+            )
         );
     }
 }
 
 LogViewTable.propTypes = {
-    selectedTable: PropTypes.object
+    selectedTable: PropTypes.object,
 };

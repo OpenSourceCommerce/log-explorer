@@ -6,7 +6,8 @@ import {
     FlotChart,
     LogViewTable,
     Size,
-    UPlotChart
+    UPlotChart,
+    ContentHeader
 } from '../../components';
 import {Live, LogTableActions, Event, LogViewActions, DatabaseActions, Alert} from '../../actions';
 import '../../../styles/pages/index.scss';
@@ -365,7 +366,11 @@ class Index extends Component {
         const {query, name, nameClass = '', queryClass = ''} = queryModalQuery;
 
         return (
-            <div className="dashboard-page container-fluid">
+            <div className="dashboard-page ms-cp-4 me-cp-3 mt-3">
+                <ContentHeader
+                    pageTitle="Explorer"
+                    iconName="search"
+                />
                 {logViews && logViews.length > 0 ? (
                     <>
                         <AdvancedSearch

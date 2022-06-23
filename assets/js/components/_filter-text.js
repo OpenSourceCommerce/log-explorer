@@ -101,13 +101,13 @@ export class FilterText extends Component {
         return (
             <>
                 {label && <div className="title-info align-items-center">
-                    <p className="float-start mb-1 mend-2">{label}</p>
-                    <a className="bg-info btn-info">
-                        <i className="fas fa-info fa-xs"></i>
-                        <blockquote className="quote-info">
+                    <p className="float-start mb-1">{label}</p>
+                    <a className="bg-info btn-info rounded-circle d-inline-block text-center align-bottom ms-2">
+                        <i className="fas fa-info"></i>
+                        <div className="bd-callout bd-callout-info quote-info shadow">
                             <h5>Tip!</h5>
                             {QUERY_TIPS}
-                        </blockquote>
+                        </div>
                     </a>
                 </div>}
                 <div className='input-group'>
@@ -164,6 +164,7 @@ export class FilterText extends Component {
                     </div>}
                     {queries && <div className='input-group-append'>
                         <Button
+                            className="btn-bg-white"
                             id='btn-filter-save'
                             outlineColor={Colors.blue}
                             onClick={(e) => {e.preventDefault();this.onSaveClicked()}}

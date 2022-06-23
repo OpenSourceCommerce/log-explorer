@@ -128,11 +128,11 @@ export class FilterDate extends Component {
     }
 
     render() {
-        const {label} = this.props;
+        const {label, className} = this.props;
         const {from, to, dateRangeValue} = this.state;
 
         return (
-            <div>
+            <div className={`${className}`}>
                 <div>
                     <p className="float-start mb-1">{label}</p>
                 </div>
