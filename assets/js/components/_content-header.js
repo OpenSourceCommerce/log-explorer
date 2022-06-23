@@ -30,7 +30,7 @@ export class ContentHeader extends Component {
                     className || ""
                 }`}
             >
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center w-100">
                     <Icon dataFeather={iconName} className="icon-title" />
                     <span className="title ms-2 align-middle">{title}</span>
                     {children}

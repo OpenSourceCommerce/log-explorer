@@ -26,4 +26,18 @@
       z-index: 10;
     }
   }
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      overflow: auto;
+      white-space: normal;
+    }
+  }
+  tr:last-child {
+    td {
+      border: none;
+    }
+  }
 }
