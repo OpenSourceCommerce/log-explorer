@@ -100,7 +100,7 @@ const ExportList = ({}) => {
                 ) : (
                     <div className="d-flex justify-content-start align-items-center">
                         <div
-                            class="spinner-border me-2"
+                            className="spinner-border me-2"
                             role="status"
                             style={{ width: "15px", height: "15px", color: "#0f62fe" }}
                         />

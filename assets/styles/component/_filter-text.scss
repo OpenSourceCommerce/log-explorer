@@ -2,30 +2,22 @@
   .btn-info {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
-    align-items: center;
-    text-align: center;
-    vertical-align: bottom;
-    display: inline-block;
+    font-size: .8rem;
+    line-height: -1rem;
     cursor: pointer;
 
     &:hover {
       .quote-info {
-        visibility: visible;
+        display: block;
       }
     }
   }
 
   .quote-info {
-    code {
-      background-color: #F4F5F7;
-    }
+    background-color: white;
     margin: 5px 0;
-    border-top: 1px solid #17a2b8;
-    border-right: 1px solid #17a2b8;
-    border-bottom: 1px solid #17a2b8;
     color: black;
-    visibility: hidden;
+    display: none;
     width: auto;
     text-align: left;
     position: absolute;
