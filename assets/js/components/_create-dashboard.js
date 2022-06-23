@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { AlertMessage, Button, FormField, Modal, Size } from ".";
+import React, { useState } from "react";
+import { AlertMessage, Button, Colors, FormField, Modal, Size } from ".";
+import { DashboardActions } from "../actions";
 
 export const CreateNewDashboardModal = ({ isShow, onHidden }) => {
     const [dashboardName, setDashboardName] = useState("");
