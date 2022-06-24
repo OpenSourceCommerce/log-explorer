@@ -49,3 +49,30 @@ body {
   stroke-width: 3;
   stroke-linecap: square;
 }
+
+.btn-default {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.btn-bg-white {
+  background-color: white;
+}
+
+.bd-callout {
+  padding: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #e9ecef;
+  border-left-width: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.bd-callout-info {
+  border-left-color: var(--bs-primary);
+}
+
+.dropdown-toggle-none-icon::after {
+  display: none;
+}

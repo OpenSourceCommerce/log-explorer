@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 // import 'admin-lte/plugins/flot/jquery.flot';
-// import uPlot from 'admin-lte/plugins/uplot/uPlot.cjs';
+import uPlot from 'admin-lte/plugins/uplot/uPlot.cjs';
 import 'admin-lte/plugins/uplot/uPlot.min.css';
 import '../../styles/legend.scss';
 import {LogTableActions, Live} from '../actions';
@@ -73,8 +73,8 @@ export class UPlotChart extends Component {
             }
         };
 
-        // let areaChart = new uPlot(optsAreaChart, [[0], [0]], document.getElementById('interactive'));
-        // this.setState({areaChart})
+        let areaChart = new uPlot(optsAreaChart, [[0], [0]], document.getElementById('interactive'));
+        this.setState({areaChart})
     }
 
     loadData() {
@@ -156,28 +156,22 @@ export class UPlotChart extends Component {
     }
 
     render() {
-        const {className} = this.props;
+        const { className } = this.props;
         return (
             <div className={`${className} card`}>
-                <div className="card-header pb-0 pt-1">
-                    <h3 className="card-title">
-                        <i className="far fa-chart-bar"/>
-                        Interactive Area Chart
-                    </h3>
+                <div className="card-body p-0">
+                    <div className="d-flex justify-content-between">
+                        <span className="ms-2">
+                            <i className="far fa-chart-bar" />
+                            Interactive Area Chart
+                        </span>
 
-                    <LiveButton
-                        {...this.props}
-                    />
-                </div>
-                <div className="card-body pt-0 pb-0">
-                    <div id="interactive" style={{minHeight: '100px'}}>
-                        &nbsp;
+                        <LiveButton {...this.props} />
                     </div>
+                    <div id="interactive" style={{ minHeight: "100px" }} />
                 </div>
                 <div className="card-footer pt-1 pb-1">
-                    <div id="legendContainer">
-                        &nbsp;
-                    </div>
+                    <div id="legendContainer">&nbsp;</div>
                 </div>
             </div>
         );
