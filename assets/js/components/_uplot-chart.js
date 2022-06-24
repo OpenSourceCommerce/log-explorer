@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 // import 'admin-lte/plugins/flot/jquery.flot';
-// import uPlot from 'admin-lte/plugins/uplot/uPlot.cjs';
+import uPlot from 'admin-lte/plugins/uplot/uPlot.cjs';
 import 'admin-lte/plugins/uplot/uPlot.min.css';
 import '../../styles/legend.scss';
 import {LogTableActions, Live} from '../actions';
@@ -73,8 +73,8 @@ export class UPlotChart extends Component {
             }
         };
 
-        // let areaChart = new uPlot(optsAreaChart, [[0], [0]], document.getElementById('interactive'));
-        // this.setState({areaChart})
+        let areaChart = new uPlot(optsAreaChart, [[0], [0]], document.getElementById('interactive'));
+        this.setState({areaChart})
     }
 
     loadData() {
