@@ -395,9 +395,9 @@ class Index extends Component {
                                     setDate={this.setDate}
                                 />
                             </div>
-                            <div className="col-12 card-columns">
-                                <Summary uuid={uuid}/>
-                            </div>
+                            {/* <div className="col-12 card-columns">
+                                    <Summary uuid={uuid}/>
+                                </div> */}
 
                             <LogViewTable selectedTable={selectedTable}/>
                         </div>
