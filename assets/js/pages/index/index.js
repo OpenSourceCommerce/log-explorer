@@ -396,8 +396,8 @@ class Index extends Component {
                                 />
                             </div>
                             {/* <div className="col-12 card-columns">
-                                <Summary uuid={uuid}/>
-                            </div> */}
+                                    <Summary uuid={uuid}/>
+                                </div> */}
 
                             <LogViewTable selectedTable={selectedTable}/>
                         </div>
