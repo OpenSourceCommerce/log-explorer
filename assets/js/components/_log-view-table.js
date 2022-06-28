@@ -9,6 +9,8 @@ import {
     JsGridTable,
     LogViewTableSettingModal,
     QueryInfo,
+    ResizableTable,
+    Spinner,
 } from ".";
 import { LogTableActions, ExportActions, Alert } from "../actions";
 import { LogViewExportModal } from "./_log-view-export-modal";
@@ -22,6 +24,7 @@ export class LogViewTable extends Component {
             fields: [],
             queryInfo: {},
             updated: false,
+            isLoading: false,
         };
 
         this.showTableSettingModal = this.showTableSettingModal.bind(this);
@@ -46,6 +49,9 @@ export class LogViewTable extends Component {
     }
 
     loadColumns() {
+        this.setState({
+            isLoading: true,
+        })
         const { selectedTable } = this.props;
 
         if (!selectedTable) {
@@ -61,6 +67,7 @@ export class LogViewTable extends Component {
             this.setState({
                 fields: data,
                 updated: true,
+                isLoading: false
             });
         });
     }
@@ -77,6 +84,9 @@ export class LogViewTable extends Component {
 
     onTableSettingModalChanged() {
         this.loadColumns();
+        this.setState({
+            showTableSettingModal: false,
+        });
     }
 
     onDataLoaded(res) {
@@ -119,13 +129,21 @@ export class LogViewTable extends Component {
 
     render() {
         const { selectedTable } = this.props;
-        const { fields, showTableSettingModal, queryInfo, updated, showExportModal } = this.state;
+        const {
+            fields,
+            showTableSettingModal,
+            queryInfo,
+            updated,
+            showExportModal,
+            isLoading,
+        } = this.state;
 
         return (
             fields &&
             fields.length > 0 && (
                 <div className="log-view-table">
                     <LogViewTableSettingModal
+                        columnData={fields}
                         show={showTableSettingModal}
                         selectedTable={selectedTable}
                         onSave={this.onTableSettingModalChanged}
@@ -165,15 +183,28 @@ export class LogViewTable extends Component {
                             </Button>
                         </div>
                     </div>
-                    <JsGridTable
-                        height="auto"
-                        logview={selectedTable}
-                        fields={fields}
-                        updated={updated}
-                        pageSize={100}
-                        sorting={true}
-                        onDataLoaded={this.onDataLoaded}
-                    />
+                    {!isLoading ? (
+                        <ResizableTable
+                            height="auto"
+                            logview={selectedTable}
+                            columnList={fields}
+                            updated={updated}
+                            pageSize={100}
+                            sorting={true}
+                            onDataLoaded={this.onDataLoaded}
+                        />
+                    ) : (
+                        <Spinner />
+                    )}
+                    {/* <JsGridTable
+height="auto"
+logview={selectedTable}
+fields={fields}
+updated={updated}
+pageSize={100}
+sorting={true}
+onDataLoaded={this.onDataLoaded}
+/> */}
                 </div>
             )
         );
