@@ -66,3 +66,4 @@ export const {DashboardHeader} = require('./_dashboard-header');
 export const {Chart} = require('./widget/_chart');
 export const {WidgetDataTable} = require('./widget/_table');
 export const {CounterSum} = require('./widget/_counter-sum');
+export const {ResizableTable} = require('./_resizable-table');

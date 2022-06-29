@@ -48,7 +48,8 @@ export class Modal extends Component {
             saveButtonColor = Colors.blue,
             show = false,
             isPositionCenter = false,
-            headerChildren
+            headerChildren,
+            disableSaveButton = false,
         } = this.props;
 
         if(this.modal) {
@@ -85,7 +86,7 @@ export class Modal extends Component {
                                 role="link"
                             >{closeButtonTitle}
                             </button>}
-                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
+                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction} disabled={disableSaveButton}
                                 color={saveButtonColor}>{saveButtonTitle}</Button>}
                         </div>
                     </div>
