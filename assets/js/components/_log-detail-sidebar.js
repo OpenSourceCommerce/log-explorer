@@ -93,7 +93,7 @@ export const LogDetailSidebar = ({ item }) => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                     ></Button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <Link
                             onClick={(e) => copyToClipboard(e, "csv")}
                             className={"dropdown-item"}
