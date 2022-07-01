@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Colors, ContentHeader, Icon, Image, Text } from ".";
 import ChervonIcon from "../../images/select.svg";
+import { setDataToCookies } from "../utils";
 
 export const DashboardHeader = ({
     dashboardDetail,
@@ -12,6 +13,7 @@ export const DashboardHeader = ({
     const dashboardListItem = dashboardList.filter((item) => item.uuid !== dashboardDetail.uuid);
 
     const onDashboardItemClick = (uuid) => {
+        setDataToCookies("dashboard", uuid, 30);
         window.location.pathname = `dashboard/${uuid}`;
     };
 
