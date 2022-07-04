@@ -1,7 +1,7 @@
 import React from "react";
 import '../../../styles/component/_widget-table.scss';
 
-export const WidgetDataTable = ({ column, data, onItemClicked }) => {
+export const WidgetDataTable = ({ column, data, onLabelClicked }) => {
     return (
         <div className="widget-table table-responsive mt-2">
             <table className="table table-hover">
@@ -28,7 +28,7 @@ export const WidgetDataTable = ({ column, data, onItemClicked }) => {
                                     }}
                                     onClick={() => {
                                         if (el !== "value") {
-                                            if (onItemClicked) onItemClicked();
+                                            if (onLabelClicked) onLabelClicked(item[el], el);
                                         }
                                     }}
                                 >

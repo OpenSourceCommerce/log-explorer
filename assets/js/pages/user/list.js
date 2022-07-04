@@ -314,14 +314,14 @@ class UserList extends Component {
         ];
 
         return (
-            <div className="users container-fluid">
+            <div className="users ms-cp-4 me-cp-3">
                 <Toast
                     toastContent={toastContent}
                     onToastClosed={() => {
                         this.setState({ toastContent: {} });
                     }}
                 />
-                <div className="content ms-2 me-2 mt-3">
+                <div className="content me-2 mt-3">
                     <ContentHeader
                         pageTitle="Users"
                         iconName="users"

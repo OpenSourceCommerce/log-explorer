@@ -1,8 +1,63 @@
-import React, { useEffect, useState } from "react";
-import { generateRandomColor, WIDGET_TYPE, TOAST_STATUS } from "../utils";
+import React, { useEffect, useState, useRef } from "react";
+import {
+    generateRandomColor,
+    WIDGET_TYPE,
+    TOAST_STATUS,
+    DATE_RANGE,
+    getDataFromCookies,
+    setDataToCookies,
+} from "../utils";
 import EmptyWidgetImage from "../../images/empty-widget.png";
-import { Button, Colors, Icon, Image, ResponsiveGridLayout, Spinner, Toast } from ".";
+import {
+    Button,
+    Colors,
+    FilterDate,
+    FilterText,
+    FormField,
+    Icon,
+    Image,
+    ResponsiveGridLayout,
+    Spinner,
+    Toast,
+} from ".";
 import { DashboardActions, LogTableActions } from "../actions";
+const DATE_RANGE_DEFAULT = {
+    from: DATE_RANGE[0].from,
+    to: DATE_RANGE[0].to,
+    label: DATE_RANGE[0].label,
+};
+
+const FILTERS_DEFAULT = [
+    {
+        id: 0,
+        query: "",
+        table: "",
+    },
+];
+
+const getFilterDataFromCookies = (filters = null, dateRange = null) => {
+    const cData = getDataFromCookies(window.uuid) ? getDataFromCookies(window.uuid).split("|") : "";
+
+    let filterCookie = filters;
+    let dateRangeCookie = dateRange;
+
+    if (cData) {
+        filterCookie = filterCookie || JSON.parse(decodeURIComponent(cData[1]));
+        dateRangeCookie = dateRange || JSON.parse(cData[0]);
+    }
+
+    return { filterCookie, dateRangeCookie };
+};
+
+const setDataCookies = (filters, dateRange) => {
+    const { filterCookie, dateRangeCookie } = getFilterDataFromCookies(filters, dateRange);
+    const filter = JSON.stringify(filterCookie.map(({ query, table }) => ({ query, table })));
+    setDataToCookies(
+        window.uuid,
+        `${JSON.stringify(dateRangeCookie)}|${encodeURIComponent(filter)}`,
+        30
+    );
+};
 
 const EmptyWidgetContent = ({ onAddWidgetClick }) => {
     return (
@@ -22,33 +77,206 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
     const [widgets, setWidgets] = useState([]);
     const [toastContent, setToastContent] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [filters, setFilters] = useState(FILTERS_DEFAULT);
+    const [dateRange, setDateRange] = useState();
+    const [tables, setTableList] = useState([]);
+    const [isLoadingWidgetData, setIsLoadingWidgetData] = useState(true);
+    const filterDateRef = useRef(false);
 
     useEffect(() => {
-        if (dashboardDetail) {
-            loadData();
+        const tables =
+            widgets && widgets.length > 0
+                ? widgets.reduce((result, item, index) => {
+                      if (item.table != "") {
+                          if (result.length === 0 || !result.find((e) => e.value === item.table)) {
+                              let isSelected = false;
+                              if (
+                                  filters &&
+                                  filters.length === 1 &&
+                                  !filters[0].table &&
+                                  index === 0
+                              ) {
+                                  isSelected = true;
+                                  setFilters([
+                                      {
+                                          ...filters[0],
+                                          table: item.table,
+                                      },
+                                  ]);
+                              } else if (filters && filters.length > 0) {
+                                  isSelected = !!filters.find((el) => el.table === item.table);
+                              }
+                              result = [
+                                  ...result,
+                                  {
+                                      value: item.table,
+                                      label: item.table,
+                                      isSelected,
+                                  },
+                              ];
+                          }
+                      }
+                      return result;
+                  }, [])
+                : [];
+        setTableList(tables);
+    }, [widgets]);
+
+    useEffect(() => {
+        loadFilter();
+    }, []);
+
+    const loadFilter = async () => {
+        setIsLoading(true);
+        let dateRange = { ...DATE_RANGE_DEFAULT };
+        let filters = [...FILTERS_DEFAULT];
+
+        const { filterCookie, dateRangeCookie } = getFilterDataFromCookies();
+
+        if (filterCookie && dateRangeCookie) {
+            const dateRangeLabel = dateRangeCookie.label || "";
+            if (dateRangeLabel !== "Custom Range") {
+                const dateRangeValue = DATE_RANGE.find((item) => item.label === dateRangeLabel);
+                if (dateRangeValue) {
+                    dateRange = { ...dateRangeValue };
+                }
+            } else {
+                dateRange.label = dateRangeCookie.label;
+                dateRange.from = moment.unix(dateRangeCookie.from);
+                dateRange.to = moment.unix(dateRangeCookie.to);
+            }
+            filters =
+                filterCookie && filterCookie.length > 0
+                    ? filterCookie.map((item, index) => ({
+                          ...item,
+                          id: index,
+                      }))
+                    : filters;
+        } else {
+            setDataCookies(filters, { label: dateRange.label });
         }
-    }, [dashboardDetail]);
+
+        setDateRange(dateRange);
+        setFilters(filters);
+        setIsLoading(false);
+    };
+
+    const applyFilter = async () => {
+        setIsLoadingWidgetData(true);
+        const { uuid } = dashboardDetail;
+        let newWidgetList = [...widgets];
+        const rawWidget = newWidgetList.map((item) => {
+            if (filters.length === 1 && !filters[0].query) {
+                return LogTableActions.getWidget(uuid, item.widget_id);
+            } else {
+                const tableSelected = filters.find((el) => el.table === item.table);
+                if (tableSelected && tableSelected.query) {
+                    return LogTableActions.getWidget(uuid, item.widget_id, tableSelected.query);
+                }
+            }
+        });
+        const filterRes = await Promise.all(rawWidget);
+
+        if (filterRes && filterRes.length > 0) {
+            filterRes.forEach((item, index) => {
+                if (item && !item.error) {
+                    newWidgetList[index].data = item.data;
+                }
+            });
+        }
+        setWidgets([...newWidgetList]);
+        setIsLoadingWidgetData(false);
+    };
+
+    const onQueryTableChange = ({ name, value }, index) => {
+        let newFilter = [...filters];
+        newFilter[index][name] = value;
+
+        if (name === "table") {
+            let newTables = [...tables];
+            newTables = newTables.map((item) => {
+                const filter = filters.find((el) => el.table === item.value);
+                return {
+                    ...item,
+                    isSelected: !!filter,
+                };
+            });
+            setTableList(newTables);
+        }
+
+        setDataCookies(newFilter);
+
+        setFilters(newFilter);
+    };
+
+    const onAddNewFilterOnClick = () => {
+        const table = tables.filter((item) => !item.isSelected)[0].value;
+        const index = tables.findIndex((item) => item.value === table);
+        const newTables = [...tables];
+        newTables[index].isSelected = true;
+
+        setFilters([
+            ...filters,
+            {
+                id: filters.length,
+                table,
+            },
+        ]);
+        setTableList([...newTables]);
+    };
+
+    const onRemoveFilter = (id, table) => {
+        let newTables = [...tables];
+        if (table) {
+            const index = tables.findIndex((item) => item.value === table);
+            newTables[index].isSelected = false;
+        }
+        let newFilters = [...filters].filter((el) => id !== el.id);
+        if (newFilters.length === 0) {
+            newFilters.push({
+                id: 0,
+                query: "",
+                table: tables[0].value,
+            });
+            newTables[0].isSelected = true;
+        } else {
+            newFilters.map((item, index) => ({ ...item, id: index }));
+        }
+        setDataCookies(newFilters);
+        setFilters([...newFilters]);
+        setTableList([...tables]);
+    };
 
     const loadData = async () => {
-        setIsLoading(true);
-        const { widgets = [], uuid, configs = {} } = dashboardDetail;
+        if (dashboardDetail) {
+            setIsLoadingWidgetData(true);
+            const { widgets = [], uuid, configs = {} } = dashboardDetail;
 
-        const widgetList = await getWidgetDetail(widgets, configs, uuid);
+            const widgetList = await getWidgetDetail(widgets, configs, uuid);
 
-        setWidgets(widgetList.map((item) => item));
-        setIsLoading(false);
+            setWidgets(widgetList.map((item) => item));
+            setIsLoadingWidgetData(false);
+        }
     };
 
     useEffect(() => {
         onWidgetListChange(widgets);
-    }, [widgets])
+    }, [widgets]);
 
-    const getWidgetDetail = async (widgets, configs, uuid, query) => {
+    const getWidgetDetail = async (widgets, configs, uuid) => {
         let data = [];
+
         if (widgets && widgets.length > 0) {
-            const rawWidget = widgets.map((item) =>
-                LogTableActions.getWidget(uuid, item.widget_id, query)
-            );
+            const rawWidget = widgets.map((item) => {
+                if (filters.length === 1 && !filters[0].query) {
+                    return LogTableActions.getWidget(uuid, item.widget_id);
+                } else {
+                    const tableSelected = filters.find((el) => el.table === item.table);
+                    if (tableSelected && tableSelected.query) {
+                        return LogTableActions.getWidget(uuid, item.widget_id, tableSelected.query);
+                    }
+                }
+            });
             const widgetRes = await Promise.all(rawWidget);
 
             data =
@@ -178,14 +406,7 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
                     y,
                     width: w,
                     height: h,
-                }).then((res) => {
-                    const { error } = res;
-                    if (error) {
-                        this.setState({});
-                    } else {
-                        //Alert.success('Change position success');
-                    }
-                });
+                }).then((res) => {});
             }
             return {
                 ...item,
@@ -202,13 +423,6 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
         if (/^\d+$/.test(value)) {
             queryStr = `${column} = ${value}`;
         }
-
-        const { filters, tables, dashboardDetail } = this.state;
-
-        const widgets = [...dashboardDetail.widgets].map((item) => ({
-            ...item,
-            duration: 0,
-        }));
 
         const tableList = tables;
         let filterList = filters;
@@ -238,44 +452,165 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
         }
 
         if (isQueryChange) {
-            this.setState(
-                {
-                    tables: [...tableList],
-                    filters: [...filterList],
-                    dashboardDetail: {
-                        ...dashboardDetail,
-                        widgets,
-                    },
-                },
-                () => {
-                    this.setDataCookies(filters);
-                    $("#collapseAdvanceSearch").addClass("show");
-                    this.applyFilter();
-                }
-            );
+            setTableList([...tableList]);
+            setFilters([...filterList]);
+            setDataCookies(filters);
+            $("#collapseAdvanceSearch").addClass("show");
+            applyFilter();
         }
     };
 
+    const onDateRangeChanged = async (_, _a, dateRange) => {
+        setDataCookies(null, dateRange);
+        setDateRange(dateRange);
+        await loadData();
+    };
+
+    useEffect(() => {
+        if (filterDateRef.current) {
+            loadData();
+        }
+    }, [filterDateRef.current]);
+
     return (
         <div className="dashboard-content mt-3">
-            <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
             {!isLoading ? (
                 <>
-                    {widgets && widgets.length > 0 ? (
-                        <ResponsiveGridLayout
-                            layouts={widgets}
-                            isResizable={!isUser()}
-                            isDraggable={!isUser()}
-                            removeWidget={(id) => removeWidget(id)}
-                            stickWidget={stickWidget}
-                            editWidget={(id) => {
-                                window.location.href = "/setting?tab=widgets&widgetId=" + id;
-                            }}
-                            onLayoutChange={onLayoutChange}
-                            onWidgetClicked={onWidgetClicked}
-                        />
+                    <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
+                    <div className="dashboard-advance-search">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-end align-self-center flex-wrap">
+                                    {dateRange && (
+                                        <FilterDate
+                                            ref={filterDateRef}
+                                            dateRange={dateRange}
+                                            onDateRangeChanged={onDateRangeChanged}
+                                        />
+                                    )}
+                                    <Button
+                                        id="btn-filters"
+                                        className="btn-search ms-2"
+                                        data-bs-toggle="collapse"
+                                        href="#collapseAdvanceSearch"
+                                        aria-expanded="false"
+                                        aria-controls="collapseAdvanceSearch"
+                                    >
+                                        <Icon name="filter" className="mr-2" />
+                                        Filters
+                                    </Button>
+                                </div>
+                                <div className="collapse col-12" id="collapseAdvanceSearch">
+                                    <div
+                                        className="advanced-search bg-white border-0"
+                                        key={filters}
+                                    >
+                                        {filters.map((item, index) => {
+                                            const { id, query, table } = item;
+                                            return (
+                                                <div
+                                                    className="row ml-0 mt-2"
+                                                    key={`${query}|${table}`}
+                                                >
+                                                    <div className="col-12 col-md-9 d-flex pl-0 mb-2 mb-md-0">
+                                                        <Button
+                                                            className="bg-transparent border-0 btn btn-light"
+                                                            onClick={() =>
+                                                                onRemoveFilter(id, table)
+                                                            }
+                                                        >
+                                                            <Icon
+                                                                name="times"
+                                                                className="align-self-center mr-3"
+                                                            />
+                                                        </Button>
+                                                        <FilterText
+                                                            className="mb-0"
+                                                            placeholder="status = 200 AND url LIKE '%product%'"
+                                                            value={query}
+                                                            onBlur={(e) =>
+                                                                onQueryTableChange(e.target, index)
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <FormField
+                                                        className="col-12 col-md-3 mb-0 mb-2 mb-md-0"
+                                                        value={table}
+                                                        fieldName="table"
+                                                        isHiddenLabel={true}
+                                                        onChange={(e) =>
+                                                            onQueryTableChange(e.target, index)
+                                                        }
+                                                        type="select"
+                                                    >
+                                                        <>
+                                                            {tables.map((item, index) => (
+                                                                <option
+                                                                    value={item.value}
+                                                                    key={index}
+                                                                    className={
+                                                                        item.isSelected
+                                                                            ? "d-none"
+                                                                            : ""
+                                                                    }
+                                                                >
+                                                                    {item.label}
+                                                                </option>
+                                                            ))}
+                                                        </>
+                                                    </FormField>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className="d-flex justify-content-end mb-2">
+                                        {tables &&
+                                            tables.length > 0 &&
+                                            tables.length > filters.length && (
+                                                <div className="col-6 col-md-1 btn-action-group">
+                                                    <Button
+                                                        className="btn-search mt-0 mt-md-2 w-100"
+                                                        onClick={() => onAddNewFilterOnClick()}
+                                                    >
+                                                        <Icon name="plus-circle" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        <div className="btn-action-group pr-0">
+                                            <Button
+                                                className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
+                                                onClick={() => applyFilter()}
+                                            >
+                                                Apply
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {!isLoadingWidgetData ? (
+                        <>
+                            {widgets && widgets.length > 0 ? (
+                                <ResponsiveGridLayout
+                                    layouts={widgets}
+                                    isResizable={!isUser()}
+                                    isDraggable={!isUser()}
+                                    removeWidget={(id) => removeWidget(id)}
+                                    stickWidget={stickWidget}
+                                    editWidget={(id) => {
+                                        window.location.href =
+                                            "/setting?tab=widgets&widgetId=" + id;
+                                    }}
+                                    onLayoutChange={onLayoutChange}
+                                    onWidgetClicked={onWidgetClicked}
+                                />
+                            ) : (
+                                <EmptyWidgetContent onAddWidgetClick={onAddWidgetClick} />
+                            )}
+                        </>
                     ) : (
-                        <EmptyWidgetContent onAddWidgetClick={onAddWidgetClick} />
+                        <Spinner />
                     )}
                 </>
             ) : (

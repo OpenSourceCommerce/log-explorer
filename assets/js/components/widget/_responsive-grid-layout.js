@@ -93,7 +93,18 @@ export class ResponsiveGridLayout extends Component {
                                                 case WIDGET_TYPE.bar:
                                                 case WIDGET_TYPE.line: {
                                                     component = (
-                                                        <Chart id={i} type={type} data={data} />
+                                                        <Chart
+                                                            id={i}
+                                                            type={type}
+                                                            data={data}
+                                                            onLabelClicked={(value) => {
+                                                                onLabelClicked(
+                                                                    value,
+                                                                    column,
+                                                                    table
+                                                                );
+                                                            }}
+                                                        />
                                                     );
                                                     break;
                                                 }
@@ -102,14 +113,25 @@ export class ResponsiveGridLayout extends Component {
                                                     break;
                                                 }
                                                 case WIDGET_TYPE.table: {
-                                                    let columnData =
-                                                        column ? column.split(",") : [];
+                                                    let columnData = column
+                                                        ? column.split(",")
+                                                        : [];
                                                     columnData = [...columnData, "value"];
                                                     component = (
                                                         <WidgetDataTable
                                                             data={data}
                                                             column={columnData}
                                                             isDashboardComponent={true}
+                                                            onLabelClicked={(
+                                                                value,
+                                                                tableColumn
+                                                            ) => {
+                                                                onLabelClicked(
+                                                                    value,
+                                                                    tableColumn,
+                                                                    table
+                                                                );
+                                                            }}
                                                         />
                                                     );
                                                     break;

@@ -36,9 +36,9 @@ export class ContentHeader extends Component {
                     {children}
                 </div>
                 {onClickActionBtn && (
-                    <Button style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
+                    <Button className="text-nowrap" style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
                         {actionButtonIcon && (
-                            <Icon dataFeather={actionButtonIcon} className="feather-lg" />
+                            <Icon dataFeather={actionButtonIcon} className="feather-sm stroke-width-3" />
                         )}
                         {actionButtonTitle && (
                             <span className="align-middle ms-1">{actionButtonTitle}</span>
