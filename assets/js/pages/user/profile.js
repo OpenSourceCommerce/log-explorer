@@ -27,13 +27,13 @@ const NavComponent = ({ currentTab }) => {
                     className={`nav-link ${currentTab === id ? "active" : ""}`}
                     id={`pills-${id}-tab`}
                     data-bs-toggle="pill"
-                    data-bs-target={`#pills-${id}`}
+                    // data-bs-target={`#pills-${id}`}
                     type="button"
                     role="tab"
                     aria-controls={`pills-${id}`}
                     aria-selected="true"
                     onClick={() => {
-                        location.href = `setting?tab=${id}`;
+                        if (currentTab !== id) location.href = `setting?tab=${id}`;
                     }}
                 >
                     {title}
