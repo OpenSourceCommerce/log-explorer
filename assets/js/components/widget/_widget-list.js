@@ -185,7 +185,8 @@ export const WidgetList = ({
         await setIsWidgetDetailClicked(false);
         await setWidgetSelected(null);
         await setIsLoading(true);
-        await loadData();
+        await loadWidgetList();
+        await setIsLoading(false);
         if (isCreateNewWidgetCallback) await isCreateNewWidgetCallback();
         setToastContent({
             color: TOAST_STATUS.success,
