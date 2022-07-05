@@ -32,8 +32,6 @@ const NavComponent = ({ currentTab }) => {
                 <button
                     className={`nav-link ${currentTab === id ? "active" : ""}`}
                     id={`pills-${id}-tab`}
-                    data-bs-toggle="pill"
-                    // data-bs-target={`#pills-${id}`}
                     type="button"
                     role="tab"
                     aria-controls={`pills-${id}`}
