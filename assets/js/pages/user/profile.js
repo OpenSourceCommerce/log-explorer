@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { ContentHeader, Toast, UserProfile, ChangePasswordForm, WidgetList } from "../../components";
+import {
+    ContentHeader,
+    Toast,
+    UserProfile,
+    ChangePasswordForm,
+    WidgetList,
+} from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
 import { DatabaseTables } from "../database/tables";
 
@@ -26,14 +32,12 @@ const NavComponent = ({ currentTab }) => {
                 <button
                     className={`nav-link ${currentTab === id ? "active" : ""}`}
                     id={`pills-${id}-tab`}
-                    data-bs-toggle="pill"
-                    data-bs-target={`#pills-${id}`}
                     type="button"
                     role="tab"
                     aria-controls={`pills-${id}`}
                     aria-selected="true"
                     onClick={() => {
-                        location.href = `setting?tab=${id}`;
+                        if (currentTab !== id) location.href = `setting?tab=${id}`;
                     }}
                 >
                     {title}
@@ -105,7 +109,9 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                 </div>
                 <div className="tab-content" id="pills-tabContent">
                     <div
-                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
+                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${
+                            currentTab === "profile" ? "show active" : ""
+                        }`}
                         id="pills-profile"
                         role="tabpanel"
                         aria-labelledby="pills-profile-tab"
