@@ -21,7 +21,7 @@ Encore
 	.copyFiles({
 		from: './assets/images',
 		to: 'images/[path][name].[ext]',
-		pattern: /logo\.svg$/
+		pattern: /\.(jpe?g|png|gif|ico|svg|webp)$/,
 	})
 /* .copyFiles({
         from: './node_modules/admin-lte/dist/img',
