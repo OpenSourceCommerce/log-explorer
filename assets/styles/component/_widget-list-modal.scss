@@ -1,0 +1,26 @@
+.widget-list-modal {
+  .widget-list {
+    .widget-item {
+      &.widget-selected {
+        border: 3px solid #58a4d9;
+        .check-circle {
+          display: block;
+        }
+      }
+      .check-circle {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+        stroke-linecap: square;
+        color: #58a4d9;
+        display: none;
+      }
+    }
+    .btn-add-widget {
+      .feather {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
