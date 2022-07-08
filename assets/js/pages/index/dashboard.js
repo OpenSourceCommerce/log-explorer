@@ -58,8 +58,8 @@ const DashboardPage = ({}) => {
 
     useEffect(() => {
         if (isNewWidgetAdded) {
-            loadData();
             setIsNewWidgetAdded(false);
+            loadData();
         }
     }, [visibleAddWidgetModal]);
 
@@ -86,12 +86,11 @@ const DashboardPage = ({}) => {
                 widgets,
             };
 
-            loadWidgetList(widgets);
+            await setDashboardList([...dashboardList]);
+            await setDashboardDetail({ ...dashboardDetail });
+            await loadWidgetList(widgets);
         }
-
-        setDashboardList([...dashboardList]);
-        setDashboardDetail({ ...dashboardDetail });
-        setIsLoading(false);
+        await setIsLoading(false);
     };
 
     const onConfirmDeleteDashboard = async () => {
@@ -116,8 +115,8 @@ const DashboardPage = ({}) => {
             };
 
             setVisibleConfirmDeleteDashboard();
-            setIsLoading(false);
             setDashboardList([...newDashboardList]);
+            setIsLoading(false);
             setToastContent(toastContent);
         }
     };
@@ -129,7 +128,7 @@ const DashboardPage = ({}) => {
             widgetListRes && widgetListRes.data && widgetListRes.data.length > 0
                 ? widgetListRes.data
                 : [];
-
+``
         const widgetListOrigin = widgetList;
 
         if (widgetExistInDashboard?.length > 0)
@@ -137,45 +136,49 @@ const DashboardPage = ({}) => {
                 widgetExistInDashboard.every((el) => el.widget_id !== item.id)
             );
 
-        setWidgetListOrigin([...widgetListOrigin]);
-        setWidgetList([...widgetList]);
+        await setWidgetListOrigin([...widgetListOrigin]);
+        await setWidgetList([...widgetList]);
     };
 
-    const onAddNewWidget = async (widget) => {
-        let position = {};
+    const onAddNewWidget = async (widgetListSelected) => {
+        const widgetListAddToDashboard = widgetListSelected.map((item) => {
+            let position = {};
 
-        switch (widget.type) {
-            case WIDGET_TYPE.bar:
-            case WIDGET_TYPE.line:
-            case WIDGET_TYPE.doughnut:
-            case WIDGET_TYPE.pie: {
-                position = { x: 0, y: 0, width: 3, height: 2, fixed: null };
-                break;
+            switch (item.type) {
+                case WIDGET_TYPE.bar:
+                case WIDGET_TYPE.line:
+                case WIDGET_TYPE.doughnut:
+                case WIDGET_TYPE.pie: {
+                    position = { x: 0, y: 0, width: 3, height: 2, fixed: null };
+                    break;
+                }
+                case WIDGET_TYPE.counterSum: {
+                    position = { x: 0, y: 0, width: 3, height: 1, fixed: null };
+                    break;
+                }
+                case WIDGET_TYPE.table: {
+                    position = { x: 0, y: 0, width: 3, height: 3, fixed: null };
+                    break;
+                }
             }
-            case WIDGET_TYPE.counterSum: {
-                position = { x: 0, y: 0, width: 3, height: 1, fixed: null };
-                break;
-            }
-            case WIDGET_TYPE.table: {
-                position = { x: 0, y: 0, width: 3, height: 3, fixed: null };
-                break;
-            }
-        }
 
-        const addWidgetRes = await DashboardActions.addWidget(
-            dashboardDetail.id,
-            widget.id,
-            position
-        );
+            return DashboardActions.addWidget(dashboardDetail.id, item.id, position);
+        });
 
-        if (addWidgetRes && !addWidgetRes.error) {
+        const addWidgetRes = await Promise.all([...widgetListAddToDashboard]);
+
+        const isErrorExist = addWidgetRes.every((item) => item.error !== 0);
+        if (!isErrorExist) {
             setToastContent({
                 color: TOAST_STATUS.success,
-                message: `Add widget ${widget.title} to dashboard successful.`,
+                message: `Add ${widgetListSelected.length} widget to dashboard successful.`,
             });
 
-            setWidgetList(widgetList.filter((item) => item.id !== widget.id));
+            setWidgetList(
+                widgetList.filter((item) => !widgetListSelected.find((el) => el.id === item.id))
+            );
             setIsNewWidgetAdded(true);
+            setVisibleAddWidgetModal(false);
         }
     };
 
@@ -233,7 +236,9 @@ const DashboardPage = ({}) => {
                             setVisibleAddWidgetModal(false);
                         }}
                         isSpinnerFullHeight={false}
-                        onSelectWidgetForDashboard={(item) => onAddNewWidget(item)}
+                        onSelectWidgetForDashboard={(widgetListSelected) =>
+                            onAddNewWidget(widgetListSelected)
+                        }
                         isCreateNewWidgetCallback={() => loadWidgetList(dashboardDetail?.widgets)}
                     />
                 </div>

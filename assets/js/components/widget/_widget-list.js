@@ -109,15 +109,8 @@ const AlertDeleteWidget = ({ widget, onHidden, onConfirmDeleteButton }) => {
     );
 };
 
-export const WidgetList = ({
-    widgetList: passedWidgetList,
-    onSelectWidgetForDashboard,
-    isSpinnerFullHeight,
-    widgetIdParam,
-    isCreateNewWidgetCallback,
-    className,
-}) => {
-    const [widgets, setWidgets] = useState(passedWidgetList);
+export const WidgetList = ({ widgetIdParam, className }) => {
+    const [widgets, setWidgets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [widgetSelected, setWidgetSelected] = useState();
     const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
@@ -128,15 +121,12 @@ export const WidgetList = ({
 
     useEffect(() => {
         loadWidgetList();
-    }, [passedWidgetList, widgetIdParam]);
+    }, [widgetIdParam]);
 
     const loadWidgetList = async () => {
-        const widgetRes =
-            passedWidgetList && passedWidgetList.length > 0
-                ? passedWidgetList
-                : await WidgetActions.listWidget();
+        const widgetRes = await WidgetActions.listWidget();
 
-        const widgetListRes = passedWidgetList || widgetRes.data;
+        const widgetListRes = widgetRes.data;
 
         const widgetListItem = widgetListRes.map((item) => {
             const widget = { ...item };
@@ -187,7 +177,6 @@ export const WidgetList = ({
         await setIsLoading(true);
         await loadWidgetList();
         await setIsLoading(false);
-        if (isCreateNewWidgetCallback) await isCreateNewWidgetCallback();
         setToastContent({
             color: TOAST_STATUS.success,
             message: `${isUpdateWidget ? "Update" : "Create"} widget successful`,
@@ -223,7 +212,7 @@ export const WidgetList = ({
     }, []);
 
     return (
-        <div className={`widget-list ${className || ''}`}>
+        <div className={`widget-list ${className || ""}`}>
             <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
             {!isLoading ? (
                 <>
@@ -235,12 +224,8 @@ export const WidgetList = ({
                                     key={index}
                                     widgetItem={item}
                                     onWidgetClick={() => {
-                                        if (onSelectWidgetForDashboard && item?.id) {
-                                            onSelectWidgetForDashboard(item);
-                                        } else {
-                                            setWidgetSelected(item);
-                                            setIsWidgetDetailClicked(true);
-                                        }
+                                        setWidgetSelected(item);
+                                        setIsWidgetDetailClicked(true);
                                     }}
                                     onRemoveWidgetClick={() => {
                                         setWidgetRemoveSelected(item);
@@ -266,7 +251,7 @@ export const WidgetList = ({
                     />
                 </>
             ) : (
-                <Spinner isFullHeight={isSpinnerFullHeight} />
+                <Spinner />
             )}
         </div>
     );
