@@ -462,218 +462,68 @@ export class DashboardPage extends Component {
                 });
             }
         }
-    }
+    };
 
-    onLayoutChange = async (e) => {
-        const {dashboardDetail} = this.state;
-        const {widgets, id} = dashboardDetail;
-        const keyForCheck = ['x', 'y', 'w', 'h'];
-        const newWidgetPosition = [...widgets].map((item) => {
-            const {widget_id} = item;
-            let isChangePosition = false;
-            const widget = e.find(el => el.i === item.i);
-            Object.keys(item).forEach((key) => {
-                if (keyForCheck.includes(key) && item[key] !== widget[key]) {
-                    isChangePosition = true;
-                    return;
-                }
-            })
-            if (isChangePosition) {
-                const {x, y, w, h} = widget;
-                DashboardActions.updateWidget(id, widget_id, {
-                    x,
-                    y,
-                    width: w,
-                    height: h,
-                }).then(res => {
-                    const {error} = res;
-                    if (error) {
-                        this.setState({})
-                    } else {
-                        //Alert.success('Change position success');
-                    }
-                });
-            }
-            return {
-                ...item,
-                ...widget,
-            }
-        });
-        this.setState({
-            dashboardDetail: {
-                ...dashboardDetail,
-                widgets: [...newWidgetPosition].map(item => ({ ...item, duration: 0}))
-            }
-        })
-    }
+    const onWidgetListChange = (widgets) => {
+        if (widgets)
+            setWidgetList(
+                widgetListOrigin.filter((item) => widgets.every((el) => el.widget_id !== item.id))
+            );
+    };
 
-    render() {
-        const {
-            isLoading,
-            dashboardDetail,
-            widgetList,
-            widgetSelected,
-            tables,
-            filters,
-            dateRange
-        } = this.state;
+    const onAddWidgetClick = () => setVisibleAddWidgetModal(true);
 
-        const {title, widgets} = dashboardDetail;
+    const onWidgetUpdateSuccess = () => loadData();
 
-        const columns = widgetList.filter(e => !widgets.some(el => el.widget_id === e.id));
-
-        return (
-            <>
-                <div className="dashboard-container">
-                    <h3 className="col-12">{title}</h3>
-                    <div className="filter col-12">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="col-12">
-                                    <div className="row">
-                                        {isUser() || <div className="col-md-3 col-12"
-                                            style={{minWidth: '250px'}}>
-                                            <FormField
-                                                isHiddenLabel={true}
-                                                value={widgetSelected || ''}
-                                                fieldName='widgetSelected'
-                                                onChange={(e) => this.onSaveChange(e.target.value)}
-                                                type='select'
-                                                className='mb-0'
-                                            >
-                                                <>
-                                                    <option value='' className='d-none'>
-                                                        Add widget
-                                                    </option>
-                                                    {columns.length === 0 && <option value='createNewOne'>
-                                                        {'Create new one'}
-                                                    </option>}
-                                                    {columns.map((item, index) => (
-                                                        <option value={item.id} key={index}>
-                                                            {item.title}
-                                                        </option>))}
-                                                </>
-                                            </FormField>
-                                        </div>}
-                                        <div className="col-md-3 col-12 mt-2 mt-md-0 me-auto"
-                                            style={{minWidth: '250px'}}>
-                                            <FilterDate
-                                                dateRange={dateRange}
-                                                onDateRangeChanged={this.onChangeFilter}
-                                            />
-                                        </div>
-                                        <div className="d-flex justify-content-end offset-xl-4 offset-lg-3 offset-md-2 col-12 col-md-2">
-                                            <Button id="btn-search"
-                                                className="btn-search me-2"
-                                                disabled={isLoading}
-                                                onClick={() => this.onChangeFilter()}
-                                            >
-                                                <Icon name="sync"/>
-                                            </Button>
-                                            <Button id="btn-filters"
-                                                className="btn-search text-nowrap"
-                                                data-toggle="collapse"
-                                                href="#collapseAdvanceSearch"
-                                                aria-expanded="false"
-                                                aria-controls="collapseAdvanceSearch"
-                                            >
-                                                <Icon name="filter" className="me-2"/>
-                                                    Filters
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="collapse col-12"
-                                     id="collapseAdvanceSearch"
-                                >
-                                    <div className="advanced-search"
-                                         key={filters}>
-                                        {filters.map((item, index) => {
-                                            const { id, query, table } = item;
-                                            return (<div className="row ms-0 mt-2" key={`${query}|${table}`}>
-                                                <div className="col-12 col-md-9 d-flex ps-0 mb-2 mb-md-0">
-                                                    <Button className="bg-transparent border-0 btn btn-light"
-                                                            onClick={() => this.onRemoveFilter(id, table)}
-                                                    >
-                                                        <Icon name="times" className="align-self-center me-3"/>
-                                                    </Button>
-                                                    <FilterText
-                                                        className="mb-0"
-                                                        placeholder="status = 200 AND url LIKE '%product%'"
-                                                        value={query}
-                                                        onBlur={(e) => this.onQueryTableChange(e.target, index)}
-                                                    />
-                                                </div>
-                                                <FormField
-                                                    className="col-12 col-md-3 mb-0 mb-2 mb-md-0"
-                                                    value={table}
-                                                    fieldName='table'
-                                                    isHiddenLabel={true}
-                                                    onChange={(e) => this.onQueryTableChange(e.target, index)}
-                                                    type='select'
-                                                >
-                                                    <>
-                                                        {tables.map((item, index) => (
-                                                            <option value={item.value}
-                                                                    key={index}
-                                                                    className={item.isSelected ? 'd-none' : ''}
-                                                            >
-                                                                {item.label}
-                                                            </option>))}
-                                                    </>
-                                                </FormField>
-                                            </div>);
-                                        })}
-                                    </div>
-                                    <div className="d-flex justify-content-end mb-2">
-                                        {tables && tables.length > 0 && tables.length > filters.length && <div className="col-6 col-md-1 btn-action-group">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100" onClick={() => {
-                                                const table = tables.filter(item => !item.isSelected)[0].value;
-                                                const index = tables.findIndex(item => item.value === table);
-                                                const newTables = [...tables];
-                                                newTables[index].isSelected = true;
-
-                                                this.setState({
-                                                    filters: [ ...filters, {
-                                                        id: filters.length,
-                                                        table,
-                                                    }],
-                                                    widgets: [...widgets].map(item => ({ ...item, duration: 0 }))
-                                                })
-                                            }}>
-                                                <Icon name="plus-circle"/>
-                                            </Button>
-                                        </div>}
-                                        <div className="btn-action-group pr-0">
-                                            <Button className="btn-search mt-0 mt-md-2 w-100 text-nowrap"
-                                                    disabled={isLoading}
-                                                    onClick={() => this.applyFilter()}
-                                            >
-                                                Apply
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {isLoading ? <span
-                        className="spinner-border spinner-border-sm"
-                        role="status" aria-hidden="true"/> :
-                        <div key={widgets}>
-                            <ResponsiveGridLayout
-                                layouts={widgets}
-                                isResizable={!isUser()}
-                                isDraggable={!isUser()}
-                                removeWidget={(id) => this.removeWidget(id)}
-                                stickWidget={this.stickWidget}
-                                editWidget={(id) => {
-                                    window.location.href = '/widget/' + id;
-                                }}
-                                onLayoutChange={this.onLayoutChange}
-                                onWidgetClicked={this.onWidgetClicked}
-                            />
-                    </div>}
+    return (
+        <>
+            {!isLoading ? (
+                <div
+                    className="dashboard-page ms-cp-4 mt-3 me-cp-3"
+                    style={{ marginBottom: "7rem" }}
+                >
+                    <Toast
+                        toastContent={toastContent}
+                        onToastClosed={() => setToastContent()}
+                        style={{ zIndex: "1060" }}
+                    />
+                    <DashboardHeader
+                        dashboardDetail={dashboardDetail}
+                        dashboardList={dashboardList}
+                        onCreateNewDashboardClick={() => setIsShowCreateNewDashboard(true)}
+                        onDeleteDashboardClick={(dashboard) =>
+                            setVisibleConfirmDeleteDashboard(dashboard)
+                        }
+                        onAddWidgetClick={() => onAddWidgetClick()}
+                    />
+                    {dashboardDetail && (
+                        <DashboardContent
+                            dashboardDetail={dashboardDetail}
+                            onAddWidgetClick={() => onAddWidgetClick()}
+                            onWidgetListChange={onWidgetListChange}
+                            onWidgetUpdateSuccess={onWidgetUpdateSuccess}
+                        />
+                    )}
+                    <CreateNewDashboardModal
+                        isShow={isShowCreateNewDashboard}
+                        onHidden={() => setIsShowCreateNewDashboard(false)}
+                    />
+                    <ConfirmDeleteDashboard
+                        dashboard={visibleConfirmDeleteDashboard}
+                        dashboardTitle={visibleConfirmDeleteDashboard?.title}
+                        onConfirmDeleteDashboard={() => onConfirmDeleteDashboard()}
+                        onHidden={() => setVisibleConfirmDeleteDashboard()}
+                    />
+                    <WidgetListModal
+                        isShow={visibleAddWidgetModal}
+                        widgetList={widgetList}
+                        onHidden={() => {
+                            setVisibleAddWidgetModal(false);
+                        }}
+                        isSpinnerFullHeight={false}
+                        onSelectWidgetForDashboard={(item) => onAddNewWidget(item)}
+                        isCreateNewWidgetCallback={() => loadWidgetList(dashboardDetail?.widgets)}
+                    />
                 </div>
             </>
 
