@@ -283,7 +283,7 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
                 widgetRes &&
                 widgetRes.length > 0 &&
                 widgetRes.reduce((arr, item, index) => {
-                    const { error, data } = item;
+                    const data = item?.data;
                     const {
                         id,
                         x,
@@ -301,24 +301,26 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
                     const { minWidth, minHeight } = configs.size[type];
 
                     let colorForChart;
-                    if (color && color.length > 0 && color.length === data.length) {
-                        colorForChart = color;
-                    } else if (
-                        [
-                            WIDGET_TYPE.doughnut,
-                            WIDGET_TYPE.pie,
-                            WIDGET_TYPE.bar,
-                            WIDGET_TYPE.line,
-                        ].includes(type)
-                    ) {
-                        colorForChart = data.reduce((arrColor, _) => {
-                            const colorCode = generateRandomColor();
-                            if (arrColor.includes(colorCode)) {
-                                colorCode = generateRandomColor();
-                            }
-                            arrColor.push(colorCode);
-                            return arrColor;
-                        }, []);
+                    if (data && data.length > 0) {
+                        if (color && color.length > 0 && color.length === data.length) {
+                            colorForChart = color;
+                        } else if (
+                            [
+                                WIDGET_TYPE.doughnut,
+                                WIDGET_TYPE.pie,
+                                WIDGET_TYPE.bar,
+                                WIDGET_TYPE.line,
+                            ].includes(type)
+                        ) {
+                            colorForChart = data.reduce((arrColor, _) => {
+                                const colorCode = generateRandomColor();
+                                if (arrColor.includes(colorCode)) {
+                                    colorCode = generateRandomColor();
+                                }
+                                arrColor.push(colorCode);
+                                return arrColor;
+                            }, []);
+                        }
                     }
                     arr.push({
                         ...widgets[index],
