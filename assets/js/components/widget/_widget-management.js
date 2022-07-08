@@ -38,7 +38,7 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
             break;
         }
         case WIDGET_TYPE.counterSum: {
-            component = <CounterSum data={SAMPLE_DATA.length} widgetHeader={title} />;
+            component = <CounterSum data={SAMPLE_DATA.length} />;
             break;
         }
         case WIDGET_TYPE.table: {
@@ -48,7 +48,6 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
             component = (
                 <WidgetDataTable
                     data={generateDataBaseOnColumn(columnData, sizeData)}
-                    widgetHeader={title}
                     column={columnData}
                     isDashboardComponent={true}
                 />

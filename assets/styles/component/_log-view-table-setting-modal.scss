@@ -1,0 +1,29 @@
+.customize-table-modal {
+  .modal-dialog {
+    .modal-content {
+      .modal-body {
+        padding: 0;
+
+        .remove-icon {
+          stroke: #ce3032;
+        }
+
+        .empty-active-item {
+          border: 1px dashed #343a40;
+          width: 92px;
+          height: 32px;
+          border-radius: 5px;
+        }
+
+        .create-column {
+          border: 1px dashed var(--bs-primary);
+          border-radius: 5px;
+          background: transparent;
+        }
+        .column-panel {
+          min-height: 130px;
+        }
+      }
+    }
+  }
+}

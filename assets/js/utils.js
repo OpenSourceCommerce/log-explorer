@@ -22,6 +22,8 @@ export const WIDGET_TYPE = {
     bar: 6,
 };
 
+export const SIDEBAR_STATUS_COOKIE_NAME = "sidebar_is_collapse";
+
 export const setDataToCookies = (cName, cValue, exdays) => {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);

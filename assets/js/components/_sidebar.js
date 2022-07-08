@@ -3,8 +3,14 @@ import ReactDOM from 'react-dom';
 import {Text, Link, Image, Icon} from '.';
 import Logo from '../../images/logo.svg';
 import PropTypes from 'prop-types';
+import { getDataFromCookies, SIDEBAR_STATUS_COOKIE_NAME } from '../utils';
 
 export class Sidebar extends Component {
+    componentDidMount() {
+        if(getDataFromCookies(SIDEBAR_STATUS_COOKIE_NAME) === "true") {
+            $("#sidebar").toggleClass("hidden");
+        }
+    }
     render() {
         const {role} = this.props;
         const featureName = window.location.pathname.split('/');

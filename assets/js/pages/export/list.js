@@ -159,7 +159,7 @@ const ExportList = ({}) => {
                                 className="bg-white"
                             />
                         ) : (
-                            <div className="d-flex justify-content-center">No alert found</div>
+                            <div className="d-flex justify-content-center">No export found</div>
                         )}
                     </>
                 ) : (

@@ -32,7 +32,7 @@ export const LogViewList = ({ className, onSelected, data, selected, ...rest }) 
                             }}
                         >
                             <Icon dataFeather="plus" className="feather-sm stroke-width-4" />
-                            <span className="ms-2 align-middle fw-bold">Create new dashboard</span>
+                            <span className="ms-2 align-middle fw-bold">Create new datatable</span>
                         </a>
                     </li>
                 )}

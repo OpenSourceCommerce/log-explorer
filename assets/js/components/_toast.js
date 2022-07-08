@@ -5,6 +5,7 @@ export const Toast = ({
         message: "",
     },
     onToastClosed,
+    ...props
 }) => {
     useEffect(() => {
         if (toastContent.message) {
@@ -22,6 +23,7 @@ export const Toast = ({
         <div
             className="toast-container p-3 start-50 translate-middle-x fixed-top"
             style={{ top: "30px" }}
+            {...props}
         >
             <div
                 className={`toast text-white bg-${color} border-0 fade ${
