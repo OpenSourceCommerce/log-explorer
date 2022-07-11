@@ -3,8 +3,104 @@ import { Button, Colors, Icon, Link, Modal, Size, Spinner, Text, Toast } from ".
 import { DatabaseActions, WidgetActions } from "../actions";
 import { WidgetDetailModal } from "./widget/_widget-detail";
 import "../../styles/component/_widget-list-modal.scss";
+import { TOAST_STATUS } from "../utils";
 
-export const WidgetListModal = ({ isShow, onHidden, ...props }) => {
+export const WidgetListModal = ({
+    isShow,
+    onHidden,
+    widgetList: passedWidgetList,
+    isCreateNewWidgetCallback,
+    onSelectWidgetForDashboard,
+}) => {
+    const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
+    const [tables, setTables] = useState([]);
+    const [queries, setQueries] = useState([]);
+    const [widgetRemoveSelected, setWidgetRemoveSelected] = useState();
+    const [widgets, setWidgets] = useState(passedWidgetList);
+    const [isLoading, setIsLoading] = useState(false);
+    const [toastContent, setToastContent] = useState();
+    const [widgetListSelected, setWidgetListSelected] = useState([]);
+
+    useEffect(() => {
+        if (!!isShow) {
+            setIsLoading(true);
+            loadData();
+        }
+    }, [isShow]);
+
+    useEffect(() => {
+        loadWidgetList();
+    }, [passedWidgetList]);
+
+    const loadData = async () => {
+        const [tableRes, queriesRes] = await Promise.all([
+            DatabaseActions.getAllTable(),
+            WidgetActions.getQueries(),
+        ]);
+
+        let tables =
+            tableRes && tableRes.data && tableRes.data.length > 0
+                ? tableRes.data.map((item) => ({
+                      value: item,
+                      label: item,
+                  }))
+                : [];
+
+        let queries =
+            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
+
+        setTables(tables);
+        setQueries(queries);
+        setIsLoading(false);
+    };
+
+    const loadWidgetList = async () => {
+        const widgetListItem = passedWidgetList.map((item) => {
+            const widget = { ...item };
+            if (item.hasOwnProperty("order_desc")) {
+                widget.order = item.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
+            }
+            return widget;
+        });
+
+        setWidgets([{ ...WIDGET_DEFAULT }, ...widgetListItem]);
+    };
+
+    const onSubmitDataSuccess = async (isUpdateWidget) => {
+        await setIsWidgetDetailClicked(false);
+        await setIsLoading(true);
+        await loadWidgetList();
+        await setIsLoading(false);
+        if (isCreateNewWidgetCallback) await isCreateNewWidgetCallback();
+        setToastContent({
+            color: TOAST_STATUS.success,
+            message: `${isUpdateWidget ? "Update" : "Create"} widget successful`,
+        });
+    };
+
+    const onConfirmDeleteButton = async () => {
+        const res = await WidgetActions.deleteWidget(widgetRemoveSelected.id);
+        const { error } = res;
+        let toastContent = {};
+        if (error) {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: res.message,
+            };
+            return;
+        }
+        toastContent = {
+            color: TOAST_STATUS.success,
+            message: "Delete widget successful",
+        };
+
+        setWidgetRemoveSelected();
+        const newWidgetList = [...widgets].filter((item) => item.id !== widgetRemoveSelected.id);
+        setWidgets(newWidgetList);
+
+        setToastContent(toastContent);
+    };
+
     const headerChildren = (
         <Link href="/setting?tab=widgets" className="text-decoration-none">
             <Icon dataFeather="settings" className="feather-sm stroke-width-3 me-2" />
@@ -12,19 +108,36 @@ export const WidgetListModal = ({ isShow, onHidden, ...props }) => {
         </Link>
     );
     return (
-        <Modal
-            className="widget-list-modal"
-            id="widget-list-modal"
-            size={Size.extraLarge}
-            title="Add Widget"
-            showCloseButton={false}
-            isPositionCenter={true}
-            show={isShow}
-            onHidden={onHidden}
-            headerChildren={headerChildren}
-        >
-            {isShow && <WidgetDetailList {...props} />}
-        </Modal>
+        <>
+            <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
+            <WidgetDetailListModal
+                headerChildren={headerChildren}
+                widgetListSelected={widgetListSelected}
+                isLoading={isLoading}
+                isShow={isShow}
+                onHidden={onHidden}
+                widgets={widgets}
+                setWidgetListSelected={setWidgetListSelected}
+                setIsWidgetDetailClicked={setIsWidgetDetailClicked}
+                setWidgetRemoveSelected={setWidgetRemoveSelected}
+                onSelectWidgetForDashboard={onSelectWidgetForDashboard}
+            />
+            <WidgetDetailModal
+                tables={tables}
+                queries={queries}
+                isShow={isWidgetDetailClicked}
+                widget={WIDGET_DEFAULT}
+                onSubmitDataSuccess={onSubmitDataSuccess}
+                onHidden={() => {
+                    setIsWidgetDetailClicked(false);
+                }}
+            />
+            <AlertDeleteWidget
+                widget={widgetRemoveSelected}
+                onHidden={() => setWidgetRemoveSelected()}
+                onConfirmDeleteButton={() => onConfirmDeleteButton()}
+            />
+        </>
     );
 };
 
@@ -67,172 +180,85 @@ const AlertDeleteWidget = ({ widget, onHidden, onConfirmDeleteButton }) => {
     );
 };
 
-const WidgetDetailList = ({
-    widgetList: passedWidgetList,
-    onSelectWidgetForDashboard,
-    isSpinnerFullHeight,
-    isCreateNewWidgetCallback,
+const WidgetDetailListModal = ({
+    headerChildren,
+    onHidden,
+    isShow,
     className,
+    isLoading,
+    widgets,
+    widgetListSelected,
+    setWidgetListSelected,
+    setIsWidgetDetailClicked,
+    setWidgetRemoveSelected,
+    onSelectWidgetForDashboard,
 }) => {
-    const [widgets, setWidgets] = useState(passedWidgetList);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
-    const [tables, setTables] = useState([]);
-    const [queries, setQueries] = useState([]);
-    const [toastContent, setToastContent] = useState();
-    const [widgetRemoveSelected, setWidgetRemoveSelected] = useState();
-    const [widgetListSelected, setWidgetListSelected] = useState([]);
-
-    useEffect(() => {
-        loadWidgetList();
-    }, [passedWidgetList]);
-
-    const loadWidgetList = async () => {
-        const widgetListItem = passedWidgetList.map((item) => {
-            const widget = { ...item };
-            if (item.hasOwnProperty("order_desc")) {
-                widget.order = item.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
-            }
-            return widget;
-        });
-
-        setWidgets([{ ...WIDGET_DEFAULT }, ...widgetListItem]);
-    };
-
-    const loadData = async () => {
-        const [tableRes, queriesRes] = await Promise.all([
-            DatabaseActions.getAllTable(),
-            WidgetActions.getQueries(),
-        ]);
-
-        let tables =
-            tableRes && tableRes.data && tableRes.data.length > 0
-                ? tableRes.data.map((item) => ({
-                      value: item,
-                      label: item,
-                  }))
-                : [];
-
-        let queries =
-            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
-
-        setTables(tables);
-        setQueries(queries);
-        setIsLoading(false);
-    };
-
-    const onSubmitDataSuccess = async (isUpdateWidget) => {
-        await setIsWidgetDetailClicked(false);
-        await setIsLoading(true);
-        await loadWidgetList();
-        await setIsLoading(false);
-        if (isCreateNewWidgetCallback) await isCreateNewWidgetCallback();
-        setToastContent({
-            color: TOAST_STATUS.success,
-            message: `${isUpdateWidget ? "Update" : "Create"} widget successful`,
-        });
-    };
-
-    const onConfirmDeleteButton = async () => {
-        const res = await WidgetActions.deleteWidget(widgetRemoveSelected.id);
-        const { error } = res;
-        let toastContent = {};
-        if (error) {
-            toastContent = {
-                color: TOAST_STATUS.failed,
-                message: res.message,
-            };
-            return;
+    const onClickWidgetExist = (item) => {
+        const isSelected = widgetListSelected.find((el) => el.id === item.id);
+        if (!isSelected) {
+            setWidgetListSelected([...widgetListSelected, item]);
+        } else {
+            const newWidgetSelectedList = widgetListSelected.filter((el) => el.id !== item.id);
+            setWidgetListSelected(newWidgetSelectedList);
         }
-        toastContent = {
-            color: TOAST_STATUS.success,
-            message: "Delete widget successful",
-        };
-
-        setWidgetRemoveSelected();
-        const newWidgetList = [...widgets].filter((item) => item.id !== widgetRemoveSelected.id);
-        setWidgets(newWidgetList);
-
-        setToastContent(toastContent);
     };
-
-    useEffect(() => {
-        setIsLoading(true);
-        loadData();
-    }, []);
 
     return (
-        <div className={`widget-list ${className || ""}`}>
-            <Toast toastContent={toastContent} onToastClosed={() => setToastContent()} />
-            {!isLoading ? (
-                <>
-                    <div className="d-flex flex-wrap">
-                        {widgets &&
-                            widgets.length > 0 &&
-                            widgets.map((item, index) => (
-                                <Widget
-                                    widgetListSelected={widgetListSelected}
-                                    key={index}
-                                    widgetItem={item}
-                                    onWidgetClick={() => {
-                                        if (item?.id) {
-                                            const isSelected = widgetListSelected.find(
-                                                (el) => el.id === item.id
-                                            );
-                                            if (!isSelected) {
-                                                setWidgetListSelected([
-                                                    ...widgetListSelected,
-                                                    item,
-                                                ]);
+        <Modal
+            className="widget-list-modal"
+            id="widget-list-modal"
+            size={Size.extraLarge}
+            title="Add Widget"
+            showCloseButton={false}
+            isPositionCenter={true}
+            show={isShow}
+            onHidden={onHidden}
+            headerChildren={headerChildren}
+        >
+            <div className={`widget-list ${className || ""}`}>
+                {!isLoading ? (
+                    <>
+                        <div className="d-flex flex-wrap">
+                            {widgets &&
+                                widgets.length > 0 &&
+                                widgets.map((item, index) => (
+                                    <Widget
+                                        widgetListSelected={widgetListSelected}
+                                        key={index}
+                                        widgetItem={item}
+                                        onWidgetClick={() => {
+                                            if (item?.id) {
+                                                onClickWidgetExist(item);
                                             } else {
-                                                const newWidgetSelectedList = widgetListSelected.filter(
-                                                    (el) => el.id !== item.id
-                                                );
-                                                setWidgetListSelected(newWidgetSelectedList);
+                                                setIsWidgetDetailClicked(true);
                                             }
-                                        } else {
-                                            setIsWidgetDetailClicked(true);
-                                        }
-                                    }}
-                                    onRemoveWidgetClick={() => {
-                                        setWidgetRemoveSelected(item);
-                                    }}
-                                />
-                            ))}
-                    </div>
-                    {widgetListSelected.length > 0 && (
-                        <div>
-                            <Button
-                                className="btn-add-widget ms-auto d-block mt-3"
-                                onClick={() => onSelectWidgetForDashboard(widgetListSelected)}
-                            >
-                                <Icon
-                                    dataFeather="plus"
-                                    className="stroke-width-4 feather-sm"
-                                ></Icon>
-                                <span className="align-middle ms-1 fw-bold">{`Add ${widgetListSelected.length} widget`}</span>
-                            </Button>
+                                        }}
+                                        onRemoveWidgetClick={() => {
+                                            setWidgetRemoveSelected(item);
+                                        }}
+                                    />
+                                ))}
                         </div>
-                    )}
-                    <WidgetDetailModal
-                        tables={tables}
-                        queries={queries}
-                        isShow={isWidgetDetailClicked}
-                        onSubmitDataSuccess={onSubmitDataSuccess}
-                        onHidden={() => {
-                            setIsWidgetDetailClicked(false);
-                        }}
-                    />
-                    <AlertDeleteWidget
-                        widget={widgetRemoveSelected}
-                        onHidden={() => setWidgetRemoveSelected()}
-                        onConfirmDeleteButton={() => onConfirmDeleteButton()}
-                    />
-                </>
-            ) : (
-                <Spinner isFullHeight={isSpinnerFullHeight} />
-            )}
-        </div>
+                        {widgetListSelected.length > 0 && (
+                            <div>
+                                <Button
+                                    className="btn-add-widget ms-auto d-block mt-3"
+                                    onClick={() => onSelectWidgetForDashboard(widgetListSelected)}
+                                >
+                                    <Icon
+                                        dataFeather="plus"
+                                        className="stroke-width-4 feather-sm"
+                                    ></Icon>
+                                    <span className="align-middle ms-1 fw-bold">{`Add ${widgetListSelected.length} widget`}</span>
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <Spinner isFullHeight={false} />
+                )}
+            </div>
+        </Modal>
     );
 };
 
