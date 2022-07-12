@@ -76,3 +76,14 @@ body {
 .dropdown-toggle-none-icon::after {
   display: none;
 }
+
+.sidebar-wrapper {
+  #sidebar {
+    .sidebar-logo {
+      width: 80%;
+      object-fit: fill;
+      margin-left: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+}
