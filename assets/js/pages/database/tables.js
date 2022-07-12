@@ -24,10 +24,9 @@ const CreateDatabaseTableModal = ({
     const [dataTable, setDataTable] = useState({ ...DEFAULT_DATATABLE_VALUE });
     const [dataTableColumns, setDataTableColumns] = useState([...DEFAULT_COLUMNS_DATA]);
     const [isLoading, setIsLoading] = useState(false);
-    const [errorRes, setErrorRes] = useState("");
+    const [fieldErrors, setFieldErrors] = useState();
 
     useEffect(() => {
-        setErrorRes("");
         setDataTable({ ...DEFAULT_DATATABLE_VALUE });
         setDataTableColumns([...DEFAULT_COLUMNS_DATA]);
         setErrors([]);
@@ -47,7 +46,20 @@ const CreateDatabaseTableModal = ({
         } else {
             setDataTable({ ...dataTable, [name]: value });
         }
-        setErrorRes("");
+
+        const isExistError = errors.find((item) => item.position === position);
+
+        if (isExistError) {
+            const newErrors = [...errors].filter((item) => item.position !== position);
+            setErrors([...newErrors]);
+        }
+
+        if (fieldErrors?.name) {
+            setFieldErrors({
+                ...fieldErrors,
+                name: "",
+            });
+        }
     };
 
     const addNewColumn = () => {
@@ -91,13 +103,21 @@ const CreateDatabaseTableModal = ({
             onHidden();
             setToastMessage(toastContent);
         } else {
-            setErrorRes(res.message);
+            setFieldErrors({ ...res.fields });
+            if (res.fields?.columns) {
+                setErrors([
+                    {
+                        position: 0,
+                        errorMessage: res.fields?.columns,
+                    },
+                ]);
+            }
         }
         setIsLoading(false);
     };
 
     const { tableName, ttl } = dataTable;
-
+    console.log(errors);
     return (
         <Modal
             size={Size.large}
@@ -109,11 +129,6 @@ const CreateDatabaseTableModal = ({
             onHidden={onHidden}
         >
             <div className="mx-3">
-                {errorRes && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorRes}
-                    </div>
-                )}
                 <div className="row mb-3">
                     <FormField
                         className="col-12 col-md-6"
@@ -124,6 +139,7 @@ const CreateDatabaseTableModal = ({
                         disabled={isLoading}
                         placeholder="table name"
                         onChange={(e) => onFieldChange(e.target)}
+                        errorMessage={fieldErrors?.name}
                     />
                 </div>
                 <div className="row">
@@ -148,7 +164,7 @@ const CreateDatabaseTableModal = ({
                 />
                 <Button
                     className="w-100"
-                    disabled={errors.length > 0 || errorRes}
+                    disabled={errors.length > 0}
                     isLoading={isLoading}
                     onClick={() => createNewDataTable()}
                 >
