@@ -12,43 +12,52 @@ export class Sidebar extends Component {
         }
     }
     render() {
-        const {role} = this.props;
-        const featureName = window.location.pathname.split('/');
+        const { role } = this.props;
+        const featureName = window.location.pathname.split("/");
         let navList;
-        if (role === 'guest') {
+        if (role === "guest") {
             navList = [];
-        } else if (role === 'user') {
+        } else if (role === "user") {
             navList = [
-                {href: 'log-view', iconName: 'search', label: 'Explore'},
-                {href: 'profile', iconName: 'user', label: 'Profile'}
+                { href: "log-view", iconName: "search", label: "Explore" },
+                { href: "profile", iconName: "user", label: "Profile" },
             ];
         } else {
             navList = [
-                {href: 'dashboard', iconName: 'home', label: 'Dashboards'},
-                {href: 'log-view', iconName: 'search', label: 'Explore'},
-                {href: 'user', iconName: 'users', label: 'Users'},
-                {href: 'alert', iconName: 'alert-triangle', label: 'Alerts'},
-                {href: 'export', iconName: 'download', label: 'Exports'},
-                {href: 'setting?tabs=profile', iconName: 'settings', label: 'Settings'},
+                { href: "dashboard", iconName: "home", label: "Dashboards" },
+                { href: "log-view", iconName: "search", label: "Explore" },
+                { href: "user", iconName: "users", label: "Users" },
+                { href: "alert", iconName: "alert-triangle", label: "Alerts" },
+                { href: "export", iconName: "download", label: "Exports" },
+                { href: "setting?tabs=profile", iconName: "settings", label: "Settings" },
             ];
         }
 
         return (
             <div className="sidebar-wrapper">
-                <div id="sidebar" className="d-flex flex-column flex-shrink-0 shadow-sm">
-                    <Link href="/" className="text-center mb-4 mt-4">
-                        <Image src={Logo} className="sidebar-logo" alt="ScaleCommerce · E-Commerce" />
+                <div id="sidebar" className="d-flex flex-column shadow-sm">
+                    <Link href="/" className="mt-4">
+                        <Image
+                            src={Logo}
+                            className="sidebar-logo"
+                            alt="ScaleCommerce · E-Commerce"
+                        />
                     </Link>
-                    <ul className="nav mb-auto overflow-auto d-block">
+                    <ul className="nav mb-auto overflow-auto d-block mt-2">
                         {navList.map((item, index) => {
                             const { href, iconName, label } = item;
                             return (
                                 <li key={index}>
-                                    <Link href={`/${href}`} className={`nav-item ${href.includes(featureName[1]) ? 'active' : ''}`}>
+                                    <Link
+                                        href={`/${href}`}
+                                        className={`nav-item ${
+                                            href.includes(featureName[1]) ? "active" : ""
+                                        }`}
+                                    >
                                         <Icon dataFeather={iconName}></Icon> {label}
                                     </Link>
                                 </li>
-                            )
+                            );
                         })}
                     </ul>
                     <div className="sidebar-footer">
@@ -62,8 +71,8 @@ export class Sidebar extends Component {
 Sidebar.propTypes = {
     userimage: PropTypes.string,
     username: PropTypes.string,
-    role: PropTypes.string
+    role: PropTypes.string,
 };
 
-const root = document.querySelector('#sidebar_component');
-ReactDOM.render(<Sidebar {...(root.dataset)}/>, root);
+const root = document.querySelector("#sidebar_component");
+ReactDOM.render(<Sidebar {...root.dataset} />, root);
