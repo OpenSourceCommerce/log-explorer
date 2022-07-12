@@ -39,6 +39,7 @@ export class AlertFormModal extends Component {
             data: DEFAULT_ALERT,
             isLoading: false,
             errors: [],
+            fieldErrorMessages: {},
         };
     }
 
@@ -82,11 +83,16 @@ export class AlertFormModal extends Component {
 
     onChangeField = ({ name, value }) => {
         this.setState((preState) => {
-            const { errors, data } = preState;
+            const { errors, data, fieldErrorMessages } = preState;
             let newErrors = [...errors];
+            let newFieldErrorMessages = { ...fieldErrorMessages };
             if (MANDATORY_FIELDS.includes(name)) {
                 newErrors = newErrors.filter((item) => item !== name);
                 if (!value) newErrors.push(name);
+            }
+
+            if (newFieldErrorMessages[name]) {
+                newFieldErrorMessages[name] = "";
             }
             return {
                 data: {
@@ -94,6 +100,7 @@ export class AlertFormModal extends Component {
                     [name]: value,
                 },
                 errors: newErrors,
+                fieldErrorMessages: { ...newFieldErrorMessages },
             };
         });
     };
@@ -102,7 +109,7 @@ export class AlertFormModal extends Component {
         this.onChangeField({ name: "time_range", value: dateRange });
     };
 
-    onSubmit = () => {
+    onSubmit = async () => {
         this.setState({
             isLoading: true,
         });
@@ -112,7 +119,7 @@ export class AlertFormModal extends Component {
 
         const { onSubmitAlertData } = this.props;
 
-        const errors = MANDATORY_FIELDS.filter((item) => {
+        let errors = MANDATORY_FIELDS.filter((item) => {
             if (!payloadData[item]) return true;
             return false;
         });
@@ -127,7 +134,7 @@ export class AlertFormModal extends Component {
 
         const { time_range } = data;
 
-        this.setState({ isLoading: true, errors });
+        this.setState({ isLoading: true });
         const label = time_range?.label;
         let from = time_range?.from;
         let to = time_range?.to;
@@ -144,37 +151,34 @@ export class AlertFormModal extends Component {
 
         let toastContent = {};
 
-        AlertActions.createOrUpdate(payloadData?.id, payloadData)
-            .then((response) => {
-                if (response.error === 1) {
-                    payloadData["time_range"] = time_range;
-                    this.setState({ errors: response.fields, data });
-                } else {
-                    toastContent = {
-                        color: TOAST_STATUS.success,
-                        message: `${data.id ? "Update" : "Create"} alert successful`,
-                    };
-                    payloadData.id = response.id;
-                }
-            })
-            .catch((e) => {
-                toastContent = {
-                    color: TOAST_STATUS.failed,
-                    message: `${data.id ? "Update" : "Create"} alert failed.`,
-                };
-            })
-            .finally(() => {
-                this.setState({
-                    data: payloadData,
-                    isLoading: false,
-                });
-                onSubmitAlertData(toastContent);
+        let fieldErrorMessages = {};
+
+        const res = await AlertActions.createOrUpdate(payloadData?.id, payloadData);
+        if (res.error === 1) {
+            payloadData["time_range"] = time_range;
+            errors = Object.keys(res.fields);
+            fieldErrorMessages = { ...res.fields };
+        } else {
+            toastContent = {
+                color: TOAST_STATUS.success,
+                message: `${data.id ? "Update" : "Create"} alert successful`,
+            };
+            payloadData.id = res.id;
+        }
+        if (errors.length > 0 || Object.keys(fieldErrorMessages).length > 0) {
+            this.setState({ errors, fieldErrorMessages, isLoading: false });
+        } else {
+            this.setState({
+                data: payloadData,
+                isLoading: false,
             });
+            onSubmitAlertData(toastContent);
+        }
     };
 
     render() {
         const { isShow, onHidden, tableList } = this.props;
-        const { data, errors, isLoading } = this.state;
+        const { data, errors, isLoading, fieldErrorMessages } = this.state;
 
         const {
             id,
@@ -252,6 +256,7 @@ export class AlertFormModal extends Component {
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("threshold")}
                         errors={errors}
+                        errorMessage={fieldErrorMessages["threshold"]}
                     />
                     <FormField
                         className="mb-3"
@@ -263,10 +268,11 @@ export class AlertFormModal extends Component {
                         onChange={(e) => this.onChangeField(e.target)}
                         isMandatory={MANDATORY_FIELDS.includes("interval_time")}
                         errors={errors}
+                        errorMessage={fieldErrorMessages["interval_time"]}
                     />
                     <div className={`form-group mb-3` + (errors?.time_range ? "is-invalid" : "")}>
-                        <label>Time Range</label>
                         <FilterDate
+                            label="Time Range"
                             ref={this.filterDateRef}
                             dateRange={time_range}
                             onDateRangeChanged={this.onChangeFilter}

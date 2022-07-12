@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { ChartJsComponent } from "./_chart-component";
-import { generateRandomColor, SAMPLE_DATA, WIDGET_TYPE } from "../../utils";
+import { generateRandomColor, WIDGET_TYPE } from "../../utils";
 import "../../../styles/component/_doughnut-pie-chart.scss";
 
 export const Chart = ({
@@ -9,7 +9,6 @@ export const Chart = ({
     id = "new",
     onLabelClicked,
     className,
-    size,
 }) => {
     const mapDataForChart = () => {
         let chartData = {
@@ -32,7 +31,6 @@ export const Chart = ({
                 const [borderColor, backgroundColor] = generateRandomColor(true);
                 chartData.datasets = [
                     {
-                        label: "Dataset 2",
                         data: data.map((item) => item.value),
                         borderColor,
                         backgroundColor,
@@ -54,22 +52,30 @@ export const Chart = ({
                 labels: {
                     usePointStyle: true,
                 },
-                onClick(e, legendItem, legend) {
+                onClick(_, legendItem) {
                     if (onLabelClicked) onLabelClicked(legendItem.text);
                     // legend.chart.toggleDataVisibility(legendItem.index);
                     // legend.chart.update();
                 },
             },
         },
+        tooltips: {
+            enabled: false,
+        },
+        // onClick: (e, activeEls) => {
+        //     let datasetIndex = activeEls[0].datasetIndex;
+        //     let dataIndex = activeEls[0].index;
+        //     let datasetLabel = e.chart.data.datasets[datasetIndex].label;
+        //     let value = e.chart.data.datasets[datasetIndex].data[dataIndex];
+        //     let label = e.chart.data.labels[dataIndex];
+        //     if (onLabelClicked) onLabelClicked(label);
+        // },
     };
 
     return (
-        <div className="card-body pt-0 pb-2">
+        <div className="card-body pt-0 pb-2 overflow-auto">
             {data && data.length > 0 ? (
-                <div
-                    id={`doughnut-pie-chart-${id}`}
-                    className={`doughnut-pie-chart-${id} ${className || ""}`}
-                >
+                <div id={`chart-${id}`} className={`chart-${id} ${className || ""}`}>
                     {type ? (
                         <div className="chart-container">
                             <ChartJsComponent
