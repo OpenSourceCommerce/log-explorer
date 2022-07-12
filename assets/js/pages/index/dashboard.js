@@ -86,11 +86,12 @@ const DashboardPage = ({}) => {
                 widgets,
             };
 
-            await setDashboardList([...dashboardList]);
-            await setDashboardDetail({ ...dashboardDetail });
-            await loadWidgetList(widgets);
+            loadWidgetList(widgets);
+
+            setDashboardList([...dashboardList]);
+            setDashboardDetail({ ...dashboardDetail });
         }
-        await setIsLoading(false);
+        setIsLoading(false);
     };
 
     const onConfirmDeleteDashboard = async () => {
@@ -128,7 +129,7 @@ const DashboardPage = ({}) => {
             widgetListRes && widgetListRes.data && widgetListRes.data.length > 0
                 ? widgetListRes.data
                 : [];
-``
+
         const widgetListOrigin = widgetList;
 
         if (widgetExistInDashboard?.length > 0)
@@ -136,8 +137,8 @@ const DashboardPage = ({}) => {
                 widgetExistInDashboard.every((el) => el.widget_id !== item.id)
             );
 
-        await setWidgetListOrigin([...widgetListOrigin]);
-        await setWidgetList([...widgetList]);
+        setWidgetListOrigin([...widgetListOrigin]);
+       	setWidgetList([...widgetList]);
     };
 
     const onAddNewWidget = async (widgetListSelected) => {
@@ -191,6 +192,8 @@ const DashboardPage = ({}) => {
 
     const onAddWidgetClick = () => setVisibleAddWidgetModal(true);
 
+    const onWidgetUpdateSuccess = () => loadData();
+
     return (
         <>
             {!isLoading ? (
@@ -217,6 +220,7 @@ const DashboardPage = ({}) => {
                             dashboardDetail={dashboardDetail}
                             onAddWidgetClick={() => onAddWidgetClick()}
                             onWidgetListChange={onWidgetListChange}
+                            onWidgetUpdateSuccess={onWidgetUpdateSuccess}
                         />
                     )}
                     <CreateNewDashboardModal

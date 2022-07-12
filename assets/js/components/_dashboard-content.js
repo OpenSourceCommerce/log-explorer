@@ -20,7 +20,8 @@ import {
     Spinner,
     Toast,
 } from ".";
-import { DashboardActions, LogTableActions } from "../actions";
+import { DashboardActions, LogTableActions, WidgetActions } from "../actions";
+import { WidgetDetailModal } from "./widget/_widget-detail";
 const DATE_RANGE_DEFAULT = {
     from: DATE_RANGE[0].from,
     to: DATE_RANGE[0].to,
@@ -73,7 +74,72 @@ const EmptyWidgetContent = ({ onAddWidgetClick }) => {
     );
 };
 
-export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetListChange }) => {
+const ModalEditWidget = ({
+    widgetIdSelectedForEdit: widgetId = "",
+    onSubmitWidgetSuccess,
+    ...props
+}) => {
+    const DEFAULT_WIDGET = {
+        id: widgetId,
+        title: "",
+        type: 4,
+        table: "",
+        column: "",
+        query: "",
+        order_desc: true,
+        size: 10,
+    };
+
+    const ORDER_FIELD_VALUE = {
+        asc: "asc",
+        desc: "desc",
+    };
+
+    const [widgetDetail, setWidgetDetail] = useState({ ...DEFAULT_WIDGET });
+    const [queries, setQueries] = useState([]);
+
+    useEffect(() => {
+        if (widgetId) {
+            loadWidgetDetail();
+        }
+    }, [widgetId]);
+
+    const loadWidgetDetail = async () => {
+        const [loadWidgetRes, queriesRes] = await Promise.all([
+            WidgetActions.loadWidget(widgetId),
+            WidgetActions.getQueries(),
+        ]);
+        if (loadWidgetRes && !loadWidgetRes.error) {
+            const widget = { ...loadWidgetRes.data };
+            if (widget.hasOwnProperty("order_desc")) {
+                widget.order = widget.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
+            }
+            setWidgetDetail({ ...widget });
+        }
+
+        const queries =
+            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
+
+        setQueries(queries);
+    };
+
+    return (
+        <WidgetDetailModal
+            onSubmitDataSuccess={onSubmitWidgetSuccess}
+            widget={widgetDetail}
+            isShow={!!widgetId}
+            queries={queries}
+            {...props}
+        />
+    );
+};
+
+export const DashboardContent = ({
+    dashboardDetail,
+    onAddWidgetClick,
+    onWidgetListChange,
+    onWidgetUpdateSuccess,
+}) => {
     const [widgets, setWidgets] = useState([]);
     const [toastContent, setToastContent] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -81,6 +147,7 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
     const [dateRange, setDateRange] = useState();
     const [tables, setTableList] = useState([]);
     const [isLoadingWidgetData, setIsLoadingWidgetData] = useState(true);
+    const [widgetIdSelectedForEdit, setWidgetIdSelectedForEdit] = useState();
     const filterDateRef = useRef(false);
 
     useEffect(() => {
@@ -594,19 +661,29 @@ export const DashboardContent = ({ dashboardDetail, onAddWidgetClick, onWidgetLi
                     {!isLoadingWidgetData ? (
                         <>
                             {widgets && widgets.length > 0 ? (
-                                <ResponsiveGridLayout
-                                    layouts={widgets}
-                                    isResizable={!isUser()}
-                                    isDraggable={!isUser()}
-                                    removeWidget={(id) => removeWidget(id)}
-                                    stickWidget={stickWidget}
-                                    editWidget={(id) => {
-                                        window.location.href =
-                                            "/setting?tab=widgets&widgetId=" + id;
-                                    }}
-                                    onLayoutChange={onLayoutChange}
-                                    onWidgetClicked={onWidgetClicked}
-                                />
+                                <>
+                                    <ResponsiveGridLayout
+                                        layouts={widgets}
+                                        isResizable={!isUser()}
+                                        isDraggable={!isUser()}
+                                        removeWidget={(id) => removeWidget(id)}
+                                        stickWidget={stickWidget}
+                                        editWidget={(id) => {
+                                            setWidgetIdSelectedForEdit(id);
+                                        }}
+                                        onLayoutChange={onLayoutChange}
+                                        onWidgetClicked={onWidgetClicked}
+                                    />
+                                    <ModalEditWidget
+                                        widgetIdSelectedForEdit={widgetIdSelectedForEdit}
+                                        tables={tables}
+                                        onHidden={() => setWidgetIdSelectedForEdit()}
+                                        onSubmitWidgetSuccess={() => {
+                                            setWidgetIdSelectedForEdit();
+                                            onWidgetUpdateSuccess();
+                                        }}
+                                    />
+                                </>
                             ) : (
                                 <EmptyWidgetContent onAddWidgetClick={onAddWidgetClick} />
                             )}
