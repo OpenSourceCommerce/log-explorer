@@ -12,7 +12,7 @@ export class Sidebar extends Component {
         }
     }
     render() {
-        const { role } = this.props;
+        const { role, version } = this.props;
         const featureName = window.location.pathname.split("/");
         let navList;
         if (role === "guest") {
@@ -60,8 +60,9 @@ export class Sidebar extends Component {
                             );
                         })}
                     </ul>
-                    <div className="sidebar-footer">
-                        <div className="text-center"> Data Protection / Datenschutz</div>
+                    <div className="sidebar-footer mb-3 fw-medium mx-4">
+                        <div>{`Vers. ${version}`}</div>
+                        <div>Data Protection / Datenschutz</div>
                     </div>
                 </div>
             </div>
