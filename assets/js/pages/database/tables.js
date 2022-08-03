@@ -117,7 +117,6 @@ const CreateDatabaseTableModal = ({
     };
 
     const { tableName, ttl } = dataTable;
-    console.log(errors);
     return (
         <Modal
             size={Size.large}

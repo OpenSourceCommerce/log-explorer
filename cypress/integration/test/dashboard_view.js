@@ -20,14 +20,12 @@ describe('Dashboard view page', () => {
 
     context('Filter', () => {
         it('Show data', () => {
-            dashboardPage.seeDashboard('Status OK');
+            dashboardPage.seeDashboard();
         })
         it('Filter', () => {
             dashboardPage.dateRange('This Month')
-            dashboardPage.search();
 
             dashboardPage.dateRange('Last Month')
-            dashboardPage.search();
         })
     });
 })

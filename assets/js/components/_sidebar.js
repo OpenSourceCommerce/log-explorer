@@ -20,7 +20,7 @@ export class Sidebar extends Component {
         } else if (role === "user") {
             navList = [
                 { href: "log-view", iconName: "search", label: "Explore" },
-                { href: "profile", iconName: "user", label: "Profile" },
+                { href: "setting?tabs=profile", iconName: "settings", label: "Settings" },
             ];
         } else {
             navList = [

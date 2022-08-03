@@ -26,8 +26,8 @@ class ProfilePage {
     }
     open() {
         cy.intercept('GET', '/api/profile').as('myProfile');
-        cy.visit('/profile')
-        cy.url().should('include', '/profile');
+        cy.get("a.nav-item").contains("Settings").click({ force: true });
+        cy.url().should('include', 'profile');
         cy.waitFor('@myProfile')
         cy.get('[data-cy=btnSave]')
             .should('be.disabled');
