@@ -43,11 +43,12 @@ class DashboardExportImportService implements DashboardExportImportServiceInterf
      * @param DashboardServiceInterface $dashboardService
      */
     public function __construct(
-        EntityManagerInterface $em,
-        ParameterBagInterface $parameterBag,
-        WidgetServiceInterface $widgetService,
+        EntityManagerInterface    $em,
+        ParameterBagInterface     $parameterBag,
+        WidgetServiceInterface    $widgetService,
         DashboardServiceInterface $dashboardService
-    ) {
+    )
+    {
         $this->em = $em;
         $this->parameterBag = $parameterBag;
         $this->widgetService = $widgetService;
@@ -120,7 +121,9 @@ class DashboardExportImportService implements DashboardExportImportServiceInterf
         foreach ($data['widgets'] as $widget) {
             $entity = new Widget();
             $entity->setType($widget['type']);
-            $entity->setColumn($widget['column']);
+            if (!empty($widget['column'])) {
+                $entity->setColumn($widget['column']);
+            }
             $entity->setIsOrderDesc($widget['order_desc']);
             $entity->setQuery($widget['query']);
             $entity->setSize($widget['size']);
