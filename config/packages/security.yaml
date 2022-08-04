@@ -53,6 +53,10 @@ security:
         - { path: ^/api/(table|widget|stream|dashboard|logview), roles: ROLE_USER }
         - { path: ^/database/sync$, roles: ROLE_USER }
         - { path: ^/logout, roles: ROLE_USER }
+        - { path: ^/dashboard/create, roles: ROLE_ADMIN }
+        - { path: ^/dashboard/export, roles: ROLE_ADMIN }
+        - { path: ^/dashboard/import, roles: ROLE_ADMIN }
+        - { path: ^/dashboard/edit, roles: ROLE_ADMIN }
         - { path: ^/dashboard/*, roles: ROLE_USER }
         - { path: ^/logview/*, roles: ROLE_USER }
         - { path: ^/*, roles: ROLE_ADMIN }

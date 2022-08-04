@@ -14,6 +14,7 @@ export class Sidebar extends Component {
         } else if (role === 'user') {
             navList = [
                 {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
+                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
                 {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
             ];
         } else {
