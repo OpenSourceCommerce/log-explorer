@@ -34,11 +34,13 @@ class DashboardList extends Component {
     }
 
     render() {
+        const {role} = this.props
+        const isAdmin = (String(role).toLowerCase() === 'admin')
         const {dashboards, dashboardSelected} = this.state;
 
         return (
             <div className="database">
-                <DeleteModal
+                {isAdmin && <DeleteModal
                     data={dashboards}
                     indexSelected={dashboardSelected}
                     objectName="dashboard"
@@ -69,13 +71,16 @@ class DashboardList extends Component {
                             this.setState({
                                 dashboardSelected: null,
                             })
-                        };
+                        }
+                        ;
                     }}
-                />
+                />}
                 <div className="card">
-                    <CardHeader title="Dashboard list" showCollapseButton={false} showRemoveButton={false}>
-                        <ExportImport/>
-                        <Link href={'/dashboard/create'} className={'btn btn-success'}>Create dashboard</Link>
+                    <CardHeader title="Dashboard list" showCollapseButton={false}
+                                showRemoveButton={false}>
+                        {isAdmin && <ExportImport/>}
+                        {isAdmin && <Link href={'/dashboard/create'} className={'btn btn-success'}>Create
+                            dashboard</Link>}
                     </CardHeader>
                     <div className="card-body">
                         <div className="row">
@@ -83,7 +88,7 @@ class DashboardList extends Component {
                                 <Table>
                                     <thead>
                                     <tr>
-                                        <th>&nbsp;</th>
+                                        {isAdmin && <th>&nbsp;</th>}
                                         <th>Title</th>
                                         <th>Last update</th>
                                         <th>&nbsp;</th>
@@ -93,13 +98,20 @@ class DashboardList extends Component {
                                     {dashboards.map((item, key) => {
                                         const url = '/dashboard/edit/' + item.id;
                                         return <tr key={key}>
-                                            <td><input type="checkbox" className="export-item" data-id={item.id}/></td>
+                                            {isAdmin && <td><input type="checkbox" className="export-item"
+                                                        data-id={item.id}/></td>}
                                             <td>{item.title}</td>
                                             <td>{item.last_updated}</td>
                                             <td>
-                                                <Link href={`/dashboard/${item.uuid}`} className="btn btn-primary mr-2" ><Icon name={'eye'}/></Link>
-                                                <Link href={url} className={'btn btn-success mr-2'}><Icon name={'edit'}/></Link>
-                                                <Button onClick={e => this.deleteDashboard(key)} color={'danger'}><Icon name={'trash'}/></Button>
+                                                <Link href={`/dashboard/${item.uuid}`}
+                                                      className="btn btn-primary mr-2"><Icon
+                                                    name={'eye'}/></Link>
+                                                {isAdmin && <Link href={url}
+                                                       className={'btn btn-success mr-2'}><Icon
+                                                    name={'edit'}/></Link>}
+                                                {isAdmin && <Button onClick={e => this.deleteDashboard(key)}
+                                                         color={'danger'}><Icon
+                                                    name={'trash'}/></Button>}
                                             </td>
                                         </tr>;
                                     })}
@@ -114,4 +126,5 @@ class DashboardList extends Component {
     }
 }
 
-ReactDOM.render(<DashboardList/>, document.querySelector('#root'));
+const root = document.querySelector('#root');
+ReactDOM.render(<DashboardList {...(root.dataset)}/>, document.querySelector('#root'));
