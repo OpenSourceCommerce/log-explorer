@@ -47,7 +47,9 @@ export class Modal extends Component {
             saveButtonTitle = 'Save Changes',
             saveButtonColor = Colors.blue,
             show = false,
-            isPositionCenter = false
+            isPositionCenter = false,
+            headerChildren,
+            disableSaveButton = false,
         } = this.props;
 
         if(this.modal) {
@@ -64,7 +66,10 @@ export class Modal extends Component {
                 <div className={`modal-dialog modal-${size} ${isPositionCenter ? 'modal-dialog-centered': ''}`}>
                     <div className="modal-content">
                         <div className="modal-header">
-                            <p className="modal-title">{title}</p>
+                            <div className="title d-flex justify-content-between w-100">
+                                <p className="modal-title">{title}</p>
+                                {headerChildren}
+                            </div>
                             <button type="button" className="btn btn-close" data-bs-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
                             </button>
@@ -81,7 +86,7 @@ export class Modal extends Component {
                                 role="link"
                             >{closeButtonTitle}
                             </button>}
-                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
+                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction} disabled={disableSaveButton}
                                 color={saveButtonColor}>{saveButtonTitle}</Button>}
                         </div>
                     </div>

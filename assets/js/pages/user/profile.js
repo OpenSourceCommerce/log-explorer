@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { ContentHeader, Toast, UserProfile, ChangePasswordForm } from "../../components";
+import {
+    ContentHeader,
+    Toast,
+    UserProfile,
+    ChangePasswordForm,
+    WidgetList,
+} from "../../components";
 import "../../../styles/pages/_edit-profile.scss";
 import { DatabaseTables } from "../database/tables";
-import { WidgetList } from "../widget/widget-list";
 
 const TAB_LIST = [
     {
@@ -27,14 +32,12 @@ const NavComponent = ({ currentTab }) => {
                 <button
                     className={`nav-link ${currentTab === id ? "active" : ""}`}
                     id={`pills-${id}-tab`}
-                    data-bs-toggle="pill"
-                    data-bs-target={`#pills-${id}`}
                     type="button"
                     role="tab"
                     aria-controls={`pills-${id}`}
                     aria-selected="true"
                     onClick={() => {
-                        location.href = `setting?tab=${id}`;
+                        if (currentTab !== id) location.href = `setting?tab=${id}`;
                     }}
                 >
                     {title}
@@ -54,10 +57,26 @@ const NavComponent = ({ currentTab }) => {
 const ProfileForm = ({ currentTab: passedCurrentTab }) => {
     const [toastContent, setToastContent] = useState();
     const [currentTab, setCurrentTab] = useState();
+    const [widgetIdParam, setWidgetIdParam] = useState();
 
     useEffect(() => {
-        const currentValue = window.location.search;
-        setCurrentTab(currentValue?.split("=")[1] || "profile");
+        const currentUrlQueries = window.location.search;
+        const currentUrlQueriesArray = currentUrlQueries.split("&");
+        if (currentUrlQueriesArray && currentUrlQueriesArray.length > 0) {
+            currentUrlQueriesArray.forEach((item) => {
+                const queryParam = item.split("=");
+                switch (queryParam[0]) {
+                    case "tab": {
+                        setCurrentTab(queryParam[1]);
+                        break;
+                    }
+                    case "widgetId": {
+                        setWidgetIdParam(queryParam[1]);
+                        break;
+                    }
+                }
+            });
+        }
     }, []);
 
     useEffect(() => {
@@ -90,7 +109,9 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                 </div>
                 <div className="tab-content" id="pills-tabContent">
                     <div
-                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${currentTab === 'profile' ? 'show active' : '' }`}
+                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${
+                            currentTab === "profile" ? "show active" : ""
+                        }`}
                         id="pills-profile"
                         role="tabpanel"
                         aria-labelledby="pills-profile-tab"
@@ -114,7 +135,7 @@ const ProfileForm = ({ currentTab: passedCurrentTab }) => {
                         role="tabpanel"
                         aria-labelledby="pills-widgets-tab"
                     >
-                        <WidgetList />
+                        <WidgetList className="mx-3" widgetIdParam={widgetIdParam} />
                     </div>
                 </div>
             </div>

@@ -1,55 +1,53 @@
 class TablePage {
-    addMoreField() {
-        cy.get('button')
-            .contains('Add more column')
-            .click()
-        cy.get('.table_field')
-            .last()
-            .should('have.value', '');
+    constructor(tableName, isCreateDatatable) {
+        this.tableName = tableName;
+        this.elementName = isCreateDatatable ? "#create-new-table" : ".table-detail";
+    }
+    doActionInsideTable(callback) {
+        cy.get(this.elementName).within(() => {
+            if(callback) callback();
+        });
+    }
+    addMoreColumn() {
+        this.doActionInsideTable(() => {
+            cy.get(".btn-link").contains("Add Column").click();
+            cy.get("input[data-cy='name']").last().should("have.value", "");
+        });
     }
     tableLoaded() {
-        cy.get('#root')
-            .find('table')
-            .first()
-            .find('tbody')
-            .should('contain', '_id');
+        cy.get("#root").find("table").first().find("tbody").should("contain", "_id");
     }
     clickUpdate() {
-        cy.get('button').contains('Update').click({force: true});
+        cy.get("button").contains("Update").click({ force: true });
     }
-    fillTableName(name) {
-        cy.get('input[name=table_name]')
-            .clear()
-            .type(name);
+    fillTableName() {
+        cy.get("input[data-cy='tableName']").clear().type(this.tableName).should("have.value", this.tableName);
     }
     fillTableTTL(val) {
-        cy.get('input[name=table_ttl]')
-            .clear()
-            .type(val);
+        cy.get("input[data-cy='ttl']").clear().type(val);
     }
     setColumn(index, name, type) {
-        cy.get('.table_field')
-            .eq(index)
-            .clear()
-            .type(name);
-        cy.get('.table_type')
-            .eq(index)
-            .select(type);
+        this.doActionInsideTable(() => {
+            cy.get('[data-cy="name"]').eq(index).clear().type(name);
+            cy.get('[name="type"]').eq(index).select(type);
+        });
     }
     deleteColumn(index) {
-        cy.get('.table_rm_column')
-            .eq(index)
-            .click();
+        this.doActionInsideTable(() => {
+            cy.get(".btn-outline-danger").eq(index).click();
+        });
     }
     clickCreate() {
-        cy.get('button').contains('Create table').click();
+        cy.get("button").contains("Create Datatable").click();
     }
-    isUpdatePage(table) {
-        cy.url().should('include', '/table/' + table);
-        cy.waitFor('#btn-more-column')
-        cy.get('.table_field')
-            .should('have.length.gte', 1);
-
+    isCreateDatatableSuccess() {
+        cy.wait(1500);
+        cy.get(".project-list").get("li[role='button']").last().should("have.text", this.tableName);
+    }
+    isColumnNotExistAfterRemove(columnName) {
+        this.doActionInsideTable(() => {
+            cy.contains(columnName).should('not.exist')
+        });
     }
 }
 

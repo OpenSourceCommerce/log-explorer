@@ -1,40 +1,191 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Modal, Button, Colors, Size } from ".";
+import { Checkbox, Modal, Button, Colors, Size, Input, Spinner, Icon, Link, Text } from ".";
+import isEqual from "lodash/isEqual";
 import { LogViewActions } from "../actions";
 import GridLayout from "react-grid-layout";
-import { Input } from "./_input";
+import "../../styles/component/_log-view-table-setting-modal.scss";
 
-export const LogViewTableSettingModal = ({ show, onSave, onHidden }) => {
+const HeaderChildren = (
+    <Link href="/setting?tab=databases" className="text-decoration-none me-4">
+        <Icon dataFeather="settings" className="feather-sm stroke-width-3 me-2" />
+        <Text className="fw-bold d-inline-block align-middle">Edit Columns</Text>
+    </Link>
+);
+
+export const LogViewTableSettingModal = ({ columnData, show, onSave, onHidden, selectedTable }) => {
+    const [columnActiveListOrigin, setColumnActiveListOrigin] = useState([]);
+    const [columnAvailableListOrigin, setColumnAvailableListOrigin] = useState([]);
+    const [columnActiveList, setColumnActiveList] = useState([]);
+    const [columnAvailableList, setColumnAvailableList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (columnData) {
+            loadColumns();
+        }
+    }, [columnData]);
+
+    const loadColumns = async () => {
+        const activeList = columnData.filter((item) => !!item.visible);
+        const availableList = columnData.filter((item) => !item.visible);
+        setColumnActiveListOrigin(activeList);
+        setColumnActiveList(activeList);
+        setColumnAvailableList(availableList);
+        setColumnAvailableListOrigin(availableList);
+    };
+
+    const onAddColumnClick = (column) => {
+        const newActiveList = [...columnActiveList, { ...column }];
+        setColumnActiveList([...newActiveList]);
+        const newAvailableList = columnAvailableList.filter((item) => item.title !== column.title);
+        setColumnAvailableList([...newAvailableList]);
+    };
+
+    const onRemoveColumnClick = (column) => {
+        const newAvailableList = [...columnAvailableList, { ...column }];
+        setColumnAvailableList([...newAvailableList]);
+        const newActiveList = columnActiveList.filter((item) => item.title !== column.title);
+        setColumnActiveList([...newActiveList]);
+    };
+
+    const classNameColumnItem =
+        "d-flex align-items-center justify-content-center btn btn-default px-3 py-1 me-2 mb-2";
+
+    const onSaveChanges = async () => {
+        setIsLoading(true);
+
+        let columnUpdated = [];
+
+        columnActiveList.forEach((item, position) => {
+            let itemPosition = position + 1;
+            let columnShouldUpdate = false;
+            const itemOrigin = columnActiveListOrigin.find((el) => el.name === item.name);
+            if (itemOrigin) {
+                if (itemOrigin.index !== itemPosition) {
+                    columnShouldUpdate = true;
+                }
+            } else {
+                columnShouldUpdate = true;
+            }
+            if (columnShouldUpdate) {
+                columnUpdated.push(
+                    LogViewActions.updateColumnSetting(
+                        selectedTable.uuid,
+                        item.name,
+                        1,
+                        itemPosition,
+                        ""
+                    )
+                );
+            }
+        });
+
+        columnActiveListOrigin.forEach((item) => {
+            const itemOrigin = columnActiveList.find((el) => el.name === item.name);
+            if (!itemOrigin) {
+                columnUpdated.push(
+                    LogViewActions.updateColumnSetting(
+                        selectedTable.uuid,
+                        item.name,
+                        0,
+                        item.index,
+                        ""
+                    )
+                );
+            }
+        });
+
+        if (columnUpdated.length > 0) {
+            const res = await Promise.all(columnUpdated);
+            setColumnActiveListOrigin(columnActiveList);
+            sessionStorage.removeItem("resizable-table");
+            setIsLoading(false);
+            onSave();
+        }
+    };
+
     return (
         <Modal
+            className="customize-table-modal"
             title="Customize Table"
             id="Customize-table"
             size={Size.extraLarge}
             showCloseButton={false}
             showSaveButton={true}
+            headerChildren={HeaderChildren}
             saveButtonTitle="Save Changes"
             show={show}
-            saveButtonAction={() => {}}
+            saveButtonAction={() => onSaveChanges()}
             onHidden={onHidden}
+            disableSaveButton={isEqual(columnActiveList, columnActiveListOrigin)}
         >
-            <div className="row">
-                <div className="col-12 col-md-8">
-                    <div className="title">
-                        Active Columns
+            {!isLoading ? (
+                <div className="row m-0">
+                    <div className="col-12 col-md-8 ps-3">
+                        <div className="content my-3">
+                            <div className="title">Active Columns</div>
+                            <div className="d-flex flex-wrap align-items-center column-panel align-content-center">
+                                {columnActiveList.map((item) => (
+                                    <button
+                                        key={item.name}
+                                        className={classNameColumnItem}
+                                        onClick={() => onRemoveColumnClick(item)}
+                                    >
+                                        <span>{item.title}</span>
+                                        <Icon
+                                            dataFeather="x"
+                                            className="feather-xs stroke-width-4 ms-2 remove-icon"
+                                        />
+                                    </button>
+                                ))}
+                                {columnAvailableList.length > 0 && (
+                                    <div className="empty-active-item mb-2"></div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 col-md-4 bg-light pe-3">
+                        <div className="content mt-3">
+                            <div className="title">Add Columns</div>
+                            <div className="d-flex flex-wrap align-items-center column-panel align-content-center">
+                                <button
+                                    className={`${classNameColumnItem} text-primary fw-bold create-column`}
+                                    onClick={() =>
+                                        (window.location.href = "/setting?tab=databases")
+                                    }
+                                >
+                                    <Icon
+                                        dataFeather="plus"
+                                        className="feather-xs stroke-width-4 me-2"
+                                    />
+                                    <span>Create column</span>
+                                </button>
+                                {columnAvailableList.map((item) => (
+                                    <button
+                                        key={item.name}
+                                        className={classNameColumnItem}
+                                        onClick={() => onAddColumnClick(item)}
+                                    >
+                                        <Icon
+                                            dataFeather="plus"
+                                            className="feather-xs stroke-width-4 me-2 text-primary"
+                                        />
+                                        <span>{item.title}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="col-12 col-md-4 bg-light">
-                    <div className="title">
-                        Add Columns
-                    </div>
-                </div>
-            </div>
+            ) : (
+                <Spinner isFullHeight={false} />
+            )}
         </Modal>
     );
 };
 
-export class LogViewTableSettingModalx extends Component {
+export class LogViewTableSettingModalX extends Component {
     constructor(props) {
         super(props);
 

@@ -279,6 +279,7 @@ export const DatabaseTableDetail = ({
                         <div className="d-flex justify-content-between align-items-end">
                             {tableName && (
                                 <FormField
+                                    fieldName="table-name"
                                     className="w-25"
                                     label="Table name"
                                     value={tableName}

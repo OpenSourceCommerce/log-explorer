@@ -31,7 +31,7 @@
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed sidebar-collapse overflow-hidden">
 <!-- Main Sidebar Container -->
 {% include "partials/sidebar.html.twig" %}
-<div class="wrapper">
+<div class="wrapper {{ app.request.cookies.get('sidebar_is_collapse') == 'true' ? 'w-100' : '' }}">
 
     <!-- Navbar -->
     {% include "partials/navbar.html.twig" %}

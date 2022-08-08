@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, FormField } from "./";
+import { Button, Input } from "./";
 import { UserActions, ValidatorHelper } from "../actions";
 import { TOAST_STATUS } from "../utils";
 
@@ -11,21 +11,42 @@ const DEFAULT_VALUE = {
 
 const MANDATORY_FIELDS = ["current_password", "password", "confirm_password"];
 
-const InputPasswordComponent = ({ fieldName, helpText, ...props }) => {
+const InputPasswordComponent = ({
+    fieldName,
+    helpText,
+    label,
+    className,
+    isInvalidField,
+    onChange,
+    value,
+    ...rest
+}) => {
     return (
         <div className="mb-3">
-            <FormField
-                type="password"
-                fieldName={fieldName}
-                isMandatory={MANDATORY_FIELDS.includes(fieldName)}
-                {...props}
-            />
-            <div className="position-relative">
-                <a className="toggle-password" id="toggle-password" role="button">
-                    <div className="eye-icon">
-                        <i className="fas fa-eye icon" id="fas-eye-icon"></i>
-                    </div>
-                </a>
+            <div className={`form-field form-group ${className}`}>
+                <label className={`mb-1 required`}>{label}</label>
+                <Input
+                    className={`${isInvalidField ? "is-invalid" : ""} bg-img-none`}
+                    name={fieldName}
+                    value={value}
+                    type="password"
+                    onChange={(e) => {
+                        if (onChange) onChange(e);
+                    }}
+                    {...rest}
+                />
+                <div className="position-relative">
+                    <a className="toggle-password" id="toggle-password" role="button">
+                        <div className="eye-icon">
+                            <i className="fas fa-eye icon" id="fas-eye-icon"></i>
+                        </div>
+                    </a>
+                </div>
+                {isInvalidField && (
+                    <span className="error invalid-feedback">
+                        {errorMessage || generateErrorMessage(type)}
+                    </span>
+                )}
             </div>
             {helpText && <div className="form-text text-muted fw-light px-3 m-0">{helpText}</div>}
         </div>
@@ -66,7 +87,7 @@ export class ChangePasswordForm extends Component {
                 isLoading: true,
             });
 
-            let toastContent = {}
+            let toastContent = {};
 
             UserActions.changePassword(current_password, password)
                 .then((res) => {
@@ -132,7 +153,7 @@ export class ChangePasswordForm extends Component {
     render() {
         const { isLoading, current_password, password, confirm_password } = this.state;
 
-        const isDisableSaveButton = MANDATORY_FIELDS.find(item => !this.state[item]);
+        const isDisableSaveButton = MANDATORY_FIELDS.find((item) => !this.state[item]);
 
         return (
             <div className="change-password col-12 col-md-5 card mt-3 border-0 rounded-0">

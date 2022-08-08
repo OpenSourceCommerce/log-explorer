@@ -16,7 +16,8 @@ body {
   text-decoration: none;
 }
 
-.fw-medium {
+.fw-medium,
+.btn {
   font-weight: $fw-medium;
 }
 
@@ -75,4 +76,22 @@ body {
 
 .dropdown-toggle-none-icon::after {
   display: none;
+}
+
+.bg-img-none {
+  background-image: none !important;
+}
+
+.sidebar-wrapper {
+  #sidebar {
+    .sidebar-logo {
+      width: 80%;
+      object-fit: fill;
+      margin-left: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .sidebar-footer {
+      font-size: 14px;
+    }
+  }
 }

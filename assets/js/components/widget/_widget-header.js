@@ -12,9 +12,9 @@ export class WidgetHeader extends Component {
             isFixed,
         } = this.props;
         return (
-            <div className="card-header pb-0 pt-2 ps-3 pe-2 font-weight-bold border-bottom-0">
+            <div className="card-header pb-0 pt-2 ps-3 pe-2 fw-bold border-bottom-0 bg-white">
                 <div className="float-start">{`${header || '< Input Header >'}`}</div>
-                {isUser() || <div className="dropdown float-end dropleft"
+                {isUser() || <div className="dropdown float-end"
                      href="#"
                 >
                     <div className="pe-2 ps-2"
@@ -22,9 +22,9 @@ export class WidgetHeader extends Component {
                          aria-haspopup="true"
                          aria-expanded="false"
                     >
-                        <Icon name='ellipsis-v'/>
+                        <Icon name='ellipsis-h'/>
                     </div>
-                    <div className="dropdown-menu"
+                    <div className="dropdown-menu dropdown-menu-end"
                          aria-labelledby="dropdownMenuButton"
                          style={{zIndex:"1050"}}
                     >
