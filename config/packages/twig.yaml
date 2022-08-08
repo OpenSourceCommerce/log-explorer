@@ -3,6 +3,8 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes: ['bootstrap_4_layout.html.twig']
+    globals:
+        app_webpack_folder: '%env(APP_WEBPACK_FOLDER)%'
 
 when@test:
     twig:
