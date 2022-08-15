@@ -96,7 +96,6 @@ const ModalEditWidget = ({
     };
 
     const [widgetDetail, setWidgetDetail] = useState({ ...DEFAULT_WIDGET });
-    const [queries, setQueries] = useState([]);
 
     useEffect(() => {
         if (widgetId) {
@@ -105,9 +104,8 @@ const ModalEditWidget = ({
     }, [widgetId]);
 
     const loadWidgetDetail = async () => {
-        const [loadWidgetRes, queriesRes] = await Promise.all([
+        const [loadWidgetRes] = await Promise.all([
             WidgetActions.loadWidget(widgetId),
-            WidgetActions.getQueries(),
         ]);
         if (loadWidgetRes && !loadWidgetRes.error) {
             const widget = { ...loadWidgetRes.data };
@@ -116,11 +114,6 @@ const ModalEditWidget = ({
             }
             setWidgetDetail({ ...widget });
         }
-
-        const queries =
-            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
-
-        setQueries(queries);
     };
 
     return (
@@ -128,7 +121,6 @@ const ModalEditWidget = ({
             onSubmitDataSuccess={onSubmitWidgetSuccess}
             widget={widgetDetail}
             isShow={!!widgetId}
-            queries={queries}
             {...props}
         />
     );
