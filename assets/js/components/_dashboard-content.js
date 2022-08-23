@@ -414,7 +414,6 @@ export const DashboardContent = ({
 
     const removeWidget = async (id) => {
         const removeWidgetRes = await DashboardActions.removeWidget(dashboardDetail.id, id);
-
         let toastContent = {};
         if (removeWidgetRes && !removeWidgetRes.error) {
             setWidgets(widgets.filter((item) => item.widget_id !== id));
@@ -671,7 +670,9 @@ export const DashboardContent = ({
                                         editWidget={(id) => {
                                             setWidgetIdSelectedForEdit(id);
                                         }}
-                                        onLayoutChange={onLayoutChange}
+                                        // onLayoutChange={onLayoutChange}
+                                        onDragStop={onLayoutChange}
+                                        onResizeStop={onLayoutChange}
                                         onWidgetClicked={onWidgetClicked}
                                     />
                                     <ModalEditWidget

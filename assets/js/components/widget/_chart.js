@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import { ChartJsComponent } from "./_chart-component";
-import { generateRandomColor, WIDGET_TYPE } from "../../utils";
+import { generateColorWithAlpha, generateRandomColor, WIDGET_TYPE } from "../../utils";
 import "../../../styles/component/_doughnut-pie-chart.scss";
 
 export const Chart = ({
@@ -9,6 +9,8 @@ export const Chart = ({
     id = "new",
     onLabelClicked,
     className,
+    color,
+    duration,
 }) => {
     const mapDataForChart = () => {
         let chartData = {
@@ -17,6 +19,16 @@ export const Chart = ({
         switch (type) {
             case WIDGET_TYPE.doughnut:
             case WIDGET_TYPE.pie: {
+                if (color) {
+                    let backgroundColor = [...color];
+                    chartData.datasets = [
+                        {
+                            data: data.map((item) => item.value),
+                            backgroundColor,
+                        },
+                    ];
+                    break;
+                }
                 let backgroundColor = data.map(() => generateRandomColor());
                 chartData.datasets = [
                     {
@@ -28,6 +40,17 @@ export const Chart = ({
             }
             case WIDGET_TYPE.line:
             case WIDGET_TYPE.bar: {
+                if (color) {
+                    const [borderColor, backgroundColor] = generateColorWithAlpha(color[0]);
+                    chartData.datasets = [
+                        {
+                            data: data.map((item) => item.value),
+                            borderColor,
+                            backgroundColor,
+                        },
+                    ];
+                    break;
+                }
                 const [borderColor, backgroundColor] = generateRandomColor(true);
                 chartData.datasets = [
                     {
@@ -61,6 +84,9 @@ export const Chart = ({
         },
         tooltips: {
             enabled: false,
+        },
+        animation: {
+            duration: duration,
         },
         // onClick: (e, activeEls) => {
         //     let datasetIndex = activeEls[0].datasetIndex;

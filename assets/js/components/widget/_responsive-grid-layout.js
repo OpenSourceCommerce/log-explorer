@@ -31,6 +31,8 @@ export class ResponsiveGridLayout extends Component {
             layouts,
             isDraggable = true,
             onLayoutChange,
+            onDragStop,
+            onResizeStop,
             removeWidget,
             editWidget,
             stickWidget,
@@ -56,7 +58,9 @@ export class ResponsiveGridLayout extends Component {
                                 rowHeight={155}
                                 cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 3 }}
                                 layouts={{ lg: [...layouts] }}
-                                onLayoutChange={(e) => onLayoutChange(e)}
+                                // onLayoutChange={(e) => onLayoutChange(e)}
+                                onDragStop={(e) => onDragStop(e)}
+                                onResizeStop={(e) => onResizeStop(e)}
                                 onBreakpointChange={(currentBreakpoint) =>
                                     this.setState({
                                         currentBreakpoint,
@@ -94,9 +98,11 @@ export class ResponsiveGridLayout extends Component {
                                                 case WIDGET_TYPE.line: {
                                                     component = (
                                                         <Chart
+                                                            color={color}
                                                             id={i}
                                                             type={type}
                                                             data={data}
+                                                            duration={duration}
                                                             onLabelClicked={(value) => {
                                                                 onLabelClicked(
                                                                     value,
