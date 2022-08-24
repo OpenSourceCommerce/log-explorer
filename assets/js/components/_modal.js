@@ -50,6 +50,8 @@ export class Modal extends Component {
             isPositionCenter = false,
             headerChildren,
             disableSaveButton = false,
+            onHidden,
+            ...props
         } = this.props;
 
         if(this.modal) {
@@ -62,7 +64,7 @@ export class Modal extends Component {
         }
 
         return (
-            <div className={`modal fade ${className}`} id={id}>
+            <div className={`modal fade ${className}`} id={id} {...props}>
                 <div className={`modal-dialog modal-${size} ${isPositionCenter ? 'modal-dialog-centered': ''}`}>
                     <div className="modal-content">
                         <div className="modal-header">
