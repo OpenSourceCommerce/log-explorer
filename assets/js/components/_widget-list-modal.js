@@ -25,6 +25,7 @@ export const WidgetListModal = ({
         if (!!isShow) {
             setIsLoading(true);
             loadData();
+            setWidgetListSelected([])
         }
     }, [isShow]);
 
