@@ -23,9 +23,11 @@ export class ResponsiveGridLayout extends Component {
         this.setState({
             mounted: true,
         });
+        // console.log("did mounted grid render");
     }
 
     render() {
+        console.log("grid render");
         const {
             isResizable = true,
             layouts,
@@ -84,6 +86,7 @@ export class ResponsiveGridLayout extends Component {
                                         data,
                                         type,
                                         column,
+                                        mounted,
                                         color,
                                         duration,
                                         onLabelClicked,
@@ -98,6 +101,7 @@ export class ResponsiveGridLayout extends Component {
                                                 case WIDGET_TYPE.line: {
                                                     component = (
                                                         <Chart
+                                                            mounted={mounted}
                                                             color={color}
                                                             id={i}
                                                             type={type}
@@ -208,6 +212,7 @@ export class ResponsiveGridLayout extends Component {
                                             />
                                             <WidgetLayout
                                                 {...item}
+                                                mounted={mounted}
                                                 onLabelClicked={(value, column, table) => {
                                                     if (value && column && table)
                                                         onWidgetClicked(value, column, table);
