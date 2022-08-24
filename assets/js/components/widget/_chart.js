@@ -1,38 +1,26 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React from "react";
 import { ChartJsComponent } from "./_chart-component";
 import { generateColorWithAlpha, generateRandomColor, WIDGET_TYPE } from "../../utils";
 import "../../../styles/component/_doughnut-pie-chart.scss";
-export const Chart = React.memo(
-    ({
-        data,
-        type = WIDGET_TYPE.doughnut,
-        id = "new",
-        onLabelClicked,
-        className,
-        color,
-        // duration,
-        mounted,
-    }) => {
-        const [duration, setDuration] = useState(1000);
-        // console.log("duration: ", duration);
-        const mapDataForChart = () => {
-            let chartData = {
-                labels: data.map((item) => item.label),
-            };
-            switch (type) {
-                case WIDGET_TYPE.doughnut:
-                case WIDGET_TYPE.pie: {
-                    if (color) {
-                        let backgroundColor = [...color];
-                        chartData.datasets = [
-                            {
-                                data: data.map((item) => item.value),
-                                backgroundColor,
-                            },
-                        ];
-                        break;
-                    }
-                    let backgroundColor = data.map(() => generateRandomColor());
+
+export const Chart = ({
+    data,
+    type = WIDGET_TYPE.doughnut,
+    id = "new",
+    onLabelClicked,
+    className,
+    color,
+    duration,
+}) => {
+    const mapDataForChart = () => {
+        let chartData = {
+            labels: data.map((item) => item.label),
+        };
+        switch (type) {
+            case WIDGET_TYPE.doughnut:
+            case WIDGET_TYPE.pie: {
+                if (color) {
+                    let backgroundColor = [...color];
                     chartData.datasets = [
                         {
                             data: data.map((item) => item.value),
@@ -41,20 +29,19 @@ export const Chart = React.memo(
                     ];
                     break;
                 }
-                case WIDGET_TYPE.line:
-                case WIDGET_TYPE.bar: {
-                    if (color) {
-                        const [borderColor, backgroundColor] = generateColorWithAlpha(color[0]);
-                        chartData.datasets = [
-                            {
-                                data: data.map((item) => item.value),
-                                borderColor,
-                                backgroundColor,
-                            },
-                        ];
-                        break;
-                    }
-                    const [borderColor, backgroundColor] = generateRandomColor(true);
+                let backgroundColor = data.map(() => generateRandomColor());
+                chartData.datasets = [
+                    {
+                        data: data.map((item) => item.value),
+                        backgroundColor,
+                    },
+                ];
+                break;
+            }
+            case WIDGET_TYPE.line:
+            case WIDGET_TYPE.bar: {
+                if (color) {
+                    const [borderColor, backgroundColor] = generateColorWithAlpha(color[0]);
                     chartData.datasets = [
                         {
                             data: data.map((item) => item.value),
@@ -64,77 +51,72 @@ export const Chart = React.memo(
                     ];
                     break;
                 }
+                const [borderColor, backgroundColor] = generateRandomColor(true);
+                chartData.datasets = [
+                    {
+                        data: data.map((item) => item.value),
+                        borderColor,
+                        backgroundColor,
+                    },
+                ];
+                break;
             }
-            return chartData;
-        };
+        }
+        return chartData;
+    };
 
-        const chartOptions = {
-            aspectRatio: 1.5,
-            plugins: {
-                legend: {
-                    display: ![WIDGET_TYPE.bar, WIDGET_TYPE.line].includes(type) ? true : false,
-                    align: "center",
-                    position: "bottom",
-                    labels: {
-                        usePointStyle: true,
-                    },
-                    onClick(_, legendItem) {
-                        if (onLabelClicked) onLabelClicked(legendItem.text);
-                        // legend.chart.toggleDataVisibility(legendItem.index);
-                        // legend.chart.update();
-                    },
+    const chartOptions = {
+        aspectRatio: 1.5,
+        plugins: {
+            legend: {
+                display: ![WIDGET_TYPE.bar, WIDGET_TYPE.line].includes(type) ? true : false,
+                align: "center",
+                position: "bottom",
+                labels: {
+                    usePointStyle: true,
+                },
+                onClick(_, legendItem) {
+                    if (onLabelClicked) onLabelClicked(legendItem.text);
+                    // legend.chart.toggleDataVisibility(legendItem.index);
+                    // legend.chart.update();
                 },
             },
-            tooltips: {
-                enabled: false,
-            },
-            animation: {
-                duration: duration,
-            },
-            // onClick: (e, activeEls) => {
-            //     let datasetIndex = activeEls[0].datasetIndex;
-            //     let dataIndex = activeEls[0].index;
-            //     let datasetLabel = e.chart.data.datasets[datasetIndex].label;
-            //     let value = e.chart.data.datasets[datasetIndex].data[dataIndex];
-            //     let label = e.chart.data.labels[dataIndex];
-            //     if (onLabelClicked) onLabelClicked(label);
-            // },
-        };
+        },
+        tooltips: {
+            enabled: false,
+        },
+        animation: {
+            duration: duration,
+        },
+        // onClick: (e, activeEls) => {
+        //     let datasetIndex = activeEls[0].datasetIndex;
+        //     let dataIndex = activeEls[0].index;
+        //     let datasetLabel = e.chart.data.datasets[datasetIndex].label;
+        //     let value = e.chart.data.datasets[datasetIndex].data[dataIndex];
+        //     let label = e.chart.data.labels[dataIndex];
+        //     if (onLabelClicked) onLabelClicked(label);
+        // },
+    };
 
-        useLayoutEffect(() => {
-            console.log("chart ", data, " render");
-
-            // console.log(data);
-            // console.log("first");
-            // console.log(data);
-            // console.log(mounted);
-            // console.log(chartOptions);
-
-            if (mounted) {
-                setDuration(0);
-            }
-        }, []);
-
-        return (
-            <div className="card-body pt-0 pb-2 overflow-auto">
-                {data && data.length > 0 ? (
-                    <div id={`chart-${id}`} className={`chart-${id} ${className || ""}`}>
-                        {type ? (
-                            <div className="chart-container">
-                                <ChartJsComponent
-                                    type={type}
-                                    data={mapDataForChart()}
-                                    options={chartOptions}
-                                />
-                            </div>
-                        ) : (
-                            <p>Widget not available</p>
-                        )}
-                    </div>
-                ) : (
-                    <p className="m-5 text-center">No data</p>
-                )}
-            </div>
-        );
-    }
-);
+    return (
+        <div className="card-body pt-0 pb-2 overflow-auto">
+            {data && data.length > 0 ? (
+                <div id={`chart-${id}`} className={`chart-${id} ${className || ""}`}>
+                    {type ? (
+                        <div className="chart-container">
+                            <ChartJsComponent
+                                type={type}
+                                data={mapDataForChart()}
+                                options={chartOptions}
+                            />
+                        </div>
+                    ) : (
+                        <p>Widget not available</p>
+                    )}
+                </div>
+            ) : (
+                <p className="m-5 text-center">No data</p>
+            )}
+        </div>
+    );
+};

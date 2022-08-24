@@ -670,9 +670,7 @@ export const DashboardContent = ({
                                         editWidget={(id) => {
                                             setWidgetIdSelectedForEdit(id);
                                         }}
-                                        // onLayoutChange={onLayoutChange}
-                                        onDragStop={onLayoutChange}
-                                        onResizeStop={onLayoutChange}
+                                        onLayoutChange={onLayoutChange}
                                         onWidgetClicked={onWidgetClicked}
                                     />
                                     <ModalEditWidget
