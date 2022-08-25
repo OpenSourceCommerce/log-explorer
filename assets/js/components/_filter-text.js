@@ -27,15 +27,6 @@ export class FilterText extends Component {
         this.onSaveClicked = this.onSaveClicked.bind(this);
     }
 
-    // resetState for value="" when modal is close/opend
-    componentDidUpdate(prevProps) {
-        if(prevProps.isModalShow !== this.props.isModalShow) {
-            this.setState({
-                value: ""
-            });
-        }
-    }
-
     componentDidMount() {
         const that = this;
         let isInvalidData = this.state.isInvalid
