@@ -115,7 +115,6 @@ export const WidgetList = ({ widgetIdParam, className }) => {
     const [widgetSelected, setWidgetSelected] = useState();
     const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
     const [tables, setTables] = useState([]);
-    const [queries, setQueries] = useState([]);
     const [toastContent, setToastContent] = useState();
     const [widgetRemoveSelected, setWidgetRemoveSelected] = useState();
 
@@ -150,9 +149,8 @@ export const WidgetList = ({ widgetIdParam, className }) => {
     };
 
     const loadData = async () => {
-        const [tableRes, queriesRes] = await Promise.all([
+        const [tableRes] = await Promise.all([
             DatabaseActions.getAllTable(),
-            WidgetActions.getQueries(),
         ]);
 
         let tables =
@@ -162,12 +160,7 @@ export const WidgetList = ({ widgetIdParam, className }) => {
                       label: item,
                   }))
                 : [];
-
-        let queries =
-            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
-
         setTables(tables);
-        setQueries(queries);
         setIsLoading(false);
     };
 
@@ -235,7 +228,6 @@ export const WidgetList = ({ widgetIdParam, className }) => {
                     </div>
                     <WidgetDetailModal
                         tables={tables}
-                        queries={queries}
                         widget={widgetSelected}
                         isShow={isWidgetDetailClicked}
                         onSubmitDataSuccess={onSubmitDataSuccess}

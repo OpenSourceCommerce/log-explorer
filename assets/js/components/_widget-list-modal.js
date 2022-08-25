@@ -14,7 +14,6 @@ export const WidgetListModal = ({
 }) => {
     const [isWidgetDetailClicked, setIsWidgetDetailClicked] = useState(false);
     const [tables, setTables] = useState([]);
-    const [queries, setQueries] = useState([]);
     const [widgetRemoveSelected, setWidgetRemoveSelected] = useState();
     const [widgets, setWidgets] = useState(passedWidgetList);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,9 +33,8 @@ export const WidgetListModal = ({
     }, [passedWidgetList]);
 
     const loadData = async () => {
-        const [tableRes, queriesRes] = await Promise.all([
+        const [tableRes] = await Promise.all([
             DatabaseActions.getAllTable(),
-            WidgetActions.getQueries(),
         ]);
 
         let tables =
@@ -46,12 +44,7 @@ export const WidgetListModal = ({
                       label: item,
                   }))
                 : [];
-
-        let queries =
-            queriesRes && queriesRes.data && queriesRes.data.length > 0 ? queriesRes.data : [];
-
         setTables(tables);
-        setQueries(queries);
         setIsLoading(false);
     };
 
@@ -123,16 +116,15 @@ export const WidgetListModal = ({
                 setWidgetRemoveSelected={setWidgetRemoveSelected}
                 onSelectWidgetForDashboard={onSelectWidgetForDashboard}
             />
-            <WidgetDetailModal
+            {isShow && (<WidgetDetailModal
                 tables={tables}
-                queries={queries}
                 isShow={isWidgetDetailClicked}
                 widget={WIDGET_DEFAULT}
                 onSubmitDataSuccess={onSubmitDataSuccess}
                 onHidden={() => {
                     setIsWidgetDetailClicked(false);
                 }}
-            />
+            />)}
             <AlertDeleteWidget
                 widget={widgetRemoveSelected}
                 onHidden={() => setWidgetRemoveSelected()}
