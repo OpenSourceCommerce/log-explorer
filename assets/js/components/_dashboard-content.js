@@ -87,6 +87,7 @@ const ModalEditWidget = ({
         column: "",
         query: "",
         order_desc: true,
+        order: "desc",
         size: 10,
     };
 
