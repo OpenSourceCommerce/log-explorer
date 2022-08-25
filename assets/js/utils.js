@@ -70,8 +70,12 @@ export const generateRandomColor = (withAlpha) => {
         const colorCode = `rgba(${o(r() * s)},${o(r() * s)},${o(r() * s)}`;
         const colorCodeWithAlpha = `${colorCode}, 0.5)`;
 
-        return [`${colorCode})`, colorCodeWithAlpha];
+        return [`${colorCode}`, colorCodeWithAlpha];
     }
+};
+
+export const generateColorWithAlpha = (color) => {
+    return [color, color.slice(0, -1).concat(",0.5)")];
 };
 
 export const generateDataBaseOnColumn = (column = [], size = 5) => {

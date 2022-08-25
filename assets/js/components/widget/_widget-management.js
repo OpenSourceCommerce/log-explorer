@@ -64,6 +64,7 @@ export const WidgetManagement = ({
     widgetDetail: passedWidgetDetail,
     tables,
     onSubmitDataSuccess,
+    isShow,
 }) => {
     const [mandatoryFields, setMandatoryFields] = useState(MANDATORY_FIELD);
     const [widgetDetail, setWidgetDetail] = useState(passedWidgetDetail);
@@ -80,6 +81,14 @@ export const WidgetManagement = ({
     useEffect(() => {
         loadQueries();
     }, []);
+
+    //Reset the state for widgetDetail before show Modal
+    useEffect(() => {
+        if(isShow){
+            setWidgetDetail(passedWidgetDetail);
+            setErrors([]);
+        }
+    },[isShow])
 
     useEffect(() => {
         setIsLoading(true);
@@ -475,8 +484,7 @@ export const WidgetManagement = ({
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
-                                clearQueryButton={clearQueryButton}
-                                isError={queryError}
+                                isModalShow = {isShow}
                             />
                         </div>
                         <div className="float-end">

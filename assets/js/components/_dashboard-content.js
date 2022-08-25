@@ -406,7 +406,6 @@ export const DashboardContent = ({
 
     const removeWidget = async (id) => {
         const removeWidgetRes = await DashboardActions.removeWidget(dashboardDetail.id, id);
-
         let toastContent = {};
         if (removeWidgetRes && !removeWidgetRes.error) {
             setWidgets(widgets.filter((item) => item.widget_id !== id));
