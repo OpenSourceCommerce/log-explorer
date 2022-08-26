@@ -67,3 +67,4 @@ export const {Chart} = require('./widget/_chart');
 export const {WidgetDataTable} = require('./widget/_table');
 export const {CounterSum} = require('./widget/_counter-sum');
 export const {ResizableTable} = require('./_resizable-table');
+export const {InputPasswordComponent} = require('./_input-password');

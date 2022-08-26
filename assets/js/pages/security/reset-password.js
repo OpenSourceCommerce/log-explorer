@@ -1,43 +1,16 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {ResetPasswordForm} from './_reset-password-form';
-import PropTypes from 'prop-types';
+import React from "react";
+import ReactDOM from "react-dom";
+import { ResetPasswordForm } from "./_reset-password-form";
 
-class ResetPassword extends Component {
-    render() {
-        const {loginLink, token} = this.props;
-
-        return (
-            <>
-                <div className="login-box">
-                    <div className="login-logo">
-                        <a href="/"><b>Log</b>Explorer</a>
-                    </div>
-                    <div className="card">
-                        <div className="card-body login-card-body">
-                            <p className="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
-
-                            <ResetPasswordForm token={token}/>
-
-                            <p className="mb-1">
-                                <a href={loginLink}>Login</a>
-                            </p>
-                            {/* <p className="mb-0">
-                                <a href="register.html" className="text-center">Register a new
-                                    membership</a>
-                            </p> */}
-                        </div>
-                    </div>
-                </div>
-            </>
-        );
-    }
-}
-
-ResetPassword.propTypes = {
-    loginLink: PropTypes.string,
-    token: PropTypes.string.isRequired
+const ResetPassword = (props) => {
+    return (
+        <div className="reset-password-screen min-vh-100 d-flex flex-column min-vh-100 justify-content-center align-items-center authentication-background">
+            <div className="reset-password-component">
+                <ResetPasswordForm {...props}/>
+            </div>
+        </div>
+    );
 };
 
-const root = document.querySelector('#root');
-ReactDOM.render(<ResetPassword {...root.dataset}/>, root);
+const root = document.querySelector("#root");
+ReactDOM.render(<ResetPassword {...root.dataset} />, root);

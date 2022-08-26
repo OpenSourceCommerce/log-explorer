@@ -1,154 +1,126 @@
-import React, {Component} from 'react';
-import {Button, Colors, Input, Icon} from '../../components';
-import {UserActions, ValidatorHelper, Alert} from '../../actions';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from "react";
+import { Button, Colors, Image, InputPasswordComponent } from "../../components";
+import { UserActions, ValidatorHelper, Alert } from "../../actions";
+import PropTypes from "prop-types";
+import Logo from "../../../images/light-logo.png";
 // Import {ToastrHelper, Password} from '../../components';
 // import {Response, ValidatorHelper} from '../..';
 
-export class ResetPasswordForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            password: {},
-            message: ''
-        };
-        // This.childrenMount = this.childrenMount.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
+export const ResetPasswordForm = ({ token, loginLink }) => {
+    const [password, setPassword] = useState();
+    const [confirmPassword, setConfirmPassword] = useState();
+    const [message, setMessage] = useState();
 
-    childrenMount(e) {
-        /* If (e instanceof Password) {
-            this.setState({
-                password: e
-            });
-        } */
-    }
+    useEffect(() => {
+        const rules = $.extend({}, getRules());
+        const messages = $.extend({}, getMessages());
+        ValidatorHelper.init("#forgot", rules, messages);
+    }, []);
 
-    handleSubmit(e) {
-        e.preventDefault();
-        const {token} = this.props;
-        const {password} = this.state;
+    const getMessages = () => {
+        return {};
+    };
 
-        UserActions.setPassword(password, token).then(response => {
-            if (response.error === 0) {
-                Alert.success('Your password has been updated successfully.')
-                setTimeout(() => {
-                    window.location.href = response.redirect;
-                }, 3000);
-                this.reset();
-                // ToastrHelper.success('Reset successful');
-            } else {
-                if (response.message !== undefined) {
-                    this.setState({
-                        message: response.message
-                    });
-                }
-
-                this.state.password.setErrors(Response.parseError(response));
-            }
-        });
-    }
-
-    componentDidMount() {
-        this.initValidator();
-    }
-
-    initValidator() {
-        const rules = $.extend({}, this.getRules());
-        const messages = $.extend({}, this.getMessages());
-        ValidatorHelper.init('#forgot', rules, messages);
-    }
-
-    getRules() {
+    const getRules = () => {
         return {
             password: {
                 required: true,
                 passwordCapitalCharacters: true,
-                minlength: 8
+                minlength: 8,
             },
             confirm_password: {
                 required: true,
-                equalTo: '#password'
-            }
+                equalTo: "#password",
+            },
         };
-    }
+    };
 
-    getMessages() {
-        return {};
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    handleChange(e) {
-        if (e.target.name === 'password') {
-            this.setState({
-                password: e.target.value
-            });
-        } else if (e.target.name === 'confirm_password') {
-            this.setState({
-                confirm_password: e.target.value
-            });
+        const response = await UserActions.setPassword(password, token);
+        if (response.error === 0) {
+            Alert.success("Your password has been updated successfully.");
+            setTimeout(() => {
+                window.location.href = response.redirect;
+            }, 3000);
+
+            reset();
+            // ToastrHelper.success('Reset successful');
+        } else {
+            if (response.message) {
+                setMessage(response.message);
+            }
         }
-    }
+    };
 
-    reset() {
-        this.state.password.reset();
-        this.setState({
-            message: ''
-        });
-    }
+    const reset = () => {
+        setPassword();
+        setMessage();
+    };
 
-    render() {
-        return (
-            <form id="forgot" onSubmit={this.handleSubmit}>
-                {this.state.emailError &&
-                <div className="alert alert-danger">
-                    <div className="alert-message">
-                        {this.state.emailError}
-                    </div>
-                </div>
-                }
-                <div className="form-group">
-                    <div className="input-group mb-3">
-                        <Input type="password"
-                            id="password"
-                            name="password"
-                            onChange={this.handleChange}
-                            required="required"
-                            autoFocus={true}
-                            placeholder={'Password'}/>
-                        <div className="input-group-append">
-                            <div className="input-group-text">
-                                <Icon name={'lock'}/>
-                            </div>
+    return (
+        <div className="card reset-password-form">
+            <div className="card-header bg-white">
+                <a
+                    href="/"
+                    className=" d-flex flex-column w-100 justify-content-center align-items-center"
+                >
+                    <Image
+                        src={Logo}
+                        className="login-logo w-50 mt-4 mb-4"
+                        alt="ScaleCommerce · E-Commerce"
+                    />
+                </a>
+            </div>
+            <div className="card-body">
+                <form id="forgot" onSubmit={handleSubmit}>
+                    <p className="login-box-msg text-center">
+                        You are only one step a way from your new password, recover your password
+                        now.
+                    </p>
+                    {message && (
+                        <div className="alert alert-danger">
+                            <div className="alert-message">{message}</div>
                         </div>
+                    )}
+                    <InputPasswordComponent
+                        id="password"
+                        fieldName="password"
+                        value={password}
+                        label="Password"
+                        className="input-password"
+                        placeholder="Input your new password"
+                        onChange={(e) => setPassword(e.target?.value)}
+                        helpText="Minimum 8 characters, at least one uppercase letter, one lowercase
+                            letter, one number and one special character."
+                    />
+                    <InputPasswordComponent
+                        id="confirm_password"
+                        fieldName="confirmPassword"
+                        value={confirmPassword}
+                        label="Repeat password"
+                        className="input-password"
+                        placeholder="Repeat your new password"
+                        onChange={(e) => setConfirmPassword(e.target?.value)}
+                    />
+                    <div className="my-3">
+                        <Button type="submit" className="btn-block w-100" color={Colors.blue}>
+                            {"Reset"}
+                        </Button>
                     </div>
-                    <small className="form-text text-muted">Minimum eight characters, at least one special character.</small>
-                </div>
-                <div className="form-group">
-                    <div className="input-group mb-3">
-                        <Input type="password"
-                            id="confirm_password"
-                            name="confirm_password"
-                            onChange={this.handleChange}
-                            required="required"
-                            autoFocus={true}
-                            placeholder={'Confirm Password'}/>
-                        <div className="input-group-append">
-                            <div className="input-group-text">
-                                <Icon name={'lock'}/>
-                            </div>
-                        </div>
+                    <div className="text-center">
+                        <a className="text-decoration-none w-100" href={loginLink}>
+                            Return to Login
+                        </a>
                     </div>
-                </div>
-                <div className="mt-3">
-                    <Button type="submit" className={'btn-block'}
-                        color={Colors.blue}>{'Reset'}</Button>
-                </div>
-            </form>
-        );
-    }
-}
+                </form>
+            </div>
+        </div>
+    );
+};
 
 ResetPasswordForm.propTypes = {
-    token: PropTypes.string.isRequired
+    loginLink: PropTypes.string,
+    token: PropTypes.string.isRequired,
 };
