@@ -21,7 +21,6 @@ import {
     Toast,
 } from ".";
 import { DashboardActions, LogTableActions, WidgetActions } from "../actions";
-import { WidgetDetailModal } from "./widget/_widget-detail";
 const DATE_RANGE_DEFAULT = {
     from: DATE_RANGE[0].from,
     to: DATE_RANGE[0].to,
@@ -74,64 +73,10 @@ const EmptyWidgetContent = ({ onAddWidgetClick }) => {
     );
 };
 
-const ModalEditWidget = ({
-    widgetIdSelectedForEdit: widgetId = "",
-    onSubmitWidgetSuccess,
-    ...props
-}) => {
-    const DEFAULT_WIDGET = {
-        id: widgetId,
-        title: "",
-        type: 4,
-        table: "",
-        column: "",
-        query: "",
-        order_desc: true,
-        order: "desc",
-        size: 10,
-    };
-
-    const ORDER_FIELD_VALUE = {
-        asc: "asc",
-        desc: "desc",
-    };
-
-    const [widgetDetail, setWidgetDetail] = useState({ ...DEFAULT_WIDGET });
-
-    useEffect(() => {
-        if (widgetId) {
-            loadWidgetDetail();
-        }
-    }, [widgetId]);
-
-    const loadWidgetDetail = async () => {
-        const [loadWidgetRes] = await Promise.all([
-            WidgetActions.loadWidget(widgetId),
-        ]);
-        if (loadWidgetRes && !loadWidgetRes.error) {
-            const widget = { ...loadWidgetRes.data };
-            if (widget.hasOwnProperty("order_desc")) {
-                widget.order = widget.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
-            }
-            setWidgetDetail({ ...widget });
-        }
-    };
-
-    return (
-        <WidgetDetailModal
-            onSubmitDataSuccess={onSubmitWidgetSuccess}
-            widget={widgetDetail}
-            isShow={!!widgetId}
-            {...props}
-        />
-    );
-};
-
 export const DashboardContent = ({
     dashboardDetail,
     onAddWidgetClick,
     onWidgetListChange,
-    onWidgetUpdateSuccess,
 }) => {
     const [widgets, setWidgets] = useState([]);
     const [toastContent, setToastContent] = useState();
@@ -665,15 +610,6 @@ export const DashboardContent = ({
                                         }}
                                         onLayoutChange={onLayoutChange}
                                         onWidgetClicked={onWidgetClicked}
-                                    />
-                                    <ModalEditWidget
-                                        widgetIdSelectedForEdit={widgetIdSelectedForEdit}
-                                        tables={tables}
-                                        onHidden={() => setWidgetIdSelectedForEdit()}
-                                        onSubmitWidgetSuccess={() => {
-                                            setWidgetIdSelectedForEdit();
-                                            onWidgetUpdateSuccess();
-                                        }}
                                     />
                                 </>
                             ) : (
