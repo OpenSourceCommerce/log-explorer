@@ -24,7 +24,7 @@ export const WidgetListModal = ({
         if (!!isShow) {
             setIsLoading(true);
             loadData();
-            setWidgetListSelected([])
+            setWidgetListSelected([]);
         }
     }, [isShow]);
 
@@ -33,9 +33,7 @@ export const WidgetListModal = ({
     }, [passedWidgetList]);
 
     const loadData = async () => {
-        const [tableRes] = await Promise.all([
-            DatabaseActions.getAllTable(),
-        ]);
+        const [tableRes] = await Promise.all([DatabaseActions.getAllTable()]);
 
         let tables =
             tableRes && tableRes.data && tableRes.data.length > 0
@@ -116,15 +114,17 @@ export const WidgetListModal = ({
                 setWidgetRemoveSelected={setWidgetRemoveSelected}
                 onSelectWidgetForDashboard={onSelectWidgetForDashboard}
             />
-            {isShow && (<WidgetDetailModal
-                tables={tables}
-                isShow={isWidgetDetailClicked}
-                widget={WIDGET_DEFAULT}
-                onSubmitDataSuccess={onSubmitDataSuccess}
-                onHidden={() => {
-                    setIsWidgetDetailClicked(false);
-                }}
-            />)}
+            {isShow && (
+                <WidgetDetailModal
+                    tables={tables}
+                    isShow={isWidgetDetailClicked}
+                    widget={WIDGET_DEFAULT}
+                    onSubmitDataSuccess={onSubmitDataSuccess}
+                    onHidden={() => {
+                        setIsWidgetDetailClicked(false);
+                    }}
+                />
+            )}
             <AlertDeleteWidget
                 widget={widgetRemoveSelected}
                 onHidden={() => setWidgetRemoveSelected()}
@@ -303,18 +303,20 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick, widgetListSele
             >
                 <div className="text-center">
                     {id ? (
-                        <span className={`rounded-circle bg-${widgetType} p-3`}>
-                            <Fragment>
-                                {widgetType === "count" ? (
+                        <>
+                            {widgetType === "count" ? (
+                                <span className={`rounded-circle bg-${widgetType} p-3`}>
                                     <span className="text-white fw-medium">123</span>
-                                ) : (
+                                </span>
+                            ) : (
+                                <span className={`rounded-circle bg-${widgetType} p-3`}>
                                     <Icon
                                         className="text-white"
                                         dataFeather={WIDGET_ICON[widgetType]}
                                     />
-                                )}
-                            </Fragment>
-                        </span>
+                                </span>
+                            )}
+                        </>
                     ) : (
                         <Icon className="text-primary" dataFeather="plus" />
                     )}
