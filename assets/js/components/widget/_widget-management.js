@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, FilterText, FormField, Spinner, Colors } from "../index";
 import { generateDataBaseOnColumn, SAMPLE_DATA, WIDGET_TYPE } from "../../utils";
-import { Alert, DatabaseActions, LogTableActions, WidgetActions } from "../../actions";
+import { DatabaseActions, WidgetActions } from "../../actions";
 import isEqual from "lodash/isEqual";
 import { Chart } from "./_chart";
 import { CounterSum } from "./_counter-sum";
@@ -47,7 +47,6 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
             columnData = [...columnData, "value"];
             component = (
                 <WidgetDataTable
-                    className="limit-height"
                     data={generateDataBaseOnColumn(columnData, sizeData)}
                     column={columnData}
                     isDashboardComponent={true}
@@ -62,8 +61,10 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
 
 export const WidgetManagement = ({
     widgetDetail: passedWidgetDetail,
+    queries,
     tables,
     onSubmitDataSuccess,
+    isShow,
 }) => {
     const [mandatoryFields, setMandatoryFields] = useState(MANDATORY_FIELD);
     const [widgetDetail, setWidgetDetail] = useState(passedWidgetDetail);
@@ -72,22 +73,20 @@ export const WidgetManagement = ({
     const [isLoading, setIsLoading] = useState(false);
     const [columnLoading, setColumnLoading] = useState(false);
     const [alertErrorMessage, setAlertErrorMessage] = useState();
-    const [queryObj, setQueryObj] = useState({ id: null, query: "", name: "" });
-    const [queryNameErrorMessage, setQueryNameErrorMessage] = useState();
-    const [queryError, setQueryError] = useState(false);
-    const [queries, setQueries] = useState([]);
 
+    //Reset the state for widgetDetail before show Modal
     useEffect(() => {
-        loadQueries();
-    }, []);
+        if(isShow){
+            setWidgetDetail(passedWidgetDetail);
+            setErrors([]);
+        }
+    },[isShow])
 
     useEffect(() => {
         setIsLoading(true);
         setWidgetDetail({
             ...passedWidgetDetail,
-            column: Array.isArray(passedWidgetDetail.column)
-                ? passedWidgetDetail.column.map((item) => item)
-                : passedWidgetDetail.column,
+            column: Array.isArray(passedWidgetDetail.column) ? passedWidgetDetail.column.map(item => item) : passedWidgetDetail.column,
         });
         setErrors([]);
         setAlertErrorMessage();
@@ -118,7 +117,7 @@ export const WidgetManagement = ({
     const onChangeData = async ({ name, value }) => {
         let newWidgetDetail = { ...widgetDetail };
         let newErrors = [...errors].filter((item) => item !== name);
-        let newValue = name === "type" && !!value ? parseInt(value) : value;
+        let newValue = name === 'type' && !!value ? parseInt(value) : value;
 
         if (name) {
             if (name === "table") {
@@ -167,7 +166,7 @@ export const WidgetManagement = ({
                     const index = currentValue.indexOf(value);
 
                     if (index >= 0) {
-                        currentValue = currentValue.filter((item) => item !== value);
+                        currentValue = currentValue.filter(item => item !== value);
                     } else {
                         currentValue.push(value);
                     }
@@ -230,48 +229,9 @@ export const WidgetManagement = ({
         }
     };
 
-    const loadQueries = async () => {
-        const res = await WidgetActions.getQueries();
-        const { error, data } = res;
-        if (error === 0) {
-            setQueries(data);
-        }
-    };
+    const onSaveClicked = () => {};
 
-    const onSaveClicked = async () => {
-        if (!queryObj.name) {
-            setQueryNameErrorMessage("Please input query name");
-            return;
-        }
-        if (!queryObj.query) {
-            setQueryError(true);
-            return;
-        }
-        const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
-        const { error } = res;
-        if (error === 0) {
-            Alert.success("Save query success");
-            loadQueries();
-        }
-    };
-
-    const onQueryNameChanged = ({ value }) => {
-        setQueryNameErrorMessage();
-        setQueryObj({
-            ...queryObj,
-            name: value,
-        });
-    };
-
-    const onDeleteCLicked = async (query) => {
-        const res = await WidgetActions.deleteQueries(query.id);
-        const { error } = res;
-        if (error === 0) {
-            Alert.success("Delete successful");
-            const newQueryList = queries.filter((item) => item.id !== query.id);
-            setQueries([...newQueryList]);
-        }
-    };
+    const onDeleteCLicked = () => {};
 
     const onSubmit = async () => {
         let errors = [];
@@ -314,18 +274,6 @@ export const WidgetManagement = ({
         }
     };
 
-    useEffect(() => {
-        const query = queries.find((item) => item.query === widgetDetail.query);
-        if (query) {
-            setQueryObj(query);
-        } else {
-            setQueryObj({
-                ...queryObj,
-                query: widgetDetail.query,
-            });
-        }
-    }, [widgetDetail.query, queries]);
-
     const { id, title, type, table, column, order, size, query } = widgetDetail;
 
     const isCounterSumType = type == WIDGET_TYPE.counterSum;
@@ -334,26 +282,6 @@ export const WidgetManagement = ({
         isEqual(passedWidgetDetail, widgetDetail) ||
         Object.keys(errors).length > 0 ||
         alertErrorMessage;
-
-    const clearQueryButton = (
-        <div className="input-group-append">
-            <Button
-                className="btn-bg-white"
-                id="btn-filter-save"
-                outlineColor={Colors.blue}
-                onClick={(e) => {
-                    e.preventDefault();
-                    setQueryObj({ id: null, query: "", name: "" });
-                    setWidgetDetail({
-                        ...widgetDetail,
-                        query: '',
-                    })
-                }}
-            >
-                Clear
-            </Button>
-        </div>
-    );
 
     return (
         <div className="editable-widget">
@@ -442,41 +370,17 @@ export const WidgetManagement = ({
                                 </FormField>
                             </div>
                         )}
-                        <div className="mb-3">
-                            <FormField
-                                label="Filter Name (Optional)"
-                                value={queryObj?.name}
-                                fieldName="filterName"
-                                placeholder="z. B. hostname filter"
-                                onChange={(e) => onQueryNameChanged(e.target)}
-                                errorMessage={queryNameErrorMessage}
-                            />
-                            <div
-                                className="form-text text-muted fw-light m-0"
-                                style={{ fontSize: "12px" }}
-                            >
-                                Needed when saving the filter
-                            </div>
-                        </div>
                         <div className="form-field form-group mb-3">
                             <label className="mb-1">Filter</label>
                             <FilterText
                                 fieldName="query"
                                 value={query}
                                 queries={queries}
-                                isVisibleEditQuery={false}
-                                onQuerySelected={(value) =>
-                                    onChangeData({
-                                        name: "query",
-                                        value,
-                                    })
-                                }
                                 onSaveClicked={onSaveClicked}
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
-                                clearQueryButton={clearQueryButton}
-                                isError={queryError}
+                                isModalShow = {isShow}
                             />
                         </div>
                         <div className="float-end">

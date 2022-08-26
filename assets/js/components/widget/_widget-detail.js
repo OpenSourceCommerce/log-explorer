@@ -14,7 +14,7 @@ export const WidgetDetailModal = ({ widget, isShow, onHidden, ...props }) => {
             onHidden={onHidden}
             style={{zIndex: "1060"}}
         >
-            {widget && <WidgetManagement widgetDetail={widget} {...props} />}
+            {widget && <WidgetManagement widgetDetail={widget} isShow={isShow} {...props} />}
         </Modal>
     );
 };
