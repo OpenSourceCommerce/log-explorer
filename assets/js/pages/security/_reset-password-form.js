@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Colors, Image, InputPasswordComponent } from "../../components";
 import { UserActions, ValidatorHelper, Alert } from "../../actions";
 import PropTypes from "prop-types";
@@ -120,7 +120,7 @@ export const ResetPasswordForm = ({ token, loginLink }) => {
     );
 };
 
-ResetPassword.propTypes = {
+ResetPasswordForm.propTypes = {
     loginLink: PropTypes.string,
     token: PropTypes.string.isRequired,
 };
