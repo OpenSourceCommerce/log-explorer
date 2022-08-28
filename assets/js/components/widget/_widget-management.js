@@ -256,7 +256,7 @@ export const WidgetManagement = ({
             setQueryError(true);
             return;
         }
-        const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
+        const res = await WidgetActions.saveQueries(queryObj.id=null, queryObj);
         const { error } = res;
         if (error === 0) {
             Alert.success("Save query success");
@@ -336,7 +336,6 @@ export const WidgetManagement = ({
     }, [widgetDetail.query, queries]);
 
     const { id, title, type, table, column, order, size, query } = widgetDetail;
-
     const isCounterSumType = type == WIDGET_TYPE.counterSum;
 
     const isDisableSaveButton =
@@ -471,7 +470,7 @@ export const WidgetManagement = ({
                             <label className="mb-1">Filter</label>
                             <FilterText
                                 fieldName="query"
-                                value={query}
+                                value={query || ""}
                                 queries={queries}
                                 isVisibleEditQuery={false}
                                 onQuerySelected={(value) =>

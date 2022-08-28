@@ -42,20 +42,10 @@ export const FilterText = ({
         }
     }, [isError]);
 
-    // resetState for value="" when modal is close/opend
-    componentDidUpdate(prevProps) {
-        if(prevProps.isModalShow !== this.props.isModalShow) {
-            this.setState({
-                value: ""
-            });
-        }
-    }
-
-    componentDidMount() {
-        const that = this;
-        let isInvalidData = this.state.isInvalid
-        Event.bus.register(Event.RESPONSE_ERROR, response => {
-            const {error, filter} = response;
+    useEffect(() => {
+        let isInvalidData = isInvalid;
+        Event.bus.register(Event.RESPONSE_ERROR, (response) => {
+            const { error, filter } = response;
             if (error === Event.ERROR_INVALID_QUERY) {
                 if (queryStr === filter) {
                     isInvalidData = true;
