@@ -265,6 +265,7 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick, widgetListSele
 
     return (
         <div
+            key={id}
             className={`widget-item d-flex flex-column ${!id ? "border-dashed" : ""} ${
                 isWidgetSelected ? "widget-selected" : ""
             }`}
@@ -303,20 +304,16 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick, widgetListSele
             >
                 <div className="text-center">
                     {id ? (
-                        <>
+                        <span className={`rounded-circle bg-${widgetType} p-3`}>
                             {widgetType === "count" ? (
-                                <span className={`rounded-circle bg-${widgetType} p-3`}>
-                                    <span className="text-white fw-medium">123</span>
-                                </span>
+                                <span className="text-white fw-medium">123</span>
                             ) : (
-                                <span className={`rounded-circle bg-${widgetType} p-3`}>
-                                    <Icon
-                                        className="text-white"
-                                        dataFeather={WIDGET_ICON[widgetType]}
-                                    />
-                                </span>
+                                <Icon
+                                    className="text-white"
+                                    dataFeather={WIDGET_ICON[widgetType]}
+                                />
                             )}
-                        </>
+                        </span>
                     ) : (
                         <Icon className="text-primary" dataFeather="plus" />
                     )}
