@@ -84,9 +84,11 @@ export const WidgetManagement = ({
 
     //Reset the state for widgetDetail before show Modal
     useEffect(() => {
-        if(isShow){
+        if(!isShow){
             setWidgetDetail(passedWidgetDetail);
             setErrors([]);
+            setQueryObj({ id: null, query: "", name: "" })
+            setQueryNameErrorMessage("")
         }
     },[isShow])
 
@@ -330,7 +332,7 @@ export const WidgetManagement = ({
         } else {
             setQueryObj({
                 ...queryObj,
-                query: widgetDetail.query,
+                query: widgetDetail.query || "",
             });
         }
     }, [widgetDetail.query, queries]);
@@ -470,7 +472,7 @@ export const WidgetManagement = ({
                             <label className="mb-1">Filter</label>
                             <FilterText
                                 fieldName="query"
-                                value={query || ""}
+                                value={queryObj?.query}
                                 queries={queries}
                                 isVisibleEditQuery={false}
                                 onQuerySelected={(value) =>
@@ -483,7 +485,6 @@ export const WidgetManagement = ({
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
-                                isModalShow = {isShow}
                             />
                         </div>
                         <div className="float-end">
