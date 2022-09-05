@@ -5,7 +5,7 @@ export const WidgetDetailModal = ({ widget, isShow, onHidden, ...props }) => {
     return (
         <Modal
             className="modal-widget-detail"
-            id={`modal-detail`}
+            id={`modal-detail-${widget?.id ? "Update" : "Add"}`}
             size={Size.extraLarge}
             title={`${widget?.id ? "Update" : "Add"} Widget`}
             showCloseButton={false}

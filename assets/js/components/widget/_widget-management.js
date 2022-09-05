@@ -74,7 +74,7 @@ export const WidgetManagement = ({
     const [columnLoading, setColumnLoading] = useState(false);
     const [alertErrorMessage, setAlertErrorMessage] = useState();
     const [queryObj, setQueryObj] = useState({ id: null, query: "", name: "" });
-    const [queryNameErrorMessage, setQueryNameErrorMessage] = useState();
+    const [queryNameErrorMessage, setQueryNameErrorMessage] = useState("");
     const [queryError, setQueryError] = useState(false);
     const [queries, setQueries] = useState([]);
 
@@ -258,7 +258,8 @@ export const WidgetManagement = ({
             setQueryError(true);
             return;
         }
-        const res = await WidgetActions.saveQueries(queryObj.id=null, queryObj);
+        console.log(queryObj);
+        const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
         const { error } = res;
         if (error === 0) {
             Alert.success("Save query success");
@@ -332,6 +333,7 @@ export const WidgetManagement = ({
         } else {
             setQueryObj({
                 ...queryObj,
+                id: null,
                 query: widgetDetail.query || "",
             });
         }
