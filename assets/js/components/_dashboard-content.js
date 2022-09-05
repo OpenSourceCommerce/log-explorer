@@ -96,6 +96,7 @@ const ModalEditWidget = ({
     };
 
     const [widgetDetail, setWidgetDetail] = useState({ ...DEFAULT_WIDGET });
+    const [isShowEdit, setIsShowEdit] = useState(false);
 
     useEffect(() => {
         if (widgetId) {
@@ -113,15 +114,19 @@ const ModalEditWidget = ({
                 widget.order = widget.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
             }
             setWidgetDetail({ ...widget });
+            setIsShowEdit(true);
         }
     };
 
     return (
         <WidgetDetailModal
             key="modal_edit"
-            onSubmitDataSuccess={onSubmitWidgetSuccess}
+            onSubmitDataSuccess={()=> {
+                setIsShowEdit(false);
+                onSubmitWidgetSuccess(); 
+            }}
             widget={widgetDetail}
-            isShow={!!widgetId}
+            isShow={isShowEdit}
             {...props}
         />
     );
@@ -666,7 +671,7 @@ export const DashboardContent = ({
                                         onLayoutChange={onLayoutChange}
                                         onWidgetClicked={onWidgetClicked}
                                     />
-                                    <ModalEditWidget
+                                    { widgetIdSelectedForEdit && <ModalEditWidget
                                         widgetIdSelectedForEdit={widgetIdSelectedForEdit}
                                         tables={tables}
                                         onHidden={() => setWidgetIdSelectedForEdit()}
@@ -674,7 +679,7 @@ export const DashboardContent = ({
                                             setWidgetIdSelectedForEdit();
                                             onWidgetUpdateSuccess();
                                         }}
-                                    />
+                                    />}
                                 </>
                             ) : (
                                 <EmptyWidgetContent onAddWidgetClick={onAddWidgetClick} />
