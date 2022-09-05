@@ -118,7 +118,7 @@ const ModalEditWidget = ({
 
     return (
         <WidgetDetailModal
-            key="modal edit"
+            key="modal_edit"
             onSubmitDataSuccess={onSubmitWidgetSuccess}
             widget={widgetDetail}
             isShow={!!widgetId}
