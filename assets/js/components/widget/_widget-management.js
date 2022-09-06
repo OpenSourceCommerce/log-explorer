@@ -258,7 +258,11 @@ export const WidgetManagement = ({
             setQueryError(true);
             return;
         }
-        console.log(queryObj);
+        if(queries.find((item) => item.name === queryObj.name)){
+            Alert.error("The filter name already exist!");
+            setQueryObj({...queryObj,name: ""})
+            return;
+        }
         const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
         const { error } = res;
         if (error === 0) {
@@ -487,6 +491,8 @@ export const WidgetManagement = ({
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
+                                isError = {queryError}
+                                queryObj={queryObj}
                             />
                         </div>
                         <div className="float-end">

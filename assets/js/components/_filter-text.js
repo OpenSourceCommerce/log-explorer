@@ -27,10 +27,10 @@ export const FilterText = ({
     isVisibleEditQuery = true,
     clearQueryButton,
     isError,
+    queryObj,
 }) => {
     const [isInvalid, setIsInValid] = useState(false);
     const [queryStr, setQueryStr] = useState("");
-    const [queryObj, setQueryObj] = useState(null);
 
     useEffect(() => {
         setQueryStr(passedQuery);
@@ -68,28 +68,8 @@ export const FilterText = ({
 
     const setQuery = async (query) => {
         await setQueryStr(query.query);
-        await setQueryObj(query);
         if (onQuerySelected) onQuerySelected(query.query);
         Live.refresh();
-    };
-
-    const onSaveQueryClicked = (item = false) => {
-        if (item) {
-            onSaveClicked(item);
-            return;
-        }
-
-        // if (queryObj) {
-        //     if (queryObj.query === $.trim(value)) {
-        //         return;
-        //     }
-        // }
-
-        onSaveClicked({
-            query: queryStr,
-            name: "",
-            id: null,
-        });
     };
 
     let className = `${passedClassName} input-search`;
@@ -192,10 +172,10 @@ export const FilterText = ({
                             outlineColor={Colors.blue}
                             onClick={(e) => {
                                 e.preventDefault();
-                                onSaveQueryClicked();
+                                onSaveClicked();
                             }}
                         >
-                            Save
+                            {queryObj?.id ? "Update" : "Save"}
                         </Button>
                     </div>
                 )}
