@@ -258,7 +258,7 @@ export const WidgetManagement = ({
             setQueryError(true);
             return;
         }
-        if(queries.find((item) => item.name === queryObj.name)){
+        if(queries.find((item) => item.name === queryObj.name) && !queryObj.id){
             Alert.error("The filter name already exist!");
             setQueryObj({...queryObj,name: ""})
             return;
