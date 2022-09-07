@@ -334,6 +334,7 @@ export const WidgetManagement = ({
         const query = queries.find((item) => item.query === widgetDetail.query);
         if (query) {
             setQueryObj(query);
+            setQueryNameErrorMessage();
         } else {
             setQueryObj({
                 ...queryObj,
