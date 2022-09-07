@@ -33,7 +33,7 @@ export const FilterText = ({
     const [queryStr, setQueryStr] = useState("");
 
     useEffect(() => {
-        setQueryStr(passedQuery);
+        setQueryStr(passedQuery || "");
     }, [passedQuery]);
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export const FilterText = ({
     }, []);
 
     const handleChange = (e) => {
-        setQueryStr(e && e.target ? e.target.value : "");
+        setQueryStr(e?.target?.value);
         setIsInValid(false);
     };
 
@@ -148,7 +148,7 @@ export const FilterText = ({
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
-                                                        this.onSaveClicked(query);
+                                                        onSaveClicked(query);
                                                     }}
                                                 >
                                                     <i className={"fa fa-edit"}></i>
@@ -170,7 +170,7 @@ export const FilterText = ({
                             outlineColor={Colors.blue}
                             onClick={(e) => {
                                 e.preventDefault();
-                                onSaveClicked();
+                                onSaveClicked({ query: queryStr, name: "", id: null });
                             }}
                         >
                             {queryObj?.id ? "Update" : "Save"}
