@@ -75,7 +75,7 @@ export const WidgetManagement = ({
     const [alertErrorMessage, setAlertErrorMessage] = useState();
     const [queryObj, setQueryObj] = useState({ id: null, query: "", name: "" });
     const [queryNameErrorMessage, setQueryNameErrorMessage] = useState("");
-    const [queryError, setQueryError] = useState(false);
+    const [queryError, setQueryError] = useState("");
     const [queries, setQueries] = useState([]);
 
     useEffect(() => {
@@ -84,13 +84,13 @@ export const WidgetManagement = ({
 
     //Reset the state for widgetDetail before show Modal
     useEffect(() => {
-        if(!isShow){
+        if (!isShow) {
             setWidgetDetail(passedWidgetDetail);
             setErrors([]);
-            setQueryObj({ id: null, query: "", name: "" })
-            setQueryNameErrorMessage("")
+            setQueryObj({ id: null, query: "", name: "" });
+            setQueryNameErrorMessage("");
         }
-    },[isShow])
+    }, [isShow]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -185,7 +185,14 @@ export const WidgetManagement = ({
                 }
 
                 newValue = currentValue;
+            } else if (name === "query") {
+                setQueryError();
+                setQueryObj({
+                    ...queryObj,
+                    query: value,
+                });
             }
+
             if (mandatoryFields.includes(name) && !value) {
                 newErrors.push(name);
             }
@@ -255,14 +262,28 @@ export const WidgetManagement = ({
             return;
         }
         if (!queryObj.query) {
-            setQueryError(true);
+            setQueryError("Please input query");
             return;
         }
-        if(queries.find((item) => item.name === queryObj.name) && !queryObj.id){
-            Alert.error("The filter name already exist!");
-            setQueryObj({...queryObj,name: ""})
+        // if (queries.find((item) => item.name === queryObj.name) && !queryObj.id) {
+        //     Alert.error("The filter name already exist!");
+        //     return;
+        // }
+        const queryExisted = queries.find((item) => item.query === queryObj.query);
+        const fieldNameExisted = queries.find((item) => item.name === queryObj.name);
+        let isError = false;
+        if (queryExisted && queryObj.id !== queryExisted.id) {
+            setQueryError(`Query already exist in "${queryExisted.name}"`);
+            isError = true;
+        }
+        if (fieldNameExisted && queryObj.id !== fieldNameExisted.id) {
+            setQueryNameErrorMessage("Filter name already exist.");
+            isError = true;
+        }
+        if (isError) {
             return;
         }
+
         const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
         const { error } = res;
         if (error === 0) {
@@ -334,7 +355,6 @@ export const WidgetManagement = ({
         const query = queries.find((item) => item.query === widgetDetail.query);
         if (query) {
             setQueryObj(query);
-            setQueryNameErrorMessage();
         } else {
             setQueryObj({
                 ...queryObj,
@@ -342,7 +362,7 @@ export const WidgetManagement = ({
                 query: widgetDetail.query || "",
             });
         }
-    }, [widgetDetail.query, queries]);
+    }, [queries]);
 
     const { id, title, type, table, column, order, size, query } = widgetDetail;
     const isCounterSumType = type == WIDGET_TYPE.counterSum;
@@ -358,13 +378,16 @@ export const WidgetManagement = ({
                 className="btn-bg-white"
                 id="btn-filter-save"
                 outlineColor={Colors.blue}
+                disabled={!(queryObj.id || queryObj.name || queryObj.query)}
                 onClick={(e) => {
                     e.preventDefault();
                     setQueryObj({ id: null, query: "", name: "" });
+                    setQueryError();
+                    setQueryNameErrorMessage();
                     setWidgetDetail({
                         ...widgetDetail,
-                        query: '',
-                    })
+                        query: "",
+                    });
                 }}
             >
                 Clear
@@ -472,7 +495,13 @@ export const WidgetManagement = ({
                                 className="form-text text-muted fw-light m-0"
                                 style={{ fontSize: "12px" }}
                             >
-                                Needed when saving the filter
+                                <small>Needed when saving the filter. </small>
+                                {queryObj.id && (
+                                    <small>
+                                        If you want create new one please create remove query
+                                        selected.
+                                    </small>
+                                )}
                             </div>
                         </div>
                         <div className="form-field form-group mb-3">
@@ -482,19 +511,24 @@ export const WidgetManagement = ({
                                 value={queryObj?.query}
                                 queries={queries}
                                 isVisibleEditQuery={false}
-                                onQuerySelected={(value) =>
+                                onQuerySelected={(query) => {
                                     onChangeData({
                                         name: "query",
-                                        value,
-                                    })
-                                }
+                                        value: query.query,
+                                    });
+                                    setQueryObj(query);
+                                }}
                                 onSaveClicked={onSaveClicked}
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
-                                isError = {queryError}
+                                isError={!!queryError}
                                 queryObj={queryObj}
+                                clearQueryButton={clearQueryButton}
                             />
+                            {queryError && (
+                                <div className="invalid-feedback d-block">{queryError}</div>
+                            )}
                         </div>
                         <div className="float-end">
                             <Button

@@ -37,9 +37,7 @@ export const FilterText = ({
     }, [passedQuery]);
 
     useEffect(() => {
-        if (isError) {
-            setIsInValid(true);
-        }
+        setIsInValid(isError);
     }, [isError]);
 
     useEffect(() => {
@@ -68,7 +66,7 @@ export const FilterText = ({
 
     const setQuery = async (query) => {
         await setQueryStr(query.query);
-        if (onQuerySelected) onQuerySelected(query.query);
+        if (onQuerySelected) onQuerySelected(query);
         Live.refresh();
     };
 
