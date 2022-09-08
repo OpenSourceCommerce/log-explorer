@@ -117,6 +117,7 @@ export const WidgetListModal = ({
                 onSelectWidgetForDashboard={onSelectWidgetForDashboard}
             />
             {isShow && (<WidgetDetailModal
+                key="modal_add"
                 tables={tables}
                 isShow={isWidgetDetailClicked}
                 widget={WIDGET_DEFAULT}

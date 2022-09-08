@@ -363,7 +363,7 @@ class Index extends Component {
 
         const selectedQueries = queries[uuid] || [];
 
-        const {query, name, nameClass = '', queryClass = ''} = queryModalQuery;
+        const {query = '', name = '', nameClass = '', queryClass = ''} = queryModalQuery;
 
         return (
             <div className="dashboard-page ms-cp-4 me-cp-3 mt-3">
