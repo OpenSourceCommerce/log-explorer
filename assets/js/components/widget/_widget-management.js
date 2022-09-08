@@ -100,6 +100,19 @@ export const WidgetManagement = ({
                 ? passedWidgetDetail.column.map((item) => item)
                 : passedWidgetDetail.column,
         });
+
+        const query = queries.find((item) => item.query === passedWidgetDetail.query);
+
+        if (query) {
+            setQueryObj(query);
+        } else {
+            setQueryObj({
+                ...queryObj,
+                id: null,
+                query: widgetDetail.query || "",
+            });
+        }
+
         setErrors([]);
         setAlertErrorMessage();
         setIsLoading(false);
@@ -350,19 +363,6 @@ export const WidgetManagement = ({
             setErrors(errors);
         }
     };
-
-    useEffect(() => {
-        const query = queries.find((item) => item.query === widgetDetail.query);
-        if (query) {
-            setQueryObj(query);
-        } else {
-            setQueryObj({
-                ...queryObj,
-                id: null,
-                query: widgetDetail.query || "",
-            });
-        }
-    }, [queries]);
 
     const { id, title, type, table, column, order, size, query } = widgetDetail;
     const isCounterSumType = type == WIDGET_TYPE.counterSum;
