@@ -96,6 +96,7 @@ const ModalEditWidget = ({
     };
 
     const [widgetDetail, setWidgetDetail] = useState({ ...DEFAULT_WIDGET });
+    const [isShowEdit, setIsShowEdit] = useState(false);
 
     useEffect(() => {
         if (widgetId) {
@@ -104,23 +105,26 @@ const ModalEditWidget = ({
     }, [widgetId]);
 
     const loadWidgetDetail = async () => {
-        const [loadWidgetRes] = await Promise.all([
-            WidgetActions.loadWidget(widgetId),
-        ]);
+        const [loadWidgetRes] = await Promise.all([WidgetActions.loadWidget(widgetId)]);
         if (loadWidgetRes && !loadWidgetRes.error) {
             const widget = { ...loadWidgetRes.data };
             if (widget.hasOwnProperty("order_desc")) {
                 widget.order = widget.order_desc ? ORDER_FIELD_VALUE.desc : ORDER_FIELD_VALUE.asc;
             }
             setWidgetDetail({ ...widget });
+            setIsShowEdit(true);
         }
     };
 
     return (
         <WidgetDetailModal
-            onSubmitDataSuccess={onSubmitWidgetSuccess}
+            key="modal_edit"
+            onSubmitDataSuccess={()=> {
+                setIsShowEdit(false);
+                onSubmitWidgetSuccess(); 
+            }}
             widget={widgetDetail}
-            isShow={!!widgetId}
+            isShow={isShowEdit}
             {...props}
         />
     );
@@ -131,6 +135,7 @@ export const DashboardContent = ({
     onAddWidgetClick,
     onWidgetListChange,
     onWidgetUpdateSuccess,
+    onUpdateDashboardDetail,
 }) => {
     const [widgets, setWidgets] = useState([]);
     const [toastContent, setToastContent] = useState();
@@ -357,6 +362,7 @@ export const DashboardContent = ({
                         w,
                         h,
                     } = widgets[index];
+
                     const { minWidth, minHeight } = configs.size[type];
 
                     let colorForChart;
@@ -439,7 +445,11 @@ export const DashboardContent = ({
                 }
             );
 
+            // update DashboardDetail from dashboard.js because `stick widget` will reuse it from onLayoutChange
+            onUpdateDashboardDetail(widgetList, fixed, index);
+
             if (!stickWidgetRes.error) {
+                widgetList[index].fixed = fixed === "true" ? 1 : 0;
                 widgetList[index].static = fixed;
                 setWidgets(widgetList.map((item) => ({ ...item, duration: 1000 })));
             }
@@ -665,7 +675,7 @@ export const DashboardContent = ({
                                         onLayoutChange={onLayoutChange}
                                         onWidgetClicked={onWidgetClicked}
                                     />
-                                    <ModalEditWidget
+                                    { widgetIdSelectedForEdit && <ModalEditWidget
                                         widgetIdSelectedForEdit={widgetIdSelectedForEdit}
                                         tables={tables}
                                         onHidden={() => setWidgetIdSelectedForEdit()}
@@ -673,7 +683,7 @@ export const DashboardContent = ({
                                             setWidgetIdSelectedForEdit();
                                             onWidgetUpdateSuccess();
                                         }}
-                                    />
+                                    />}
                                 </>
                             ) : (
                                 <EmptyWidgetContent onAddWidgetClick={onAddWidgetClick} />

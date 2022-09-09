@@ -114,17 +114,16 @@ export const WidgetListModal = ({
                 setWidgetRemoveSelected={setWidgetRemoveSelected}
                 onSelectWidgetForDashboard={onSelectWidgetForDashboard}
             />
-            {isShow && (
-                <WidgetDetailModal
-                    tables={tables}
-                    isShow={isWidgetDetailClicked}
-                    widget={WIDGET_DEFAULT}
-                    onSubmitDataSuccess={onSubmitDataSuccess}
-                    onHidden={() => {
-                        setIsWidgetDetailClicked(false);
-                    }}
-                />
-            )}
+            {isShow && (<WidgetDetailModal
+                key="modal_add"
+                tables={tables}
+                isShow={isWidgetDetailClicked}
+                widget={WIDGET_DEFAULT}
+                onSubmitDataSuccess={onSubmitDataSuccess}
+                onHidden={() => {
+                    setIsWidgetDetailClicked(false);
+                }}
+            />)}
             <AlertDeleteWidget
                 widget={widgetRemoveSelected}
                 onHidden={() => setWidgetRemoveSelected()}

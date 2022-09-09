@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, FilterText, FormField, Spinner, Colors } from "../index";
 import { generateDataBaseOnColumn, SAMPLE_DATA, WIDGET_TYPE } from "../../utils";
-import { DatabaseActions, WidgetActions } from "../../actions";
+import { Alert, DatabaseActions, LogTableActions, WidgetActions } from "../../actions";
 import isEqual from "lodash/isEqual";
 import { Chart } from "./_chart";
 import { CounterSum } from "./_counter-sum";
@@ -47,6 +47,7 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
             columnData = [...columnData, "value"];
             component = (
                 <WidgetDataTable
+                    className="limit-height"
                     data={generateDataBaseOnColumn(columnData, sizeData)}
                     column={columnData}
                     isDashboardComponent={true}
@@ -61,7 +62,6 @@ const WidgetLayout = ({ type, title, size, column, id }) => {
 
 export const WidgetManagement = ({
     widgetDetail: passedWidgetDetail,
-    queries,
     tables,
     onSubmitDataSuccess,
     isShow,
@@ -73,21 +73,46 @@ export const WidgetManagement = ({
     const [isLoading, setIsLoading] = useState(false);
     const [columnLoading, setColumnLoading] = useState(false);
     const [alertErrorMessage, setAlertErrorMessage] = useState();
+    const [queryObj, setQueryObj] = useState({ id: null, query: "", name: "" });
+    const [queryNameErrorMessage, setQueryNameErrorMessage] = useState("");
+    const [queryError, setQueryError] = useState("");
+    const [queries, setQueries] = useState([]);
+
+    useEffect(() => {
+        loadQueries();
+    }, []);
 
     //Reset the state for widgetDetail before show Modal
     useEffect(() => {
-        if(isShow){
+        if (!isShow) {
             setWidgetDetail(passedWidgetDetail);
             setErrors([]);
+            setQueryObj({ id: null, query: "", name: "" });
+            setQueryNameErrorMessage("");
         }
-    },[isShow])
+    }, [isShow]);
 
     useEffect(() => {
         setIsLoading(true);
         setWidgetDetail({
             ...passedWidgetDetail,
-            column: Array.isArray(passedWidgetDetail.column) ? passedWidgetDetail.column.map(item => item) : passedWidgetDetail.column,
+            column: Array.isArray(passedWidgetDetail.column)
+                ? passedWidgetDetail.column.map((item) => item)
+                : passedWidgetDetail.column,
         });
+
+        const query = queries.find((item) => item.query === passedWidgetDetail.query);
+
+        if (query) {
+            setQueryObj(query);
+        } else {
+            setQueryObj({
+                ...queryObj,
+                id: null,
+                query: widgetDetail.query || "",
+            });
+        }
+
         setErrors([]);
         setAlertErrorMessage();
         setIsLoading(false);
@@ -117,7 +142,7 @@ export const WidgetManagement = ({
     const onChangeData = async ({ name, value }) => {
         let newWidgetDetail = { ...widgetDetail };
         let newErrors = [...errors].filter((item) => item !== name);
-        let newValue = name === 'type' && !!value ? parseInt(value) : value;
+        let newValue = name === "type" && !!value ? parseInt(value) : value;
 
         if (name) {
             if (name === "table") {
@@ -166,14 +191,21 @@ export const WidgetManagement = ({
                     const index = currentValue.indexOf(value);
 
                     if (index >= 0) {
-                        currentValue = currentValue.filter(item => item !== value);
+                        currentValue = currentValue.filter((item) => item !== value);
                     } else {
                         currentValue.push(value);
                     }
                 }
 
                 newValue = currentValue;
+            } else if (name === "query") {
+                setQueryError();
+                setQueryObj({
+                    ...queryObj,
+                    query: value,
+                });
             }
+
             if (mandatoryFields.includes(name) && !value) {
                 newErrors.push(name);
             }
@@ -229,9 +261,67 @@ export const WidgetManagement = ({
         }
     };
 
-    const onSaveClicked = () => {};
+    const loadQueries = async () => {
+        const res = await WidgetActions.getQueries();
+        const { error, data } = res;
+        if (error === 0) {
+            setQueries(data);
+        }
+    };
 
-    const onDeleteCLicked = () => {};
+    const onSaveClicked = async () => {
+        if (!queryObj.name) {
+            setQueryNameErrorMessage("Please input query name");
+            return;
+        }
+        if (!queryObj.query) {
+            setQueryError("Please input query");
+            return;
+        }
+        // if (queries.find((item) => item.name === queryObj.name) && !queryObj.id) {
+        //     Alert.error("The filter name already exist!");
+        //     return;
+        // }
+        const queryExisted = queries.find((item) => item.query === queryObj.query);
+        const fieldNameExisted = queries.find((item) => item.name === queryObj.name);
+        let isError = false;
+        if (queryExisted && queryObj.id !== queryExisted.id) {
+            setQueryError(`Query already exist in "${queryExisted.name}"`);
+            isError = true;
+        }
+        if (fieldNameExisted && queryObj.id !== fieldNameExisted.id) {
+            setQueryNameErrorMessage("Filter name already exist.");
+            isError = true;
+        }
+        if (isError) {
+            return;
+        }
+
+        const res = await WidgetActions.saveQueries(queryObj.id, queryObj);
+        const { error } = res;
+        if (error === 0) {
+            Alert.success("Save query success");
+            loadQueries();
+        }
+    };
+
+    const onQueryNameChanged = ({ value }) => {
+        setQueryNameErrorMessage();
+        setQueryObj({
+            ...queryObj,
+            name: value,
+        });
+    };
+
+    const onDeleteCLicked = async (query) => {
+        const res = await WidgetActions.deleteQueries(query.id);
+        const { error } = res;
+        if (error === 0) {
+            Alert.success("Delete successful");
+            const newQueryList = queries.filter((item) => item.id !== query.id);
+            setQueries([...newQueryList]);
+        }
+    };
 
     const onSubmit = async () => {
         let errors = [];
@@ -275,13 +365,35 @@ export const WidgetManagement = ({
     };
 
     const { id, title, type, table, column, order, size, query } = widgetDetail;
-
     const isCounterSumType = type == WIDGET_TYPE.counterSum;
 
     const isDisableSaveButton =
         isEqual(passedWidgetDetail, widgetDetail) ||
         Object.keys(errors).length > 0 ||
         alertErrorMessage;
+
+    const clearQueryButton = (
+        <div className="input-group-append">
+            <Button
+                className="btn-bg-white"
+                id="btn-filter-save"
+                outlineColor={Colors.blue}
+                disabled={!(queryObj.id || queryObj.name || queryObj.query)}
+                onClick={(e) => {
+                    e.preventDefault();
+                    setQueryObj({ id: null, query: "", name: "" });
+                    setQueryError();
+                    setQueryNameErrorMessage();
+                    setWidgetDetail({
+                        ...widgetDetail,
+                        query: "",
+                    });
+                }}
+            >
+                Clear
+            </Button>
+        </div>
+    );
 
     return (
         <div className="editable-widget">
@@ -370,18 +482,53 @@ export const WidgetManagement = ({
                                 </FormField>
                             </div>
                         )}
+                        <div className="mb-3">
+                            <FormField
+                                label="Filter Name (Optional)"
+                                value={queryObj?.name}
+                                fieldName="filterName"
+                                placeholder="z. B. hostname filter"
+                                onChange={(e) => onQueryNameChanged(e.target)}
+                                errorMessage={queryNameErrorMessage}
+                            />
+                            <div
+                                className="form-text text-muted fw-light m-0"
+                                style={{ fontSize: "12px" }}
+                            >
+                                <small>Needed when saving the filter. </small>
+                                {queryObj.id && (
+                                    <small>
+                                        If you want create new one please create remove query
+                                        selected.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
                         <div className="form-field form-group mb-3">
                             <label className="mb-1">Filter</label>
                             <FilterText
                                 fieldName="query"
-                                value={query}
+                                value={queryObj?.query}
                                 queries={queries}
+                                isVisibleEditQuery={false}
+                                onQuerySelected={(query) => {
+                                    onChangeData({
+                                        name: "query",
+                                        value: query.query,
+                                    });
+                                    setQueryObj(query);
+                                }}
                                 onSaveClicked={onSaveClicked}
                                 onDeleteCLicked={onDeleteCLicked}
                                 placeholder="status = 200 AND url LIKE '%product%'"
                                 onBlur={(e) => onChangeData(e.target)}
-                                isModalShow = {isShow}
+                                isError={!!queryError}
+                                queryObj={queryObj}
+                                clearQueryButton={clearQueryButton}
                             />
+                            {queryError && (
+                                <div className="invalid-feedback d-block">{queryError}</div>
+                            )}
                         </div>
                         <div className="float-end">
                             <Button

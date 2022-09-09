@@ -138,7 +138,7 @@ const DashboardPage = ({}) => {
             );
 
         setWidgetListOrigin([...widgetListOrigin]);
-       	setWidgetList([...widgetList]);
+        setWidgetList([...widgetList]);
     };
 
     const onAddNewWidget = async (widgetListSelected) => {
@@ -194,6 +194,31 @@ const DashboardPage = ({}) => {
 
     const onWidgetUpdateSuccess = () => loadData();
 
+    const updateDashboardDetail = (widgetListUpdate, fixed, index) => {
+        let newWidgetList = [...dashboardDetail.widgets] || [];
+
+        // update position
+        widgetListUpdate.map((widget, ind) => {
+            const { x, y, w, h } = widget;
+            const updatedWidget = {
+                ...dashboardDetail.widgets[ind],
+                x,
+                y,
+                width: w,
+                height: h,
+            };
+            newWidgetList.splice(ind, 1, updatedWidget);
+        });
+
+        // update fixed widget[index]
+        newWidgetList[index].fixed = fixed === true ? 1 : 0;
+
+        setDashboardDetail({
+            ...dashboardDetail,
+            widgets: newWidgetList,
+        });
+    };
+
     return (
         <>
             {!isLoading ? (
@@ -221,6 +246,7 @@ const DashboardPage = ({}) => {
                             onAddWidgetClick={() => onAddWidgetClick()}
                             onWidgetListChange={onWidgetListChange}
                             onWidgetUpdateSuccess={onWidgetUpdateSuccess}
+                            onUpdateDashboardDetail={updateDashboardDetail}
                         />
                     )}
                     <CreateNewDashboardModal
