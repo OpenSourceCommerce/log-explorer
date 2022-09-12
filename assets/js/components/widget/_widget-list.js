@@ -33,7 +33,7 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
     else if (type === 3) widgetType = "table";
 
     return (
-        <div className={`widget-item d-flex flex-column ${!id ? "border-dashed" : ""}`}>
+        <div key={id} className={`widget-item d-flex flex-column ${!id ? "border-dashed" : ""}`}>
             <div className="ms-auto dropdown" style={{ height: "1rem" }}>
                 <div
                     className={`${id ? "d-block" : "d-none"}`}
@@ -63,16 +63,14 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick }) => {
                 <div className="text-center">
                     {id ? (
                         <span className={`rounded-circle bg-${widgetType} p-3`}>
-                            <Fragment>
-                                {widgetType === "count" ? (
-                                    <span className="text-white fw-medium">123</span>
-                                ) : (
-                                    <Icon
-                                        className="text-white"
-                                        dataFeather={WIDGET_ICON[widgetType]}
-                                    />
-                                )}
-                            </Fragment>
+                            {widgetType === "count" ? (
+                                <span className="text-white fw-medium">123</span>
+                            ) : (
+                                <Icon
+                                    className="text-white"
+                                    dataFeather={WIDGET_ICON[widgetType]}
+                                />
+                            )}
                         </span>
                     ) : (
                         <Icon className="text-primary" dataFeather="plus" />
@@ -149,9 +147,7 @@ export const WidgetList = ({ widgetIdParam, className }) => {
     };
 
     const loadData = async () => {
-        const [tableRes] = await Promise.all([
-            DatabaseActions.getAllTable(),
-        ]);
+        const [tableRes] = await Promise.all([DatabaseActions.getAllTable()]);
 
         let tables =
             tableRes && tableRes.data && tableRes.data.length > 0

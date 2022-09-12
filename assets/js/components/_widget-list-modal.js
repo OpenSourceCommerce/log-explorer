@@ -24,7 +24,7 @@ export const WidgetListModal = ({
         if (!!isShow) {
             setIsLoading(true);
             loadData();
-            setWidgetListSelected([])
+            setWidgetListSelected([]);
         }
     }, [isShow]);
 
@@ -33,9 +33,7 @@ export const WidgetListModal = ({
     }, [passedWidgetList]);
 
     const loadData = async () => {
-        const [tableRes] = await Promise.all([
-            DatabaseActions.getAllTable(),
-        ]);
+        const [tableRes] = await Promise.all([DatabaseActions.getAllTable()]);
 
         let tables =
             tableRes && tableRes.data && tableRes.data.length > 0
@@ -266,6 +264,7 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick, widgetListSele
 
     return (
         <div
+            key={id}
             className={`widget-item d-flex flex-column ${!id ? "border-dashed" : ""} ${
                 isWidgetSelected ? "widget-selected" : ""
             }`}
@@ -305,16 +304,14 @@ const Widget = ({ widgetItem, onWidgetClick, onRemoveWidgetClick, widgetListSele
                 <div className="text-center">
                     {id ? (
                         <span className={`rounded-circle bg-${widgetType} p-3`}>
-                            <Fragment>
-                                {widgetType === "count" ? (
-                                    <span className="text-white fw-medium">123</span>
-                                ) : (
-                                    <Icon
-                                        className="text-white"
-                                        dataFeather={WIDGET_ICON[widgetType]}
-                                    />
-                                )}
-                            </Fragment>
+                            {widgetType === "count" ? (
+                                <span className="text-white fw-medium">123</span>
+                            ) : (
+                                <Icon
+                                    className="text-white"
+                                    dataFeather={WIDGET_ICON[widgetType]}
+                                />
+                            )}
                         </span>
                     ) : (
                         <Icon className="text-primary" dataFeather="plus" />
