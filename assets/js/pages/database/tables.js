@@ -1,229 +1,303 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Button, Spinner, Size, Modal} from '../../components';
-import {Alert, DatabaseActions} from '../../actions';
+import React, { useEffect, useState } from "react";
+import { Spinner, Icon, Toast, Size, Modal, FormField, Button, Image } from "../../components";
+import { DatabaseActions } from "../../actions";
+import { DatabaseTableDetail } from "./table-details";
+import { TableColumn } from "./table-columns";
+import { TOAST_STATUS } from "../../utils";
+import ChevronRight from "../../../images/chevron-right.svg";
+import "../../../styles/pages/tables.scss";
 
-class DatabaseTables extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tables: [],
-            currentTable: '',
-            columns: [],
-            isLoading: false,
-            showDeleteModal: false,
-        };
-        this.onTableChange = this.onTableChange.bind(this);
-        this.gotoUpdate = this.gotoUpdate.bind(this);
-        this.gotoLogView = this.gotoLogView.bind(this);
-        this.syncAll = this.syncAll.bind(this);
-        this.deleteTable = this.deleteTable.bind(this);
-        this.showDeleteConfirmationModal = this.showDeleteConfirmationModal.bind(this);
-        this.onDeleteConfirmationModalHidden = this.onDeleteConfirmationModalHidden.bind(this);
-    }
+const DEFAULT_DATATABLE_VALUE = {
+    tableName: "",
+    ttl: "",
+};
 
-    loadData() {
-        this.setState({
-            isLoading: true
-        });
-        const that = this;
-        DatabaseActions.getAllTable()
-            .then(res => {
-                const {error, data} = res;
-                if (error) {
-                    return;
+const DEFAULT_COLUMNS_DATA = [{ name: "", type: "String" }];
+
+const CreateDatabaseTableModal = ({
+    isShow,
+    onHidden,
+    onCreateDataTableSuccess,
+    setToastMessage,
+}) => {
+    const [errors, setErrors] = useState([]);
+    const [dataTable, setDataTable] = useState({ ...DEFAULT_DATATABLE_VALUE });
+    const [dataTableColumns, setDataTableColumns] = useState([...DEFAULT_COLUMNS_DATA]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState();
+
+    useEffect(() => {
+        setDataTable({ ...DEFAULT_DATATABLE_VALUE });
+        setDataTableColumns([...DEFAULT_COLUMNS_DATA]);
+        setErrors([]);
+        setIsLoading(false);
+    }, [isShow]);
+
+    const onFieldChange = ({ name, value }, position) => {
+        if (name === "type" || name === "name") {
+            let newColumns = dataTableColumns.map((item, index) => {
+                const temp = { ...item };
+                if (index === position) {
+                    temp[name] = value;
                 }
-
-                that.setState({
-                    tables: data,
-                    isLoading: false
-                });
+                return temp;
             });
-    }
-
-    componentDidMount() {
-        this.syncAll();
-    }
-
-    onTableChange(e) {
-        const that = this;
-        this.setState({
-            currentTable: e.target.value
-        });
-        if (e.target.value === '') {
-            this.setState({
-                columns: []
-            });
+            setDataTableColumns([...newColumns]);
         } else {
-            this.setState({
-                isLoading: true
+            setDataTable({ ...dataTable, [name]: value });
+        }
+
+        const isExistError = errors.find((item) => item.position === position);
+
+        if (isExistError) {
+            const newErrors = [...errors].filter((item) => item.position !== position);
+            setErrors([...newErrors]);
+        }
+
+        if (fieldErrors?.name) {
+            setFieldErrors({
+                ...fieldErrors,
+                name: "",
             });
-            DatabaseActions.getTableColumns(e.target.value)
-                .then(res => {
-                    const {error, table, data} = res;
-                    if (error) {
-                        return;
-                    }
+        }
+    };
 
-                    that.setState({
-                        currentTable: table,
-                        columns: data,
-                        isLoading: false
+    const addNewColumn = () => {
+        setDataTableColumns([...dataTableColumns, { name: "", type: "String" }]);
+    };
+
+    const onFieldBlur = (position, error) => {
+        let newErrors = [...errors].filter((item) => item.position !== position);
+
+        if (error) newErrors.push(error);
+
+        setErrors(newErrors);
+    };
+
+    const setColumnNameWillRemove = ({ position }) => {
+        setDataTableColumns([...dataTableColumns].filter((_, index) => index !== position));
+    };
+
+    const createNewDataTable = async () => {
+        setIsLoading(true);
+        let toastContent = {};
+        const { tableName, ttl } = dataTable;
+
+        const payload = {
+            name: tableName,
+            ttl,
+            columns: dataTableColumns.reduce((arr, item) => {
+                if (item.name) {
+                    arr.push({
+                        ...item,
+                        origin: "",
                     });
-                });
-        }
-    }
-
-    gotoUpdate() {
-        const {currentTable} = this.state;
-
-        if (currentTable !== '') {
-            window.location.href = '/table/' + currentTable;
-        }
-    }
-
-    gotoLogView() {
-        const {currentTable} = this.state;
-
-        if (currentTable !== '') {
-            window.location.href = '/table/' + currentTable + '/logview';
-        }
-    }
-
-    syncAll() {
-        const $this = this;
-        DatabaseActions.syncAll().then(response => {
-            const {error} = response;
-            if (error === 0) {
-                $this.loadData()
-            }
-        });
-    }
-
-    showDeleteConfirmationModal() {
-        const showDeleteModal = true;
-
-        this.setState({showDeleteModal})
-    }
-
-    deleteTable() {
-        const that = this
-        let {currentTable} = this.state;
-
-        if (!currentTable) {
-            return;
-        }
-
-        DatabaseActions.deleteTable(currentTable)
-            .then(res => {
-                const {error} = res;
-                if (error !== 0) {
-                    return;
                 }
-
-                const columns = [];
-                currentTable = '';
-
-                Alert.success('Remove successful');
-                that.setState({currentTable, columns})
-                that.onDeleteConfirmationModalHidden();
-                that.syncAll();
-            })
-    }
-
-    onDeleteConfirmationModalHidden() {
-        const showDeleteModal = false;
-
-        this.setState({showDeleteModal})
-    }
-
-    render() {
-        const {tables, currentTable, columns, isLoading, showDeleteModal} = this.state;
-
-        let url = '';
-        if (currentTable !== '') {
-            url = '/table/' + currentTable;
+                return arr;
+            }, []),
+        };
+        const res = await DatabaseActions.createOrUpdate(null, payload);
+        if (!res.error) {
+            toastContent = { color: TOAST_STATUS.success, message: "Create datatable successful." };
+            onCreateDataTableSuccess(tableName);
+            onHidden();
+            setToastMessage(toastContent);
+        } else {
+            setFieldErrors({ ...res.fields });
+            if (res.fields?.columns) {
+                setErrors([
+                    {
+                        position: 0,
+                        errorMessage: res.fields?.columns,
+                    },
+                ]);
+            }
         }
+        setIsLoading(false);
+    };
 
-        return (
-            <div className="database container-fluid">
-                <Modal
-                    size={Size.medium}
-                    id={'delete-table'}
-                    title={`Deleting table \"${currentTable}\"`}
-                    showCloseButton={true}
-                    closeButtonTitle='Abort'
-                    showSaveButton={true}
-                    saveButtonTitle='OK'
-                    saveButtonColor='danger'
-                    saveButtonAction={this.deleteTable}
-                    show={showDeleteModal}
-                    onHidden={this.onDeleteConfirmationModalHidden}
-                >
-                    Be careful - this will also delete the table in clickhouse database!
-                </Modal>
-                <div className="card">
-                    <CardHeader title="Table view" showCollapseButton={false}
-                                showRemoveButton={false}/>
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-12 col-md-4">
-                                <select className="form-control" value={currentTable}
-                                        onChange={this.onTableChange}>
-                                    <option value="">Please select table</option>
-                                    {tables.map((item, key) => {
-                                        return <option key={key} value={item}>{item}</option>;
-                                    })}
-                                </select>
-                            </div>
-                            <div
-                                className="col-12 col-md-8 d-flex mt-3 mt-md-0 justify-content-md-end flex-wrap ml-0 ml-md-auto">
-                                <Button disabled={url === ''} onClick={this.gotoUpdate}
-                                        className="btn btn-primary mr-md-2 mb-2">Update</Button>
-                                <Button disabled={url === ''} onClick={this.gotoLogView}
-                                        className="btn btn-primary mr-md-2 mb-2">Log view
-                                    setting</Button>
-                                <Button onClick={this.syncAll}
-                                        className={'btn btn-success mr-md-2 mb-2'}>Sync
-                                    tables</Button>
-                                <div className="ml-auto ml-md-0">
-                                    <Link href="/table/create"
-                                          className="btn btn-success mr-2 text-nowrap">Create
-                                        table</Link>
-                                </div>
-                                <Button disabled={url === ''}
-                                        onClick={this.showDeleteConfirmationModal}
-                                        className="btn btn-danger mr-md-2 mb-2">
-                                    Delete
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-12 mt-3">
-                                {isLoading ? (<Spinner/>) : (
-                                    <Table>
-                                        <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {columns.map((item, key) => {
-                                            return <tr key={key}>
-                                                <td>{item.name}</td>
-                                                <td>{item.type}</td>
-                                            </tr>;
-                                        })}
-                                        </tbody>
-                                    </Table>)}
-                            </div>
-                        </div>
-                    </div>
+    const { tableName, ttl } = dataTable;
+    return (
+        <Modal
+            size={Size.large}
+            id="create-new-table"
+            title="Create a new datatable"
+            showCloseButton={false}
+            isPositionCenter={true}
+            show={isShow}
+            onHidden={onHidden}
+        >
+            <div className="mx-3">
+                <div className="row mb-3">
+                    <FormField
+                        className="col-12 col-md-6"
+                        label="Table name"
+                        fieldName="tableName"
+                        value={tableName}
+                        isMandatory={true}
+                        disabled={isLoading}
+                        placeholder="table name"
+                        onChange={(e) => onFieldChange(e.target)}
+                        errorMessage={fieldErrors?.name}
+                    />
                 </div>
+                <div className="row">
+                    <FormField
+                        className="col-12 col-md-6"
+                        label="Table TTL"
+                        fieldName="ttl"
+                        value={ttl}
+                        disabled={isLoading}
+                        placeholder="timestamp + toIntervalMonth(100)"
+                        onChange={(e) => onFieldChange(e.target)}
+                    />
+                </div>
+                <TableColumn
+                    columns={dataTableColumns}
+                    errors={errors}
+                    setColumnNameWillRemove={setColumnNameWillRemove}
+                    isEnableSaveChangesModal={isLoading}
+                    onFieldChange={(position, target) => onFieldChange(target, position)}
+                    onFieldBlur={onFieldBlur}
+                    addNewColumn={addNewColumn}
+                />
+                <Button
+                    className="w-100"
+                    disabled={errors.length > 0}
+                    isLoading={isLoading}
+                    onClick={() => createNewDataTable()}
+                >
+                    Create Datatable
+                </Button>
             </div>
-        );
-    }
-}
+        </Modal>
+    );
+};
 
-ReactDOM.render(<DatabaseTables/>, document.querySelector('#root'));
+export const DatabaseTables = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [tables, setTableList] = useState([]);
+    const [currentTableSelected, setCurrentTableSelected] = useState(null);
+    const [toastContent, setToastContent] = useState({});
+    const [isShowCreateDatabaseTable, setIsShowCreateDatabaseTable] = useState(false);
+
+    const loadDataTableList = async () => {
+        const res = await DatabaseActions.getAllTable();
+        const { error, data } = res;
+        if (!error) {
+            setTableList(data);
+            if (data.length > 0) setCurrentTableSelected(data[0]);
+        }
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        setIsLoading(true);
+        loadDataTableList();
+    }, []);
+
+    const setNewTableName = (originTableName, newTableName) => {
+        const newTableList = [...tables];
+        const index = newTableList.findIndex((item) => item === originTableName);
+        newTableList[index] = newTableName;
+        setCurrentTableSelected(newTableName);
+        setTableList([...newTableList]);
+    };
+
+    const setToastMessage = (toastContent) => {
+        setToastContent(toastContent);
+    };
+
+    const onDeleteTable = (tableName) => {
+        const newTableList = [...tables];
+        const findIndex = newTableList.findIndex((item) => item === tableName);
+        newTableList.splice(findIndex, 1);
+        setCurrentTableSelected(newTableList[0]);
+        setTableList([...newTableList]);
+    };
+
+    const syncAllTable = async () => {
+        setIsLoading(true);
+        const res = await DatabaseActions.syncAll();
+        if (!res.error) loadDataTableList();
+    };
+
+    const onCreateDataTableSuccess = (tableName) => {
+        const newDataTableList = [...tables];
+        newDataTableList.push(tableName);
+        setTableList([...newDataTableList]);
+    };
+
+    return (
+        <div className="database-page row m-0">
+            {!isLoading ? (
+                <>
+                    <Toast
+                        toastContent={toastContent}
+                        onToastClosed={() => {
+                            setToastContent({});
+                        }}
+                    />
+                    <div className="col-12 col-md-3 bg-white min-h-100 d-flex flex-column p-0 project-list-side">
+                        <small className="title ps-cp-4 my-3">Datatables</small>
+                        <button
+                            className="ps-cp-4 py-3 btn btn-link text-start text-info"
+                            onClick={() => syncAllTable()}
+                        >
+                            <Icon dataFeather="refresh-ccw" className="feather-sm me-2" />
+                            <span className="d-inline-block align-middle fw-bold">Sync tables</span>
+                        </button>
+                        <button
+                            className="ps-cp-4 py-3 btn btn-link text-start"
+                            onClick={() => setIsShowCreateDatabaseTable(true)}
+                        >
+                            <Icon dataFeather="plus" className="feather-sm me-2" />
+                            <span className="d-inline-block align-middle fw-bold">
+                                Create new datatable
+                            </span>
+                        </button>
+                        <ul className="project-list list-unstyled">
+                            {tables && tables.length > 0
+                                ? tables.map((item, key) => (
+                                      <li
+                                          key={key}
+                                          className={`${
+                                              currentTableSelected === item ? "active" : ""
+                                          }`}
+                                          role="button"
+                                      >
+                                          <button
+                                              className="w-100 d-flex justify-content-between align-items-center btn btn-link text-start py-3 ps-cp-4 pe-3 text-dark"
+                                              onClick={() => setCurrentTableSelected(item)}
+                                          >
+                                              <span>{item}</span>
+                                              <Image src={ChevronRight} />
+                                          </button>
+                                      </li>
+                                  ))
+                                : null}
+                        </ul>
+                    </div>
+                    <div className="col-12 col-md-9">
+                        {currentTableSelected && (
+                            <DatabaseTableDetail
+                                setNewTableName={setNewTableName}
+                                tableName={currentTableSelected}
+                                setToastMessage={setToastMessage}
+                                onDeleteTable={onDeleteTable}
+                            />
+                        )}
+                    </div>
+                    <CreateDatabaseTableModal
+                        isShow={isShowCreateDatabaseTable}
+                        onHidden={() => setIsShowCreateDatabaseTable(false)}
+                        setToastMessage={setToastMessage}
+                        onCreateDataTableSuccess={onCreateDataTableSuccess}
+                    />
+                </>
+            ) : (
+                <Spinner />
+            )}
+        </div>
+    );
+};

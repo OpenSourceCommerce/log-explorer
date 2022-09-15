@@ -1,139 +1,147 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {WIDGET_TYPE} from "../../utils";
-import {Input, Button, Text, ResponsiveGridLayout,WidgetManagement} from '../../components';
-import {Alert, UserActions} from '../../actions';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import {
+    ContentHeader,
+    Toast,
+    UserProfile,
+    ChangePasswordForm,
+    WidgetList,
+} from "../../components";
+import "../../../styles/pages/_edit-profile.scss";
+import { DatabaseTables } from "../database/tables";
 
-class ProfileForm extends Component {
-    constructor(props) {
-        super(props);
+const TAB_LIST = [
+    {
+        id: "profile",
+        title: "My Profile",
+    },
+    {
+        id: "databases",
+        title: "Databases",
+    },
+    {
+        id: "widgets",
+        title: "Widgets",
+    },
+];
 
-        //data structure
-
-
-
-        this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            firstNameError: false,
-            lastNameError: false,
-        };
-        this.onTextChange = this.onTextChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    loadUser() {
-        const that = this;
-        this.setState({
-            isLoading: true
-        });
-        UserActions.getProfile()
-            .then(res => {
-                const {error, data} = res;
-                if (error) {
-                    return;
-                }
-
-                const {first_name, last_name, email} = data;
-
-                that.setState({
-                    firstName: first_name,
-                    lastName: last_name,
-                    email,
-                    isLoading: false,
-                    firstNameError: false,
-                    lastNameError: false
-                });
-            });
-    }
-
-    componentDidMount() {
-        this.loadUser();
-    }
-
-    onTextChange(e) {
-        const state = {};
-        state[e.target.name] = e.target.value;
-        state[e.target.name + 'Error'] = false;
-        this.setState(state);
-    }
-
-    onSubmit() {
-        let hasError = false;
-        let {firstName, lastName, email} = this.state;
-        firstName = $.trim(firstName);
-        lastName = $.trim(lastName);
-        if (firstName === '') {
-            this.setState({
-                firstNameError: true
-            });
-            hasError = true;
-        }
-
-        if (lastName === '') {
-            this.setState({
-                lastNameError: true
-            });
-            hasError = true;
-        }
-
-        if (!hasError) {
-            this.setState({
-                isLoading: true
-            });
-            const that = this;
-            UserActions.updateMe({
-                first_name: firstName,
-                last_name: lastName
-            }).then(res => {
-                const {error} = res;
-                if (error) {
-                    return;
-                }
-
-                Alert.success('Update successful');
-            }).finally(() => {
-                that.setState({
-                    isLoading: false
-                });
-            });
-        }
-    }
-
-    render() {
-        const {firstName, lastName, email, isLoading, firstNameError, lastNameError} = this.state;
+const NavComponent = ({ currentTab }) => {
+    const TabComponent = ({ title, id, currentTab }) => {
         return (
-            <div className="user container-fluid">
-                <div className="card">
-                    <div className="card-header">
-                        <h3 className="card-title align-items-center p-2">Update profile</h3>
-                        <Button className="float-right" color={'success'}
-                            onClick={this.onSubmit} isLoading={isLoading} cy={'btnSave'}>
-                            Update
-                        </Button>
+            <li className="nav-item" role="presentation">
+                <button
+                    className={`nav-link ${currentTab === id ? "active" : ""}`}
+                    id={`pills-${id}-tab`}
+                    type="button"
+                    role="tab"
+                    aria-controls={`pills-${id}`}
+                    aria-selected="true"
+                    onClick={() => {
+                        if (currentTab !== id) location.href = `setting?tab=${id}`;
+                    }}
+                >
+                    {title}
+                </button>
+            </li>
+        );
+    };
+    return (
+        <ul className="nav nav-pills ms-4" id="pills-tab" role="tablist">
+            {TAB_LIST.map((item) => (
+                <TabComponent key={item.id} {...item} currentTab={currentTab} />
+            ))}
+        </ul>
+    );
+};
 
+const ProfileForm = ({ currentTab: passedCurrentTab }) => {
+    const [toastContent, setToastContent] = useState();
+    const [currentTab, setCurrentTab] = useState();
+    const [widgetIdParam, setWidgetIdParam] = useState();
+
+    useEffect(() => {
+        const currentUrlQueries = window.location.search;
+        const currentUrlQueriesArray = currentUrlQueries.split("&");
+        if (currentUrlQueriesArray && currentUrlQueriesArray.length > 0) {
+            currentUrlQueriesArray.forEach((item) => {
+                const queryParam = item.split("=");
+                switch (queryParam[0]) {
+                    case "tab": {
+                        setCurrentTab(queryParam[1]);
+                        break;
+                    }
+                    case "widgetId": {
+                        setWidgetIdParam(queryParam[1]);
+                        break;
+                    }
+                }
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        setCurrentTab(passedCurrentTab);
+    }, [passedCurrentTab]);
+
+    const setToastMessage = (toastContent) => setToastContent(toastContent);
+
+    return (
+        <div className="setting-profile" style={{ marginBottom: "50px" }}>
+            <div className="content">
+                <Toast
+                    toastContent={toastContent}
+                    onToastClosed={() => {
+                        setToastContent();
+                    }}
+                />
+                <div className="bg-white">
+                    <div className="container-fluid">
+                        <div className="ms-4 me-4">
+                            <ContentHeader
+                                pageTitle="Settings"
+                                iconName="settings"
+                                className="pb-2 bg-white"
+                            >
+                                <NavComponent currentTab={currentTab} />
+                            </ContentHeader>
+                        </div>
                     </div>
-                    <div className="card-body">
-                        <form role="form">
-                            <div className="form-group">
-                                <label>Email</label>
-                                <Text className={'ml-3'}>{email}</Text>
-                            </div>
-                            <div className="form-group">
-                                <label>First name</label>
-                                <Input className={firstNameError ? 'is-invalid' : ''} required={true} name={'firstName'} placeholder="First name" value={firstName} onChange={this.onTextChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>Last name</label>
-                                <Input className={lastNameError ? 'is-invalid' : ''} required={true} name={'lastName'} placeholder="Last name" value={lastName} onChange={this.onTextChange}/>
-                            </div>
-                        </form>
+                </div>
+                <div className="tab-content" id="pills-tabContent">
+                    <div
+                        className={`container-fluid pb-5 ms-cp-4 px-0 mt-3 tab-pane fade ${
+                            currentTab === "profile" ? "show active" : ""
+                        }`}
+                        id="pills-profile"
+                        role="tabpanel"
+                        aria-labelledby="pills-profile-tab"
+                    >
+                        <UserProfile setToastMessage={setToastMessage} />
+                        <ChangePasswordForm setToastMessage={setToastMessage} />
+                    </div>
+                    <div
+                        className={`tab-pane fade ${
+                            currentTab === "databases" ? "show active" : ""
+                        }`}
+                        id="pills-databases"
+                        role="tabpanel"
+                        aria-labelledby="pills-databases-tab"
+                    >
+                        <DatabaseTables />
+                    </div>
+                    <div
+                        className={`tab-pane fade ${currentTab === "widgets" ? "show active" : ""}`}
+                        id="pills-widgets"
+                        role="tabpanel"
+                        aria-labelledby="pills-widgets-tab"
+                    >
+                        <WidgetList className="mx-3" widgetIdParam={widgetIdParam} />
                     </div>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
-ReactDOM.render(<ProfileForm/>, document.querySelector('#root'));
+const root = document.querySelector("#root");
+ReactDOM.render(<ProfileForm {...root.dataset} />, root);

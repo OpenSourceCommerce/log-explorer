@@ -1,8 +1,16 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {CardHeader, Table, Link, Icon, Button, DeleteModal} from '../../components';
-import {Alert, UserActions} from '../../actions';
+import { t } from "@nextcloud/event-bus";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { UserActions } from "../../actions";
+import { ContentHeader, DataTable, Toast, DeleteModal, Button, Icon } from "../../components";
+import { TOAST_STATUS } from "../../utils";
+import { UserForm } from "./form";
 
+const INDEX_CURRENT_USER = 0;
+
+const ADMIN_VALUE = 1;
+
+const USER_VALUE = 0;
 class UserList extends Component {
     constructor(props) {
         super(props);
@@ -10,175 +18,350 @@ class UserList extends Component {
             users: [],
             isLoading: false,
             newUser: null,
-            userSelected: null,
+            editUserIndex: null,
+            deleteUserIndex: null,
+            toastContent: {},
+            isShowUserDetailForm: false,
+            indexRowUpdated: null,
         };
-        this.onChangeStatus = this.onChangeStatus.bind(this);
-        this.onDelete = this.onDelete.bind(this);
     }
 
-    loadData() {
+    loadData = () => {
         this.setState({
-            isLoading: true
+            isLoading: true,
         });
-        const that = this;
-        UserActions.getAllUser()
-            .then(res => {
-                const {error, data} = res;
-                if (error) {
-                    return;
-                }
+        UserActions.getAllUser().then((res) => {
+            const { error, data } = res;
+            if (error) {
+                return;
+            }
 
-                that.setState({
-                    users: data,
-                    isLoading: false
-                });
+            this.setState({
+                users: data,
+                isLoading: false,
             });
-    }
+        });
+    };
 
     componentDidMount() {
         this.loadData();
-        const newUser = localStorage.getItem('newUser') && JSON.parse(localStorage.getItem('newUser')).email ? JSON.parse(localStorage.getItem('newUser')).email : null;
-        if (newUser) {
-            this.setState({
-                newUser,
-            }, () => {
-                setTimeout(() => {
-                    localStorage.removeItem('newUser');
-                    this.setState({newUser: null});
-                }, 5000)
-            })
-        }
     }
 
-    onChangeStatus(key) {
-        const {users} = this.state;
-        const user = users[key];
-        const newStatus = user.is_active ? 0 : 1;
-        const that = this;
-        that.setState({
-            isLoading: true
+    onChangeStatus = (key, newValue) => {
+        if (key === INDEX_CURRENT_USER) {
+            return;
+        }
+
+        const { users } = this.state;
+        const userData = [...users];
+
+        const { id } = userData[key];
+
+        const newStatus = newValue ? ADMIN_VALUE : USER_VALUE;
+
+        userData[key].is_active = newStatus;
+        setTimeout(() => {
+            this.setState({
+                isLoading: true,
+                indexRowUpdated: key,
+            });
+            let toastContent = {};
+
+            UserActions.setStatus(id, { is_active: newStatus })
+                .then((res) => {
+                    const { error } = res;
+                    const strMessage = newStatus ? "Enable" : "Disable";
+                    if (error) {
+                        toastContent = {
+                            color: TOAST_STATUS.failed,
+                            message: `${strMessage} user failed`,
+                        };
+                        return;
+                    }
+
+                    toastContent = {
+                        color: TOAST_STATUS.success,
+                        message: `${strMessage} user successfully`,
+                    };
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false,
+                        users: [...userData],
+                        toastContent,
+                        indexRowUpdated: null,
+                    });
+                });
+        }, 150);
+    };
+
+    onDelete = (key) => {
+        if (key !== INDEX_CURRENT_USER) {
+            this.setState({
+                deleteUserIndex: key,
+            });
+            return;
+        }
+    };
+
+    onUpdateUserRole = async (user, { value }, index) => {
+        this.setState({
+            isLoading: true,
+            indexRowUpdated: index,
         });
-        UserActions.setStatus(user.id, {is_active: newStatus})
-            .then(res => {
-                const {error} = res;
-                const strMessage = newStatus ? 'Enable' : 'Disable';
+        const { first_name, last_name, email, id } = user;
+        let toastContent = {};
+        let userData = [...this.state.users];
+        try {
+            const res = await UserActions.createOrUpdate(id, {
+                first_name,
+                last_name,
+                email,
+                is_admin: parseInt(value),
+            });
+            if (res.error) {
+                toastContent = {
+                    color: TOAST_STATUS.failed,
+                    message: "Updated user failed",
+                };
+            } else {
+                userData[index].is_admin = value;
+                toastContent = {
+                    color: TOAST_STATUS.success,
+                    message: "Updated user successfully",
+                };
+            }
+        } catch (e) {
+            toastContent = {
+                color: TOAST_STATUS.failed,
+                message: e.message,
+            };
+        }
+        this.setState({
+            toastContent,
+            users: [...userData],
+            isLoading: false,
+            indexRowUpdated: null,
+        });
+    };
+
+    onConfirmDeleteUser = () => {
+        this.setState({
+            isLoading: true,
+        });
+
+        let toastContent = {};
+        const { deleteUserIndex, users } = this.state;
+        const userData = [...users];
+        UserActions.delete(users[deleteUserIndex].id)
+            .then((res) => {
+                const { error } = res;
+
                 if (error) {
-                    Alert.error(`You can not ${strMessage} this user`);
+                    toastContent = {
+                        color: TOAST_STATUS.failed,
+                        message: "You can not delete this account",
+                    };
                     return;
                 }
 
-                users[key].is_active = newStatus;
-                Alert.success(`${strMessage} successful`);
-                that.setState({
-                    users
-                });
-            }).finally(() => {
-                that.setState({
-                    isLoading: false
+                userData.splice(deleteUserIndex, 1);
+                toastContent = {
+                    color: TOAST_STATUS.success,
+                    message: "Delete successful",
+                };
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                    deleteUserIndex: null,
+                    users: userData,
+                    toastContent,
                 });
             });
-    }
+    };
 
-    onDelete = (key) => {
-        if (key !== 0) {
-            this.setState({
-                userSelected: key
-            })
-            return;
-        }
-        Alert.error('Can not delete your account by yourself')
-    }
+    onFinishEditUser = async (user, isUpdateUser) => {
+        const toastContent = {
+            color: "success",
+            message: `${isUpdateUser ? "Update" : "Create"} user  ${user.email} successful`,
+        };
+
+        await this.loadData();
+
+        this.setState(
+            {
+                isShowUserDetailForm: false,
+                editUserIndex: null,
+                toastContent,
+            },
+            () => {
+                setTimeout(() => {
+                    this.setState({ toastContent: {} });
+                }, 1500);
+            }
+        );
+    };
 
     render() {
-        const {users, newUser, userSelected} = this.state;
+        const {
+            users,
+            editUserIndex,
+            deleteUserIndex,
+            toastContent,
+            isLoading,
+            isShowUserDetailForm,
+            indexRowUpdated,
+        } = this.state;
 
-        const _users = users.map((user, key) => {
-            return <tr key={key}>
-                <td>{user.first_name} {user.last_name}</td>
-                <td>{user.email}</td>
-                <td>{user.is_admin ? 'Admin' : 'user'}</td>
-                <td>{user.status}</td>
-                <td>{user.last_updated}</td>
-                <td className={'text-right'}>
-                    <Link href={'/user/' + user.id} className={'btn btn-sm mr-3 btn-success'} title={'Edit'}><Icon name={'edit'}/></Link>
-                    {user.is_active == 1 &&
-                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-warning'} title={'Disable'}><Icon name={'user-times'}/></Button>}
-                    {user.is_active != 1 &&
-                    <Button onClick={_ => this.onChangeStatus(key)} className={'btn btn-sm btn-primary'} title={'Enable'}><Icon name={'user-plus'}/></Button>}
-                    <Button onClick={_ => this.onDelete(key)} className={'btn ml-3 btn-sm btn-danger'} title={'Delete'}><Icon name={'trash'}/></Button>
-                </td>
-            </tr>;
-        });
+        const columns = [
+            {
+                label: '',
+            },
+            {
+                label: "Name",
+                formatter: ({ row }) => `${row.first_name} ${row.last_name}`,
+            },
+            {
+                label: "E-Mail",
+                dataField: "email",
+                formatter: ({ cell }) => <span className="text-primary">{cell}</span>,
+            },
+            {
+                label: "Role",
+                dataField: "is_admin",
+                formatter: ({ cell, row, index }) => (
+                    <select
+                        name="is_admin"
+                        className="form-select"
+                        aria-label={cell ? "Admin" : "User"}
+                        defaultValue={cell}
+                        disabled={isLoading && indexRowUpdated === index}
+                        onChange={(e) => this.onUpdateUserRole(row, e.target, index)}
+                    >
+                        <option value={USER_VALUE}>User</option>
+                        <option value={ADMIN_VALUE}>Admin</option>
+                    </select>
+                ),
+            },
+            {
+                label: "Status",
+                dataField: "is_active",
+                formatter: ({ index, cell }) => {
+                    let isDisable = indexRowUpdated === index;
+                    if (index === INDEX_CURRENT_USER) isDisable = true;
+
+                    return (
+                        <div className="form-check form-switch">
+                            <input
+                                className={`form-check-input ${index === INDEX_CURRENT_USER ? 'pe-none' : ''}`}
+                                type="checkbox"
+                                role="switch"
+                                id={`is_active_${index}`}
+                                disabled={isDisable}
+                                defaultChecked={!!cell}
+                                onChange={(e) => this.onChangeStatus(index, !cell)}
+                            />
+                        </div>
+                    );
+                },
+            },
+            {
+                label: "Last updated",
+                dataField: "last_updated",
+            },
+            {
+                formatter: ({ row, index }) => {
+                    return (
+                        <div className="dropdown float-end">
+                            <button
+                                className="btn text-dark"
+                                id="dropdownMenuLink"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <Icon name="ellipsis-h" />
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li>
+                                    <Button
+                                        className="dropdown-item text-primary"
+                                        onClick={() => {
+                                            this.setState({
+                                                isShowUserDetailForm: true,
+                                                editUserIndex: index,
+                                            });
+                                        }}
+                                    >
+                                        Edit
+                                    </Button>
+                                </li>
+                                {index !== 0 && (
+                                    <li>
+                                        <Button
+                                            onClick={() => this.onDelete(index)}
+                                            className="dropdown-item text-danger"
+                                        >
+                                            Delete
+                                        </Button>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    );
+                },
+            },
+        ];
 
         return (
-            <div className="users container-fluid">
+            <div className="users ms-cp-4 me-cp-3">
+                <Toast
+                    toastContent={toastContent}
+                    onToastClosed={() => {
+                        this.setState({ toastContent: {} });
+                    }}
+                />
+                <div className="content me-2 mt-3">
+                    <ContentHeader
+                        pageTitle="Users"
+                        iconName="users"
+                        actionButtonTitle="Create User"
+                        actionButtonIcon="plus"
+                        onClickActionBtn={() => {
+                            this.setState({
+                                isShowUserDetailForm: true,
+                            });
+                        }}
+                    />
+                    <DataTable columns={columns} dataTable={users} />
+                </div>
+                <UserForm
+                    isShow={isShowUserDetailForm}
+                    indexUserSelected={editUserIndex}
+                    users={users}
+                    onFinishEditUser={this.onFinishEditUser}
+                    onHidden={() => {
+                        this.setState({
+                            isShowUserDetailForm: false,
+                            editUserIndex: null,
+                        });
+                    }}
+                />
                 <DeleteModal
                     data={users}
-                    indexSelected={userSelected}
+                    indexSelected={deleteUserIndex}
                     objectName="user"
                     displayField="email"
                     closeButtonAction={() => {
                         this.setState({
-                            userSelected: false,
-                        })
-                    }}
-                    saveButtonAction={() => {
-                        this.setState({
-                            isLoading: true
-                        });
-                        UserActions.delete(users[userSelected].id).then(res => {
-                            const {error} = res;
-                            if (error) {
-                                Alert.error('You can not delete this account');
-                                return;
-                            }
-
-                            users.splice(userSelected, 1);
-                            this.setState({
-                                users,
-                            });
-                            Alert.success('Delete successful');
-                        }).finally(() => {
-                            this.setState({
-                                isLoading: false,
-                                userSelected: false,
-                            });
+                            deleteUserIndex: null,
                         });
                     }}
+                    saveButtonAction={() => this.onConfirmDeleteUser()}
                 />
-                {newUser && (
-                    <div className="alert alert-success" role="alert">
-                        {`The account ${newUser} has been created.`}
-                    </div>)}
-                <div className="card">
-                    <CardHeader title="User management" showCollapseButton={false} showRemoveButton={false}>
-                        <Link className={'btn btn-success'} href={'/user/create'}>Create user</Link>
-                    </CardHeader>
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-12">
-                                <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Role</th>
-                                            <th>Status</th>
-                                            <th>Last updated</th>
-                                            <th>&nbsp;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {_users}
-                                    </tbody>
-                                </Table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         );
     }
 }
 
-ReactDOM.render(<UserList/>, document.querySelector('#root'));
+ReactDOM.render(<UserList />, document.querySelector("#root"));

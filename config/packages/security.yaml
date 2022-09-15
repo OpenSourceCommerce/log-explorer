@@ -47,7 +47,7 @@ security:
         - { path: ^/api/password/forgot$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/password/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/password/reset$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/setting, roles: ROLE_USER }
         - { path: ^/api/profile, roles: ROLE_USER }
         - { path: ^/log-view, roles: ROLE_USER }
         - { path: ^/api/(table|widget|stream|dashboard|logview), roles: ROLE_USER }

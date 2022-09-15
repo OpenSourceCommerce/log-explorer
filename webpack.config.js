@@ -21,7 +21,7 @@ Encore
 	.copyFiles({
 		from: './assets/images',
 		to: 'images/[path][name].[ext]',
-		pattern: /logo\.svg$/
+		pattern: /\.(jpe?g|png|gif|ico|svg|webp)$/,
 	})
 /* .copyFiles({
         from: './node_modules/admin-lte/dist/img',
@@ -45,32 +45,26 @@ Encore
      */
 	.addEntry('app', './assets/app.js')
 	.addEntry('page_index', './assets/js/pages/index/index.js')
-	.addEntry('database_tables', './assets/js/pages/database/tables.js')
-	.addEntry('database_form', './assets/js/pages/database/form.js')
 	.addEntry('graph_form', './assets/js/pages/graph/form.js')
 	.addEntry('graph_list', './assets/js/pages/graph/list.js')
 	.addEntry('logview_form', './assets/js/pages/logview/form.js')
 	.addEntry('user_list', './assets/js/pages/user/list.js')
-	.addEntry('user_form', './assets/js/pages/user/form.js')
 	.addEntry('user_confirmation', './assets/js/pages/user/confirmation.js')
 	.addEntry('user_profile', './assets/js/pages/user/profile.js')
 	.addEntry('navbar', './assets/js/components/_navbar.js')
-	.addEntry('sidebar', './assets/js/components/_sidebar.js')
+	.addEntry('sidebar_component', './assets/js/components/_sidebar.js')
 	.addEntry('js_grid', './assets/js/components/_js-grid-table.js')
 	.addEntry('flot_chart', './assets/js/components/_flot-chart.js')
-	.addEntry('content-header', './assets/js/components/_content-header.js')
 	.addEntry('welcome-page', './assets/js/pages/index/welcome.js')
 	.addEntry('page_login', './assets/js/pages/security/login.js')
 	.addEntry('page_forgot', './assets/js/pages/security/forgot.js')
 	.addEntry('page_reset', './assets/js/pages/security/reset-password.js')
-	.addEntry('page_change_password', './assets/js/pages/user/change-password.js')
-	.addEntry('dashboard_list', './assets/js/pages/dashboard/list.js')
+	.addEntry('dashboard_empty', './assets/js/pages/dashboard/empty-page.js')
 	.addEntry('dashboard_form', './assets/js/pages/dashboard/form.js')
 	.addEntry('widget_list', './assets/js/pages/widget/list.js')
 	.addEntry('widget_form', './assets/js/pages/widget/form.js')
   .addEntry('dashboard-page', './assets/js/pages/index/dashboard.js')
   .addEntry('alerts_list', './assets/js/pages/alerts/list.js')
-  .addEntry('alerts_form', './assets/js/pages/alerts/form.js')
   .addEntry('export_list', './assets/js/pages/export/list.js')
 // .addEntry('page1', './assets/page1.js')
 // .addEntry('page2', './assets/page2.js')
@@ -125,6 +119,7 @@ Encore
 	.addPlugin(new webpack.ProvidePlugin({
 		moment: 'moment',
 		daterangepicker: 'daterangepicker',
-		sparkline: 'Sparkline'
+		sparkline: 'Sparkline',
+        feather: 'feather-icons'
 	}))
 module.exports = Encore.getWebpackConfig();

@@ -1,123 +1,130 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import PropTypes from 'prop-types';
-import {UserActions} from '../../actions';
-import {Input} from '../../components';
-
+import { UserActions } from "../../actions";
+import { Input, Image } from "../../components";
+import Logo from "../../../images/light-logo.png";
 export class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
+            email: "",
+            password: "",
             remember: false,
-            message: '',
-            hidePassword: true
+            message: "",
         };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(e) {
-        if (e.target.name === 'email') {
-            this.setState({
-                email: e.target.value
-            });
-        }
+    handleChange = ({ name, value, checked }) => {
+        this.setState((preState) => ({
+            ...preState,
+            [name]: name === "remember" ? checked : value,
+        }));
+    };
 
-        if (e.target.name === 'password') {
-            this.setState({
-                password: e.target.value
-            });
-        }
-
-        if (e.target.name === '_remember_me') {
-            this.setState({
-                remember: e.target.checked
-            });
-        }
-    }
-
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
 
-        const {email, password, remember} = this.state;
-        UserActions.login(email, password, remember).then(response => {
+        const { email, password, remember } = this.state;
+        UserActions.login(email, password, remember).then((response) => {
             if (response.error === 0) {
                 if (response.redirect) {
                     window.location.href = response.redirect;
                 } else {
-                    window.location.href = '/';
+                    window.location.href = "/";
                 }
             } else {
                 this.setState({
-                    message: response.message
+                    message: response.message,
                 });
             }
         });
-    }
+    };
 
     render() {
-        const {message, email, remember, hidePassword} = this.state;
-        const forgotUrl = '/forgot';
+        const { message, email, remember, password } = this.state;
+        const { forgotPasswordLink } = this.props;
+
         return (
-            <form onSubmit={this.handleSubmit}>
-                {message &&
-                <div className="alert alert-danger">
-                    <div className="alert-message">
-                        {message}
+            <div className="login-form card">
+                <div className="card-header bg-white">
+                    <div className="header  d-flex flex-column w-100 justify-content-center align-items-center">
+                        <Image
+                            src={Logo}
+                            className="login-logo w-50 mt-4 mb-4"
+                            alt="ScaleCommerce · E-Commerce"
+                        />
                     </div>
                 </div>
-                }
-                <div className="input-group mb-3">
-                    <Input type="email"
-                        onChange={this.handleChange}
-                        name={'email'}
-                        value={email}
-                        required="required"
-                        autoFocus={true}
-                        placeholder="Email"/>
-                    <div className="input-group-append">
-                        <div className="input-group-text">
-                            <span className="fas fa-envelope"/>
+                <div className="card-body">
+                    <form onSubmit={this.handleSubmit}>
+                        {message && (
+                            <div className="alert alert-danger">
+                                <div className="alert-message">{message}</div>
+                            </div>
+                        )}
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">
+                                Email
+                            </label>
+                            <Input
+                                type="email"
+                                onChange={(e) => this.handleChange(e.target)}
+                                name={"email"}
+                                value={email}
+                                required="required"
+                                autoFocus={true}
+                                placeholder="Email"
+                            />
                         </div>
-                    </div>
-                </div>
-                <div className="input-group mb-3">
-                    <Input type="password"
-                        name={'password'}
-                        onChange={this.handleChange}
-                        placeholder="Password"/>
-                    <div className="input-group-append">
-                        <div className="input-group-text">
-                            <span className="fas fa-lock"/>
+                        <div className="mb-3">
+                            <div className="d-flex justify-content-between">
+                                <label htmlFor="password" className="form-label">
+                                    Password
+                                </label>
+                                <a className="text-decoration-none" href={forgotPasswordLink}>
+                                    Forgot your password?
+                                </a>
+                            </div>
+                            <Input
+                                id="input-password"
+                                type="password"
+                                name={"password"}
+                                required="required"
+                                value={password}
+                                onChange={(e) => this.handleChange(e.target)}
+                                placeholder="Password"
+                            />
+                            <div className="position-relative">
+                                <a className="toggle-password" id="toggle-password" role="button">
+                                    <div className="eye-icon">
+                                        <i className="fas fa-eye icon" id="fas-eye-icon"></i>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-8">
-                        <div className="icheck-primary">
-                            <Input type="checkbox" id="remember"
-                                name={'_remember_me'}
-                                onChange={this.handleChange}/>
-                            <label htmlFor="remember">
-                                Remember Me
+                        <div className="mb-3 form-check">
+                            <input
+                                type="checkbox"
+                                value={remember}
+                                className="form-check-input"
+                                name="remember"
+                                onChange={(e) => this.handleChange(e.target)}
+                                id="remember"
+                            />
+                            <label className="form-check-label" htmlFor="remember">
+                                Remember me
                             </label>
                         </div>
-                    </div>
-                    <div className="col-4">
-                        <button type="submit"
-                            className="btn btn-primary btn-block">Sign In
+                        <button type="submit" className="btn btn-primary w-100">
+                            Login
                         </button>
-                    </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         );
     }
 }
 
 LoginForm.propTypes = {
-    message: PropTypes.string,
-    email: PropTypes.string,
-    remember: PropTypes.bool,
-    hidePassword: PropTypes.bool
+    forgotPasswordLink: PropTypes.string
 };

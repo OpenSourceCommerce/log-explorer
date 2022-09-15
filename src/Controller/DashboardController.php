@@ -18,23 +18,19 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard", priority=10, name="dashboard_default")
      * @param DashboardServiceInterface $dashboardService
+     * @param Request $request
      * @return Response
      */
-    public function default(DashboardServiceInterface $dashboardService): Response
+    public function default(DashboardServiceInterface $dashboardService, Request $request): Response
     {
+        if ($uuid = $request->cookies->get('dashboard')) {
+            return $this->redirectToRoute('dashboard', ['uuid' => $uuid]);
+        }
         $dashboard = $dashboardService->getDefaultDashboard();
         if ($dashboard) {
             return $this->redirectToRoute('dashboard', ['uuid' => $dashboard->getUuid()]);
         }
-        return $this->redirectToRoute('dashboard_list');
-    }
-
-    /**
-     * @Route("/dashboard/list", priority=10, name="dashboard_list")
-     */
-    public function list(): Response
-    {
-        return $this->render('dashboard/list.html.twig');
+        return $this->render('dashboard/empty.html.twig');
     }
 
     /**

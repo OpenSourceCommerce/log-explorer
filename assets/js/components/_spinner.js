@@ -1,13 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-export class Spinner extends Component {
-    render() {
-        return (
-            <div className="spinner d-flex justify-content-center align-items-center text-primary">
-                <div className="spinner-border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
+export const Spinner = ({ isFullHeight = true }) => {
+    return (
+        <div className={`d-flex flex-column align-items-center justify-content-center text-primary ${isFullHeight ? 'min-vh-100' : ''}`}>
+            <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
             </div>
-        );
-    }
+        </div>
+    );
 }

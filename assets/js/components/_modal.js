@@ -1,11 +1,39 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Size, Colors} from '.';
-import 'bootstrap/js/dist/modal';
 
 export class Modal extends Component {
+    componentDidMount = () => {
+        const {
+            id,
+            onShow,
+            onShown,
+            onHide,
+            onHidden,
+        } = this.props;
+        this.modalEl = document.getElementById(id);
+        this.modal = new bootstrap.Modal(this.modalEl);
+
+
+        if (onShow && typeof onShow === 'function') {
+            this.modalEl.addEventListener('show.bs.modal', onShow);
+        }
+
+        if (onShown && typeof onShown === 'function') {
+            this.modalEl.addEventListener('shown.bs.modal', onShown);
+        }
+
+        if (onHide && typeof onHide === 'function') {
+            this.modalEl.addEventListener('hide.bs.modal', onHide);
+        }
+
+        if (onHidden && typeof onHidden === 'function') {
+            this.modalEl.addEventListener('hidden.bs.modal', onHidden);
+        }
+    }
+
     render() {
-        let {
+        const {
             title,
             children,
             className = '',
@@ -18,57 +46,49 @@ export class Modal extends Component {
             saveButtonAction,
             saveButtonTitle = 'Save Changes',
             saveButtonColor = Colors.blue,
-            onShow,
-            onShown,
-            onHide,
+            show = false,
+            isPositionCenter = false,
+            headerChildren,
+            disableSaveButton = false,
             onHidden,
-            show = false
+            ...props
         } = this.props;
 
-        className += ' modal fade';
-        const element = $(`#${id}`);
-
-        if (show) {
-            element.modal('show');
-        } else {
-            element.modal('hide');
-        }
-
-        if (onShow && typeof onShow === 'function') {
-            element.on('show.bs.modal', onShow);
-        }
-
-        if (onShown && typeof onShown === 'function') {
-            element.on('shown.bs.modal', onShown);
-        }
-
-        if (onHide && typeof onHide === 'function') {
-            element.on('hide.bs.modal', onHide);
-        }
-
-        if (onHidden && typeof onHidden === 'function') {
-            element.on('hidden.bs.modal', onHidden);
+        if(this.modal) {
+            if (show) {
+                //element.modal('show');
+                this.modal.show();
+            } else {
+                this.modal.hide();
+            }
         }
 
         return (
-            <div className={className} id={id}>
-                <div className={`modal-dialog modal-${size}`}>
+            <div className={`modal fade ${className}`} id={id} {...props}>
+                <div className={`modal-dialog modal-${size} ${isPositionCenter ? 'modal-dialog-centered': ''}`}>
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h4 className="modal-title">{title}</h4>
-                            <Button type="button" className="close" data-dismiss="modal" onClick={closeButtonAction}
+                            <div className="title d-flex justify-content-between w-100">
+                                <p className="modal-title">{title}</p>
+                                {headerChildren}
+                            </div>
+                            <button type="button" className="btn btn-close" data-bs-dismiss="modal" onClick={closeButtonAction}
                                 aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </Button>
+                            </button>
                         </div>
                         <div className="modal-body">
                             {children}
                         </div>
-                        <div className="modal-footer justify-content-between">
-                            {showCloseButton && <Button type="button" className="btn btn-default" onClick={closeButtonAction}
-                                data-dismiss="modal">{closeButtonTitle}
-                            </Button>}
-                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction}
+                        <div className={`modal-footer ${!showCloseButton && !showSaveButton ? 'd-none' : ''}`}>
+                            {showCloseButton &&
+                            <button
+                                className="btn text-primary"
+                                onClick={closeButtonAction}
+                                data-dismiss="modal"
+                                role="link"
+                            >{closeButtonTitle}
+                            </button>}
+                            {showSaveButton && saveButtonAction && <Button type="button" onClick={saveButtonAction} disabled={disableSaveButton}
                                 color={saveButtonColor}>{saveButtonTitle}</Button>}
                         </div>
                     </div>

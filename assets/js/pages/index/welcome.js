@@ -139,7 +139,7 @@ export class WelcomePage extends Component {
                     <pre className="mb-0">
                         <code id={item.id}
                             className="d-flex justify-content-between">
-                            <a className="command mr-5 mr-md-0"
+                            <a className="command me-5 me-md-0"
                                 data-toggle="collapse"
                                 aria-expanded="false"
                                 data-target={`#${dataTarget}`}
@@ -147,7 +147,7 @@ export class WelcomePage extends Component {
                                 href="#"
                                 aria-controls={dataTarget}
                             >{item.command}</a>
-                            <a className="copy-icon float-right tooltipContent"
+                            <a className="copy-icon float-end tooltipContent"
                                 onClick={e => this.copyToClipboard(e, item.command, item.id)}
                                 href="#"
                             >
@@ -156,7 +156,7 @@ export class WelcomePage extends Component {
                                     {this.state[item.id] ? 'Copy Success' : 'Copy to Clipboard!'}
                                 </span>
                                 <Icon name="copy" type="regular"
-                                    className="pr-3 pr-md-0"/>
+                                    className="pe-3 pe-md-0"/>
                             </a>
                         </code>
                     </pre>

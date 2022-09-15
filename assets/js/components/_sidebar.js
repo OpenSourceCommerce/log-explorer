@@ -3,78 +3,77 @@ import ReactDOM from 'react-dom';
 import {Text, Link, Image, Icon} from '.';
 import Logo from '../../images/logo.svg';
 import PropTypes from 'prop-types';
+import { getDataFromCookies, SIDEBAR_STATUS_COOKIE_NAME } from '../utils';
 
 export class Sidebar extends Component {
+    componentDidMount() {
+        if(getDataFromCookies(SIDEBAR_STATUS_COOKIE_NAME) === "true") {
+            $("#sidebar").toggleClass("hidden");
+        }
+    }
     render() {
-        const {username, userimage, role} = this.props;
-        const featureName = window.location.pathname.split('/');
+        const { role, version } = this.props;
+        const featureName = window.location.pathname.split("/");
         let navList;
-        if (role === 'guest') {
+        if (role === "guest") {
             navList = [];
-        } else if (role === 'user') {
+        } else if (role === "user") {
             navList = [
-                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
-                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
-                {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'}
+                { href: "log-view", iconName: "search", label: "Explore" },
+                { href: "setting?tabs=profile", iconName: "settings", label: "Settings" },
             ];
         } else {
             navList = [
-                {href: 'log-view', type: 'regular', iconName: 'circle', label: 'Explore'},
-                {href: 'profile', type: 'solid', iconName: 'user', label: 'Profile'},
-                {href: 'table', type: 'solid', iconName: 'database', label: 'Database'},
-                {href: 'user', type: 'solid', iconName: 'users', label: 'Users'},
-                {href: 'dashboard/list', type: 'solid', iconName: 'money-check', label: 'Dashboards'},
-                {href: 'widget', type: 'solid', iconName: 'chart-pie', label: 'Widgets'},
-                {href: 'alert', type: 'solid', iconName: 'exclamation-triangle', label: 'Alerts'},
-                {href: 'export', type: 'solid', iconName: 'download', label: 'Exports'},
+                { href: "dashboard", iconName: "home", label: "Dashboards" },
+                { href: "log-view", iconName: "search", label: "Explore" },
+                { href: "user", iconName: "users", label: "Users" },
+                { href: "alert", iconName: "alert-triangle", label: "Alerts" },
+                { href: "export", iconName: "download", label: "Exports" },
+                { href: "setting?tabs=profile", iconName: "settings", label: "Settings" },
             ];
         }
 
         return (
-            <aside className="main-sidebar sidebar-dark-primary elevation-4">
-                <Link className="brand-link" href={'/'}>
-                    <Image src={Logo} alt="AdminLTE Logo"
-                        className="brand-image"/>
-                </Link>
-
-                <div className="sidebar">
-                    <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div className="image">
-                            <Image src={userimage} className="img-circle elevation-2"
-                                alt={username}/>
-                        </div>
-                        <div className="info">
-                            <Link className={'d-block'}> { username }</Link>
-                        </div>
-                    </div>
-
-                    <nav className="mt-2">
-                        <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview"
-                            role="menu" data-accordion="false">
-                            {navList.map((item, index) => {
-                                const {href, type, iconName, label} = item;
-                                return (<li className="nav-item" key={index}>
-                                    <Link href={`/${href}`} className={`nav-link ${href === featureName[1] ? 'active' : ''}`}>
-                                        <Icon name={iconName} type={type}
-                                            className="nav-icon"/>
-                                        <p>{label}</p>
+            <div className="sidebar-wrapper">
+                <div id="sidebar" className="d-flex flex-column shadow-sm">
+                    <Link href="/" className="mt-4">
+                        <Image
+                            src={Logo}
+                            className="sidebar-logo"
+                            alt="ScaleCommerce · E-Commerce"
+                        />
+                    </Link>
+                    <ul className="nav mb-auto overflow-auto d-block mt-2">
+                        {navList.map((item, index) => {
+                            const { href, iconName, label } = item;
+                            return (
+                                <li key={index}>
+                                    <Link
+                                        href={`/${href}`}
+                                        className={`nav-item ${
+                                            href.includes(featureName[1]) ? "active" : ""
+                                        }`}
+                                    >
+                                        <Icon dataFeather={iconName}></Icon> {label}
                                     </Link>
                                 </li>
-                                );
-                            })}
-                        </ul>
-                    </nav>
+                            );
+                        })}
+                    </ul>
+                    <div className="sidebar-footer mb-3 fw-medium mx-4">
+                        <div>{`Vers. ${version}`}</div>
+                        <div>Data Protection / Datenschutz</div>
+                    </div>
                 </div>
-            </aside>
-
+            </div>
         );
     }
 }
 Sidebar.propTypes = {
     userimage: PropTypes.string,
     username: PropTypes.string,
-    role: PropTypes.string
+    role: PropTypes.string,
 };
 
-const root = document.querySelector('#sidebar');
-ReactDOM.render(<Sidebar {...(root.dataset)}/>, root);
+const root = document.querySelector("#sidebar_component");
+ReactDOM.render(<Sidebar {...root.dataset} />, root);

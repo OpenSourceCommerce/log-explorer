@@ -2,18 +2,21 @@ class ProfilePage {
     clearInputs() {
         cy.get('[data-cy=firstName]')
             .should('be.visible')
-            .clear()
-            .should('have.value', '')
+            .click()
+            .type('{selectall}{backspace}{selectall}{backspace}')
+            .should('have.value', '');
+
         cy.get('[data-cy=lastName]')
             .should('be.visible')
-            .clear()
+            .click()
+            .type('{selectall}{backspace}{selectall}{backspace}')
             .should('have.value', '')
     }
     setFirstname(firstName) {
-        cy.get('[data-cy=firstName]').type(firstName);
+        cy.get('[data-cy=firstName]').type(firstName).blur();
     }
     setLastname(lastName) {
-        cy.get('[data-cy=lastName]').type(lastName);
+        cy.get('[data-cy=lastName]').type(lastName).blur();
     }
     hasFirstnameError() {
         cy.get('[data-cy=firstName]').should('have.class', 'is-invalid');
@@ -23,11 +26,11 @@ class ProfilePage {
     }
     open() {
         cy.intercept('GET', '/api/profile').as('myProfile');
-        cy.visit('/profile')
-        cy.url().should('include', '/profile');
+        cy.get("a.nav-item").contains("Settings").click({ force: true });
+        cy.url().should('include', 'profile');
         cy.waitFor('@myProfile')
         cy.get('[data-cy=btnSave]')
-            .should('be.enabled');
+            .should('be.disabled');
         // cy.wait('@myProfile').its('response.statusCode').should('equal', 200)
     }
     save() {
@@ -37,9 +40,9 @@ class ProfilePage {
             .click();
     }
 
-    visible() {
-        // cy.get('[data-cy=btnSave]')
-        //     .should('be.enabled');
+    isDisableSave() {
+        cy.get('[data-cy=btnSave]')
+            .should('be.disabled');
     }
 }
 

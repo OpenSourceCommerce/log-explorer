@@ -265,7 +265,7 @@ export class GraphForm extends Component {
                     <div className="col-12 col-md-7 d-flex mt-2 mt-md-0 row">
                         <span className="d-block d-md-none col-2">Filter</span>
                         <div className="col-10 col-md-12 d-flex p-0">
-                            <Input className="mr-2 line_filter" value={item.filter ? item.filter : ''}
+                            <Input className="me-2 line_filter" value={item.filter ? item.filter : ''}
                                    onChange={e => this.onLineChange(key, 'filter', e.target.value)}
                                    placeholder={'status = 200'}/>
                             <Button onClick={() => this.deleteLine(key)} color={'danger'} className="line_delete"><Icon
@@ -280,7 +280,7 @@ export class GraphForm extends Component {
             <div className={`${className} graph-form`}>
                 <div className="form-group">
                     <label>Table</label>
-                    {table && <Link className={'ml-3'} href={'/table/' + table} >{table}</Link>}
+                    {table && <Link className={'ms-3'} href={'/table/' + table} >{table}</Link>}
                     {tables.length > 0 && <Select value={table} className={tableError ? 'is-invalid' : ''} onChange={this.onTableChange}>
                         <option value="">Select table</option>
                         {tables.map((item, key) => {
@@ -315,7 +315,7 @@ export class GraphForm extends Component {
                 <div className="box-footer">
                     <Button color={'success'} onClick={this.onSubmit}
                             isLoading={isLoading}>{id ? 'Update graph' : 'Create graph'}</Button>
-                    <Button color={'primary'} className={'ml-3'} onClick={this.addMoreLine}>Add more
+                    <Button color={'primary'} className={'ms-3'} onClick={this.addMoreLine}>Add more
                         line</Button>
                 </div>
             </div>

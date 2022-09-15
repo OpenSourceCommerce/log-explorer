@@ -1,30 +1,51 @@
-import React, {Component} from 'react';
-import {PAGE_NAME} from '../utils';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
+import { PAGE_NAME } from "../utils";
+import { Icon, Button } from ".";
+import "../../styles/component/_content-header.scss";
 
-class ContentHeader extends Component {
+export class ContentHeader extends Component {
     render() {
-        const splitUrl = window.location.pathname.split('/');
+        const {
+            className,
+            iconName,
+            actionButtonTitle,
+            actionButtonIcon,
+            onClickActionBtn,
+            children,
+            pageTitle,
+        } = this.props;
+        const splitUrl = window.location.pathname.split("/");
 
-        let title = '';
+        let title = "";
 
-        if (splitUrl[1] !== 'welcome') {
-            title = PAGE_NAME[splitUrl[1]] || PAGE_NAME.dashboard;
+        if (splitUrl[1] !== "welcome") {
+            title = PAGE_NAME[splitUrl[1]];
         }
 
-        return (
-            <div className="content-header p-0 pt-1">
-                <div className="container-fluid d-none">
-                    <div className="row mb-2">
-                        <div className="col-sm-6">
-                            <h1 className="m-0 text-dark">{title}</h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        title = title || pageTitle;
 
+        return (
+            <div
+                className={`content-header d-flex justify-content-between aligns-items-center ${
+                    className || ""
+                }`}
+            >
+                <div className="d-flex align-items-center w-100">
+                    <Icon dataFeather={iconName} className="icon-title" />
+                    <span className="title ms-2 align-middle">{title}</span>
+                    {children}
+                </div>
+                {onClickActionBtn && (
+                    <Button className="text-nowrap" style={{ fontSize: "16px" }} onClick={onClickActionBtn}>
+                        {actionButtonIcon && (
+                            <Icon dataFeather={actionButtonIcon} className="feather-sm stroke-width-3" />
+                        )}
+                        {actionButtonTitle && (
+                            <span className="align-middle ms-1">{actionButtonTitle}</span>
+                        )}
+                    </Button>
+                )}
+            </div>
         );
     }
 }
-
-ReactDOM.render(<ContentHeader/>, document.querySelector('#content-header'));

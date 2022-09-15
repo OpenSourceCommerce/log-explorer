@@ -1,0 +1,24 @@
+.setting-profile {
+  .nav {
+    .nav-item {
+      .nav-link {
+        font-size: 1.125rem;
+        color: black;
+        border-radius: unset;
+        padding: 0.85rem;
+
+        &:hover {
+          background: #e2e6ea 0% 0% no-repeat padding-box;
+        }
+      }
+      .active {
+        background: none;
+        border-bottom: 2px solid var(--bs-primary);
+        color: var(--bs-primary);
+      }
+    }
+  }
+  .header {
+    font: normal normal 500 20px/27px Manrope;
+  }
+}

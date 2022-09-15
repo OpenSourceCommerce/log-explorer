@@ -1,66 +1,75 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {Icon} from '.';
-import '../../styles/component/_log-views-list.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import { Icon } from ".";
+import "../../styles/component/_log-views-list.scss";
 
-export class LogViewList extends Component {
-    render() {
-        const {className, onSelected, data, selected, ...rest} = this.props;
+export const LogViewList = ({ className, onSelected, data, selected, ...rest }) => {
+    return (
+        <div className={`log-view-list d-flex align-items-center ${className || ""}`} {...rest}>
+            <a
+                className="text-decoration-none title align-items-center d-inline-flex"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+            >
+                <h4 className="me-2 mb-1 fw-bold"> {selected?.name || ""} </h4>
+                <span className="btn-caret">
+                    <Icon name="angle-down" />
+                </span>
+            </a>
 
-        let value = '';
-        let uuid = '';
-
-        if (selected) {
-            value = selected.name || '';
-            uuid = selected.uuid || '';
-        }
-
-        return (
-            <div className={`log-view-list ${className || ''}`} {...rest}>
-                <a className="title align-items-center d-inline-flex dropdon-toggle"
-                    href="#"
-                    id="navbarDropdown"
-                    role="button"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-
-                    <h3 className="mr-3 mb-1"> {value} </h3>
-                    <span className="btn-caret">
-                        <Icon name="angle-down" />
-                    </span>
-                </a>
-
-                <div className="dropdown-menu dropdown-menu-left animate slideIn"
-                    aria-labelledby="navbarDropdown">
-                    {data && data.map((item, index) => {
+            <ul className="dropdown-menu dropdown-menu-left p-0" aria-labelledby="navbarDropdown">
+                {isUser() || (
+                    <li>
+                        <a
+                            className="dropdown-item text-primary my-2"
+                            href="#"
+                            onClick={() => {
+                                window.location.href = "/setting?tab=databases";
+                            }}
+                        >
+                            <Icon dataFeather="plus" className="feather-sm stroke-width-4" />
+                            <span className="ms-2 align-middle fw-bold">Create new datatable</span>
+                        </a>
+                    </li>
+                )}
+                {data &&
+                    data.map((item, index) => {
+                        const isCurrentDataTable = item?.uuid === selected?.uuid;
                         return (
-                            <a key={index}
-                                value={item.uuid}
-                                className={`${item.uuid && item.uuid === uuid ? 'active' : ''} dropdown-item`}
-                                href="#"
-                                onClick={() => onSelected(item)}
-                            >
-                                {item.name}
-                            </a>
+                            <li key={index}>
+                                <a
+                                    value={item.uuid}
+                                    className={`${
+                                        isCurrentDataTable ? "active" : ""
+                                    } dropdown-item my-2`}
+                                    href="#"
+                                    onClick={() => onSelected(item)}
+                                >
+                                    <span className="d-inline-block align-middle">{item.name}</span>
+                                    {isCurrentDataTable ? (
+                                        <Icon
+                                            dataFeather="check"
+                                            className="feather-xs ms-2 stroke-width-4"
+                                        />
+                                    ) : (
+                                        <></>
+                                    )}
+                                </a>
+                            </li>
                         );
                     })}
-                    {isUser() || <>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item"
-                        href="/table/create"
-                        >Create new one</a>
-                    </>
-                    }
-                </div>
-            </div>
-        );
-    }
-}
+            </ul>
+        </div>
+    );
+};
 
 LogViewList.propTypes = {
     className: PropTypes.string,
     data: PropTypes.array,
     onSelected: PropTypes.func,
-    selected: PropTypes.object
+    selected: PropTypes.object,
 };

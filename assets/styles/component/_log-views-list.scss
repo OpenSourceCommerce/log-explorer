@@ -8,13 +8,13 @@
 
     .btn-caret i {
       transform: rotate(0deg);
-      transition: transform .3s linear;
+      transition: transform 0.3s linear;
     }
 
-    &[aria-expanded="true"]{
+    &[aria-expanded="true"] {
       .btn-caret i {
         transform: rotate(180deg);
-        transition: transform .3s linear;
+        transition: transform 0.3s linear;
       }
     }
   }
@@ -22,9 +22,14 @@
   .dropdown-menu {
     overflow-y: auto;
     max-height: 300px;
-    .active, .dropdown-item:hover {
-      background-color: #007bff;
-      color: #ffffff
+    width: 269px;
+    .active,
+    .dropdown-item:hover {
+      color: var(--bs-primary);
+      background-color: transparent;
+    }
+    li:not(:last-child) {
+      border-bottom: 1px solid #e0e0e0;
     }
   }
 
@@ -51,6 +56,6 @@
   .slideIn {
     -webkit-animation-name: slideIn;
     animation-name: slideIn;
+    inset: auto !important;
   }
-
 }

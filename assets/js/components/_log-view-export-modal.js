@@ -50,7 +50,7 @@ export class LogViewExportModal extends Component {
                     </div>
                     <div className="col-6">
                         <a onClick={this.onSelected} data-format="csv"
-                           className="btn btn-primary btn-sm mr-2">CSV</a>
+                           className="btn btn-primary btn-sm me-2">CSV</a>
                         <a onClick={this.onSelected} data-format="json"
                            className="btn btn-secondary btn-sm">JSON</a>
                     </div>

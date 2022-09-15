@@ -1,23 +1,104 @@
-.spinner-border {
-  padding: 1em;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
+$fw-medium: 500;
+
+body {
+  font-weight: $fw-medium;
 }
 
-.sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused, .sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) {
-  .brand-link {
-    .brand-image {
-      float:none;
-      margin-left: -1rem;
-      transform: scale(0.6);
+.authentication-background {
+  background: transparent linear-gradient(241deg, var(--bs-primary) 0%, #ffffff 100%) 0% 0% no-repeat padding-box;
+}
+
+.min-h-100 {
+  min-height: 100vh;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.fw-medium,
+.btn {
+  font-weight: $fw-medium;
+}
+
+.content-wrapper {
+  background-color: #f8f9fa;
+  max-height: 100vh;
+  overflow: auto;
+}
+
+.wrapper {
+  width: calc(100% - 254px);
+  min-height: 100vh;
+  transition: all 0.3s;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.navbar {
+  padding: 0.15rem 0 0.15rem 1.25rem;
+  z-index: 1;
+}
+
+.stroke-width-4 {
+  stroke-width: 4;
+  stroke-linecap: square;
+}
+
+.stroke-width-3 {
+  stroke-width: 3;
+  stroke-linecap: square;
+}
+
+.btn-default {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.btn-bg-white {
+  background-color: white;
+}
+
+.bd-callout {
+  padding: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #e9ecef;
+  border-left-width: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.bd-callout-info {
+  border-left-color: var(--bs-primary);
+}
+
+.dropdown-toggle-none-icon::after {
+  display: none;
+}
+
+.bg-img-none {
+  background-image: none !important;
+}
+
+.sidebar-wrapper {
+  #sidebar {
+    .sidebar-logo {
+      width: 80%;
+      object-fit: fill;
+      margin-left: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .sidebar-footer {
+      font-size: 14px;
     }
   }
 }
 
-.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
-  .brand-image {
-    transition: transform 0.4s ease-in-out 0s;
+.reset-password-screen {
+  .reset-password-component {
+    max-width: 25.813rem;
+    max-height: 24.375rem;
   }
 }

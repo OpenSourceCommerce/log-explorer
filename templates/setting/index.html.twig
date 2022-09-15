@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('user_profile') }}
+{% endblock %}
+
+{% block body %}
+    <div id="root" data-current-tab="{{ tab }}"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.clickhouseTypes = {{ types | raw }};
+        {% if table is defined %}
+        window.table = "{{ table }}";
+        {% endif %}
+    </script>
+    {{ encore_entry_script_tags('user_profile') }}
+{% endblock %}
+

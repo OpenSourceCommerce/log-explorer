@@ -1,36 +1,49 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {NavSearch, NavNotification, NavMenu, NavMessage, NavUser} from '.';
-import PropTypes from 'prop-types';
+import React, { Component, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { NavUser, Icon } from ".";
+import PropTypes from "prop-types";
+import { getDataFromCookies, setDataToCookies, SIDEBAR_STATUS_COOKIE_NAME } from "../utils";
 
-class Navbar extends Component {
-    render() {
-        const {logoutLink, profileLink, changePasswordLink, role} = this.props;
+const Navbar = ({ ...props }) => {
+    useEffect(() => {
+        if (getDataFromCookies(SIDEBAR_STATUS_COOKIE_NAME) === "true") {
+            $("#sidebarCollapse").toggleClass("sidebar-hidden");
+        }
+    }, []);
 
-        return (
-            <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-                <NavMenu/>
+    const onSidebarCollapseToggle = () => {
+        $(".wrapper").toggleClass("w-100");
+        // setSidebarIsCollapse(newStatus);
 
-                {role !== 'guest' && <NavSearch/>}
+        const newStatus = getDataFromCookies(SIDEBAR_STATUS_COOKIE_NAME) === "true" ? "false" : "true";
+        setDataToCookies(SIDEBAR_STATUS_COOKIE_NAME, newStatus, 30);
+    };
 
-                {role !== 'guest' && <ul className="navbar-nav ml-auto">
-                    <NavMessage total={3}/>
-                    <NavNotification total={15}/>
-                    <NavUser logoutLink={logoutLink}
-                        changePasswordLink={changePasswordLink}
-                        profileLink={profileLink}/>
-                </ul>}
-            </nav>
-        );
-    }
-}
+    return (
+        <nav className="navbar navbar-expand navbar-light bg-white main-header ps-cp-4">
+            <div className="d-flex justify-content-between w-100 align-items-center">
+                <span
+                    className="nav-item collapse-icon rounded-circle p-2"
+                    id="sidebarCollapse"
+                    href="#"
+                    onClick={() => {
+                        onSidebarCollapseToggle();
+                    }}
+                >
+                    <Icon dataFeather="chevron-left" />
+                </span>
+                <NavUser {...props} />
+            </div>
+        </nav>
+    );
+};
 
 Navbar.propTypes = {
     logoutLink: PropTypes.string.isRequired,
     profileLink: PropTypes.string.isRequired,
     changePasswordLink: PropTypes.string.isRequired,
-    role: PropTypes.string
+    role: PropTypes.string,
 };
 
-const root = document.querySelector('#navbar');
-ReactDOM.render(<Navbar {...root.dataset}/>, root);
+const root = document.querySelector("#navbar");
+ReactDOM.render(<Navbar {...root.dataset} />, root);

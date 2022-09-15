@@ -1,7 +1,9 @@
 <div id="navbar"
      data-change-password-link="{{ path('user_change_password') }}"
      data-logout-link="{{ path('app_logout') }}"
-     data-profile-link="{{ path('user_profile') }}"
+     data-profile-link="{{ path('page_setting', {tab: 'profile'}) }}"
      data-role="{{ userRole() }}"
+     data-username="{{ username() }}"
+     data-userimage="{{ userImage() }}"
 >
 </div>
